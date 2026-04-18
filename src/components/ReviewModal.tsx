@@ -20,7 +20,6 @@ const RATING_CONFIG = {
 const MAX_CHARS = 300;
 const DRAG_CLOSE_THRESHOLD = 100;
 const VELOCITY_CLOSE_THRESHOLD = 0.4;
-const KEYBOARD_THRESHOLD = 150;
 
 type CartProduct = (typeof products)[number] & { qty: number };
 
@@ -35,7 +34,8 @@ export default function ReviewModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [dragDelta, setDragDelta] = useState(0);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<number>(0); // ✅ Langsung simpan height
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);     // ✅ Flag sederhana
 
   const dragStartY = useRef(0);
   const isDragging = useRef(false);
@@ -44,7 +44,6 @@ export default function ReviewModal() {
   const dragVelocity = useRef(0);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const initialViewportHeight = useRef<number | null>(null);
 
   // --- Resolve products to display ---
   const singleProduct = productSlug ? products.find((p) => p.slug === productSlug) : null;
@@ -69,9 +68,12 @@ export default function ReviewModal() {
     setComment('');
     setHoveredStar(0);
     setDragDelta(0);
-    setKeyboardOffset(0);
     dragVelocity.current = 0;
-    initialViewportHeight.current = null;
+    // ✅ Set initial viewport height
+    const viewport = window.visualViewport;
+    if (viewport) {
+      setViewportHeight(viewport.height);
+    }
   }, []);
 
   // ── Kunci scroll body + Handle keyboard via Visual Viewport API ──
@@ -81,86 +83,46 @@ export default function ReviewModal() {
     const scrollY = window.scrollY;
     const body = document.body;
 
-    // Lock body scroll (iOS + Android proof)
     body.style.position = 'fixed';
     body.style.top = `-${scrollY}px`;
     body.style.left = '0';
     body.style.right = '0';
     body.style.overflow = 'hidden';
 
-    // ── Handle keyboard via Visual Viewport API ──
     const viewport = window.visualViewport;
+
+    // ✅ Simpan initial height untuk deteksi keyboard
+    let initialHeight = viewport?.height ?? window.innerHeight;
 
     const handleViewportChange = () => {
       if (!viewport) return;
 
-      // Simpan height awal saat pertama kali modal terbuka
-      if (initialViewportHeight.current === null) {
-        initialViewportHeight.current = viewport.height;
-        return;
-      }
-
       const currentHeight = viewport.height;
-      const initialHeight = initialViewportHeight.current;
 
-      // Hitung selisih dari height awal (bukan window.innerHeight)
+      // ✅ Update viewport height langsung - ini sudah area yang tersedia
+      setViewportHeight(currentHeight);
+
+      // ✅ Deteksi apakah keyboard terbuka
       const heightDiff = initialHeight - currentHeight;
-
-      // Sanity check: keyboard maksimal 70% dari initial height
-      const maxOffset = initialHeight * 0.7;
-      const safeOffset = Math.min(Math.max(0, heightDiff), maxOffset);
-
-      if (safeOffset > KEYBOARD_THRESHOLD) {
-        setKeyboardOffset(safeOffset);
-      } else {
-        setKeyboardOffset(0);
-      }
+      setIsKeyboardOpen(heightDiff > 100);
     };
 
     if (viewport) {
-      // Set initial height setelah sedikit delay untuk mendapat nilai stabil
-      setTimeout(() => {
-        initialViewportHeight.current = viewport.height;
+      // Set initial height setelah delay untuk nilai stabil
+      const timeoutId = setTimeout(() => {
+        initialHeight = viewport.height;
+        setViewportHeight(viewport.height);
       }, 100);
 
       viewport.addEventListener('resize', handleViewportChange);
       viewport.addEventListener('scroll', handleViewportChange);
+
+      return () => {
+        clearTimeout(timeoutId);
+        viewport.removeEventListener('resize', handleViewportChange);
+        viewport.removeEventListener('scroll', handleViewportChange);
+      };
     }
-
-    // ── Auto-scroll input ke visible area saat focus ──
-    const handleFocusIn = (e: FocusEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('input, textarea')) return;
-
-      setTimeout(() => {
-        if (!scrollContentRef.current) return;
-
-        const scrollContainer = scrollContentRef.current;
-        const targetRect = target.getBoundingClientRect();
-        const containerRect = scrollContainer.getBoundingClientRect();
-
-        const targetTop = targetRect.top - containerRect.top + scrollContainer.scrollTop;
-        const targetBottom = targetTop + targetRect.height;
-
-        const visibleTop = scrollContainer.scrollTop;
-        const visibleBottom = visibleTop + containerRect.height;
-        const padding = 60;
-
-        if (targetTop < visibleTop + padding) {
-          scrollContainer.scrollTo({
-            top: Math.max(0, targetTop - padding),
-            behavior: 'smooth',
-          });
-        } else if (targetBottom > visibleBottom - padding) {
-          scrollContainer.scrollTo({
-            top: Math.max(0, targetBottom - containerRect.height + padding),
-            behavior: 'smooth',
-          });
-        }
-      }, 350);
-    };
-
-    document.addEventListener('focusin', handleFocusIn);
 
     return () => {
       body.style.position = '';
@@ -168,15 +130,8 @@ export default function ReviewModal() {
       body.style.left = '';
       body.style.right = '';
       body.style.overflow = '';
-
-      if (viewport) {
-        viewport.removeEventListener('resize', handleViewportChange);
-        viewport.removeEventListener('scroll', handleViewportChange);
-      }
-
-      document.removeEventListener('focusin', handleFocusIn);
-      setKeyboardOffset(0);
-      initialViewportHeight.current = null;
+      setViewportHeight(0);
+      setIsKeyboardOpen(false);
       window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
@@ -185,7 +140,6 @@ export default function ReviewModal() {
     if (dragDelta === 0 && !isClosing) {
       setIsClosing(true);
       setDragDelta(0);
-      setKeyboardOffset(0);
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
@@ -200,7 +154,6 @@ export default function ReviewModal() {
   const triggerClose = useCallback(() => {
     setIsClosing(true);
     setDragDelta(0);
-    setKeyboardOffset(0);
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -213,7 +166,7 @@ export default function ReviewModal() {
 
   // --- Drag to close with velocity ---
   const handleDragStart = (e: React.TouchEvent) => {
-    if (keyboardOffset > 0) return;
+    if (isKeyboardOpen) return; // ✅ Gunakan flag sederhana
     if ((e.target as HTMLElement).closest('textarea, input, button')) return;
     dragStartY.current = e.touches[0].clientY;
     lastY.current = dragStartY.current;
@@ -223,7 +176,7 @@ export default function ReviewModal() {
   };
 
   const handleDragMove = (e: React.TouchEvent) => {
-    if (!isDragging.current || isClosing || keyboardOffset > 0) return;
+    if (!isDragging.current || isClosing || isKeyboardOpen) return;
     const y = e.touches[0].clientY;
     const now = Date.now();
     const dt = now - lastTime.current;
@@ -254,7 +207,6 @@ export default function ReviewModal() {
       return;
     }
 
-    // Blur untuk dismiss keyboard sebelum submit
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -296,19 +248,16 @@ export default function ReviewModal() {
   const config = rating > 0 ? RATING_CONFIG[rating as keyof typeof RATING_CONFIG] : null;
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  // ── Gunakan visualViewport.height langsung untuk maxHeight ──
-  const viewport = typeof window !== 'undefined' ? window.visualViewport : null;
-  const safeViewportHeight = viewport?.height ?? window.innerHeight;
-
-  const panelMaxHeight = keyboardOffset > 0
-    ? `${Math.max(250, safeViewportHeight - 16)}px`
+  // ✅ FIX: Gunakan viewportHeight langsung sebagai maxHeight
+  const panelMaxHeight = viewportHeight > 0 
+    ? `${viewportHeight}px` 
     : '92vh';
 
   const panelTransition = isClosing
     ? 'transform 0.3s ease-out, opacity 0.3s ease-out'
     : dragDelta > 0
       ? 'none'
-      : 'bottom 0.2s ease-out, max-height 0.2s ease-out, transform 0.3s ease-out';
+      : 'max-height 0.15s ease-out, transform 0.3s ease-out';
 
   return (
     <>
@@ -332,15 +281,16 @@ export default function ReviewModal() {
             isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
           }`}
           style={{
-            // Gunakan bottom positioning langsung, bukan marginBottom
-            bottom: keyboardOffset > 0 ? `${keyboardOffset}px` : 0,
-            left: keyboardOffset > 0 ? 0 : undefined,
-            right: keyboardOffset > 0 ? 0 : undefined,
+            // ✅ FIX: Selalu bottom: 0, TANPA offset
+            bottom: 0,
+            left: 0,
+            right: 0,
+            // ✅ FIX: maxHeight langsung dari visualViewport.height
             maxHeight: panelMaxHeight,
             transition: panelTransition,
             ...(dragDelta > 0 && !isClosing ? { transform: `translateY(${dragDelta}px)` } : {}),
-            // Override flex positioning saat keyboard terbuka
-            ...(keyboardOffset > 0 ? { position: 'fixed' as const } : {}),
+            // ✅ Selalu fixed position
+            position: 'fixed' as const,
           }}
         >
           {/* Drag Trigger Zone */}

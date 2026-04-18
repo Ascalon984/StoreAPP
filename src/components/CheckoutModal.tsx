@@ -15,7 +15,6 @@ const VELOCITY_CLOSE_THRESHOLD = 0.4;
 const MAX_NAME_CHARS = 40;
 const MAX_PHONE_DIGITS = 13;
 const MAX_ADDRESS_CHARS = 250;
-const KEYBOARD_THRESHOLD = 150;
 
 export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModalProps) {
   const { deliveryInfo, updateDeliveryInfo, isLoadingLocation, setIsLoadingLocation, getAddressFromCoords } = useDeliveryStore();
@@ -24,7 +23,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const [dragDelta, setDragDelta] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
   const [touched, setTouched] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<number>(0); // ✅ Langsung simpan height yang tersedia
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const dragStartY = useRef(0);
   const isDragging = useRef(false);
@@ -35,7 +35,6 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const phoneCursorRef = useRef<number>(-1);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const initialViewportHeight = useRef<number | null>(null);
 
   // ── Reset saat modal buka ──
   useEffect(() => {
@@ -44,10 +43,13 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       setFieldErrors({});
       setTouched({});
       setDragDelta(0);
-      setKeyboardOffset(0);
       dragVelocity.current = 0;
       phoneCursorRef.current = -1;
-      initialViewportHeight.current = null;
+      // ✅ Set initial viewport height
+      const viewport = window.visualViewport;
+      if (viewport) {
+        setViewportHeight(viewport.height);
+      }
     }
   }, [open]);
 
@@ -66,77 +68,38 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
     const viewport = window.visualViewport;
 
+    // ✅ Simpan initial height untuk deteksi keyboard
+    let initialHeight = viewport?.height ?? window.innerHeight;
+
     const handleViewportChange = () => {
       if (!viewport) return;
 
-      // Simpan height awal saat pertama kali modal terbuka
-      if (initialViewportHeight.current === null) {
-        initialViewportHeight.current = viewport.height;
-        return;
-      }
-
       const currentHeight = viewport.height;
-      const initialHeight = initialViewportHeight.current;
+      
+      // ✅ Update viewport height langsung - ini sudah area yang tersedia
+      setViewportHeight(currentHeight);
 
-      // Hitung selisih dari height awal (bukan window.innerHeight)
-      // Ini lebih akurat karena menghindari pengaruh address bar
+      // ✅ Deteksi apakah keyboard terbuka (threshold lebih kecil)
       const heightDiff = initialHeight - currentHeight;
-
-      // Sanity check: keyboard maksimal 70% dari initial height
-      const maxOffset = initialHeight * 0.7;
-      const safeOffset = Math.min(Math.max(0, heightDiff), maxOffset);
-
-      if (safeOffset > KEYBOARD_THRESHOLD) {
-        setKeyboardOffset(safeOffset);
-      } else {
-        setKeyboardOffset(0);
-      }
+      setIsKeyboardOpen(heightDiff > 100);
     };
 
     if (viewport) {
-      // Set initial height setelah sedikit delay untuk mendapat nilai stabil
-      setTimeout(() => {
-        initialViewportHeight.current = viewport.height;
+      // Set initial height setelah delay untuk nilai stabil
+      const timeoutId = setTimeout(() => {
+        initialHeight = viewport.height;
+        setViewportHeight(viewport.height);
       }, 100);
 
       viewport.addEventListener('resize', handleViewportChange);
       viewport.addEventListener('scroll', handleViewportChange);
+
+      return () => {
+        clearTimeout(timeoutId);
+        viewport.removeEventListener('resize', handleViewportChange);
+        viewport.removeEventListener('scroll', handleViewportChange);
+      };
     }
-
-    // ── Auto-scroll input ke visible area saat focus ──
-    const handleFocusIn = (e: FocusEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('input, textarea')) return;
-
-      setTimeout(() => {
-        if (!scrollContentRef.current) return;
-
-        const scrollContainer = scrollContentRef.current;
-        const targetRect = target.getBoundingClientRect();
-        const containerRect = scrollContainer.getBoundingClientRect();
-
-        const targetTop = targetRect.top - containerRect.top + scrollContainer.scrollTop;
-        const targetBottom = targetTop + targetRect.height;
-
-        const visibleTop = scrollContainer.scrollTop;
-        const visibleBottom = visibleTop + containerRect.height;
-        const padding = 60;
-
-        if (targetTop < visibleTop + padding) {
-          scrollContainer.scrollTo({
-            top: Math.max(0, targetTop - padding),
-            behavior: 'smooth',
-          });
-        } else if (targetBottom > visibleBottom - padding) {
-          scrollContainer.scrollTo({
-            top: Math.max(0, targetBottom - containerRect.height + padding),
-            behavior: 'smooth',
-          });
-        }
-      }, 350);
-    };
-
-    document.addEventListener('focusin', handleFocusIn);
 
     return () => {
       body.style.position = '';
@@ -144,15 +107,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       body.style.left = '';
       body.style.right = '';
       body.style.overflow = '';
-
-      if (viewport) {
-        viewport.removeEventListener('resize', handleViewportChange);
-        viewport.removeEventListener('scroll', handleViewportChange);
-      }
-
-      document.removeEventListener('focusin', handleFocusIn);
-      setKeyboardOffset(0);
-      initialViewportHeight.current = null;
+      setViewportHeight(0);
+      setIsKeyboardOpen(false);
       window.scrollTo(0, scrollY);
     };
   }, [open]);
@@ -172,7 +128,6 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const triggerClose = useCallback(() => {
     setIsClosing(true);
     setDragDelta(0);
-    setKeyboardOffset(0);
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -180,6 +135,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       setIsClosing(false);
       setFieldErrors({});
       setTouched({});
+      setIsKeyboardOpen(false);
       onClose();
     }, 280);
   }, [onClose]);
@@ -189,7 +145,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   }, [dragDelta, isClosing, triggerClose]);
 
   const handleDragStart = (e: React.TouchEvent) => {
-    if (keyboardOffset > 0) return;
+    if (isKeyboardOpen) return; // ✅ Gunakan flag sederhana
     if ((e.target as HTMLElement).closest('textarea, input, button')) return;
     dragStartY.current = e.touches[0].clientY;
     lastY.current = dragStartY.current;
@@ -199,7 +155,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   };
 
   const handleDragMove = (e: React.TouchEvent) => {
-    if (!isDragging.current || isClosing || keyboardOffset > 0) return;
+    if (!isDragging.current || isClosing || isKeyboardOpen) return;
     const y = e.touches[0].clientY;
     const now = Date.now();
     const dt = now - lastTime.current;
@@ -220,7 +176,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
     dragVelocity.current = 0;
   };
 
-  // ── Geolocation robust (mirip GMaps) ──
+  // ── Geolocation ──
   const getBestPosition = (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
       let resolved = false;
@@ -305,10 +261,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
   // ── Helpers ──
   const getPhoneDigits = (phone: string) => phone.replace(/[^\d]/g, '');
-
-  const formatPhone = (digits: string): string => {
-    return digits.replace(/(\d{3})(?=\d)/g, '$1-');
-  };
+  const formatPhone = (digits: string): string => digits.replace(/(\d{3})(?=\d)/g, '$1-');
 
   // ── Validation ──
   const validateField = (field: 'name' | 'phone' | 'address') => {
@@ -343,7 +296,6 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
     const oldVal = input.value;
 
     const digitsBefore = oldVal.slice(0, cursorPos).replace(/[^\d]/g, '').length;
-
     const rawDigits = oldVal.replace(/[^\d]/g, '').slice(0, MAX_PHONE_DIGITS);
     const formatted = formatPhone(rawDigits);
 
@@ -391,19 +343,17 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  // Gunakan visualViewport.height langsung untuk maxHeight
-  const viewport = typeof window !== 'undefined' ? window.visualViewport : null;
-  const safeViewportHeight = viewport?.height ?? window.innerHeight;
-  
-  const panelMaxHeight = keyboardOffset > 0
-    ? `${Math.max(250, safeViewportHeight - 16)}px` // Gunakan viewport height langsung, bukan calc
+  // ✅ Perbaikan utama: Gunakan viewportHeight langsung sebagai maxHeight
+  // TANPA bottom offset - karena visualViewport.height sudah area yang tersedia
+  const panelMaxHeight = viewportHeight > 0 
+    ? `${viewportHeight}px` 
     : '92vh';
 
   const panelTransition = isClosing
     ? 'transform 0.3s ease-out, opacity 0.3s ease-out'
     : dragDelta > 0
       ? 'none'
-      : 'bottom 0.2s ease-out, max-height 0.2s ease-out, transform 0.3s ease-out';
+      : 'max-height 0.15s ease-out, transform 0.3s ease-out';
 
   return (
     <>
@@ -427,15 +377,16 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
             isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
           }`}
           style={{
-            // Gunakan bottom positioning langsung, bukan marginBottom
-            bottom: keyboardOffset > 0 ? `${keyboardOffset}px` : 0,
-            left: keyboardOffset > 0 ? 0 : undefined,
-            right: keyboardOffset > 0 ? 0 : undefined,
+            // ✅ FIX: Selalu bottom: 0, TANPA offset
+            bottom: 0,
+            left: 0,
+            right: 0,
+            // ✅ FIX: maxHeight langsung dari visualViewport.height
             maxHeight: panelMaxHeight,
             transition: panelTransition,
             ...(dragDelta > 0 && !isClosing ? { transform: `translateY(${dragDelta}px)` } : {}),
-            // Override flex positioning saat keyboard terbuka
-            ...(keyboardOffset > 0 ? { position: 'fixed' as const } : {}),
+            // ✅ Selalu fixed position untuk konsistensi
+            position: 'fixed' as const,
           }}
         >
           {/* Drag Trigger Zone */}
