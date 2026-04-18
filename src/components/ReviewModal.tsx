@@ -52,7 +52,7 @@ export default function ReviewModal() {
   // ── Scroll input ke view saat focus ──
   const handleInputFocus = (inputElement: HTMLElement | null) => {
     if (!inputElement || !scrollContentRef.current) return;
-    
+
     // Jangan gunakan scrollIntoView karena bisa melempar layar keseluruhan (body) di mobile
     setTimeout(() => {
       const container = scrollContentRef.current;
@@ -67,9 +67,9 @@ export default function ReviewModal() {
   const displayProducts: CartProduct[] = singleProduct
     ? [{ ...singleProduct, qty: 1 }]
     : cartItems.reduce<CartProduct[]>((acc, item) => {
-        if (item.product) acc.push({ ...item.product, qty: item.quantity });
-        return acc;
-      }, []);
+      if (item.product) acc.push({ ...item.product, qty: item.quantity });
+      return acc;
+    }, []);
 
   const isFromCart = !singleProduct && cartItems.length > 0;
 
@@ -80,78 +80,87 @@ export default function ReviewModal() {
 
   // ── Reset saat modal buka ──
   const resetState = useCallback(() => {
-    setRating(0);
-    setComment('');
-    setHoveredStar(0);
-    setDragDelta(0);
-    dragVelocity.current = 0;
-    // ✅ Set initial viewport height
-    const viewport = window.visualViewport;
-    if (viewport) {
-      setKeyboardPadding(Math.max(0, window.innerHeight - viewport.height));
-    }
-  }, []);
+  setRating(0);
+  setComment('');
+  setHoveredStar(0);
+  setDragDelta(0);
+  dragVelocity.current = 0;
 
-  // ── Kunci scroll body + Handle keyboard via Visual Viewport API ──
-  useEffect(() => {
-    if (!isOpen) return;
+  const viewport = window.visualViewport;
+  if (viewport) {
+    setKeyboardPadding(Math.max(0, window.innerHeight - viewport.height));
+  }
+}, []);
 
-    const scrollY = window.scrollY;
-    const body = document.body;
+// ── Lock body scroll + Handle keyboard ──
+useEffect(() => {
+  if (!isOpen) return;
 
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.overflow = 'hidden';
+  const scrollY = window.scrollY;
+  const body = document.body;
 
-    const viewport = window.visualViewport;
+  // 🔒 Lock body
+  body.style.position = 'fixed';
+  body.style.top = `-${scrollY}px`;
+  body.style.left = '0';
+  body.style.right = '0';
+  body.style.overflow = 'hidden';
 
-    // ✅ Simpan initial height untuk deteksi keyboard
-    let initialHeight = viewport?.height ?? window.innerHeight;
+  const viewport = window.visualViewport;
 
-    const handleViewportChange = () => {
-      if (!viewport) return;
+  let initialHeight = window.innerHeight;
 
-      const currentHeight = viewport.height;
-      const windowHeight = window.innerHeight;
+  if (viewport) {
+    initialHeight = viewport.height;
+  }
 
-      // ✅ Hitung selisih tinggi (iOS dapat angka, Android dapat 0 karena resize layout)
-      const diff = windowHeight - currentHeight;
-      setKeyboardPadding(Math.max(0, diff));
+  const handleViewportChange = () => {
+    if (!viewport) return;
 
-      // ✅ Deteksi apakah keyboard terbuka
-      const heightDiff = initialHeight - currentHeight;
-      setIsKeyboardOpen(heightDiff > 100);
-    };
+    const currentHeight = viewport.height;
 
-    if (viewport) {
-      // Set initial height setelah delay untuk nilai stabil
-      const timeoutId = setTimeout(() => {
-        handleViewportChange();
-      }, 100);
+    // 🔥 keyboard padding (iOS dapet nilai, Android mostly 0)
+    const diff = Math.max(0, window.innerHeight - currentHeight);
+    setKeyboardPadding(diff);
 
-      viewport.addEventListener('resize', handleViewportChange);
-      viewport.addEventListener('scroll', handleViewportChange);
+    // 🔥 keyboard detection
+    const heightDiff = initialHeight - currentHeight;
+    setIsKeyboardOpen(heightDiff > 100);
+  };
 
-      return () => {
-        clearTimeout(timeoutId);
-        viewport.removeEventListener('resize', handleViewportChange);
-        viewport.removeEventListener('scroll', handleViewportChange);
-      };
-    }
+  const cleanupBody = () => {
+    body.style.position = '';
+    body.style.top = '';
+    body.style.left = '';
+    body.style.right = '';
+    body.style.overflow = '';
+
+    setKeyboardPadding(0);
+    setIsKeyboardOpen(false);
+
+    window.scrollTo(0, scrollY);
+  };
+
+  if (viewport) {
+    const timeoutId = setTimeout(() => {
+      // 🔥 ambil height stabil setelah render
+      initialHeight = viewport.height;
+      handleViewportChange();
+    }, 100);
+
+    viewport.addEventListener('resize', handleViewportChange);
+    viewport.addEventListener('scroll', handleViewportChange);
 
     return () => {
-      body.style.position = '';
-      body.style.top = '';
-      body.style.left = '';
-      body.style.right = '';
-      body.style.overflow = '';
-      setKeyboardPadding(0);
-      setIsKeyboardOpen(false);
-      window.scrollTo(0, scrollY);
+      clearTimeout(timeoutId);
+      viewport.removeEventListener('resize', handleViewportChange);
+      viewport.removeEventListener('scroll', handleViewportChange);
+      cleanupBody(); // ✅ WAJIB
     };
-  }, [isOpen]);
+  }
+
+  return cleanupBody;
+}, [isOpen]);
 
   const handleClose = useCallback(() => {
     if (dragDelta === 0 && !isClosing) {
@@ -265,8 +274,8 @@ export default function ReviewModal() {
   const config = rating > 0 ? RATING_CONFIG[rating as keyof typeof RATING_CONFIG] : null;
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  const panelMaxHeight = keyboardPadding > 0 
-    ? `calc(100vh - ${keyboardPadding}px)` 
+  const panelMaxHeight = keyboardPadding > 0
+    ? `calc(100vh - ${keyboardPadding}px)`
     : '92vh';
 
   const panelTransition = isClosing
@@ -279,9 +288,8 @@ export default function ReviewModal() {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
-          isClosing ? 'opacity-0 pointer-events-none' : ''
-        }`}
+        className={`fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isClosing ? 'opacity-0 pointer-events-none' : ''
+          }`}
         style={{
           touchAction: 'none' as const,
           ...(dragDelta > 0 && !isClosing ? { opacity: backdropOpacity } : {}),
@@ -290,7 +298,7 @@ export default function ReviewModal() {
       />
 
       {/* Modal Panel */}
-      <div 
+      <div
         className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
         style={{
           paddingBottom: keyboardPadding,
@@ -299,9 +307,8 @@ export default function ReviewModal() {
       >
         <div
           ref={panelRef}
-          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${
-            isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
-          }`}
+          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
+            }`}
           style={{
             maxHeight: panelMaxHeight,
             transition: panelTransition,
@@ -360,9 +367,8 @@ export default function ReviewModal() {
                       {displayProducts.slice(0, 10).map((p) => (
                         <div
                           key={p.id}
-                          className={`product-card flex items-center gap-2.5 py-2.5 px-3 bg-gray-50 rounded-xl border border-gray-100 ${
-                            displayProducts.length === 1 ? 'w-full' : 'min-w-[150px] sm:min-w-[170px]'
-                          }`}
+                          className={`product-card flex items-center gap-2.5 py-2.5 px-3 bg-gray-50 rounded-xl border border-gray-100 ${displayProducts.length === 1 ? 'w-full' : 'min-w-[150px] sm:min-w-[170px]'
+                            }`}
                         >
                           <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-100 shadow-sm">
                             <ProductImage
@@ -405,13 +411,12 @@ export default function ReviewModal() {
                 <div className="relative flex items-center justify-center mb-2.5">
                   {rating > 0 && (
                     <div
-                      className={`absolute inset-0 blur-xl rounded-full transition-all duration-500 ${
-                        rating >= 4
+                      className={`absolute inset-0 blur-xl rounded-full transition-all duration-500 ${rating >= 4
                           ? 'bg-yellow-300/30'
                           : rating >= 3
                             ? 'bg-yellow-300/20'
                             : 'bg-orange-300/20'
-                      }`}
+                        }`}
                       style={{ padding: '14px 22px' }}
                     />
                   )}
@@ -435,13 +440,12 @@ export default function ReviewModal() {
                           <Star
                             size={34}
                             strokeWidth={1}
-                            className={`transition-all duration-200 ${
-                              isActive
+                            className={`transition-all duration-200 ${isActive
                                 ? isFilled || isHoverFill
                                   ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                                   : 'text-gray-300'
                                 : 'text-gray-200'
-                            } ${isActive ? 'scale-100' : 'scale-90'}`}
+                              } ${isActive ? 'scale-100' : 'scale-90'}`}
                           />
                           {isFilled && (
                             <Sparkles
@@ -476,13 +480,12 @@ export default function ReviewModal() {
                     Ulasan
                   </label>
                   <span
-                    className={`text-[10px] font-medium tabular-nums transition-colors ${
-                      isOverLimit
+                    className={`text-[10px] font-medium tabular-nums transition-colors ${isOverLimit
                         ? 'text-red-500'
                         : charCount > MAX_CHARS * 0.8
                           ? 'text-yellow-500'
                           : 'text-gray-300'
-                    }`}
+                      }`}
                   >
                     {charCount}/{MAX_CHARS}
                   </span>
@@ -495,11 +498,10 @@ export default function ReviewModal() {
                   onChange={(e) => setComment(e.target.value)}
                   onFocus={() => handleInputFocus(commentTextareaRef.current)}
                   placeholder="Ceritakan pengalamanmu belanja di sini..."
-                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${
-                    isOverLimit
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${isOverLimit
                       ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100'
                       : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
-                  }`}
+                    }`}
                 />
                 {isOverLimit && (
                   <p className="text-[11px] text-red-500 font-medium -mt-0.5">
@@ -514,11 +516,10 @@ export default function ReviewModal() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={!canSubmit && !isSubmitting}
-                  className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${
-                    canSubmit
+                  className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${canSubmit
                       ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? (
                     <>
