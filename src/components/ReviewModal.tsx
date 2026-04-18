@@ -34,8 +34,7 @@ export default function ReviewModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [dragDelta, setDragDelta] = useState(0);
-  const [viewportHeight, setViewportHeight] = useState<number>(0);
-  const [viewportTop, setViewportTop] = useState<number>(0);
+  const [keyboardPadding, setKeyboardPadding] = useState<number>(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const dragStartY = useRef(0);
@@ -54,9 +53,14 @@ export default function ReviewModal() {
   const handleInputFocus = (inputElement: HTMLElement | null) => {
     if (!inputElement || !scrollContentRef.current) return;
     
-    // Scroll ke input dengan delay untuk let keyboard animation finish
+    // Jangan gunakan scrollIntoView karena bisa melempar layar keseluruhan (body) di mobile
     setTimeout(() => {
-      inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const container = scrollContentRef.current;
+      if (!container) return;
+      const elementRect = inputElement.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const scrollTop = container.scrollTop + (elementRect.top - containerRect.top) - 40;
+      container.scrollTo({ top: scrollTop, behavior: 'smooth' });
     }, 300);
   };
 
@@ -84,8 +88,7 @@ export default function ReviewModal() {
     // ✅ Set initial viewport height
     const viewport = window.visualViewport;
     if (viewport) {
-      setViewportHeight(viewport.height);
-      setViewportTop(viewport.offsetTop);
+      setKeyboardPadding(Math.max(0, window.innerHeight - viewport.height));
     }
   }, []);
 
@@ -111,10 +114,11 @@ export default function ReviewModal() {
       if (!viewport) return;
 
       const currentHeight = viewport.height;
+      const windowHeight = window.innerHeight;
 
-      // ✅ Update viewport height langsung - ini sudah area yang tersedia
-      setViewportHeight(currentHeight);
-      setViewportTop(viewport.offsetTop);
+      // ✅ Hitung selisih tinggi (iOS dapat angka, Android dapat 0 karena resize layout)
+      const diff = windowHeight - currentHeight;
+      setKeyboardPadding(Math.max(0, diff));
 
       // ✅ Deteksi apakah keyboard terbuka
       const heightDiff = initialHeight - currentHeight;
@@ -124,9 +128,7 @@ export default function ReviewModal() {
     if (viewport) {
       // Set initial height setelah delay untuk nilai stabil
       const timeoutId = setTimeout(() => {
-        initialHeight = viewport.height;
-        setViewportHeight(viewport.height);
-        setViewportTop(viewport.offsetTop);
+        handleViewportChange();
       }, 100);
 
       viewport.addEventListener('resize', handleViewportChange);
@@ -145,8 +147,7 @@ export default function ReviewModal() {
       body.style.left = '';
       body.style.right = '';
       body.style.overflow = '';
-      setViewportHeight(0);
-      setViewportTop(0);
+      setKeyboardPadding(0);
       setIsKeyboardOpen(false);
       window.scrollTo(0, scrollY);
     };
@@ -264,8 +265,8 @@ export default function ReviewModal() {
   const config = rating > 0 ? RATING_CONFIG[rating as keyof typeof RATING_CONFIG] : null;
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  const panelMaxHeight = viewportHeight > 0 
-    ? `${viewportHeight}px` 
+  const panelMaxHeight = keyboardPadding > 0 
+    ? `calc(100vh - ${keyboardPadding}px)` 
     : '92vh';
 
   const panelTransition = isClosing
@@ -290,12 +291,10 @@ export default function ReviewModal() {
 
       {/* Modal Panel */}
       <div 
-        className="fixed z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
         style={{
-          top: viewportTop,
-          left: 0,
-          right: 0,
-          height: viewportHeight > 0 ? viewportHeight : '100%',
+          paddingBottom: keyboardPadding,
+          transition: 'padding-bottom 0.15s ease-out'
         }}
       >
         <div
