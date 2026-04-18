@@ -23,7 +23,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const [dragDelta, setDragDelta] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
   const [touched, setTouched] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
-  const [viewportHeight, setViewportHeight] = useState<number>(0); // ✅ Langsung simpan height yang tersedia
+  const [viewportHeight, setViewportHeight] = useState<number>(0);
+  const [viewportTop, setViewportTop] = useState<number>(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const dragStartY = useRef(0);
@@ -51,6 +52,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       const viewport = window.visualViewport;
       if (viewport) {
         setViewportHeight(viewport.height);
+        setViewportTop(viewport.offsetTop);
       }
     }
   }, [open]);
@@ -78,8 +80,9 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
       const currentHeight = viewport.height;
       
-      // ✅ Update viewport height langsung - ini sudah area yang tersedia
+      // ✅ Update viewport height dan top langsung
       setViewportHeight(currentHeight);
+      setViewportTop(viewport.offsetTop);
 
       // ✅ Deteksi apakah keyboard terbuka (threshold lebih kecil)
       const heightDiff = initialHeight - currentHeight;
@@ -91,6 +94,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       const timeoutId = setTimeout(() => {
         initialHeight = viewport.height;
         setViewportHeight(viewport.height);
+        setViewportTop(viewport.offsetTop);
       }, 100);
 
       viewport.addEventListener('resize', handleViewportChange);
@@ -110,6 +114,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       body.style.right = '';
       body.style.overflow = '';
       setViewportHeight(0);
+      setViewportTop(0);
       setIsKeyboardOpen(false);
       window.scrollTo(0, scrollY);
     };
@@ -342,7 +347,6 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
     // Scroll ke input dengan delay untuk let keyboard animation finish
     setTimeout(() => {
       inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      scrollContentRef.current?.scrollBy({ top: 80, behavior: 'smooth' });
     }, 300);
   };
 
@@ -356,8 +360,6 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  // ✅ Perbaikan utama: Gunakan viewportHeight langsung sebagai maxHeight
-  // TANPA bottom offset - karena visualViewport.height sudah area yang tersedia
   const panelMaxHeight = viewportHeight > 0 
     ? `${viewportHeight}px` 
     : '92vh';
@@ -383,23 +385,24 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       />
 
       {/* ── Modal Panel ── */}
-      <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none">
+      <div 
+        className="fixed z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        style={{
+          top: viewportTop,
+          left: 0,
+          right: 0,
+          height: viewportHeight > 0 ? viewportHeight : '100%',
+        }}
+      >
         <div
           ref={panelRef}
           className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${
             isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
           }`}
           style={{
-            // ✅ FIX: Selalu bottom: 0, TANPA offset
-            bottom: 0,
-            left: 0,
-            right: 0,
-            // ✅ FIX: maxHeight langsung dari visualViewport.height
             maxHeight: panelMaxHeight,
             transition: panelTransition,
             ...(dragDelta > 0 && !isClosing ? { transform: `translateY(${dragDelta}px)` } : {}),
-            // ✅ Selalu fixed position untuk konsistensi
-            position: 'fixed' as const,
           }}
         >
           {/* Drag Trigger Zone */}
@@ -429,7 +432,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
           <div
             ref={scrollContentRef}
             className="overflow-y-auto flex-1"
-            style={{ overscrollBehavior: 'contain', paddingBottom: isKeyboardOpen ? '200px' : '0px', transition: 'padding-bottom 0.2s ease' }}
+            style={{ overscrollBehavior: 'contain' }}
           >
             <div className="p-4 space-y-3">
               {/* Error Banner */}
