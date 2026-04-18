@@ -48,11 +48,11 @@ export default function FilterSort() {
                 key={option.id}
                 onClick={() => setSort(option.id)}
                 className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200 active:scale-95 ${isActive
-                    ? 'bg-primary text-white border border-primary'
-                    : 'bg-gray-50 border border-gray-200 text-gray-600'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-gray-50 border border-gray-200 text-gray-600'
                   }`}
               >
-                <Icon size={13} strokeWidth={2} />
+                <Icon size={12} strokeWidth={2} />
                 <span className="truncate">{option.label}</span>
               </button>
             );
