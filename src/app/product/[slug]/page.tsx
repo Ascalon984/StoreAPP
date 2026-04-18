@@ -402,7 +402,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       {/* Review Section - Clean */}
       <div className="bg-white p-3 mb-1">
         <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <Star size={18} strokeWidth={1.5} className="text-yellow-500 fill-yellow-500" />
           Ulasan Pembeli ({allReviews.length})
         </h3>
 
