@@ -34,8 +34,8 @@ export default function ReviewModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [dragDelta, setDragDelta] = useState(0);
-  const [keyboardPadding, setKeyboardPadding] = useState<number>(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   const dragStartY = useRef(0);
   const isDragging = useRef(false);
@@ -87,8 +87,9 @@ export default function ReviewModal() {
   dragVelocity.current = 0;
 
   const viewport = window.visualViewport;
-  if (viewport) {
-    setKeyboardPadding(Math.max(0, window.innerHeight - viewport.height));
+  if (viewport && overlayRef.current) {
+    overlayRef.current.style.height = `${viewport.height}px`;
+    overlayRef.current.style.top = `${viewport.offsetTop}px`;
   }
 }, []);
 
@@ -118,10 +119,10 @@ useEffect(() => {
     if (!viewport) return;
 
     const currentHeight = viewport.height;
-
-    // 🔥 keyboard padding (iOS dapet nilai, Android mostly 0)
-    const diff = Math.max(0, window.innerHeight - currentHeight);
-    setKeyboardPadding(diff);
+    if (overlayRef.current) {
+      overlayRef.current.style.height = `${currentHeight}px`;
+      overlayRef.current.style.top = `${viewport.offsetTop}px`;
+    }
 
     // 🔥 keyboard detection
     const heightDiff = initialHeight - currentHeight;
@@ -135,7 +136,10 @@ useEffect(() => {
     body.style.right = '';
     body.style.overflow = '';
 
-    setKeyboardPadding(0);
+    if (overlayRef.current) {
+      overlayRef.current.style.height = '100dvh';
+      overlayRef.current.style.top = '0px';
+    }
     setIsKeyboardOpen(false);
 
     window.scrollTo(0, scrollY);
@@ -274,9 +278,7 @@ useEffect(() => {
   const config = rating > 0 ? RATING_CONFIG[rating as keyof typeof RATING_CONFIG] : null;
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  const panelMaxHeight = keyboardPadding > 0
-    ? `calc(100vh - ${keyboardPadding}px)`
-    : '92vh';
+  const panelMaxHeight = isKeyboardOpen ? '100%' : '92vh';
 
   const panelTransition = isClosing
     ? 'transform 0.3s ease-out, opacity 0.3s ease-out'
@@ -299,10 +301,11 @@ useEffect(() => {
 
       {/* Modal Panel */}
       <div
-        className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        ref={overlayRef}
+        className="fixed inset-x-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
         style={{
-          paddingBottom: keyboardPadding,
-          transition: 'padding-bottom 0.15s ease-out'
+          height: '100dvh',
+          top: 0,
         }}
       >
         <div

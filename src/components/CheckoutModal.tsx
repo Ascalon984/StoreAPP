@@ -23,8 +23,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const [dragDelta, setDragDelta] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
   const [touched, setTouched] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
-  const [keyboardPadding, setKeyboardPadding] = useState<number>(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   const dragStartY = useRef(0);
   const isDragging = useRef(false);
@@ -48,8 +48,9 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       dragVelocity.current = 0;
       phoneCursorRef.current = -1;
       const viewport = window.visualViewport;
-      if (viewport) {
-        setKeyboardPadding(Math.max(0, window.innerHeight - viewport.height));
+      if (viewport && overlayRef.current) {
+        overlayRef.current.style.height = `${viewport.height}px`;
+        overlayRef.current.style.top = `${viewport.offsetTop}px`;
       }
     }
   }, [open]);
@@ -80,12 +81,10 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       if (!viewport) return;
 
       const currentHeight = viewport.height;
-      const windowHeight = window.innerHeight;
-
-      // ✅ Hitung selisih tinggi. 
-      // iOS: windowHeight tetap, jadi dapet tinggi keyboard. Android: windowHeight ikut ciut, jadi 0.
-      const diff = windowHeight - currentHeight;
-      setKeyboardPadding(Math.max(0, diff));
+      if (overlayRef.current) {
+        overlayRef.current.style.height = `${currentHeight}px`;
+        overlayRef.current.style.top = `${viewport.offsetTop}px`;
+      }
 
       // ✅ Deteksi apakah keyboard terbuka
       const heightDiff = initialHeight - currentHeight;
@@ -98,7 +97,10 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       body.style.left = '';
       body.style.right = '';
       body.style.overflow = '';
-      setKeyboardPadding(0);
+      if (overlayRef.current) {
+        overlayRef.current.style.height = '100dvh';
+        overlayRef.current.style.top = '0px';
+      }
       setIsKeyboardOpen(false);
       window.scrollTo(0, scrollY);
     };
@@ -373,9 +375,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
-  const panelMaxHeight = keyboardPadding > 0
-    ? `calc(100vh - ${keyboardPadding}px)`
-    : '92vh';
+  const panelMaxHeight = isKeyboardOpen ? '100%' : '92vh';
 
   const panelTransition = isClosing
     ? 'transform 0.3s ease-out, opacity 0.3s ease-out'
@@ -398,10 +398,11 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
       {/* ── Modal Panel ── */}
       <div
-        className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        ref={overlayRef}
+        className="fixed inset-x-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
         style={{
-          paddingBottom: keyboardPadding,
-          transition: 'padding-bottom 0.15s ease-out'
+          height: '100dvh',
+          top: 0,
         }}
       >
         <div
