@@ -354,7 +354,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
       {/* Jaminan Palugada */}
       <div className="bg-white px-4 py-2 mb-1">
-        <h3 className="font-bold text-gray-800 text-sm mb-2">Jaminan Palugada</h3>
+        <h3 className="font-bold text-gray-800 text-sm mb-2">Alasan Pilih Kami</h3>
 
         <div className="flex gap-1.5">
           <div className="flex-1 flex items-center gap-1.5 px-2 py-1 bg-emerald-50 rounded-lg border border-emerald-100 min-w-0">
@@ -370,7 +370,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
               <Zap size={12} strokeWidth={1.5} className="text-yellow-600" />
             </div>
-            <span className="text-[10px] font-semibold text-yellow-700 whitespace-nowrap truncate">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-yellow-700 whitespace-nowrap truncate">
               Fast Respon
             </span>
           </div>

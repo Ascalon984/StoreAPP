@@ -34,6 +34,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const phoneCursorRef = useRef<number>(-1);
   const scrollContentRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const initialViewportHeight = useRef<number | null>(null);
 
   // ── Reset saat modal buka ──
   useEffect(() => {
@@ -45,6 +47,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       setKeyboardOffset(0);
       dragVelocity.current = 0;
       phoneCursorRef.current = -1;
+      initialViewportHeight.current = null;
     }
   }, [open]);
 
@@ -55,28 +58,47 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
     const scrollY = window.scrollY;
     const body = document.body;
 
-    // Lock body scroll (iOS + Android proof)
     body.style.position = 'fixed';
     body.style.top = `-${scrollY}px`;
     body.style.left = '0';
     body.style.right = '0';
     body.style.overflow = 'hidden';
 
-    // ── Handle keyboard via Visual Viewport API ──
     const viewport = window.visualViewport;
 
     const handleViewportChange = () => {
       if (!viewport) return;
-      const offset = window.innerHeight - viewport.height;
 
-      if (offset > KEYBOARD_THRESHOLD) {
-        setKeyboardOffset(offset);
+      // Simpan height awal saat pertama kali modal terbuka
+      if (initialViewportHeight.current === null) {
+        initialViewportHeight.current = viewport.height;
+        return;
+      }
+
+      const currentHeight = viewport.height;
+      const initialHeight = initialViewportHeight.current;
+
+      // Hitung selisih dari height awal (bukan window.innerHeight)
+      // Ini lebih akurat karena menghindari pengaruh address bar
+      const heightDiff = initialHeight - currentHeight;
+
+      // Sanity check: keyboard maksimal 70% dari initial height
+      const maxOffset = initialHeight * 0.7;
+      const safeOffset = Math.min(Math.max(0, heightDiff), maxOffset);
+
+      if (safeOffset > KEYBOARD_THRESHOLD) {
+        setKeyboardOffset(safeOffset);
       } else {
         setKeyboardOffset(0);
       }
     };
 
     if (viewport) {
+      // Set initial height setelah sedikit delay untuk mendapat nilai stabil
+      setTimeout(() => {
+        initialViewportHeight.current = viewport.height;
+      }, 100);
+
       viewport.addEventListener('resize', handleViewportChange);
       viewport.addEventListener('scroll', handleViewportChange);
     }
@@ -130,6 +152,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
       document.removeEventListener('focusin', handleFocusIn);
       setKeyboardOffset(0);
+      initialViewportHeight.current = null;
       window.scrollTo(0, scrollY);
     };
   }, [open]);
@@ -368,15 +391,19 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
   const backdropOpacity = isClosing ? 0 : dragDelta > 0 ? Math.max(0, 1 - dragDelta / 300) : 1;
 
+  // Gunakan visualViewport.height langsung untuk maxHeight
+  const viewport = typeof window !== 'undefined' ? window.visualViewport : null;
+  const safeViewportHeight = viewport?.height ?? window.innerHeight;
+  
   const panelMaxHeight = keyboardOffset > 0
-    ? `calc(100vh - ${keyboardOffset}px - 8px)`
+    ? `${Math.max(250, safeViewportHeight - 16)}px` // Gunakan viewport height langsung, bukan calc
     : '92vh';
 
   const panelTransition = isClosing
     ? 'transform 0.3s ease-out, opacity 0.3s ease-out'
     : dragDelta > 0
       ? 'none'
-      : 'margin-bottom 0.25s ease-out, max-height 0.25s ease-out, transform 0.3s ease-out';
+      : 'bottom 0.2s ease-out, max-height 0.2s ease-out, transform 0.3s ease-out';
 
   return (
     <>
@@ -395,14 +422,20 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
       {/* ── Modal Panel ── */}
       <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none">
         <div
+          ref={panelRef}
           className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${
             isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
           }`}
           style={{
-            marginBottom: keyboardOffset > 0 ? `${keyboardOffset}px` : 0,
+            // Gunakan bottom positioning langsung, bukan marginBottom
+            bottom: keyboardOffset > 0 ? `${keyboardOffset}px` : 0,
+            left: keyboardOffset > 0 ? 0 : undefined,
+            right: keyboardOffset > 0 ? 0 : undefined,
             maxHeight: panelMaxHeight,
             transition: panelTransition,
             ...(dragDelta > 0 && !isClosing ? { transform: `translateY(${dragDelta}px)` } : {}),
+            // Override flex positioning saat keyboard terbuka
+            ...(keyboardOffset > 0 ? { position: 'fixed' as const } : {}),
           }}
         >
           {/* Drag Trigger Zone */}
