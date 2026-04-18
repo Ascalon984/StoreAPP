@@ -38,13 +38,14 @@ export default function CategoryGrid() {
     <section className="px-4 py-2">
       {/* Sub Label / Header */}
       <div className="mb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
-            <h2 className="text-sm font-bold text-gray-800">Pilih Layanan</h2>
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
+          <h2 className="text-sm font-bold text-gray-800">
+            Pilih Layanan
+          </h2>
         </div>
-        <p className="text-[11px] text-gray-500 mt-1 ml-3">
+
+        <p className="text-[11px] text-gray-500 mt-0.5 ml-3 leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
@@ -59,13 +60,13 @@ export default function CategoryGrid() {
             <button
               key={cat.id}
               onClick={() => handleClick(cat.id)}
-              className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 tap-active border ${isActive
+              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-200 tap-active border ${isActive
                 ? `${colors.bg} ${colors.border} shadow-sm`
                 : 'bg-white border-gray-100 hover:bg-gray-50'
                 }`}
             >
               <Icon
-                size={18}
+                size={17}
                 strokeWidth={2}
                 className={`transition-colors duration-200 ${isActive ? colors.active : colors.inactive}`}
               />

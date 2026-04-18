@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
-  Star, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, ChevronUp, Zap, Headphones
+  Star, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, ChevronUp, Zap, Headphones
 } from 'lucide-react';
 
 import { useCartStore } from '@/store/useCartStore';
@@ -62,6 +62,18 @@ function getAvatarColor(name: string) {
   }
   const index = Math.abs(hash) % colors.length;
   return colors[index];
+}
+
+function renderStar(i: number, rating: number) {
+  const diff = rating - (i - 1);
+
+  if (diff >= 0.75) {
+    return <Star key={i} size={10} className="text-yellow-500 fill-yellow-500" />;
+  }
+  if (diff >= 0.25) {
+    return <StarHalf key={i} size={10} className="text-yellow-500 fill-yellow-500" />;
+  }
+  return <Star key={i} size={10} className="text-gray-200" />;
 }
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
@@ -293,7 +305,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       <div className="bg-white p-3 mb-1">
         {/* Header with Product Name & Sold count */}
         <div className="flex justify-between items-start gap-3 mb-2">
-          <h1 className="text-lg md:text-xl font-medium text-gray-800 leading-tight flex-1">
+          <h1 className="text-lg md:text-xl font-semibold text-gray-900 leading-snug flex-1">
             {product.name}
           </h1>
           <div className="text-right flex-shrink-0">
@@ -313,7 +325,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 {formatRupiah(product.originalPrice)}
               </p>
             )}
-            <p className="text-2xl font-bold text-primary">
+            <p className="text-2xl font-bold text-primary tracking-tight">
               {formatRupiah(product.price)}
             </p>
           </div>
@@ -324,9 +336,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-100" />
-        {/* Description */}
-        <div>
+        <div className="border-t border-gray-200" />
+
+        {/* Description - dengan jarak lebih ke bawah */}
+        <div className="mt-2">
           <h3 className="font-bold text-gray-800 mb-2">Deskripsi Produk</h3>
           <p ref={descriptionRef} className="text-sm text-gray-600 leading-relaxed max-w-none whitespace-pre-wrap">
             {truncatedDescription}
@@ -354,7 +367,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
       {/* Jaminan Palugada */}
       <div className="bg-white px-4 py-2 mb-1">
-        <h3 className="font-bold text-gray-800 text-sm mb-2">Alasan Pilih Kami</h3>
+        <h3 className="font-semibold text-gray-800 text-sm mb-2">Alasan Pilih Kami</h3>
 
         <div className="flex gap-1.5">
           <div className="flex-1 flex items-center gap-1.5 px-2 py-1 bg-emerald-50 rounded-lg border border-emerald-100 min-w-0">
@@ -400,13 +413,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="flex flex-col items-center justify-center min-w-[72px]">
               <span className="text-3xl font-extrabold text-gray-800 leading-none">{product.rating}</span>
               <div className="flex text-yellow-500 my-1 gap-0.5">
-                {[1, 2, 3, 4, 5].map(i => (
-                  <Star
-                    key={i}
-                    size={10}
-                    className={i <= Math.round(product.rating) ? "fill-yellow-500" : "text-gray-200"}
-                  />
-                ))}
+                {[1, 2, 3, 4, 5].map(i => renderStar(i, product.rating))}
               </div>
               <span className={`text-[10px] font-bold ${getRatingColor(product.rating)}`}>
                 {getRatingLabel(product.rating)}
@@ -421,7 +428,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 return (
                   <div key={star} className="flex items-center gap-1.5 group cursor-default">
                     <span className="w-3 text-[10px] font-semibold text-gray-500 text-right tabular-nums">{star}</span>
-                    <Star size={8} className="text-gray-400 flex-shrink-0" />
+                    <Star size={8} className="text-gray-400 fill-gray-400 flex-shrink-0" strokeWidth={1.5} />
                     <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden relative">
                       <div
                         className={`h-full rounded-full transition-all duration-700 ease-out ${RATING_COLORS[star]}`}
@@ -459,18 +466,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       {maskName(review.name)}
                     </p>
                     <div className="flex items-center gap-1 mt-0.5">
-                      {[1, 2, 3, 4, 5].map(star => (
-                        <Star
-                          key={star}
-                          size={11}
-                          strokeWidth={1.5}
-                          className={
-                            star <= review.rating
-                              ? "text-yellow-500 fill-yellow-500"
-                              : "text-gray-200"
-                          }
-                        />
-                      ))}
+                      {[1, 2, 3, 4, 5].map(star => renderStar(star, review.rating))}
                     </div>
                   </div>
                 </div>

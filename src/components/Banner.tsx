@@ -47,14 +47,15 @@ export default function Banner() {
   return (
     <section className="px-4 py-2">
       {/* Header Label - Tetap dipertahankan di atas banner */}
-      <div className="mb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
-            <h2 className="text-sm font-bold text-gray-800">Spesial Buat Kamu</h2>
-          </div>
+      <div className="mb-2">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
+          <h2 className="text-sm font-bold text-gray-800">
+            Spesial Buat Kamu
+          </h2>
         </div>
-        <p className="text-[11px] text-gray-500 mt-1 ml-3">
+
+        <p className="text-[11px] text-gray-500 mt-0.5 ml-3 leading-tight">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>
@@ -80,7 +81,7 @@ export default function Banner() {
                 className="object-fill"
                 priority={banner.id === '1'}
               />
-              
+
               {/* Teks label/subtitle di atas*/}
             </div>
           ))}
@@ -96,11 +97,10 @@ export default function Banner() {
                 setCurrent(i);
                 startAutoPlay();
               }}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === current 
-                  ? 'w-6 bg-white' 
-                  : 'w-2 bg-white/50 hover:bg-white/80'
-              }`}
+              className={`h-1 rounded-full transition-all duration-300 ${i === current
+                ? 'w-6 bg-white'
+                : 'w-2 bg-white/50 hover:bg-white/80'
+                }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
