@@ -44,9 +44,21 @@ export default function ReviewModal() {
   const dragVelocity = useRef(0);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // --- Resolve products to display ---
   const singleProduct = productSlug ? products.find((p) => p.slug === productSlug) : null;
+
+  // ── Scroll input ke view saat focus ──
+  const handleInputFocus = (inputElement: HTMLElement | null) => {
+    if (!inputElement || !scrollContentRef.current) return;
+    
+    // Scroll ke input dengan delay untuk let keyboard animation finish
+    setTimeout(() => {
+      inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollContentRef.current?.scrollBy({ top: 80, behavior: 'smooth' });
+    }, 300);
+  };
 
   const displayProducts: CartProduct[] = singleProduct
     ? [{ ...singleProduct, qty: 1 }]
@@ -321,7 +333,7 @@ export default function ReviewModal() {
           <div
             ref={scrollContentRef}
             className="overflow-y-auto flex-1"
-            style={{ overscrollBehavior: 'contain' }}
+            style={{ overscrollBehavior: 'contain', paddingBottom: isKeyboardOpen ? '200px' : '0px', transition: 'padding-bottom 0.2s ease' }}
           >
             <div className="p-4 space-y-3">
               {/* Product List */}
@@ -473,10 +485,12 @@ export default function ReviewModal() {
                   </span>
                 </div>
                 <textarea
+                  ref={commentTextareaRef}
                   id="review-comment"
                   rows={3}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
+                  onFocus={() => handleInputFocus(commentTextareaRef.current)}
                   placeholder="Ceritakan pengalamanmu belanja di sini..."
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${
                     isOverLimit

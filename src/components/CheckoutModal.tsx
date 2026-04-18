@@ -35,6 +35,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
   const phoneCursorRef = useRef<number>(-1);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const addressTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // ── Reset saat modal buka ──
   useEffect(() => {
@@ -333,6 +335,17 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
     if (field === 'phone') phoneCursorRef.current = -1;
   };
 
+  // ── Scroll input ke view saat focus ──
+  const handleInputFocus = (inputElement: HTMLElement | null) => {
+    if (!inputElement || !scrollContentRef.current) return;
+    
+    // Scroll ke input dengan delay untuk let keyboard animation finish
+    setTimeout(() => {
+      inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollContentRef.current?.scrollBy({ top: 80, behavior: 'smooth' });
+    }, 300);
+  };
+
   const phoneDigits = getPhoneDigits(deliveryInfo.phone);
   const isValid =
     deliveryInfo.name.trim().length > 0 &&
@@ -416,7 +429,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
           <div
             ref={scrollContentRef}
             className="overflow-y-auto flex-1"
-            style={{ overscrollBehavior: 'contain' }}
+            style={{ overscrollBehavior: 'contain', paddingBottom: isKeyboardOpen ? '200px' : '0px', transition: 'padding-bottom 0.2s ease' }}
           >
             <div className="p-4 space-y-3">
               {/* Error Banner */}
@@ -450,11 +463,13 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     strokeWidth={1.5}
                   />
                   <input
+                    ref={nameInputRef}
                     id="checkout-name"
                     type="text"
                     value={deliveryInfo.name}
                     onChange={handleNameChange}
                     onBlur={() => handleBlur('name')}
+                    onFocus={() => handleInputFocus(nameInputRef.current)}
                     placeholder="Nama Anda"
                     autoComplete="name"
                     className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 ${
@@ -508,6 +523,7 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     value={deliveryInfo.phone}
                     onChange={handlePhoneChange}
                     onBlur={() => handleBlur('phone')}
+                    onFocus={() => handleInputFocus(phoneInputRef.current)}
                     placeholder="081-234-567-890"
                     autoComplete="tel"
                     className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 tabular-nums ${
@@ -567,10 +583,12 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     strokeWidth={1.5}
                   />
                   <textarea
+                    ref={addressTextareaRef}
                     id="checkout-address"
                     value={deliveryInfo.address}
                     onChange={handleAddressChange}
                     onBlur={() => handleBlur('address')}
+                    onFocus={() => handleInputFocus(addressTextareaRef.current)}
                     placeholder="Jl. Xxx No. 123, Kelurahan Xxx, Kecamatan Xxx, Kota Xxx"
                     rows={3}
                     className={`w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${
