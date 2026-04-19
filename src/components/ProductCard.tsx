@@ -23,7 +23,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden active:scale-[0.98] border border-gray-50 hover:border-gray-100 h-full flex flex-col">
+      <article className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden active:scale-[0.98] border border-gray-100 hover:border-gray-200 h-full flex flex-col">
 
         {/* Image — 4:3 */}
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-50 flex-shrink-0">

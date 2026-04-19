@@ -1,22 +1,23 @@
 import {
-  Smartphone, Wifi, Zap, Gamepad2,
-  Wallet, Ticket, Share2, Wrench,
+  Cookie, Coffee, ShoppingBasket, Pencil, Sparkles, LayoutGrid,
 } from 'lucide-react';
 
 const categoryIcons: Record<string, React.ElementType> = {
-  pulsa: Smartphone, data: Wifi, pln: Zap, game: Gamepad2,
-  ewallet: Wallet, voucher: Ticket, sosmed: Share2, tools: Wrench,
+  all: LayoutGrid,
+  snack: Cookie,
+  minuman: Coffee,
+  kebutuhan: ShoppingBasket,
+  atk: Pencil,
+  kebersihan: Sparkles,
 };
 
 const gradientColors: Record<string, [string, string]> = {
-  pulsa: ['#2dd4bf', '#06b6d4'],
-  data: ['#60a5fa', '#6366f1'],
-  pln: ['#fbbf24', '#f59e0b'],
-  game: ['#c084fc', '#ec4899'],
-  ewallet: ['#34d399', '#22c55e'],
-  voucher: ['#fb923c', '#f87171'],
-  sosmed: ['#fb7185', '#ec4899'],
-  tools: ['#94a3b8', '#818cf8'],
+  all: ['#9ca3af', '#6b7280'],
+  snack: ['#fbbf24', '#f59e0b'],      // Warna kuning/orange untuk snack
+  minuman: ['#60a5fa', '#3b82f6'],     // Warna biru untuk minuman
+  kebutuhan: ['#34d399', '#10b981'],   // Warna hijau untuk kebutuhan pokok
+  atk: ['#f472b6', '#ec4899'],         // Warna pink untuk alat tulis
+  kebersihan: ['#a78bfa', '#8b5cf6'],  // Warna ungu untuk kebersihan
 };
 
 const directions = ['to bottom right', 'to top right', 'to right'];
@@ -29,9 +30,9 @@ interface ProductImageProps {
 }
 
 export default function ProductImage({ category, name, variant = 0, className = '' }: ProductImageProps) {
-  const [from, to] = gradientColors[category] || ['#2dd4bf', '#06b6d4'];
+  const [from, to] = gradientColors[category] || gradientColors.all;
   const dir = directions[variant % directions.length];
-  const Icon = categoryIcons[category] || Smartphone;
+  const Icon = categoryIcons[category] || LayoutGrid;
 
   return (
     <div

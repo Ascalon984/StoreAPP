@@ -3,26 +3,23 @@
 import { useFilterStore } from '@/store/useFilterStore';
 import { categories } from '@/lib/data';
 import {
-  LayoutGrid, Smartphone, Wifi, Zap, Gamepad2,
-  Wallet, Ticket, MessageCircle, Wrench,
+  LayoutGrid, Cookie, Coffee, ShoppingBasket,
+  Pencil, Sparkles,
 } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
-  LayoutGrid, Smartphone, Wifi, Zap, Gamepad2,
-  Wallet, Ticket, MessageCircle, Wrench,
+  LayoutGrid, Cookie, Coffee, ShoppingBasket,
+  Pencil, Sparkles,
 };
 
 // Color mapping untuk setiap kategori
 const colorMap: Record<string, { active: string; inactive: string; bg: string; border: string }> = {
   all: { active: 'text-gray-700', inactive: 'text-gray-400', bg: 'bg-gray-50/50', border: 'border-gray-500/20' },
-  pulsa: { active: 'text-emerald-500', inactive: 'text-emerald-300', bg: 'bg-emerald-50/50', border: 'border-emerald-500/20' },
-  data: { active: 'text-sky-500', inactive: 'text-sky-300', bg: 'bg-sky-50/50', border: 'border-sky-500/20' },
-  pln: { active: 'text-amber-500', inactive: 'text-amber-300', bg: 'bg-amber-50/50', border: 'border-amber-500/20' },
-  game: { active: 'text-purple-500', inactive: 'text-purple-400', bg: 'bg-purple-50/50', border: 'border-purple-500/20' }, // ✅ perbaiki
-  ewallet: { active: 'text-emerald-500', inactive: 'text-emerald-300', bg: 'bg-emerald-50/50', border: 'border-emerald-500/20' }, // ✅ perbaiki
-  voucher: { active: 'text-orange-500', inactive: 'text-orange-300', bg: 'bg-orange-50/50', border: 'border-orange-500/20' },
-  sosmed: { active: 'text-cyan-500', inactive: 'text-cyan-300', bg: 'bg-cyan-50/50', border: 'border-cyan-500/20' },
-  tools: { active: 'text-slate-500', inactive: 'text-slate-300', bg: 'bg-slate-50/50', border: 'border-slate-500/20' },
+  snack: { active: 'text-amber-500', inactive: 'text-amber-300', bg: 'bg-amber-50/50', border: 'border-amber-500/20' },
+  minuman: { active: 'text-sky-500', inactive: 'text-sky-300', bg: 'bg-sky-50/50', border: 'border-sky-500/20' },
+  kebutuhan: { active: 'text-emerald-500', inactive: 'text-emerald-300', bg: 'bg-emerald-50/50', border: 'border-emerald-500/20' },
+  atk: { active: 'text-blue-500', inactive: 'text-blue-300', bg: 'bg-blue-50/50', border: 'border-blue-500/20' },
+  kebersihan: { active: 'text-purple-500', inactive: 'text-purple-400', bg: 'bg-purple-50/50', border: 'border-purple-500/20' },
 };
 
 export default function CategoryGrid() {
@@ -41,7 +38,7 @@ export default function CategoryGrid() {
         <div className="flex items-center gap-2">
           <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
           <h2 className="text-sm font-bold text-gray-800">
-            Pilih Layanan
+            Pilih Kategori
           </h2>
         </div>
 
