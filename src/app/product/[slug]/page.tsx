@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import {
   Star, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, ChevronUp, Zap, Headphones
 } from 'lucide-react';
@@ -12,10 +12,11 @@ import { useFavoriteStore } from '@/store/useFavoriteStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
-import { products } from '@/lib/data';
+import { Product, Review } from '@/lib/types';
 import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
 import CheckoutModal from '@/components/CheckoutModal';
+import LoadingScreen from '@/components/LoadingScreen';
 
 // Helper: hitung distribusi rating dari data ulasan
 function getRatingDistribution(reviews: { rating: number }[]) {
@@ -78,11 +79,7 @@ function renderStar(i: number, rating: number) {
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const product = products.find((p) => p.slug === slug);
-
-  if (!product) {
-    notFound();
-  }
+  const router = useRouter();
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
@@ -90,9 +87,52 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
 
+  const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
+  const [loading, setLoading] = useState(true);
+  const loaderStartTimeRef = useRef<number | null>(null);
+
   const [toast, setToast] = useState<string | null>(null);
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Track kapan loader dimulai
+    loaderStartTimeRef.current = Date.now();
+    const MIN_DISPLAY_TIME = 600; // ms - minimum 600ms agar tidak flicker
+
+    fetch(`/api/public/products/${slug}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then((data) => {
+        const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
+
+        // Kalau belum mencapai minimum display time, tunggu
+        if (elapsed < MIN_DISPLAY_TIME) {
+          setTimeout(() => {
+            setProduct(data);
+            setLoading(false);
+          }, MIN_DISPLAY_TIME - elapsed);
+        } else {
+          // Langsung hide kalau sudah beyond minimum time
+          setProduct(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
+
+        // Ensure minimum display time bahkan saat error
+        if (elapsed < MIN_DISPLAY_TIME) {
+          setTimeout(() => {
+            setLoading(false);
+          }, MIN_DISPLAY_TIME - elapsed);
+        } else {
+          setLoading(false);
+        }
+      });
+  }, [slug]);
 
   const showToast = (message: string) => {
     if (toast) {
@@ -120,13 +160,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
-  const allReviews = getReviewsForProduct(product.id);
-  const distribution = getRatingDistribution(allReviews);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(5);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const displayedReviews = allReviews.slice(0, displayCount);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
@@ -148,6 +185,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const handleAddToCart = () => {
+    if (!product) return;
     addItem(product);
     const name = product.name.length > 35 ? product.name.slice(0, 35) + '…' : product.name;
     showToast(`${name} ditambahkan ke keranjang`);
@@ -158,6 +196,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const handleBuyNowConfirm = () => {
+    if (!product) return;
     const message = generateSingleWAMessage(product.name, product.slug, deliveryInfo);
     window.open(getWALink(message), '_blank');
     openModal(product.slug);
@@ -165,6 +204,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const handleShare = async () => {
+    if (!product) return;
     try {
       if (navigator.share) {
         await navigator.share({
@@ -216,7 +256,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       container.addEventListener('scroll', handleScroll);
       return () => container.removeEventListener('scroll', handleScroll);
     }
-  }, []);
+  }, []); // Run only once
+
+  if (loading) return <LoadingScreen />;
+  if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
+
+  const allReviews = product.reviews || getReviewsForProduct(product.id);
+  const distribution = getRatingDistribution(allReviews);
+  const displayedReviews = allReviews.slice(0, displayCount);
 
   const needsTruncation = product.description.length > 300;
   const truncatedDescription = needsTruncation && !isDescriptionExpanded
@@ -444,7 +491,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         {/* Daftar Ulasan */}
         <div className="space-y-0 -mx-1">
-          {displayedReviews.map((review, index) => (
+          {displayedReviews.map((review: Review, index: number) => (
             <div
               key={review.id}
               className={`py-2.5 px-1 ${index < displayedReviews.length - 1 ? 'border-b border-gray-100' : ''

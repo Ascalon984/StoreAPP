@@ -2,12 +2,19 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { banners } from '@/lib/data';
+import { Banner as BannerType } from '@/lib/types';
 
 export default function Banner() {
+  const [banners, setBanners] = useState<BannerType[]>([]);
   const [current, setCurrent] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    fetch('/api/public/banners')
+      .then((res) => res.json())
+      .then((data) => setBanners(data));
+  }, []);
 
   const scrollTo = useCallback((index: number) => {
     const el = scrollRef.current;

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Search, X, Clock, ArrowRight } from 'lucide-react';
 import { useSearchStore } from '@/store/useSearchStore';
-import { products } from '@/lib/data';
 import Link from 'next/link';
 
 export default function SearchOverlay() {
@@ -13,6 +12,15 @@ export default function SearchOverlay() {
   } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (isOpen && products.length === 0) {
+      fetch('/api/public/products')
+        .then((res) => res.json())
+        .then((data) => setProducts(data));
+    }
+  }, [isOpen, products.length]);
 
   useEffect(() => {
     const saved = localStorage.getItem('recentSearches');

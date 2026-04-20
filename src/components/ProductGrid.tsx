@@ -3,13 +3,41 @@
 import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
 import { useSearchStore } from '@/store/useSearchStore';
-import { products, categories } from '@/lib/data';
+import { Product, Category } from '@/lib/types';
 import ProductCard from './ProductCard';
 
 export default function ProductGrid() {
   const { category, sort } = useFilterStore();
   const { query } = useSearchStore();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]);
+
+  useEffect(() => {
+    let url = '/api/public/products';
+    const params = new URLSearchParams();
+    if (category && category !== 'all') params.append('category', category);
+    
+    let apiFilter = '';
+    if (sort === 'cheapest') apiFilter = 'terjangkau';
+    else if (sort === 'newest') apiFilter = 'terbaru';
+    else if (sort === 'popular') apiFilter = 'populer';
+    else if (sort === 'discount') apiFilter = 'hemat';
+
+    if (apiFilter) params.append('filter', apiFilter);
+
+    fetch(`${url}?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
+  }, [category, sort]);
+
+  useEffect(() => {
+    fetch('/api/public/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }, ...data]);
+      });
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,23 +63,11 @@ export default function ProductGrid() {
     });
   };
 
-  let filtered = products.filter((p) => {
-    if (category !== 'all' && p.category !== category) return false;
+  // Frontend filtering only for search query, as API has already applied category and sort.
+  const filtered = products.filter((p) => {
     if (query && !p.name.toLowerCase().includes(query.toLowerCase())) return false;
     return true;
   });
-
-  // Sorting logic
-  if (sort === 'cheapest') {
-    filtered.sort((a, b) => a.price - b.price);
-  } else if (sort === 'newest') {
-    filtered = [...filtered].reverse();
-  } else if (sort === 'discount') {
-    filtered = filtered.filter((p) => (p.discount || 0) > 0);
-    filtered.sort((a, b) => (b.discount || 0) - (a.discount || 0));
-  } else {
-    filtered.sort((a, b) => b.sold - a.sold);
-  }
 
   // Get label untuk display
   const categoryName = categories.find((c) => c.id === category)?.name || 'Semua';

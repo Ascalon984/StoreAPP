@@ -6,7 +6,7 @@ import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useCartStore } from '@/store/useCartStore';
-import { products } from '@/lib/data';
+import { Product } from '@/lib/types';
 import ProductImage from '@/components/ProductImage';
 
 const RATING_CONFIG = {
@@ -21,7 +21,7 @@ const MAX_CHARS = 300;
 const DRAG_CLOSE_THRESHOLD = 100;
 const VELOCITY_CLOSE_THRESHOLD = 0.4;
 
-type CartProduct = (typeof products)[number] & { qty: number };
+type CartProduct = Product & { qty: number };
 
 export default function ReviewModal() {
   const { isOpen, closeModal, productSlug } = useReviewModalStore();
@@ -47,7 +47,21 @@ export default function ReviewModal() {
   const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // --- Resolve products to display ---
-  const singleProduct = productSlug ? products.find((p) => p.slug === productSlug) : null;
+  const [singleProduct, setSingleProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (productSlug) {
+      fetch(`/api/public/products/${productSlug}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Not found');
+          return res.json();
+        })
+        .then(setSingleProduct)
+        .catch(() => setSingleProduct(null));
+    } else {
+      setSingleProduct(null);
+    }
+  }, [productSlug]);
 
   // ── Scroll input ke view saat focus ──
   const handleInputFocus = (inputElement: HTMLElement | null) => {

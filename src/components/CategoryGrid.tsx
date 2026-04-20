@@ -1,15 +1,17 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
-import { categories } from '@/lib/data';
-import {
-  LayoutGrid, Cookie, Coffee, ShoppingBasket,
-  Pencil, Sparkles,
-} from 'lucide-react';
+import { Category } from '@/lib/types';
 
-const iconMap: Record<string, React.ElementType> = {
-  LayoutGrid, Cookie, Coffee, ShoppingBasket,
-  Pencil, Sparkles,
+// Mapping path icon PNG untuk setiap kategori
+const iconPathMap: Record<string, string> = {
+  all: '/icons/all icon.png',
+  snack: '/icons/snack.png',
+  minuman: '/icons/minuman.png',
+  kebutuhan: '/icons/kebutuhan pokok.png',
+  atk: '/icons/alat tulis.png',
+  kebersihan: '/icons/kebersihan.png',
 };
 
 // Color mapping untuk setiap kategori
@@ -24,6 +26,20 @@ const colorMap: Record<string, { active: string; inactive: string; bg: string; b
 
 export default function CategoryGrid() {
   const { category, setCategory } = useFilterStore();
+  const [categories, setCategories] = useState<Category[]>([
+    { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
+  ]);
+
+  useEffect(() => {
+    fetch('/api/public/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories([
+          { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
+          ...data,
+        ]);
+      });
+  }, []);
 
   const handleClick = (catId: string) => {
     setCategory(catId);
@@ -50,22 +66,28 @@ export default function CategoryGrid() {
       {/* Category Grid */}
       <div className="grid grid-cols-3 gap-1.5">
         {categories.map((cat) => {
-          const Icon = iconMap[cat.icon] || LayoutGrid;
+          const iconPath = iconPathMap[cat.id] || iconPathMap.all;
           const isActive = category === cat.id;
           const colors = colorMap[cat.id] || colorMap.all;
           return (
             <button
               key={cat.id}
               onClick={() => handleClick(cat.id)}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-lg transition-all duration-200 tap-active border ${isActive
+              className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 tap-active border ${isActive
                 ? `${colors.bg} ${colors.border} shadow-sm`
                 : 'bg-white border-gray-100 hover:bg-gray-50'
                 }`}
             >
-              <Icon
-                size={17}
-                strokeWidth={2}
-                className={`transition-colors duration-200 ${isActive ? colors.active : colors.inactive}`}
+              <img
+                src={iconPath}
+                alt={cat.name}
+                width={24}
+                height={24}
+                className="w-7 h-7 object-contain"
+                style={{
+                  opacity: 1,
+                  mixBlendMode: 'multiply',
+                }}
               />
               <span className={`mt-1 text-[10px] font-semibold text-center transition-colors duration-200 ${isActive ? colors.active : 'text-gray-500'
                 }`}>

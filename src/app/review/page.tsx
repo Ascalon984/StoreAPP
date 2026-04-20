@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, AlertCircle, CheckCircle, Loader2, X, ArrowLeft } from 'lucide-react';
 import { useReviewStore } from '@/store/useReviewStore';
-import { products } from '@/lib/data';
+import { Product } from '@/lib/types';
 
 // ==================== MODAL COMPONENT ====================
 type ModalVariant = 'confirm' | 'success' | 'error';
@@ -258,27 +258,21 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
   }, []);
 
   // ---- Product resolution ----
-  let productCode: string;
-  let product: (typeof products)[number] | undefined;
-  let productError: string | null = null;
+  const productCode = (searchParams?.product as string) || 'all';
+  const [product, setProduct] = useState<Product | null>(null);
+  const [productError, setProductError] = useState<string | null>(null);
 
-  try {
-    productCode = (searchParams?.product as string) || 'all';
-
-    if (typeof productCode !== 'string' || productCode.trim() === '') {
-      productCode = 'all';
+  useEffect(() => {
+    if (productCode !== 'all') {
+      fetch(`/api/public/products/${productCode}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Not found');
+          return res.json();
+        })
+        .then(setProduct)
+        .catch(() => setProductError(`Produk "${productCode}" tidak ditemukan di katalog kami.`));
     }
-
-    product = products?.find((p) => p?.slug === productCode);
-
-    if (searchParams?.product && !product && productCode !== 'all') {
-      productError = `Produk "${productCode}" tidak ditemukan di katalog kami.`;
-    }
-  } catch {
-    productCode = 'all';
-    product = undefined;
-    productError = 'Gagal memuat informasi produk.';
-  }
+  }, [productCode]);
 
   // ---- Submit handler ----
   const handleSubmit = useCallback(
