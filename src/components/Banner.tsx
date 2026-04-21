@@ -25,21 +25,29 @@ export default function Banner() {
 
   const startAutoPlay = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (banners.length === 0) return;
+
     timerRef.current = setInterval(() => {
       setCurrent((prev) => {
         const next = (prev + 1) % banners.length;
-        scrollTo(next);
+        // Scroll ke banner berikutnya
+        const el = scrollRef.current;
+        if (el) {
+          el.scrollTo({ left: next * el.offsetWidth, behavior: 'smooth' });
+        }
         return next;
       });
     }, 5000);
-  }, [scrollTo]);
+  }, [banners.length]);
 
   useEffect(() => {
+    if (banners.length === 0) return;
+    
     startAutoPlay();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [startAutoPlay]);
+  }, [banners.length, startAutoPlay]);
 
   const handleScroll = () => {
     const el = scrollRef.current;
