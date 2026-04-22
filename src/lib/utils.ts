@@ -78,8 +78,8 @@ export function generateSingleWAMessage(productName: string, productSlug: string
   );
 }
 
-export function getWALink(message: string): string {
-  return `https://wa.me/${WA_NUMBER}?text=${message}`;
+export function getWALink(message: string, waNumber?: string): string {
+  return `https://wa.me/${waNumber || WA_NUMBER}?text=${message}`;
 }
 
 export function cn(...classes: (string | undefined | false | null)[]): string {

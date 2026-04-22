@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
 import { Category } from '@/lib/types';
 
-// Mapping path icon PNG untuk setiap kategori
+// Mapping path icon PNG untuk setiap kategori (synced with admin icon lib)
 const iconPathMap: Record<string, string> = {
   all: '/icons/all icon.png',
   snack: '/icons/snack.png',
@@ -12,6 +12,11 @@ const iconPathMap: Record<string, string> = {
   kebutuhan: '/icons/kebutuhan pokok.png',
   atk: '/icons/alat tulis.png',
   kebersihan: '/icons/kebersihan.png',
+  gas: '/icons/gas.png',
+  listrik: '/icons/listrik.png',
+  pakaian: '/icons/pakaian.png',
+  elektronik: '/icons/elektronik.png',
+  peralatan: '/icons/peralatan.png',
 };
 
 // Color mapping untuk setiap kategori
@@ -22,6 +27,11 @@ const colorMap: Record<string, { active: string; inactive: string; bg: string; b
   kebutuhan: { active: 'text-emerald-500', inactive: 'text-emerald-300', bg: 'bg-emerald-50/50', border: 'border-emerald-500/20' },
   atk: { active: 'text-blue-500', inactive: 'text-blue-300', bg: 'bg-blue-50/50', border: 'border-blue-500/20' },
   kebersihan: { active: 'text-purple-500', inactive: 'text-purple-400', bg: 'bg-purple-50/50', border: 'border-purple-500/20' },
+  gas: { active: 'text-orange-500', inactive: 'text-orange-300', bg: 'bg-orange-50/50', border: 'border-orange-500/20' },
+  listrik: { active: 'text-yellow-500', inactive: 'text-yellow-300', bg: 'bg-yellow-50/50', border: 'border-yellow-500/20' },
+  pakaian: { active: 'text-pink-500', inactive: 'text-pink-300', bg: 'bg-pink-50/50', border: 'border-pink-500/20' },
+  elektronik: { active: 'text-indigo-500', inactive: 'text-indigo-300', bg: 'bg-indigo-50/50', border: 'border-indigo-500/20' },
+  peralatan: { active: 'text-teal-500', inactive: 'text-teal-300', bg: 'bg-teal-50/50', border: 'border-teal-500/20' },
 };
 
 export default function CategoryGrid() {
@@ -34,9 +44,11 @@ export default function CategoryGrid() {
     fetch('/api/public/categories')
       .then((res) => res.json())
       .then((data) => {
+        // Max 5 kategori aktif + 1 "Semua" = 6 total (3x2 grid)
+        const limited = data.slice(0, 5);
         setCategories([
           { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
-          ...data,
+          ...limited,
         ]);
       });
   }, []);

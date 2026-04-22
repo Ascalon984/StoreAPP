@@ -11,6 +11,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index }: ProductCardProps) {
   const isHot = product.sold >= 500;
+  const discount = product.originalPrice && product.originalPrice > product.price
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
 
   // Adaptive font size — semakin panjang nama, semakin kecil font
   const titleSize = product.name.length > 50
@@ -43,6 +46,13 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               </span>
             )}
           </div>
+
+          {/* Discount Badge — top right */}
+          {discount > 0 && (
+            <span className="absolute top-2 right-2 z-10 inline-flex items-center px-1.5 py-0.5 rounded-md bg-gradient-to-r from-rose-500 to-red-500 text-white text-[9px] font-bold uppercase tracking-wider shadow-sm">
+              -{discount}%
+            </span>
+          )}
         </div>
 
         {/* Content */}
@@ -55,9 +65,11 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </h3>
 
           {/* Price */}
-          <p className="text-[14.5px] font-extrabold text-emerald-600 tracking-tight mt-0.5">
-            {formatRupiah(product.price)}
-          </p>
+          <div className="mt-0.5">
+            <p className="text-[14.5px] font-extrabold text-emerald-600 tracking-tight">
+              {formatRupiah(product.price)}
+            </p>
+          </div>
 
           {/* Divider */}
           <div className="h-px bg-gray-100 my-0.5" />

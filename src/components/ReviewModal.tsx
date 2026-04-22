@@ -256,35 +256,76 @@ useEffect(() => {
     }
 
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
 
-    const reviewBase = {
-      name: 'Pembeli',
-      rating,
-      comment: comment.trim(),
-      createdAt: new Date().toISOString(),
-      isVerified: true,
-    };
+    try {
+      // ─────── STEP 1: Submit to Admin API ───────
+      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+      
+      const reviewsSubmitted = [];
 
-    if (displayProducts.length > 0) {
-      displayProducts.forEach((p, i) => {
+      for (const product of displayProducts) {
+        try {
+          const response = await fetch(`${adminApiUrl}/api/admin/reviews`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              productId: product.id,
+              name: 'Pembeli',
+              rating,
+              comment: comment.trim(),
+              isVerified: true,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            console.warn(`Failed to submit review for product ${product.id}:`, data.error);
+            continue;
+          }
+
+          reviewsSubmitted.push(data.review);
+        } catch (error) {
+          console.error(`Error submitting review for product ${product.id}:`, error);
+          continue;
+        }
+      }
+
+      // ─────── STEP 2: Also add to local store (for offline fallback) ───────
+      const reviewBase = {
+        name: 'Pembeli',
+        rating,
+        comment: comment.trim(),
+        createdAt: new Date().toISOString(),
+        isVerified: true,
+      };
+
+      if (displayProducts.length > 0) {
+        displayProducts.forEach((p, i) => {
+          addReview({
+            ...reviewBase,
+            id: `r-${Date.now()}-${i}`,
+            productId: p.id,
+          });
+        });
+      } else {
         addReview({
           ...reviewBase,
-          id: `r-${Date.now()}-${i}`,
-          productId: p.id,
+          id: `r-${Date.now()}`,
+          productId: 'all',
         });
-      });
-    } else {
-      addReview({
-        ...reviewBase,
-        id: `r-${Date.now()}`,
-        productId: 'all',
-      });
-    }
+      }
 
-    setIsSubmitting(false);
-    showToast('Terima kasih, Ulasan berhasil dikirim');
-    handleClose();
+      setIsSubmitting(false);
+      showToast(`Terima kasih! Review berhasil dikirim (${reviewsSubmitted.length} produk)`);
+      handleClose();
+    } catch (error) {
+      console.error('[REVIEW SUBMIT ERROR]', error);
+      setIsSubmitting(false);
+      showToast('Gagal mengirim review. Silakan coba lagi.');
+    }
   };
 
   if (!isOpen) return null;

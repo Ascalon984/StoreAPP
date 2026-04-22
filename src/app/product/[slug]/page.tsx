@@ -195,12 +195,46 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     setIsCheckoutModalOpen(true);
   };
 
-  const handleBuyNowConfirm = () => {
+  const handleBuyNowConfirm = async () => {
     if (!product) return;
-    const message = generateSingleWAMessage(product.name, product.slug, deliveryInfo);
-    window.open(getWALink(message), '_blank');
-    openModal(product.slug);
-    setIsCheckoutModalOpen(false);
+
+    try {
+      // ─────── STEP 1: Call Admin API to update stock ───────
+      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+      
+      const orderResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: 1,
+          customerName: deliveryInfo.name,
+          phone: deliveryInfo.phone,
+          address: deliveryInfo.address,
+          lat: deliveryInfo.lat,
+          lng: deliveryInfo.lng,
+        }),
+      });
+
+      const orderData = await orderResponse.json();
+
+      if (!orderData.success) {
+        showToast(`Error: ${orderData.error}`);
+        return;
+      }
+
+      // ─────── STEP 2: Success - proceed with WhatsApp ───────
+      const message = generateSingleWAMessage(product.name, product.slug, deliveryInfo);
+      window.open(getWALink(message), '_blank');
+      openModal(product.slug);
+      setIsCheckoutModalOpen(false);
+      showToast('Order berhasil! Pesan dikirim ke WhatsApp');
+    } catch (error) {
+      console.error('[CHECKOUT ERROR]', error);
+      showToast('Gagal memproses order. Silakan coba lagi.');
+    }
   };
 
   const handleShare = async () => {
@@ -319,32 +353,46 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
 
         <div className="relative">
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="flex-shrink-0 w-full snap-start">
-                <ProductImage
-                  category={product.category}
-                  name={product.name}
-                  variant={i}
-                  className="w-full aspect-[4/3] sm:aspect-video"
-                />
-              </div>
-            ))}
-          </div>
+          {(() => {
+            // Dynamic slide count: use images array length if available, else default 3, max 3
+            const slideCount = product.images && product.images.length > 0
+              ? Math.min(product.images.length, 3)
+              : 3;
+            const slides = Array.from({ length: slideCount }, (_, i) => i);
 
-          <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className={`transition-all duration-300 rounded-full ${currentIndex === i ? 'w-6 h-1 bg-white' : 'w-1.5 h-1 bg-white/50'
-                  }`}
-              />
-            ))}
-          </div>
+            return (
+              <>
+                <div
+                  ref={scrollContainerRef}
+                  className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {slides.map((i) => (
+                    <div key={i} className="flex-shrink-0 w-full snap-start">
+                      <ProductImage
+                        category={product.category}
+                        name={product.name}
+                        variant={i}
+                        className="w-full aspect-[4/3] sm:aspect-video"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {slideCount > 1 && (
+                  <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center gap-1.5">
+                    {slides.map((i) => (
+                      <div
+                        key={i}
+                        className={`transition-all duration-300 rounded-full ${currentIndex === i ? 'w-6 h-1 bg-white' : 'w-1.5 h-1 bg-white/50'
+                          }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
       </div>
 
