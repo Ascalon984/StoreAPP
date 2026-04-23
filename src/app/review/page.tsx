@@ -337,7 +337,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      addReview!({
+      const reviewData = {
         id: `r-${Date.now()}`,
         productId: product?.id || 'all',
         name: 'User',
@@ -345,7 +345,46 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
         comment,
         createdAt: new Date().toISOString(),
         isVerified: true,
-      });
+      };
+
+      // ✅ STEP 1: POST review ke admin untuk sync & update rating
+      try {
+        const adminResponse = await fetch('http://localhost:3000/api/public/reviews', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId: product?.id || 'all',
+            name: 'User',
+            rating,
+            comment,
+          }),
+        });
+
+        if (adminResponse.ok) {
+          console.log('[Review] Successfully submitted to admin');
+        } else {
+          console.warn('[Review] Failed to submit to admin:', adminResponse.statusText);
+        }
+      } catch (adminError) {
+        console.warn('[Review] Error connecting to admin:', adminError);
+      }
+
+      // ✅ STEP 2: Update local store
+      addReview!(reviewData);
+
+      // ✅ STEP 2.5: Refetch product data untuk sync rating & reviews
+      try {
+        console.log('[Review] Revalidating product cache...');
+        if (product?.slug) {
+          await fetch(`/api/public/products/${product.slug}`);
+        }
+        router.refresh();
+        console.log('[Review] Product cache invalidated');
+      } catch (refreshError) {
+        console.warn('[Review] Cache refresh failed:', refreshError);
+      }
 
       // Toast selaras dengan ProductDetailPage
       showToast('Ulasan berhasil dikirim');

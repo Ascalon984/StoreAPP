@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ShoppingCart, X, Plus, Minus, MessageCircle, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
@@ -10,6 +11,7 @@ import ProductImage from './ProductImage';
 import CheckoutModal from './CheckoutModal';
 
 export default function MiniCart() {
+  const router = useRouter();
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
@@ -44,12 +46,52 @@ export default function MiniCart() {
     setIsCheckoutModalOpen(true);
   };
 
-  const handleCheckoutConfirm = () => {
+  const handleCheckoutConfirm = async () => {
     if (items.length === 0) return;
     try {
+      // ✅ STEP 1: POST order ke admin untuk update stok
+      for (const item of items) {
+        const orderPayload = {
+          productId: item.product.id,
+          quantity: item.quantity,
+          customerName: deliveryInfo.name,
+          phone: deliveryInfo.phone,
+          address: deliveryInfo.address,
+          lat: deliveryInfo.lat,
+          lng: deliveryInfo.lng,
+        };
+
+        const adminResponse = await fetch('http://localhost:3000/api/admin/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderPayload),
+        });
+
+        if (!adminResponse.ok) {
+          console.warn(`[Order] Failed to update stock for ${item.product.id}:`, adminResponse.statusText);
+        } else {
+          console.log(`[Order] Successfully updated stock for ${item.product.id}`);
+        }
+      }
+
+      // ✅ STEP 2: Refetch product data untuk sync UI
+      try {
+        console.log('[Order] Revalidating product cache...');
+        await fetch('/api/public/products');
+        // Force router refresh untuk Next.js server-side revalidation
+        router.refresh();
+        console.log('[Order] Product cache invalidated');
+      } catch (refreshError) {
+        console.warn('[Order] Cache refresh failed:', refreshError);
+      }
+
+      // ✅ STEP 3: Generate & buka WhatsApp
       const message = generateWAMessage(items, deliveryInfo);
       window.open(getWALink(message), '_blank');
 
+      // ✅ STEP 4: Buka review modal
       if (items.length === 1) {
         openModal(items[0].product.slug);
       } else {
@@ -58,7 +100,8 @@ export default function MiniCart() {
 
       setIsCheckoutModalOpen(false);
       closeCart();
-    } catch {
+    } catch (error) {
+      console.error('[Checkout Error]', error);
       window.open('https://wa.me/', '_blank');
       setIsCheckoutModalOpen(false);
       closeCart();
