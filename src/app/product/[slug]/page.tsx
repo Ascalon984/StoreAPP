@@ -12,6 +12,7 @@ import { useFavoriteStore } from '@/store/useFavoriteStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { Product, Review } from '@/lib/types';
 import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
@@ -86,6 +87,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const { getReviewsForProduct, reviews: zustandReviews } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
+  const { waNumber, fetchSettings } = useSettingsStore();
 
   const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,6 +98,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   useEffect(() => {
+    fetchSettings();
     // Track kapan loader dimulai
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 600; // ms - minimum 600ms agar tidak flicker
@@ -227,7 +230,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
       // ─────── STEP 2: Success - proceed with WhatsApp ───────
       const message = generateSingleWAMessage(product.name, product.slug, deliveryInfo);
-      window.open(getWALink(message), '_blank');
+      window.open(getWALink(message, waNumber), '_blank');
       openModal(product.slug);
       setIsCheckoutModalOpen(false);
       showToast('Order berhasil! Pesan dikirim ke WhatsApp');

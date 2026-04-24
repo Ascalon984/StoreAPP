@@ -7,9 +7,11 @@ import { useCartStore } from '@/store/useCartStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { useToastStore } from '@/store/useToastStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { formatRupiah, generateWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from './ProductImage';
 import CheckoutModal from './CheckoutModal';
+import { useEffect } from 'react';
 
 export default function MiniCart() {
   const router = useRouter();
@@ -17,7 +19,12 @@ export default function MiniCart() {
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
   const { showToast } = useToastStore();
+  const { waNumber, fetchSettings } = useSettingsStore();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const total = items.reduce((sum, item) => {
     try {
@@ -106,7 +113,7 @@ export default function MiniCart() {
 
       // ✅ STEP 3: Generate & buka WhatsApp
       const message = generateWAMessage(items, deliveryInfo);
-      window.open(getWALink(message), '_blank');
+      window.open(getWALink(message, waNumber), '_blank');
 
       // ✅ STEP 4: Buka review modal
       if (items.length === 1) {

@@ -5,12 +5,18 @@ import { Search, ShoppingCart, MessageCircle } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useSearchStore } from '@/store/useSearchStore';
 import { WA_NUMBER } from '@/lib/constants';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const toggleCart = useCartStore((s) => s.toggleCart);
   const openSearch = useSearchStore((s) => s.openSearch);
+  const { storeNameFirst, storeNameLast, waNumber, fetchSettings } = useSettingsStore();
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   // ✅ Derived selector — hanya re-render saat angka berubah
   const totalItems = useCartStore((s) =>
@@ -49,11 +55,11 @@ export default function Navbar() {
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 active:scale-95 transition-transform duration-200">
-          <h1 className="text-xl sm:text-2xl font-extrabold select-none">
+          <h1 className="text-xl sm:text-2xl font-extrabold select-none truncate max-w-[150px] sm:max-w-[200px]">
             <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-              Palugada
+              {storeNameFirst}
             </span>
-            <span className="text-orange-500">Store</span>
+            {storeNameLast && <span className="text-orange-500">{storeNameLast}</span>}
           </h1>
         </Link>
 
@@ -96,7 +102,7 @@ export default function Navbar() {
 
           {/* WhatsApp */}
           <a
-            href={`https://wa.me/${WA_NUMBER}`}
+            href={`https://wa.me/${waNumber}`}
             target="_blank"
             rel="noopener noreferrer"
             className="relative p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
