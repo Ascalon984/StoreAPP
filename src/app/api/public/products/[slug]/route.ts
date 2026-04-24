@@ -1,22 +1,24 @@
 import { NextResponse } from 'next/server';
-import { products, defaultReviews } from '@/lib/data';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
-  const product = products.find((p) => p.slug === params.slug);
-
-  if (!product) {
-    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+  const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+  
+  try {
+    const res = await fetch(`${adminApiUrl}/api/public/products/${params.slug}`, {
+      cache: 'no-store'
+    });
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Product not found in Admin API' }, { status: res.status });
+    }
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
   }
-
-  // Include the dummy reviews for this product
-  // Since our dummy data has productId='all', we'll just mock it as if they below to this product
-  const productWithDetails = {
-    ...product,
-    reviews: defaultReviews,
-  };
-
-  return NextResponse.json(productWithDetails);
 }

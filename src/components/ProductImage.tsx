@@ -27,9 +27,15 @@ interface ProductImageProps {
   name: string;
   variant?: number;
   className?: string;
+  src?: string;
 }
 
-export default function ProductImage({ category, name, variant = 0, className = '' }: ProductImageProps) {
+export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
+  if (src && src.length > 200) {
+    // Rendernya menggunakan <img> standar karena ini base64 data URL
+    return <img src={src} alt={name} className={`object-cover ${className}`} style={{ width: '100%', height: '100%' }} />;
+  }
+
   const [from, to] = gradientColors[category] || gradientColors.all;
   const dir = directions[variant % directions.length];
   const Icon = categoryIcons[category] || LayoutGrid;

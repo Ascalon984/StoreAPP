@@ -1,40 +1,22 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/lib/data';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const filter = searchParams.get('filter');
-  const category = searchParams.get('category');
-
-  let filteredProducts = [...products];
-
-  // Apply category filter
-  if (category && category !== 'all') {
-    filteredProducts = filteredProducts.filter((p) => p.category === category);
-  }
-
-  // Apply sorting/filter
-  if (filter) {
-    switch (filter) {
-      case 'populer':
-        filteredProducts.sort((a, b) => b.sold - a.sold);
-        break;
-      case 'terbaru':
-        // Mock newest by using the id conceptually or reverse order
-        filteredProducts.reverse();
-        break;
-      case 'hemat':
-        filteredProducts.sort((a, b) => {
-          const discountA = (a.originalPrice ? a.originalPrice - a.price : 0);
-          const discountB = (b.originalPrice ? b.originalPrice - b.price : 0);
-          return discountB - discountA;
-        });
-        break;
-      case 'terjangkau':
-        filteredProducts.sort((a, b) => a.price - b.price);
-        break;
+  const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+  const url = new URL(request.url);
+  
+  try {
+    const res = await fetch(`${adminApiUrl}/api/public/products${url.search}`, {
+      cache: 'no-store'
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch products from Admin API');
     }
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
   }
-
-  return NextResponse.json(filteredProducts);
 }

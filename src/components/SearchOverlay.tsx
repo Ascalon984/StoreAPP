@@ -16,7 +16,7 @@ export default function SearchOverlay() {
 
   useEffect(() => {
     if (isOpen && products.length === 0) {
-      fetch('/api/public/products')
+      fetch(`/api/public/products?t=${Date.now()}`, { cache: 'no-store' })
         .then((res) => res.json())
         .then((data) => setProducts(data));
     }

@@ -6,6 +6,7 @@ import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useCartStore } from '@/store/useCartStore';
+import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { Product } from '@/lib/types';
 import ProductImage from '@/components/ProductImage';
 
@@ -28,6 +29,7 @@ export default function ReviewModal() {
   const { addReview } = useReviewStore();
   const { showToast } = useToastStore();
   const { items: cartItems } = useCartStore();
+  const { deliveryInfo } = useDeliveryStore();
   const [rating, setRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [comment, setComment] = useState('');
@@ -272,7 +274,7 @@ useEffect(() => {
             },
             body: JSON.stringify({
               productId: product.id,
-              name: 'Pembeli',
+              name: deliveryInfo.name || 'Pembeli',
               rating,
               comment: comment.trim(),
               isVerified: true,
@@ -295,7 +297,7 @@ useEffect(() => {
 
       // ─────── STEP 2: Also add to local store (for offline fallback) ───────
       const reviewBase = {
-        name: 'Pembeli',
+        name: deliveryInfo.name || 'Pembeli',
         rating,
         comment: comment.trim(),
         createdAt: new Date().toISOString(),

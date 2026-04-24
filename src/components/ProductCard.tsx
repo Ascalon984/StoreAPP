@@ -34,6 +34,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             category={product.category}
             name={product.name}
             variant={index}
+            src={product.images?.[0]}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
 

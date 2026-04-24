@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
-import { banners } from '@/lib/data';
 
-export async function GET() {
-  return NextResponse.json(banners);
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: Request) {
+  const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+  
+  try {
+    const res = await fetch(`${adminApiUrl}/api/public/banners`, {
+      cache: 'no-store'
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch banners from Admin API');
+    }
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
+  }
 }

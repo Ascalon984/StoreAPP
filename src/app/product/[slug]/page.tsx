@@ -83,7 +83,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
-  const { getReviewsForProduct } = useReviewStore();
+  const { getReviewsForProduct, reviews: zustandReviews } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
 
@@ -100,7 +100,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 600; // ms - minimum 600ms agar tidak flicker
 
-    fetch(`/api/public/products/${slug}`)
+    fetch(`/api/public/products/${slug}?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
@@ -295,7 +295,16 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   if (loading) return <LoadingScreen />;
   if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
 
-  const allReviews = product.reviews || getReviewsForProduct(product.id);
+  const localReviews = getReviewsForProduct(product.id);
+  // Gabungkan ulasan dari API dan lokal
+  const allReviews = (() => {
+    const apiReviews = product.reviews || [];
+    const merged = [...localReviews, ...apiReviews];
+    // Hindari duplikasi berdasarkan nama dan komentar
+    const unique = merged.filter((v, i, a) => a.findIndex(t => (t.id === v.id || (t.comment === v.comment && t.name === v.name))) === i);
+    return unique.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  })();
+  
   const distribution = getRatingDistribution(allReviews);
   const displayedReviews = allReviews.slice(0, displayCount);
 
@@ -373,6 +382,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         category={product.category}
                         name={product.name}
                         variant={i}
+                        src={product.images?.[i]}
                         className="w-full aspect-[4/3] sm:aspect-video"
                       />
                     </div>

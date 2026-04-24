@@ -26,13 +26,15 @@ export default function ProductGrid() {
 
     if (apiFilter) params.append('filter', apiFilter);
 
-    fetch(`${url}?${params.toString()}`)
+    params.append('t', Date.now().toString());
+
+    fetch(`${url}?${params.toString()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, [category, sort]);
 
   useEffect(() => {
-    fetch('/api/public/categories')
+    fetch(`/api/public/categories?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         setCategories([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }, ...data]);

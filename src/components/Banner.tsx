@@ -11,7 +11,7 @@ export default function Banner() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    fetch('/api/public/banners')
+    fetch(`/api/public/banners?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => setBanners(data));
   }, []);
@@ -89,12 +89,10 @@ export default function Banner() {
               className="flex-shrink-0 w-full rounded-2xl overflow-hidden aspect-[2/1] relative shadow-sm"
               style={{ scrollSnapAlign: 'start' }}
             >
-              <Image
+              <img
                 src={banner.image}
                 alt={banner.title}
-                fill
-                className="object-fill"
-                priority={banner.id === '1'}
+                className="absolute inset-0 w-full h-full object-fill"
               />
 
               {/* Teks label/subtitle di atas*/}

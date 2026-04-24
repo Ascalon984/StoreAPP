@@ -6,6 +6,7 @@ import { ShoppingCart, X, Plus, Minus, MessageCircle, Trash2, ShoppingBag, Spark
 import { useCartStore } from '@/store/useCartStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
+import { useToastStore } from '@/store/useToastStore';
 import { formatRupiah, generateWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from './ProductImage';
 import CheckoutModal from './CheckoutModal';
@@ -15,6 +16,7 @@ export default function MiniCart() {
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
+  const { showToast } = useToastStore();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   const total = items.reduce((sum, item) => {
@@ -50,6 +52,9 @@ export default function MiniCart() {
     if (items.length === 0) return;
     try {
       // ✅ STEP 1: POST order ke admin untuk update stok
+      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+      let allOrdersSuccessful = true;
+
       for (const item of items) {
         const orderPayload = {
           productId: item.product.id,
@@ -61,19 +66,31 @@ export default function MiniCart() {
           lng: deliveryInfo.lng,
         };
 
-        const adminResponse = await fetch('http://localhost:3000/api/admin/orders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(orderPayload),
-        });
+        try {
+          const adminResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderPayload),
+          });
 
-        if (!adminResponse.ok) {
-          console.warn(`[Order] Failed to update stock for ${item.product.id}:`, adminResponse.statusText);
-        } else {
-          console.log(`[Order] Successfully updated stock for ${item.product.id}`);
+          if (!adminResponse.ok) {
+            console.error(`[Order] Failed to update stock for ${item.product.id}:`, adminResponse.statusText);
+            allOrdersSuccessful = false;
+          } else {
+            console.log(`[Order] Successfully updated stock for ${item.product.id}`);
+          }
+        } catch (itemError) {
+          console.error(`[Order] Error submitting order for ${item.product.id}:`, itemError);
+          allOrdersSuccessful = false;
         }
+      }
+
+      // ✅ Check if all orders succeeded
+      if (!allOrdersSuccessful) {
+        showToast('Gagal mengirim beberapa pesanan. Silakan coba lagi.');
+        return; // Don't proceed with WhatsApp or review modal
       }
 
       // ✅ STEP 2: Refetch product data untuk sync UI
