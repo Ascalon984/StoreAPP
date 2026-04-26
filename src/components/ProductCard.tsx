@@ -3,6 +3,7 @@ import { Star, Flame } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { formatRupiah } from '@/lib/utils';
 import ProductImage from './ProductImage';
+import { useReviewStore } from '@/store/useReviewStore';
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +11,14 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index }: ProductCardProps) {
+  const { getReviewsForProduct } = useReviewStore();
+
+  // Ambil ulasan dari local store untuk sinkronisasi instan di UI
+  const localReviews = getReviewsForProduct(product.id);
+
+  // Gunakan angka terbesar antara data API atau jumlah ulasan di store
+  const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.length);
+
   const isHot = product.sold >= 500;
   const discount = product.originalPrice && product.originalPrice > product.price
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -80,7 +89,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <div className="flex items-center gap-0.5">
               <Star size={9} strokeWidth={0} fill="#FBBF24" className="text-yellow-400" />
               <span className="text-[10.5px] font-semibold text-gray-700">{product.rating}</span>
-              <span className="text-[10px] text-gray-400">({product.reviewCount})</span>
+              <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
             </div>
             <div className="flex items-center gap-0.5 text-[10px] text-gray-400 font-medium">
               <Flame size={8} strokeWidth={2} className="text-orange-400" />
