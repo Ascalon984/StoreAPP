@@ -204,7 +204,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     try {
       // ─────── STEP 1: Call Admin API to update stock ───────
       const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-      
+
       const orderResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
         method: 'POST',
         headers: {
@@ -287,14 +287,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return () => window.removeEventListener('scroll', checkScrollPosition);
   }, []);
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
-    }
-  }, []); // Run only once
-
   if (loading) return <LoadingScreen />;
   if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
 
@@ -307,7 +299,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     const unique = merged.filter((v, i, a) => a.findIndex(t => (t.id === v.id || (t.comment === v.comment && t.name === v.name))) === i);
     return unique.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   })();
-  
+
   const distribution = getRatingDistribution(allReviews);
   const displayedReviews = allReviews.slice(0, displayCount);
 
@@ -376,6 +368,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <>
                 <div
                   ref={scrollContainerRef}
+                  onScroll={handleScroll}
                   className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
