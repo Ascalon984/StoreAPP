@@ -31,31 +31,11 @@ interface ProductImageProps {
 }
 
 export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
-  // Render actual image jika src ada (baik base64 maupun URL biasa)
-  if (src) {
-    return (
-      <img 
-        src={src} 
-        alt={name} 
-        className={`object-cover w-full h-full ${className}`}
-        onError={(e) => {
-          // Fallback ke gradient jika image gagal load
-          const target = e.currentTarget;
-          const [from, to] = gradientColors[category] || gradientColors.all;
-          const dir = directions[variant % directions.length];
-          target.style.display = 'none';
-          
-          // Buat fallback element
-          const parent = target.parentElement;
-          if (parent) {
-            parent.style.background = `linear-gradient(${dir}, ${from}, ${to})`;
-          }
-        }}
-      />
-    );
+  if (src && src.length > 200) {
+    // Rendernya menggunakan <img> standar karena ini base64 data URL
+    return <img src={src} alt={name} className={`object-cover ${className}`} style={{ width: '100%', height: '100%' }} />;
   }
 
-  // Fallback ke gradient jika tidak ada src
   const [from, to] = gradientColors[category] || gradientColors.all;
   const dir = directions[variant % directions.length];
   const Icon = categoryIcons[category] || LayoutGrid;
