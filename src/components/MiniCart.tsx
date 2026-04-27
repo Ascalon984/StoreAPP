@@ -153,7 +153,7 @@ export default function MiniCart() {
       />
 
       <div className="fixed top-0 right-0 bottom-0 w-[92%] max-w-[420px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-slide-in-right">
-        
+
         {/* ===== HEADER ===== */}
         <div className="bg-white px-5 pt-5 pb-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-1">
@@ -211,6 +211,10 @@ export default function MiniCart() {
                 const isAtStockLimit = qty >= stock;
                 const hasDiscount = originalPrice && originalPrice > price;
 
+                const cartImg = Array.isArray(product.images)
+                  ? product.images[0]
+                  : (typeof (product as any).image === 'string' ? (product as any).image.split('|')[0] : undefined);
+
                 return (
                   <div
                     key={product.id}
@@ -221,7 +225,8 @@ export default function MiniCart() {
                       <ProductImage
                         category={product.category}
                         name={product.name}
-                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0"
+                        src={cartImg}
+                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0 object-contain bg-gray-50"
                       />
 
                       {/* Info */}

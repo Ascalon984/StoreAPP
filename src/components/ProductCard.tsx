@@ -16,6 +16,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   // Ambil ulasan dari local store untuk sinkronisasi instan di UI
   const localReviews = getReviewsForProduct(product.id);
 
+  // Normalisasi gambar: handle string "url1|url2" atau array
+  const productImages = Array.isArray(product.images)
+    ? product.images
+    : (typeof (product as any).image === 'string' ? (product as any).image.split('|') : []);
+  const mainImage = productImages[0] || (product.images?.[0]);
+
   // Gunakan angka terbesar antara data API atau jumlah ulasan di store
   const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.length);
 
@@ -43,8 +49,8 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             category={product.category}
             name={product.name}
             variant={index}
-            src={product.images?.[0]}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            src={mainImage}
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 bg-gray-50"
           />
 
           {/* Badges */}
