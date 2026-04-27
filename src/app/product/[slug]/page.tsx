@@ -360,14 +360,16 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         <div className="relative">
           {(() => {
-            // Resolusi gambar dari images (array) atau image (string)
-            const productImages = Array.isArray(product.images)
-              ? product.images
-              : (typeof (product as any).image === 'string' ? (product as any).image.split('|') : []);
+            // Normalisasi data gambar dari admin
+            const rawImages = product.images || (product as any).image;
+            const productImages = Array.isArray(rawImages)
+              ? rawImages
+              : (typeof rawImages === 'string'
+                ? rawImages.split('|').filter(img => img.trim() !== '')
+                : []);
 
-            const slideCount = productImages.length > 0
-              ? Math.min(productImages.length, 3)
-              : 3;
+            // Tampilkan semua gambar yang ada, jika kosong tampilkan 1 slide placeholder
+            const slideCount = productImages.length > 0 ? productImages.length : 1;
             const slides = Array.from({ length: slideCount }, (_, i) => i);
 
             return (
@@ -385,7 +387,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         name={product.name}
                         variant={i}
                         src={productImages[i]}
-                        className="w-full aspect-[4/3] sm:aspect-video object-contain bg-white"
+                        className="w-full aspect-[4/3] sm:aspect-video object-cover"
                       />
                     </div>
                   ))}

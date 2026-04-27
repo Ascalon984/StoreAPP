@@ -31,9 +31,9 @@ interface ProductImageProps {
 }
 
 export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
-  if (src && src.trim().length > 0) {
-    // Menggunakan object-contain agar gambar tidak ter-crop
-    return <img src={src} alt={name} className={`object-contain ${className}`} style={{ width: '100%', height: '100%' }} />;
+  if (src && typeof src === 'string' && src.trim().length > 0) {
+    // Menggunakan object-cover agar gambar mengisi seluruh area container
+    return <img src={src} alt={name} className={`object-cover ${className}`} style={{ width: '100%', height: '100%' }} />;
   }
 
   const [from, to] = gradientColors[category] || gradientColors.all;

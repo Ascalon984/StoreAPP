@@ -211,9 +211,12 @@ export default function MiniCart() {
                 const isAtStockLimit = qty >= stock;
                 const hasDiscount = originalPrice && originalPrice > price;
 
-                const cartImg = Array.isArray(product.images)
-                  ? product.images[0]
-                  : (typeof (product as any).image === 'string' ? (product as any).image.split('|')[0] : undefined);
+                const rawImages = product.images || (product as any).image;
+                const cartImg = Array.isArray(rawImages)
+                  ? rawImages[0]
+                  : (typeof rawImages === 'string'
+                    ? rawImages.split('|').filter(Boolean)[0]
+                    : undefined);
 
                 return (
                   <div
@@ -226,7 +229,7 @@ export default function MiniCart() {
                         category={product.category}
                         name={product.name}
                         src={cartImg}
-                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0"
+                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0 object-cover"
                       />
 
                       {/* Info */}

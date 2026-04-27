@@ -16,11 +16,14 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   // Ambil ulasan dari local store untuk sinkronisasi instan di UI
   const localReviews = getReviewsForProduct(product.id);
 
-  // Normalisasi gambar: handle string "url1|url2" atau array
-  const productImages = Array.isArray(product.images)
-    ? product.images
-    : (typeof (product as any).image === 'string' ? (product as any).image.split('|') : []);
-  const mainImage = productImages[0] || (product.images?.[0]);
+  // Normalisasi gambar yang lebih kuat untuk mencegah crash
+  const rawImages = product.images || (product as any).image;
+  const productImages = Array.isArray(rawImages)
+    ? rawImages
+    : (typeof rawImages === 'string'
+      ? rawImages.split('|').filter(img => img.trim() !== '')
+      : []);
+  const mainImage = productImages[0];
 
   // Gunakan angka terbesar antara data API atau jumlah ulasan di store
   const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.length);
@@ -50,7 +53,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             name={product.name}
             variant={index}
             src={mainImage}
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 bg-gray-50"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
           {/* Badges */}
