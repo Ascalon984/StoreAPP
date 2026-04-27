@@ -387,7 +387,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         name={product.name}
                         variant={i}
                         src={productImages[i]}
-                        className="w-full h-full aspect-[4/3] sm:aspect-video"
+                        className="w-full aspect-[4/3] sm:aspect-video"
                       />
                     </div>
                   ))}

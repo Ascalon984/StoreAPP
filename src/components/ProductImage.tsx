@@ -1,3 +1,5 @@
+'use client';
+import { useState, useEffect } from 'react';
 import {
   Cookie, Coffee, ShoppingBasket, Pencil, Sparkles, LayoutGrid,
 } from 'lucide-react';
@@ -31,20 +33,27 @@ interface ProductImageProps {
 }
 
 export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
-  // Pastikan src adalah string Base64 yang valid (minimal header data:image)
-  const isValidSrc = src && typeof src === 'string' && src.startsWith('data:image');
+  const [hasError, setHasError] = useState(false);
 
-  if (isValidSrc || (src && typeof src === 'string' && src.startsWith('http'))) {
+  // Reset error state jika src berubah (penting untuk slider/gallery)
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
+
+  // Pastikan src adalah string Base64 yang valid (minimal header data:image)
+  const isValidSrc = !hasError && src && typeof src === 'string' && (src.startsWith('data:image') || src.startsWith('http'));
+
+  if (isValidSrc) {
     return (
-      <div className={`relative overflow-hidden w-full h-full ${className}`}>
+      <div className={`relative overflow-hidden ${className}`}>
         <img
           src={src}
           alt={name}
           className="w-full h-full object-cover block"
           loading="lazy"
           onError={(e) => {
-            // Fallback jika gambar rusak/truncated
-            (e.target as HTMLImageElement).style.display = 'none';
+            // Set state error agar merender gradient sebagai fallback
+            setHasError(true);
           }}
         />
       </div>

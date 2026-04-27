@@ -229,7 +229,7 @@ export default function MiniCart() {
                         category={product.category}
                         name={product.name}
                         src={cartImg}
-                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0 object-cover"
+                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0"
                       />
 
                       {/* Informasi */}
