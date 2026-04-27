@@ -360,9 +360,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         <div className="relative">
           {(() => {
-            // Dynamic slide count: use images array length if available, else default 3, max 3
-            const slideCount = product.images && product.images.length > 0
-              ? Math.min(product.images.length, 3)
+            // Resolusi gambar dari images (array) atau image (string)
+            const productImages = Array.isArray(product.images)
+              ? product.images
+              : (typeof (product as any).image === 'string' ? (product as any).image.split('|') : []);
+
+            const slideCount = productImages.length > 0
+              ? Math.min(productImages.length, 3)
               : 3;
             const slides = Array.from({ length: slideCount }, (_, i) => i);
 
@@ -380,7 +384,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         category={product.category}
                         name={product.name}
                         variant={i}
-                        src={product.images?.[i]}
+                        src={productImages[i]}
                         className="w-full aspect-[4/3] sm:aspect-video"
                       />
                     </div>
