@@ -226,7 +226,7 @@ export default function MiniCart() {
                         category={product.category}
                         name={product.name}
                         src={cartImg}
-                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0 object-contain bg-gray-50"
+                        className="w-[72px] h-[72px] rounded-xl flex-shrink-0"
                       />
 
                       {/* Info */}
