@@ -3,15 +3,22 @@
 import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
 import { useSearchStore } from '@/store/useSearchStore';
+import { useReviewStore } from '@/store/useReviewStore';
 import { Product, Category } from '@/lib/types';
 import ProductCard from './ProductCard';
 
 export default function ProductGrid() {
   const { category, sort } = useFilterStore();
   const { query } = useSearchStore();
+  const { fetchReviews } = useReviewStore();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]);
+
+  // Fetch reviews once on component mount
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   useEffect(() => {
     let url = '/api/public/products';

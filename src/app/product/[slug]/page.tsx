@@ -84,7 +84,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
-  const { getReviewsForProduct, reviews: zustandReviews } = useReviewStore();
+  const { getReviewsForProduct, reviews: zustandReviews, fetchReviews } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
   const { waNumber, fetchSettings } = useSettingsStore();
@@ -99,6 +99,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   useEffect(() => {
     fetchSettings();
+    fetchReviews();
     // Track kapan loader dimulai
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 600; // ms - minimum 600ms agar tidak flicker
