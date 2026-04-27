@@ -31,10 +31,22 @@ interface ProductImageProps {
 }
 
 export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
-  if (src && typeof src === 'string' && src.trim().length > 0) {
+  // Pastikan src adalah string Base64 yang valid (minimal header data:image)
+  const isValidSrc = src && typeof src === 'string' && src.startsWith('data:image');
+
+  if (isValidSrc || (src && typeof src === 'string' && src.startsWith('http'))) {
     return (
-      <div className={`relative overflow-hidden ${className}`}>
-        <img src={src} alt={name} className="w-full h-full object-cover" />
+      <div className={`relative overflow-hidden w-full h-full ${className}`}>
+        <img
+          src={src}
+          alt={name}
+          className="w-full h-full object-cover block"
+          loading="lazy"
+          onError={(e) => {
+            // Fallback jika gambar rusak/truncated
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
       </div>
     );
   }

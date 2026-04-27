@@ -268,7 +268,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     if (scrollContainerRef.current) {
       const scrollLeft = scrollContainerRef.current.scrollLeft;
       const itemWidth = scrollContainerRef.current.clientWidth;
-      const newIndex = Math.round(scrollLeft / itemWidth);
+      const newIndex = itemWidth > 0 ? Math.round(scrollLeft / itemWidth) : 0;
       setCurrentIndex(newIndex);
     }
   };
@@ -387,7 +387,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         name={product.name}
                         variant={i}
                         src={productImages[i]}
-                        className="w-full aspect-[4/3] sm:aspect-video object-cover"
+                        className="w-full h-full aspect-[4/3] sm:aspect-video"
                       />
                     </div>
                   ))}
