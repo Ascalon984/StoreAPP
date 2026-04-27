@@ -10,15 +10,15 @@ import ProductCard from './ProductCard';
 export default function ProductGrid() {
   const { category, sort } = useFilterStore();
   const { query } = useSearchStore();
-  const { fetchReviews } = useReviewStore();
+  const { fetchReviews } = useReviewStore((state) => ({ fetchReviews: state.fetchReviews }));
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]);
 
-  // Fetch reviews once on component mount
+  // Fetch reviews once on component mount (only once, no dependencies)
   useEffect(() => {
-    fetchReviews();
-  }, [fetchReviews]);
+    fetchReviews().catch((error) => console.error('Failed to fetch reviews:', error));
+  }, []);
 
   useEffect(() => {
     let url = '/api/public/products';

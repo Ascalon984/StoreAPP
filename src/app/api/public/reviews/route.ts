@@ -11,12 +11,15 @@ export async function GET(request: Request) {
       cache: 'no-store'
     });
     if (!res.ok) {
-      throw new Error('Failed to fetch reviews from Admin API');
+      console.warn('Admin API reviews returned status:', res.status);
+      // Return empty array instead of error, so frontend doesn't break
+      return NextResponse.json({ reviews: [] });
     }
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Proxy error:', error);
-    return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
+    console.error('Proxy error fetching reviews:', error);
+    // Return empty array on error instead of 500, prevents frontend crash
+    return NextResponse.json({ reviews: [] });
   }
 }

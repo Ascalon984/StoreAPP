@@ -19,16 +19,33 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await fetch('/api/public/reviews');
-      if (!res.ok) throw new Error('Failed to fetch reviews');
+      if (!res.ok) {
+        console.warn('Reviews API returned non-ok status:', res.status);
+        set({ reviews: [], isLoading: false, error: 'API error' });
+        return;
+      }
+      
       const data = await res.json();
       
+      // Handle both array response and object with reviews key
+      let reviewsArray = [];
+      if (Array.isArray(data)) {
+        reviewsArray = data;
+      } else if (data && Array.isArray(data.reviews)) {
+        reviewsArray = data.reviews;
+      } else if (data && typeof data === 'object') {
+        // If it's an object but not array, try to handle it gracefully
+        console.warn('Unexpected reviews response format:', data);
+        reviewsArray = [];
+      }
+      
       // Map database response to Review format
-      const reviews = (data.reviews || data || []).map((r: any) => ({
-        id: r.id,
+      const reviews = reviewsArray.map((r: any) => ({
+        id: r.id || `review-${Math.random()}`,
         productId: r.product_id || 'all',
-        name: r.user_name,
-        rating: r.rating,
-        comment: r.comment,
+        name: r.user_name || 'Anonymous',
+        rating: Number(r.rating) || 5,
+        comment: r.comment || '',
         createdAt: r.created_at || new Date().toISOString(),
         isVerified: r.is_active !== false,
       }));
@@ -36,7 +53,11 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       set({ reviews, isLoading: false });
     } catch (error) {
       console.error('Error fetching reviews:', error);
-      set({ error: error instanceof Error ? error.message : 'Unknown error', isLoading: false });
+      set({ 
+        reviews: [], 
+        error: error instanceof Error ? error.message : 'Unknown error', 
+        isLoading: false 
+      });
     }
   },
   

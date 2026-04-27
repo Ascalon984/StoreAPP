@@ -84,7 +84,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
-  const { getReviewsForProduct, reviews: zustandReviews, fetchReviews } = useReviewStore();
+  const { getReviewsForProduct, reviews: zustandReviews } = useReviewStore();
+  const { fetchReviews } = useReviewStore((state) => ({ fetchReviews: state.fetchReviews }));
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
   const { waNumber, fetchSettings } = useSettingsStore();
