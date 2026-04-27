@@ -362,11 +362,27 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           {(() => {
             // Normalisasi data gambar dari admin
             const rawImages = product.images || (product as any).image;
-            const productImages = Array.isArray(rawImages)
-              ? rawImages
-              : (typeof rawImages === 'string'
-                ? rawImages.split('|').filter(img => img.trim() !== '')
-                : []);
+            let productImages: string[] = [];
+            
+            if (Array.isArray(rawImages)) {
+              // Jika array, cek apakah setiap elemen adalah pipe-separated (bug dari admin API)
+              // atau sudah individual images
+              productImages = rawImages.flatMap(img => {
+                if (!img || typeof img !== 'string') return [];
+                // Jika string dimulai dengan data:image atau http, itu gambar individual
+                if (img.startsWith('data:image') || img.startsWith('http')) {
+                  return [img];
+                }
+                // Jika tidak, coba split dengan pipe (fallback untuk admin API bug)
+                return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
+              });
+            } else if (typeof rawImages === 'string') {
+              // Jika string, split dengan pipe dan filter yang valid
+              productImages = rawImages
+                .split('|')
+                .map(img => img?.trim())
+                .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
+            }
 
             // Tampilkan semua gambar yang ada, jika kosong tampilkan 1 slide placeholder
             const slideCount = productImages.length > 0 ? productImages.length : 1;

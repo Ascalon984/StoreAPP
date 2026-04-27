@@ -212,11 +212,25 @@ export default function MiniCart() {
                 const hasDiscount = originalPrice && originalPrice > price;
 
                 const rawImages = product.images || (product as any).image;
-                const cartImg = Array.isArray(rawImages)
-                  ? rawImages[0]
-                  : (typeof rawImages === 'string'
-                    ? rawImages.split('|').filter(Boolean)[0]
-                    : undefined);
+                let cartImg: string | undefined;
+                
+                if (Array.isArray(rawImages)) {
+                  // Jika array, cek apakah setiap elemen adalah pipe-separated
+                  const flatImages = rawImages.flatMap(img => {
+                    if (!img || typeof img !== 'string') return [];
+                    if (img.startsWith('data:image') || img.startsWith('http')) {
+                      return [img];
+                    }
+                    return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
+                  });
+                  cartImg = flatImages[0];
+                } else if (typeof rawImages === 'string') {
+                  const imgs = rawImages
+                    .split('|')
+                    .map(img => img?.trim())
+                    .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
+                  cartImg = imgs[0];
+                }
 
                 return (
                   <div

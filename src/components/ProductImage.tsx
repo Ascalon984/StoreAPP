@@ -40,8 +40,10 @@ export default function ProductImage({ category, name, src, variant = 0, classNa
     setHasError(false);
   }, [src]);
 
-  // Pastikan src adalah string Base64 yang valid (minimal header data:image)
-  const isValidSrc = !hasError && src && typeof src === 'string' && (src.startsWith('data:image') || src.startsWith('http'));
+  // Pastikan src adalah string Base64 yang valid (minimal header data:image) atau valid HTTP URL
+  const isValidSrc = !hasError && src && typeof src === 'string' && (
+    src.startsWith('data:image') || src.startsWith('http')
+  );
 
   if (isValidSrc) {
     return (
@@ -53,6 +55,7 @@ export default function ProductImage({ category, name, src, variant = 0, classNa
           loading="lazy"
           onError={(e) => {
             // Set state error agar merender gradient sebagai fallback
+            console.warn(`Failed to load image for product "${name}":`, src?.substring(0, 50));
             setHasError(true);
           }}
         />
