@@ -26,6 +26,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       }
       
       const data = await res.json();
+      console.log('Reviews API response:', data);
       
       // Handle both array response and object with reviews key
       let reviewsArray = [];
@@ -40,15 +41,20 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       }
       
       // Map database response to Review format
-      const reviews = reviewsArray.map((r: any) => ({
-        id: r.id || `review-${Math.random()}`,
-        productId: r.product_id || 'all',
-        name: r.user_name || 'Anonymous',
-        rating: Number(r.rating) || 5,
-        comment: r.comment || '',
-        createdAt: r.created_at || new Date().toISOString(),
-        isVerified: r.is_active !== false,
-      }));
+      const reviews = reviewsArray.map((r: any) => {
+        // Debug log untuk setiap review
+        console.log('Mapping review:', r);
+        return {
+          id: r.id || `review-${Math.random()}`,
+          productId: r.product_id || 'all',
+          // Ambil nama real dari database - jangan ada fallback
+          name: r.user_name || r.name || r.userName,
+          rating: Number(r.rating) || 5,
+          comment: r.comment || '',
+          createdAt: r.created_at || new Date().toISOString(),
+          isVerified: r.is_active !== false,
+        };
+      });
       
       set({ reviews, isLoading: false });
     } catch (error) {
