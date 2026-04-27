@@ -232,7 +232,7 @@ export default function MiniCart() {
                         className="w-[72px] h-[72px] rounded-xl flex-shrink-0 object-cover"
                       />
 
-                      {/* Info */}
+                      {/* Informasi */}
                       <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                         <div>
                           <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">
