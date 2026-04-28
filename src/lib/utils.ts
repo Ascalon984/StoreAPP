@@ -107,7 +107,7 @@ export function generateWAMessage(
     return encodeURIComponent('Halo kak, saya ingin bertanya produk.');
   }
 
-  const divider = '─────────────────────────';
+  const divider = '──────────────';
   const itemCount = items.length;
   const orderLabel = itemCount > 1 ? `(${itemCount} item)` : '';
 
@@ -158,7 +158,7 @@ export function generateSingleWAMessage(
   price: number,
   deliveryInfo?: DeliveryInfo
 ): string {
-  const divider = '─────────────────────────';
+  const divider = '──────────────';
 
   // Single item: format lebih clean tanpa redundancy
   const itemLines = `1. *${productName}*\n   1x ${formatRupiah(price)}`;
