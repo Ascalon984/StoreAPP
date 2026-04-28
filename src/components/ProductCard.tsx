@@ -19,7 +19,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   // Normalisasi gambar yang lebih kuat untuk mencegah crash
   const rawImages = product.images || (product as any).image;
   let productImages: string[] = [];
-  
+
   if (Array.isArray(rawImages)) {
     // Jika array, cek apakah setiap elemen adalah pipe-separated (bug dari admin API)
     // atau sudah individual images
@@ -39,11 +39,11 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       .map(img => img?.trim())
       .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
   }
-  
+
   const mainImage = productImages[0];
 
   // Gunakan angka terbesar antara data API atau jumlah ulasan di store
-  const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.length);
+  const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.filter(r => r.productId !== 'all').length);
 
   const isHot = product.sold >= 500;
   const discount = product.originalPrice && product.originalPrice > product.price

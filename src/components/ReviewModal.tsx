@@ -96,91 +96,91 @@ export default function ReviewModal() {
 
   // ── Reset saat modal buka ──
   const resetState = useCallback(() => {
-  setRating(0);
-  setComment('');
-  setHoveredStar(0);
-  setDragDelta(0);
-  dragVelocity.current = 0;
+    setRating(0);
+    setComment('');
+    setHoveredStar(0);
+    setDragDelta(0);
+    dragVelocity.current = 0;
 
-  const viewport = window.visualViewport;
-  if (viewport && overlayRef.current) {
-    overlayRef.current.style.height = `${viewport.height}px`;
-    overlayRef.current.style.top = `${viewport.offsetTop}px`;
-  }
-}, []);
-
-// ── Lock body scroll + Handle keyboard ──
-useEffect(() => {
-  if (!isOpen) return;
-
-  const scrollY = window.scrollY;
-  const body = document.body;
-
-  // 🔒 Lock body
-  body.style.position = 'fixed';
-  body.style.top = `-${scrollY}px`;
-  body.style.left = '0';
-  body.style.right = '0';
-  body.style.overflow = 'hidden';
-
-  const viewport = window.visualViewport;
-
-  let initialHeight = window.innerHeight;
-
-  if (viewport) {
-    initialHeight = viewport.height;
-  }
-
-  const handleViewportChange = () => {
-    if (!viewport) return;
-
-    const currentHeight = viewport.height;
-    if (overlayRef.current) {
-      overlayRef.current.style.height = `${currentHeight}px`;
+    const viewport = window.visualViewport;
+    if (viewport && overlayRef.current) {
+      overlayRef.current.style.height = `${viewport.height}px`;
       overlayRef.current.style.top = `${viewport.offsetTop}px`;
     }
+  }, []);
 
-    // 🔥 keyboard detection
-    const heightDiff = initialHeight - currentHeight;
-    setIsKeyboardOpen(heightDiff > 100);
-  };
+  // ── Lock body scroll + Handle keyboard ──
+  useEffect(() => {
+    if (!isOpen) return;
 
-  const cleanupBody = () => {
-    body.style.position = '';
-    body.style.top = '';
-    body.style.left = '';
-    body.style.right = '';
-    body.style.overflow = '';
+    const scrollY = window.scrollY;
+    const body = document.body;
 
-    if (overlayRef.current) {
-      overlayRef.current.style.height = '100dvh';
-      overlayRef.current.style.top = '0px';
-    }
-    setIsKeyboardOpen(false);
+    // 🔒 Lock body
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.overflow = 'hidden';
 
-    window.scrollTo(0, scrollY);
-  };
+    const viewport = window.visualViewport;
 
-  if (viewport) {
-    const timeoutId = setTimeout(() => {
-      // 🔥 ambil height stabil setelah render
+    let initialHeight = window.innerHeight;
+
+    if (viewport) {
       initialHeight = viewport.height;
-      handleViewportChange();
-    }, 100);
+    }
 
-    viewport.addEventListener('resize', handleViewportChange);
-    viewport.addEventListener('scroll', handleViewportChange);
+    const handleViewportChange = () => {
+      if (!viewport) return;
 
-    return () => {
-      clearTimeout(timeoutId);
-      viewport.removeEventListener('resize', handleViewportChange);
-      viewport.removeEventListener('scroll', handleViewportChange);
-      cleanupBody(); // ✅ WAJIB
+      const currentHeight = viewport.height;
+      if (overlayRef.current) {
+        overlayRef.current.style.height = `${currentHeight}px`;
+        overlayRef.current.style.top = `${viewport.offsetTop}px`;
+      }
+
+      // 🔥 keyboard detection
+      const heightDiff = initialHeight - currentHeight;
+      setIsKeyboardOpen(heightDiff > 100);
     };
-  }
 
-  return cleanupBody;
-}, [isOpen]);
+    const cleanupBody = () => {
+      body.style.position = '';
+      body.style.top = '';
+      body.style.left = '';
+      body.style.right = '';
+      body.style.overflow = '';
+
+      if (overlayRef.current) {
+        overlayRef.current.style.height = '100dvh';
+        overlayRef.current.style.top = '0px';
+      }
+      setIsKeyboardOpen(false);
+
+      window.scrollTo(0, scrollY);
+    };
+
+    if (viewport) {
+      const timeoutId = setTimeout(() => {
+        // 🔥 ambil height stabil setelah render
+        initialHeight = viewport.height;
+        handleViewportChange();
+      }, 100);
+
+      viewport.addEventListener('resize', handleViewportChange);
+      viewport.addEventListener('scroll', handleViewportChange);
+
+      return () => {
+        clearTimeout(timeoutId);
+        viewport.removeEventListener('resize', handleViewportChange);
+        viewport.removeEventListener('scroll', handleViewportChange);
+        cleanupBody(); // ✅ WAJIB
+      };
+    }
+
+    return cleanupBody;
+  }, [isOpen]);
 
   const handleClose = useCallback(() => {
     if (dragDelta === 0 && !isClosing) {
@@ -262,7 +262,7 @@ useEffect(() => {
     try {
       // ─────── STEP 1: Submit to Admin API ───────
       const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-      
+
       const reviewsSubmitted = [];
 
       for (const product of displayProducts) {
@@ -312,7 +312,7 @@ useEffect(() => {
             productId: p.id,
           });
         });
-      } else {
+      } else if (productSlug === 'all' || !productSlug) {
         addReview({
           ...reviewBase,
           id: `r-${Date.now()}`,
@@ -473,10 +473,10 @@ useEffect(() => {
                   {rating > 0 && (
                     <div
                       className={`absolute inset-0 blur-xl rounded-full transition-all duration-500 ${rating >= 4
-                          ? 'bg-yellow-300/30'
-                          : rating >= 3
-                            ? 'bg-yellow-300/20'
-                            : 'bg-orange-300/20'
+                        ? 'bg-yellow-300/30'
+                        : rating >= 3
+                          ? 'bg-yellow-300/20'
+                          : 'bg-orange-300/20'
                         }`}
                       style={{ padding: '14px 22px' }}
                     />
@@ -502,10 +502,10 @@ useEffect(() => {
                             size={34}
                             strokeWidth={1}
                             className={`transition-all duration-200 ${isActive
-                                ? isFilled || isHoverFill
-                                  ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
-                                  : 'text-gray-300'
-                                : 'text-gray-200'
+                              ? isFilled || isHoverFill
+                                ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
+                                : 'text-gray-300'
+                              : 'text-gray-200'
                               } ${isActive ? 'scale-100' : 'scale-90'}`}
                           />
                           {isFilled && (
@@ -542,10 +542,10 @@ useEffect(() => {
                   </label>
                   <span
                     className={`text-[10px] font-medium tabular-nums transition-colors ${isOverLimit
-                        ? 'text-red-500'
-                        : charCount > MAX_CHARS * 0.8
-                          ? 'text-yellow-500'
-                          : 'text-gray-300'
+                      ? 'text-red-500'
+                      : charCount > MAX_CHARS * 0.8
+                        ? 'text-yellow-500'
+                        : 'text-gray-300'
                       }`}
                   >
                     {charCount}/{MAX_CHARS}
@@ -560,8 +560,8 @@ useEffect(() => {
                   onFocus={() => handleInputFocus(commentTextareaRef.current)}
                   placeholder="Ceritakan pengalamanmu belanja di sini..."
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${isOverLimit
-                      ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100'
-                      : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                    ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100'
+                    : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                     }`}
                 />
                 {isOverLimit && (
@@ -578,8 +578,8 @@ useEffect(() => {
                   onClick={handleSubmit}
                   disabled={!canSubmit && !isSubmitting}
                   className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${canSubmit
-                      ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     }`}
                 >
                   {isSubmitting ? (
