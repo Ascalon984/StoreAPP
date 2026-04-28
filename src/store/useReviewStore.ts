@@ -42,8 +42,9 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       
       // Map database response to Review format
       const reviews = reviewsArray.map((r: any) => {
-        // Debug log untuk setiap review
-        console.log('Mapping review:', r);
+        // Debug: log seluruh response untuk lihat field apa saja yang dikirim
+        console.log('Raw review from API:', JSON.stringify(r, null, 2));
+        
         return {
           id: r.id || `review-${Math.random()}`,
           productId: r.product_id || 'all',
@@ -51,7 +52,8 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
           name: r.user_name || r.name || r.userName,
           rating: Number(r.rating) || 5,
           comment: r.comment || '',
-          createdAt: r.created_at || new Date().toISOString(),
+          // Cek berbagai kemungkinan nama field untuk timestamp
+          createdAt: r.created_at || r.createdAt || r.timestamp || r.created_on || new Date().toISOString(),
           isVerified: r.is_active !== false,
         };
       });

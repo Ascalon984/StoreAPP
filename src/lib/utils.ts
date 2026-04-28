@@ -40,55 +40,97 @@ function getMapPin(lat: number, lng: number): string {
   return `https://maps.google.com/?q=${lat},${lng}`;
 }
 
-export function generateWAMessage(items: CartItem[], deliveryInfo?: DeliveryInfo): string {
+/**
+ * Generate WhatsApp message for cart items (multiple products)
+ */
+export function generateWAMessage(
+  items: CartItem[],
+  deliveryInfo?: DeliveryInfo
+): string {
   const itemLines = items
-    .map((item, i) => `${i + 1}. ${item.product.name} (${item.quantity}x) - ${formatRupiah(item.product.price * item.quantity)}`)
+    .map(
+      (item, i) =>
+        `${i + 1}. ${item.product.name} (${item.quantity}x) - ${formatRupiah(
+          item.product.price * item.quantity
+        )}`
+    )
     .join('\n');
 
-  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const total = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
 
   let deliverySection = '';
   if (deliveryInfo) {
-    const pinLine = (deliveryInfo.lat != null && deliveryInfo.lng != null)
-      ? `\n📍 Pin Lokasi: ${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-      : '';
+    const pinLine =
+      deliveryInfo.lat != null && deliveryInfo.lng != null
+        ? `\n📍 Pin Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+        : '';
 
-    deliverySection = `\n\n📍 *Informasi Pengiriman:*\nNama: ${deliveryInfo.name}\nNo. HP: ${deliveryInfo.phone}\nAlamat: ${deliveryInfo.address}${pinLine}`;
+    deliverySection = `
+
+📍 *Informasi Pengiriman*
+Nama   : ${deliveryInfo.name}
+No. HP : ${deliveryInfo.phone}
+Alamat : ${deliveryInfo.address}${pinLine}`;
   }
 
-  // Buat pesan dengan spacing yang jelas
   const message = `Halo kak 👋
 
 Saya ingin memesan:
 
 ${itemLines}
 
-Total: ${formatRupiah(total)}${deliverySection}`;
+*Total: ${formatRupiah(total)}*${deliverySection}
+`;
 
   return encodeURIComponent(message);
 }
 
-export function generateSingleWAMessage(productName: string, deliveryInfo?: DeliveryInfo): string {
+/**
+ * Generate WhatsApp message for single product
+ */
+export function generateSingleWAMessage(
+  productName: string,
+  productSlug: string,
+  deliveryInfo?: DeliveryInfo
+): string {
   let deliverySection = '';
   if (deliveryInfo) {
-    const pinLine = (deliveryInfo.lat != null && deliveryInfo.lng != null)
-      ? `\n📍 Pin Lokasi: ${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-      : '';
+    const pinLine =
+      deliveryInfo.lat != null && deliveryInfo.lng != null
+        ? `\n📍 Pin Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+        : '';
 
-    deliverySection = `\n\n📍 *Informasi Pengiriman:*\nNama: ${deliveryInfo.name}\nNo. HP: ${deliveryInfo.phone}\nAlamat: ${deliveryInfo.address}${pinLine}`;
+    deliverySection = `
+
+📍 *Informasi Pengiriman*
+Nama   : ${deliveryInfo.name}
+No. HP : ${deliveryInfo.phone}
+Alamat : ${deliveryInfo.address}${pinLine}`;
   }
 
   const message = `Halo kak 👋
 
-Saya ingin memesan: ${productName}${deliverySection}`;
+Saya ingin memesan:
+
+*${productName}*${deliverySection}
+`;
 
   return encodeURIComponent(message);
 }
 
+/**
+ * Get WhatsApp link with pre-filled message
+ */
 export function getWALink(message: string, waNumber?: string): string {
   return `https://wa.me/${waNumber || WA_NUMBER}?text=${message}`;
 }
 
+/**
+ * Utility function for conditional className merging
+ */
 export function cn(...classes: (string | undefined | false | null)[]): string {
   return classes.filter(Boolean).join(' ');
 }
