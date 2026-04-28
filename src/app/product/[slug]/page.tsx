@@ -239,7 +239,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       }
 
       // ─────── STEP 2: Success - proceed with WhatsApp ───────
-      const message = generateSingleWAMessage(product.name, product.slug, deliveryInfo);
+      const message = generateSingleWAMessage(
+        product.name,
+        product.slug,
+        product.price,
+        deliveryInfo
+      );
       window.open(getWALink(message, waNumber), '_blank');
       openModal(product.slug);
       setIsCheckoutModalOpen(false);

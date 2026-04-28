@@ -52,24 +52,23 @@ export function generateWAMessage(
     return encodeURIComponent('Halo kak, saya ingin bertanya produk.');
   }
 
+  const divider = '----------------------------';
+
   const itemLines = items
     .map((item, i) => {
       const subtotal = item.product.price * item.quantity;
-      return `${i + 1}. ${item.product.name} (${item.quantity}x)\n   ${formatRupiah(subtotal)}`;
+      return `${i + 1}. *${item.product.name}*\n   ${item.quantity}x ${formatRupiah(item.product.price)} = ${formatRupiah(subtotal)}`;
     })
     .join('\n');
 
-  const total = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   let deliverySection = '';
   if (deliveryInfo) {
     const pinLine =
       deliveryInfo.lat != null && deliveryInfo.lng != null
-        ? `\n📍 Pin Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-        : '';
+        ? `\n📍 *Pin Lokasi:*\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+        : '\n📍 *Pin Lokasi:* (Tidak disertakan)';
 
     deliverySection = `
 
@@ -80,12 +79,15 @@ Alamat : ${deliveryInfo.address}${pinLine}`;
   }
 
   const message = `Halo kak 👋
-
-Saya ingin memesan:
-
+*ORDER BARU - ${items.length > 1 ? 'MULTI ITEM' : 'SINGLE ITEM'}*
+${divider}
+🛒 *Daftar Pesanan:*
 ${itemLines}
 
-*Total: ${formatRupiah(total)}*${deliverySection}`;
+💰 *TOTAL BAYAR: ${formatRupiah(total)}*
+${divider}${deliverySection}
+
+Mohon segera diproses ya kak, terima kasih! 🙏`;
 
   return encodeURIComponent(message);
 }
@@ -96,19 +98,18 @@ ${itemLines}
 export function generateSingleWAMessage(
   productName: string,
   productSlug: string,
+  price: number,
   deliveryInfo?: DeliveryInfo
 ): string {
-  const subtotal = formatRupiah(0); // Price not available in this function
-  // Note: You might want to pass price as parameter for single product
-  
-  const itemLines = `1. ${productName} (1x)\n   ${subtotal}`;
+  const divider = '----------------------------';
+  const itemLines = `1. *${productName}*\n   1x ${formatRupiah(price)}`;
 
   let deliverySection = '';
   if (deliveryInfo) {
     const pinLine =
       deliveryInfo.lat != null && deliveryInfo.lng != null
-        ? `\n📍 Pin Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-        : '';
+        ? `\n📍 *Pin Lokasi:*\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+        : '\n📍 *Pin Lokasi:* (Tidak disertakan)';
 
     deliverySection = `
 
@@ -119,10 +120,15 @@ Alamat : ${deliveryInfo.address}${pinLine}`;
   }
 
   const message = `Halo kak 👋
+*ORDER BARU - BELI LANGSUNG*
+${divider}
+🛒 *Daftar Pesanan:*
+${itemLines}
 
-Saya ingin memesan:
+💰 *TOTAL BAYAR: ${formatRupiah(price)}*
+${divider}${deliverySection}
 
-${itemLines}${deliverySection}`;
+Mohon segera diproses ya kak, terima kasih! 🙏`;
 
   return encodeURIComponent(message);
 }
