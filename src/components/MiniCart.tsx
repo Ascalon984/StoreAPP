@@ -8,6 +8,7 @@ import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { useReviewStore } from '@/store/useReviewStore';
 import { formatRupiah, generateWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from './ProductImage';
 import CheckoutModal from './CheckoutModal';
