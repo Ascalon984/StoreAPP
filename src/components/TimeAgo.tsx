@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { timeAgo } from '@/lib/utils';
 
 interface TimeAgoProps {
@@ -9,24 +9,28 @@ interface TimeAgoProps {
 }
 
 export default function TimeAgo({ date, className = '' }: TimeAgoProps) {
-  const [displayTime, setDisplayTime] = useState('');
+  const [mounted, setMounted] = useState(false);
+  const [, setUpdate] = useState({});
+
+  // Hitung ulang setiap waktu komponendisimpan
+  const displayTime = useMemo(() => timeAgo(date), [date]);
 
   useEffect(() => {
-    // Set initial value
-    setDisplayTime(timeAgo(date));
+    setMounted(true);
 
-    // Update lebih sering untuk akurasi yang lebih baik
-    // Update setiap 10 detik untuk memastikan waktu selalu akurat
+    // Update setiap 5 detik untuk memastikan akurasi
     const interval = setInterval(() => {
-      setDisplayTime(timeAgo(date));
-    }, 10000); // Update setiap 10 detik
+      setUpdate({});
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [date]);
 
-  if (!displayTime) {
+  // Jangan render apa-apa sampai component di-hydrate di client
+  if (!mounted) {
     return null;
   }
 
-  return <span className={className}>{displayTime}</span>;
+  return <span className={className}>{timeAgo(date)}</span>;
 }
+
