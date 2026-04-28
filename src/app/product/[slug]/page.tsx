@@ -18,6 +18,7 @@ import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } f
 import ProductImage from '@/components/ProductImage';
 import CheckoutModal from '@/components/CheckoutModal';
 import LoadingScreen from '@/components/LoadingScreen';
+import TimeAgo from '@/components/TimeAgo';
 
 // Helper: hitung distribusi rating dari data ulasan
 function getRatingDistribution(reviews: { rating: number }[]) {
@@ -604,7 +605,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   )}
                   <span className="text-[11px] text-gray-400 flex items-center gap-1">
                     <Clock size={10} strokeWidth={1.5} />
-                    {timeAgo(review.createdAt)}
+                    <TimeAgo date={review.createdAt} />
                   </span>
                 </div>
               </div>
