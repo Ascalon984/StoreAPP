@@ -8,12 +8,16 @@ interface ReviewStore {
   fetchReviews: (productId?: string) => Promise<void>;
   addReview: (review: Review) => void;
   getReviewsForProduct: (productId: string) => Review[];
+  refreshVersion: number;
+  triggerRefresh: () => void;
 }
 
 export const useReviewStore = create<ReviewStore>((set, get) => ({
   reviews: [],
   isLoading: false,
   error: null,
+  refreshVersion: 0,
+  triggerRefresh: () => set((state) => ({ refreshVersion: state.refreshVersion + 1 })),
 
   fetchReviews: async (productId?: string) => {
     set({ isLoading: true, error: null });

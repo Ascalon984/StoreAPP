@@ -26,7 +26,7 @@ type CartProduct = Product & { qty: number };
 
 export default function ReviewModal() {
   const { isOpen, closeModal, productSlug } = useReviewModalStore();
-  const { addReview } = useReviewStore();
+  const { addReview, triggerRefresh } = useReviewStore();
   const { showToast } = useToastStore();
   const { items: cartItems } = useCartStore();
   const { deliveryInfo } = useDeliveryStore();
@@ -321,6 +321,7 @@ export default function ReviewModal() {
       }
 
       setIsSubmitting(false);
+      triggerRefresh();
       showToast(`Terima kasih! Review berhasil dikirim (${reviewsSubmitted.length} produk)`);
       handleClose();
     } catch (error) {

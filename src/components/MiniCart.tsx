@@ -20,6 +20,7 @@ export default function MiniCart() {
   const { deliveryInfo } = useDeliveryStore();
   const { showToast } = useToastStore();
   const { waNumber, fetchSettings } = useSettingsStore();
+  const { triggerRefresh } = useReviewStore();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export default function MiniCart() {
         console.warn('[Order] Cache refresh failed:', refreshError);
       }
 
+      triggerRefresh();
       // ✅ STEP 3: Generate & buka WhatsApp
       const message = generateWAMessage(items, deliveryInfo);
       window.open(getWALink(message, waNumber), '_blank');
@@ -213,7 +215,7 @@ export default function MiniCart() {
 
                 const rawImages = product.images || (product as any).image;
                 let cartImg: string | undefined;
-                
+
                 if (Array.isArray(rawImages)) {
                   // Jika array, cek apakah setiap elemen adalah pipe-separated
                   const flatImages = rawImages.flatMap(img => {

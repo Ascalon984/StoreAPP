@@ -85,8 +85,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
-  const { getReviewsForProduct, reviews: zustandReviews } = useReviewStore();
-  const { fetchReviews } = useReviewStore((state) => ({ fetchReviews: state.fetchReviews }));
+  const { getReviewsForProduct, reviews: zustandReviews, fetchReviews, refreshVersion } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
   const { waNumber, fetchSettings } = useSettingsStore();
@@ -138,7 +137,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           setLoading(false);
         }
       });
-  }, [slug]);
+  }, [slug, refreshVersion]);
 
   // Fetch reviews spesifik produk ketika product sudah loaded
   useEffect(() => {
@@ -308,6 +307,15 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return localReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   })();
 
+  // Hitung live metrics untuk sinkronisasi instan di UI
+  const sessionReviews = localReviews.filter(r => r.id.toString().startsWith('r-') && r.productId !== 'all');
+  const serverCount = product.reviewCount || 0;
+  const serverRating = product.rating || 0;
+  const liveReviewCount = serverCount + sessionReviews.length;
+  const liveRating = liveReviewCount > 0
+    ? Number(((serverRating * serverCount + sessionReviews.reduce((acc, r) => acc + r.rating, 0)) / liveReviewCount).toFixed(1))
+    : serverRating;
+
   const distribution = getRatingDistribution(allReviews);
   const displayedReviews = allReviews.slice(0, displayCount);
 
@@ -369,7 +377,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             // Normalisasi data gambar dari admin
             const rawImages = product.images || (product as any).image;
             let productImages: string[] = [];
-            
+
             if (Array.isArray(rawImages)) {
               // Jika array, cek apakah setiap elemen adalah pipe-separated (bug dari admin API)
               // atau sudah individual images
@@ -442,7 +450,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <div className="text-right flex-shrink-0">
             <div className="flex items-center gap-1 text-orange-500">
               <Flame size={14} strokeWidth={1.5} />
-              <span className="font-semibold text-gray-800 text-sm">{product.sold}+</span>
+              <span className="font-semibold text-gray-800 text-sm">{Math.max(product.sold, product.sold || 0)}+</span>
             </div>
             <p className="text-[10px] text-gray-400">Terjual</p>
           </div>

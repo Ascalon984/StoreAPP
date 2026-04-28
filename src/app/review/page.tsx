@@ -81,19 +81,17 @@ function Modal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-300 ${
-        animating ? 'opacity-100' : 'opacity-0'
-      }`}
+      className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-300 ${animating ? 'opacity-100' : 'opacity-0'
+        }`}
       onClick={handleClose}
     >
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
       <div
-        className={`relative w-full sm:max-w-sm bg-white sm:rounded-2xl rounded-t-2xl shadow-xl overflow-hidden transition-transform duration-300 ease-out ${
-          animating
+        className={`relative w-full sm:max-w-sm bg-white sm:rounded-2xl rounded-t-2xl shadow-xl overflow-hidden transition-transform duration-300 ease-out ${animating
             ? 'translate-y-0 sm:scale-100 sm:translate-y-0'
             : 'translate-y-full sm:scale-95 sm:translate-y-4'
-        }`}
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -373,6 +371,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
 
       // ✅ STEP 2: Update local store
       addReview!(reviewData);
+      useReviewStore.getState().triggerRefresh();
 
       // ✅ STEP 2.5: Refetch product data untuk sync rating & reviews
       try {
@@ -506,11 +505,10 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                     <Star
                       size={40}
                       strokeWidth={1}
-                      className={`transition-colors ${
-                        star <= rating
+                      className={`transition-colors ${star <= rating
                           ? 'fill-yellow-400 text-yellow-400'
                           : 'text-gray-300'
-                      }`}
+                        }`}
                     />
                   </button>
                 ))}
@@ -535,13 +533,12 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                   <span className="text-gray-400 font-normal">(opsional)</span>
                 </label>
                 <span
-                  className={`text-xs tabular-nums transition-colors ${
-                    comment.length > 1000
+                  className={`text-xs tabular-nums transition-colors ${comment.length > 1000
                       ? 'text-red-500 font-semibold'
                       : comment.length > 800
                         ? 'text-amber-500'
                         : 'text-gray-400'
-                  }`}
+                    }`}
                 >
                   {comment.length}/1000
                 </span>
@@ -589,11 +586,10 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
       {/* Toast — format identik dengan ProductDetailPage */}
       {toast && (
         <div
-          className={`fixed top-3 left-0 right-0 z-[60] flex justify-center pointer-events-none transition-all duration-300 ${
-            isToastExiting
+          className={`fixed top-3 left-0 right-0 z-[60] flex justify-center pointer-events-none transition-all duration-300 ${isToastExiting
               ? 'opacity-0 -translate-y-4 scale-95'
               : 'opacity-100 translate-y-0 scale-100'
-          }`}
+            }`}
         >
           <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-medium px-3.5 py-2 rounded-2xl shadow-lg">
             <CheckCircle

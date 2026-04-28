@@ -10,7 +10,7 @@ import ProductCard from './ProductCard';
 export default function ProductGrid() {
   const { category, sort } = useFilterStore();
   const { query } = useSearchStore();
-  const { fetchReviews } = useReviewStore((state) => ({ fetchReviews: state.fetchReviews }));
+  const { fetchReviews, refreshVersion } = useReviewStore();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]);
@@ -24,7 +24,7 @@ export default function ProductGrid() {
     let url = '/api/public/products';
     const params = new URLSearchParams();
     if (category && category !== 'all') params.append('category', category);
-    
+
     let apiFilter = '';
     if (sort === 'cheapest') apiFilter = 'terjangkau';
     else if (sort === 'newest') apiFilter = 'terbaru';
@@ -38,7 +38,7 @@ export default function ProductGrid() {
     fetch(`${url}?${params.toString()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => setProducts(data));
-  }, [category, sort]);
+  }, [category, sort, refreshVersion]);
 
   useEffect(() => {
     fetch(`/api/public/categories?t=${Date.now()}`, { cache: 'no-store' })
@@ -100,8 +100,8 @@ export default function ProductGrid() {
         {filtered.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400">
-              {sort === 'discount' 
-                ? 'Belum ada produk dengan diskon saat ini.' 
+              {sort === 'discount'
+                ? 'Belum ada produk dengan diskon saat ini.'
                 : 'Belum ada produk di kategori ini.'}
             </p>
           </div>

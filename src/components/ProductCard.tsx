@@ -42,8 +42,15 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   const mainImage = productImages[0];
 
-  // Gunakan angka terbesar antara data API atau jumlah ulasan di store
-  const displayReviewCount = Math.max(product.reviewCount || 0, localReviews.filter(r => r.productId !== 'all').length);
+  // Hitung live metrics (optimistic UI)
+  const sessionReviews = localReviews.filter(r => r.id.toString().startsWith('r-') && r.productId !== 'all');
+  const serverCount = product.reviewCount || 0;
+  const serverRating = product.rating || 0;
+
+  const displayReviewCount = serverCount + sessionReviews.length;
+  const displayRating = displayReviewCount > 0
+    ? Number(((serverRating * serverCount + sessionReviews.reduce((acc, r) => acc + r.rating, 0)) / displayReviewCount).toFixed(1))
+    : serverRating;
 
   const isHot = product.sold >= 500;
   const discount = product.originalPrice && product.originalPrice > product.price
@@ -114,7 +121,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           <div className="flex items-center justify-between mt-auto">
             <div className="flex items-center gap-0.5">
               <Star size={9} strokeWidth={0} fill="#FBBF24" className="text-yellow-400" />
-              <span className="text-[10.5px] font-semibold text-gray-700">{product.rating}</span>
+              <span className="text-[10.5px] font-semibold text-gray-700">{displayRating}</span>
               <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
             </div>
             <div className="flex items-center gap-0.5 text-[10px] text-gray-400 font-medium">
