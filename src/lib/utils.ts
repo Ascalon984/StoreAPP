@@ -56,13 +56,19 @@ export function generateWAMessage(items: CartItem[], deliveryInfo?: DeliveryInfo
     deliverySection = `\n\n📍 *Informasi Pengiriman:*\nNama: ${deliveryInfo.name}\nNo. HP: ${deliveryInfo.phone}\nAlamat: ${deliveryInfo.address}${pinLine}`;
   }
 
-  // ⬇️ Sudah bersih, fokus hanya untuk dilihat admin
-  return encodeURIComponent(
-    `Halo kak 👋\n\nSaya ingin memesan:\n\n${itemLines}\n\nTotal: ${formatRupiah(total)}${deliverySection}`
-  );
+  // Buat pesan dengan spacing yang jelas
+  const message = `Halo kak 👋
+
+Saya ingin memesan:
+
+${itemLines}
+
+Total: ${formatRupiah(total)}${deliverySection}`;
+
+  return encodeURIComponent(message);
 }
 
-export function generateSingleWAMessage(productName: string, productSlug: string, deliveryInfo?: DeliveryInfo): string {
+export function generateSingleWAMessage(productName: string, deliveryInfo?: DeliveryInfo): string {
   let deliverySection = '';
   if (deliveryInfo) {
     const pinLine = (deliveryInfo.lat != null && deliveryInfo.lng != null)
@@ -72,10 +78,11 @@ export function generateSingleWAMessage(productName: string, productSlug: string
     deliverySection = `\n\n📍 *Informasi Pengiriman:*\nNama: ${deliveryInfo.name}\nNo. HP: ${deliveryInfo.phone}\nAlamat: ${deliveryInfo.address}${pinLine}`;
   }
 
-  // ⬇️ Sudah bersih, fokus hanya untuk dilihat admin
-  return encodeURIComponent(
-    `Halo kak 👋\n\nSaya ingin memesan: ${productName}${deliverySection}`
-  );
+  const message = `Halo kak 👋
+
+Saya ingin memesan: ${productName}${deliverySection}`;
+
+  return encodeURIComponent(message);
 }
 
 export function getWALink(message: string, waNumber?: string): string {
