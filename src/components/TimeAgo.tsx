@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { timeAgo } from '@/lib/utils';
 
 interface TimeAgoProps {
@@ -8,28 +8,36 @@ interface TimeAgoProps {
   className?: string;
 }
 
-export default function TimeAgo({ date, className = '' }: TimeAgoProps) {
-  const [mounted, setMounted] = useState(false);
-  const [, setUpdate] = useState({});
+// Global timer untuk semua component TimeAgo
+let globalUpdateCount = 0;
+const listeners = new Set<() => void>();
 
-  // Hitung ulang setiap waktu komponendisimpan
-  const displayTime = useMemo(() => timeAgo(date), [date]);
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    globalUpdateCount++;
+    listeners.forEach(listener => listener());
+  }, 5000);
+}
+
+export default function TimeAgo({ date, className = '' }: TimeAgoProps) {
+  const [, setForceUpdate] = useState(0);
+  const initialTimeRef = useRef<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    // Set waktu awal saat component mount
+    initialTimeRef.current = timeAgo(date);
 
-    // Update setiap 5 detik untuk memastikan akurasi
-    const interval = setInterval(() => {
-      setUpdate({});
-    }, 5000);
+    // Subscribe ke global timer untuk update
+    const listener = () => {
+      setForceUpdate(prev => prev + 1);
+    };
 
-    return () => clearInterval(interval);
+    listeners.add(listener);
+
+    return () => {
+      listeners.delete(listener);
+    };
   }, [date]);
-
-  // Jangan render apa-apa sampai component di-hydrate di client
-  if (!mounted) {
-    return null;
-  }
 
   return <span className={className}>{timeAgo(date)}</span>;
 }
