@@ -435,6 +435,7 @@ useEffect(() => {
                               category={p.category}
                               name={p.name}
                               variant={0}
+                              src={p.images?.[0]}
                               className="w-full h-full object-cover"
                             />
                           </div>
