@@ -41,6 +41,61 @@ function getMapPin(lat: number, lng: number): string {
 }
 
 /**
+ * Normalize phone number to national format (08x)
+ * Fixes scientific notation issue (e.g., 628e... -> 081234567890)
+ * More robust validation to prevent invalid numbers
+ */
+function normalizePhoneToNational(phone: string | number): string {
+  let p = String(phone).replace(/\D/g, '');
+
+  // If already has 62 prefix, convert to 0
+  if (p.startsWith('62')) {
+    return '0' + p.slice(2);
+  }
+
+  // If already has 0 prefix, return as is
+  if (p.startsWith('0')) {
+    return p;
+  }
+
+  // Fallback: assume it's a valid Indonesian number without prefix
+  // Only add 0 prefix if the number seems reasonable (minimal 8 digits)
+  if (p.length >= 8) {
+    return '0' + p;
+  }
+
+  // If number is too short, return as is (but this shouldn't happen with valid input)
+  console.warn('Invalid phone number format:', phone);
+  return p;
+}
+
+/**
+ * Normalize phone number to international format (62xxx)
+ * For WhatsApp link
+ */
+function normalizePhoneToInternational(phone: string | number): string {
+  const p = String(phone).replace(/\D/g, '');
+
+  // If already has 62 prefix
+  if (p.startsWith('62')) {
+    return p;
+  }
+
+  // If has 0 prefix, convert to 62
+  if (p.startsWith('0')) {
+    return '62' + p.slice(1);
+  }
+
+  // Fallback: assume it's a valid number without prefix
+  if (p.length >= 8) {
+    return '62' + p;
+  }
+
+  console.warn('Invalid phone number format for WA link:', phone);
+  return p;
+}
+
+/**
  * Generate WhatsApp message for cart items (multiple products)
  */
 export function generateWAMessage(
@@ -52,40 +107,42 @@ export function generateWAMessage(
     return encodeURIComponent('Halo kak, saya ingin bertanya produk.');
   }
 
-  const divider = '----------------------------';
+  const divider = '─────────────────────────';
+  const itemCount = items.length;
+  const orderLabel = itemCount > 1 ? `(${itemCount} item)` : '';
 
   const itemLines = items
     .map((item, i) => {
       const subtotal = item.product.price * item.quantity;
+      // Multi item: tampilkan breakdown harga
       return `${i + 1}. *${item.product.name}*\n   ${item.quantity}x ${formatRupiah(item.product.price)} = ${formatRupiah(subtotal)}`;
     })
-    .join('\n');
+    .join('\n\n');
 
-  const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const total = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
 
-  let deliverySection = '';
-  if (deliveryInfo) {
-    const pinLine =
-      deliveryInfo.lat != null && deliveryInfo.lng != null
-        ? `\n📍 *Pin Lokasi:*\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-        : '\n📍 *Pin Lokasi:* (Tidak disertakan)';
-
-    deliverySection = `
-
-📍 *Informasi Pengiriman*
+  const deliverySection = deliveryInfo
+    ? `
+${divider}
+📍 *Pengiriman*
 Nama   : ${deliveryInfo.name}
-No. HP : ${deliveryInfo.phone}
-Alamat : ${deliveryInfo.address}${pinLine}`;
-  }
+No. HP : ${normalizePhoneToNational(deliveryInfo.phone)}
+Alamat : ${deliveryInfo.address}${deliveryInfo.lat && deliveryInfo.lng
+      ? `\n\n📍 Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+      : ''
+    }`
+    : '';
 
   const message = `Halo kak 👋
-*ORDER BARU - ${items.length > 1 ? 'MULTI ITEM' : 'SINGLE ITEM'}*
-${divider}
-🛒 *Daftar Pesanan:*
+*ORDER BARU ${orderLabel}*
+
+🛒 *Pesanan:*
 ${itemLines}
 
-💰 *TOTAL BAYAR: ${formatRupiah(total)}*
-${divider}${deliverySection}
+💰 *Total: ${formatRupiah(total)}*${deliverySection}
 
 Mohon segera diproses ya kak, terima kasih! 🙏`;
 
@@ -101,32 +158,30 @@ export function generateSingleWAMessage(
   price: number,
   deliveryInfo?: DeliveryInfo
 ): string {
-  const divider = '----------------------------';
+  const divider = '─────────────────────────';
+
+  // Single item: format lebih clean tanpa redundancy
   const itemLines = `1. *${productName}*\n   1x ${formatRupiah(price)}`;
 
-  let deliverySection = '';
-  if (deliveryInfo) {
-    const pinLine =
-      deliveryInfo.lat != null && deliveryInfo.lng != null
-        ? `\n📍 *Pin Lokasi:*\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
-        : '\n📍 *Pin Lokasi:* (Tidak disertakan)';
-
-    deliverySection = `
-
-📍 *Informasi Pengiriman*
+  const deliverySection = deliveryInfo
+    ? `
+${divider}
+📍 *Pengiriman*
 Nama   : ${deliveryInfo.name}
-No. HP : ${deliveryInfo.phone}
-Alamat : ${deliveryInfo.address}${pinLine}`;
-  }
+No. HP : ${normalizePhoneToNational(deliveryInfo.phone)}
+Alamat : ${deliveryInfo.address}${deliveryInfo.lat && deliveryInfo.lng
+      ? `\n\n📍 Lokasi:\n${getMapPin(deliveryInfo.lat, deliveryInfo.lng)}`
+      : ''
+    }`
+    : '';
 
   const message = `Halo kak 👋
-*ORDER BARU - BELI LANGSUNG*
-${divider}
-🛒 *Daftar Pesanan:*
+*ORDER BARU*
+
+🛒 *Pesanan:*
 ${itemLines}
 
-💰 *TOTAL BAYAR: ${formatRupiah(price)}*
-${divider}${deliverySection}
+💰 *Total: ${formatRupiah(price)}*${deliverySection}
 
 Mohon segera diproses ya kak, terima kasih! 🙏`;
 
@@ -137,7 +192,11 @@ Mohon segera diproses ya kak, terima kasih! 🙏`;
  * Get WhatsApp link with pre-filled message
  */
 export function getWALink(message: string, waNumber?: string): string {
-  return `https://wa.me/${waNumber || WA_NUMBER}?text=${message}`;
+  // Use international format for WhatsApp link
+  const normalizedNumber = waNumber
+    ? normalizePhoneToInternational(waNumber)
+    : normalizePhoneToInternational(WA_NUMBER);
+  return `https://wa.me/${normalizedNumber}?text=${message}`;
 }
 
 /**
