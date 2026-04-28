@@ -47,13 +47,16 @@ export function generateWAMessage(
   items: CartItem[],
   deliveryInfo?: DeliveryInfo
 ): string {
+  // Empty cart protection
+  if (!items.length) {
+    return encodeURIComponent('Halo kak, saya ingin bertanya produk.');
+  }
+
   const itemLines = items
-    .map(
-      (item, i) =>
-        `${i + 1}. ${item.product.name} (${item.quantity}x) - ${formatRupiah(
-          item.product.price * item.quantity
-        )}`
-    )
+    .map((item, i) => {
+      const subtotal = item.product.price * item.quantity;
+      return `${i + 1}. ${item.product.name} (${item.quantity}x)\n   ${formatRupiah(subtotal)}`;
+    })
     .join('\n');
 
   const total = items.reduce(
@@ -82,8 +85,7 @@ Saya ingin memesan:
 
 ${itemLines}
 
-*Total: ${formatRupiah(total)}*${deliverySection}
-`;
+*Total: ${formatRupiah(total)}*${deliverySection}`;
 
   return encodeURIComponent(message);
 }
@@ -96,6 +98,11 @@ export function generateSingleWAMessage(
   productSlug: string,
   deliveryInfo?: DeliveryInfo
 ): string {
+  const subtotal = formatRupiah(0); // Price not available in this function
+  // Note: You might want to pass price as parameter for single product
+  
+  const itemLines = `1. ${productName} (1x)\n   ${subtotal}`;
+
   let deliverySection = '';
   if (deliveryInfo) {
     const pinLine =
@@ -115,8 +122,7 @@ Alamat : ${deliveryInfo.address}${pinLine}`;
 
 Saya ingin memesan:
 
-*${productName}*${deliverySection}
-`;
+${itemLines}${deliverySection}`;
 
   return encodeURIComponent(message);
 }

@@ -5,7 +5,7 @@ interface ReviewStore {
   reviews: Review[];
   isLoading: boolean;
   error: string | null;
-  fetchReviews: () => Promise<void>;
+  fetchReviews: (productId?: string) => Promise<void>;
   addReview: (review: Review) => void;
   getReviewsForProduct: (productId: string) => Review[];
 }
@@ -15,10 +15,12 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
   isLoading: false,
   error: null,
   
-  fetchReviews: async () => {
+  fetchReviews: async (productId?: string) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await fetch('/api/public/reviews');
+      // Build query untuk filter product_id jika diberikan
+      const query = productId ? `?product_id=${encodeURIComponent(productId)}` : '';
+      const res = await fetch(`/api/public/reviews${query}`);
       if (!res.ok) {
         console.warn('Reviews API returned non-ok status:', res.status);
         set({ reviews: [], isLoading: false, error: 'API error' });
@@ -75,6 +77,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
     const reviews = get().reviews;
     const specific = reviews.filter((r) => r.productId === productId);
     const generic = reviews.filter((r) => r.productId === 'all');
+    console.log(`[getReviewsForProduct] productId=${productId}, specific=${specific.length}, generic=${generic.length}, total=${[...specific, ...generic].length}`);
     return [...specific, ...generic];
   },
 }));

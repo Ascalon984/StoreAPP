@@ -140,6 +140,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       });
   }, [slug]);
 
+  // Fetch reviews spesifik produk ketika product sudah loaded
+  useEffect(() => {
+    if (product?.id) {
+      console.log(`Fetching reviews for product: ${product.id}`);
+      fetchReviews(product.id);
+    }
+  }, [product?.id, fetchReviews]);
+
   const showToast = (message: string) => {
     if (toast) {
       setIsToastExiting(true);
@@ -294,13 +302,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
 
   const localReviews = getReviewsForProduct(product.id);
-  // Gabungkan ulasan dari API dan lokal
+  // Gunakan hanya reviews dari zustand store yang sudah di-filter per product_id
   const allReviews = (() => {
-    const apiReviews = product.reviews || [];
-    const merged = [...localReviews, ...apiReviews];
-    // Hindari duplikasi berdasarkan nama dan komentar
-    const unique = merged.filter((v, i, a) => a.findIndex(t => (t.id === v.id || (t.comment === v.comment && t.name === v.name))) === i);
-    return unique.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    // Sort berdasarkan waktu terbaru
+    return localReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   })();
 
   const distribution = getRatingDistribution(allReviews);

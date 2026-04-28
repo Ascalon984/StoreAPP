@@ -16,9 +16,16 @@ export async function GET(
       return NextResponse.json({ error: 'Product not found in Admin API' }, { status: res.status });
     }
     const data = await res.json();
-    return NextResponse.json(data);
+    
+    // Jangan gunakan reviews dari product endpoint
+    // Reviews akan di-fetch terpisah per produk dari /api/public/reviews
+    // untuk memastikan hanya reviews untuk produk ini yang ditampilkan
+    const { reviews: _ignoredReviews, ...productData } = data;
+    
+    return NextResponse.json(productData);
   } catch (error) {
     console.error('Proxy error:', error);
     return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
   }
 }
+
