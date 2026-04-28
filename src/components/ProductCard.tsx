@@ -43,13 +43,14 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   const mainImage = productImages[0];
 
   // Hitung live metrics (optimistic UI)
-  const sessionReviews = localReviews.filter(r => r.id.toString().startsWith('r-') && r.productId !== 'all');
+  // Kita ambil semua ulasan yang spesifik milik produk ini dari store
+  const specificReviews = localReviews.filter(r => r.productId === product.id);
   const serverCount = product.reviewCount || 0;
   const serverRating = product.rating || 0;
 
-  const displayReviewCount = serverCount + sessionReviews.length;
-  const displayRating = displayReviewCount > 0
-    ? Number(((serverRating * serverCount + sessionReviews.reduce((acc, r) => acc + r.rating, 0)) / displayReviewCount).toFixed(1))
+  const displayReviewCount = Math.max(serverCount, specificReviews.length);
+  const displayRating = specificReviews.length > 0
+    ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
     : serverRating;
 
   const isHot = product.sold >= 500;

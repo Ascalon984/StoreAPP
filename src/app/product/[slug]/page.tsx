@@ -308,12 +308,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   })();
 
   // Hitung live metrics untuk sinkronisasi instan di UI
-  const sessionReviews = localReviews.filter(r => r.id.toString().startsWith('r-') && r.productId !== 'all');
+  const specificReviews = localReviews.filter(r => r.productId === product.id);
   const serverCount = product.reviewCount || 0;
   const serverRating = product.rating || 0;
-  const liveReviewCount = serverCount + sessionReviews.length;
+  const liveReviewCount = Math.max(serverCount, specificReviews.length);
   const liveRating = liveReviewCount > 0
-    ? Number(((serverRating * serverCount + sessionReviews.reduce((acc, r) => acc + r.rating, 0)) / liveReviewCount).toFixed(1))
+    ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
     : serverRating;
 
   const distribution = getRatingDistribution(allReviews);
