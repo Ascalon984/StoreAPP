@@ -37,7 +37,7 @@ export function maskName(name: string): string {
 }
 
 function getMapPin(lat: number, lng: number): string {
-  return `https://maps.google.com/?q=${lat},${lng}`;
+  return `<https://www.google.com/maps/search/?api=1&query=${lat},${lng}>`;
 }
 
 /**
