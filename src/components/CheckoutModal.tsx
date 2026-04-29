@@ -243,9 +243,13 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
 
       try {
         position = await getBestPosition();
-      } catch {
-        position = await new Promise<GeolocationPosition>((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, {
+      } catch (err: any) {
+        // Jika user secara eksplisit menolak izin (code 1), jangan coba lagi di fallback
+        if (err?.code === 1) throw err;
+
+        // Gunakan pemanggilan standar jika mode High Accuracy atau Watch gagal
+        position = await new Promise<GeolocationPosition>((resolve, rejectFallback) => {
+          navigator.geolocation.getCurrentPosition(resolve, rejectFallback, {
             enableHighAccuracy: false,
             timeout: 10000,
             maximumAge: 120000,
@@ -485,8 +489,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     placeholder="Nama Anda"
                     autoComplete="name"
                     className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 ${fieldErrors.name && touched.name
-                        ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
-                        : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                      ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
+                      : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
                   />
                   <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -536,8 +540,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     placeholder="081-234-567-890"
                     autoComplete="tel"
                     className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 tabular-nums ${fieldErrors.phone && touched.phone
-                        ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
-                        : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                      ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
+                      : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
                   />
                   <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -571,10 +575,10 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                   </label>
                   <span
                     className={`text-[10px] font-medium tabular-nums transition-colors ${deliveryInfo.address.length >= MAX_ADDRESS_CHARS
-                        ? 'text-red-400 font-semibold'
-                        : deliveryInfo.address.length > MAX_ADDRESS_CHARS * 0.8
-                          ? 'text-yellow-500'
-                          : 'text-gray-300'
+                      ? 'text-red-400 font-semibold'
+                      : deliveryInfo.address.length > MAX_ADDRESS_CHARS * 0.8
+                        ? 'text-yellow-500'
+                        : 'text-gray-300'
                       }`}
                   >
                     {deliveryInfo.address.length}/{MAX_ADDRESS_CHARS}
@@ -597,8 +601,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                     placeholder="Jl. Xxx No. 123, Kelurahan Xxx, Kecamatan Xxx, Kota Xxx"
                     rows={3}
                     className={`w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${fieldErrors.address && touched.address
-                        ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
-                        : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                      ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
+                      : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
                   />
                 </div>
@@ -651,8 +655,8 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
               }}
               disabled={!isValid || isLoadingLocation}
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${isValid && !isLoadingLocation
-                  ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
             >
               <CheckCircle size={16} strokeWidth={2} />
