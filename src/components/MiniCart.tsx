@@ -155,29 +155,37 @@ export default function MiniCart() {
         onClick={closeCart}
       />
 
-      <div className="fixed top-0 right-0 bottom-0 w-[92%] max-w-[420px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-slide-in-right">
+      {/* ===== DRAWER CONTAINER ===== */}
+      <div className="fixed top-0 right-0 bottom-0 w-[92%] max-w-[420px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-slide-in-right rounded-l-[2rem] overflow-hidden">
 
-        {/* ===== HEADER ===== */}
-        <div className="bg-white px-5 pt-5 pb-4 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-1">
+        {/* ===== HEADER: Ramping & Elegant Version ===== */}
+        <div className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem]">
+          {/* py-3.5 (14px) jauh lebih ramping dibanding pt-5 pb-4 */}
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <ShoppingBag size={20} strokeWidth={1.5} className="text-primary" />
+              {/* Box ikon dikecilkan sedikit agar header tidak terdorong tinggi */}
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100/50">
+                <ShoppingBag size={18} strokeWidth={2.5} className="text-emerald-600" />
               </div>
+
               <div>
-                <h2 className="text-lg font-bold text-gray-800 leading-tight">Keranjang Saya</h2>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <h2 className="text-[15px] font-bold text-gray-800 leading-none tracking-tight">
+                  Keranjang Saya
+                </h2>
+                {/* Font dikecilkan ke 10px dan ditambahkan tracking-wide agar tetap elegan & mudah dibaca */}
+                <p className="text-[11px] text-gray-400 mt-1 font-medium leading-none">
                   {items.length === 0
                     ? 'Belum ada produk'
-                    : `${items.length} produk · ${totalItems} item`}
+                    : `${items.length} produk • ${totalItems} item`}
                 </p>
               </div>
             </div>
+            {/* Tombol Close yang lebih subtle */}
             <button
               onClick={closeCart}
-              className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors active:scale-95"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 transition-all active:scale-90"
             >
-              <X size={20} strokeWidth={1.5} className="text-gray-500" />
+              <X size={18} strokeWidth={2.5} className="text-gray-400" />
             </button>
           </div>
         </div>

@@ -69,50 +69,56 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden active:scale-[0.98] border border-gray-100 hover:border-gray-200 h-full flex flex-col">
+      <article className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden active:scale-[0.97] border border-gray-100 flex flex-col h-full relative">
 
-        {/* Image — 4:3 */}
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-50 flex-shrink-0">
-          <ProductImage
-            category={product.category}
-            name={product.name}
-            variant={index}
-            src={mainImage}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+        {/* 1. Discount Badge — Menempel di pojok kanan atas (Absolute) */}
+        {discount > 0 && (
+          <div className="absolute top-0 right-0 z-20 px-2 py-1 bg-rose-500 text-white text-[10px] font-black rounded-bl-xl shadow-sm">
+            {discount}%
+          </div>
+        )}
 
-          {/* Badges */}
+        {/* Image Area — 3:2 Seamless */}
+        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center p-3">
+          <div style={{ mixBlendMode: 'multiply' }} className="w-full h-full flex items-center justify-center">
+            <ProductImage
+              category={product.category}
+              name={product.name}
+              variant={index}
+              src={mainImage}
+              className="w-full h-full transition-transform duration-700 group-hover:scale-110"
+              style={{ objectFit: 'contain' } as React.CSSProperties}
+            />
+          </div>
+
+          {/* Hot Badge — Pojok Kiri Atas */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {isHot && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-bold uppercase tracking-wider shadow-sm">
-                <Flame size={9} strokeWidth={2.5} fill="currentColor" />
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white/90 backdrop-blur-sm border border-orange-100 text-orange-600 text-[8px] font-bold uppercase tracking-wider shadow-sm">
+                <Flame size={9} className="fill-orange-500 text-orange-500" />
                 Hot
               </span>
             )}
           </div>
-
-          {/* Discount Badge — top right */}
-          {discount > 0 && (
-            <span className="absolute top-2 right-2 z-10 inline-flex items-center px-1.5 py-0.5 rounded-md bg-gradient-to-r from-rose-500 to-red-500 text-white text-[9px] font-bold uppercase tracking-wider shadow-sm">
-              -{discount}%
-            </span>
-          )}
         </div>
 
-        {/* Content */}
-        <div className="p-2 flex flex-col flex-1">
-          {/* Title — adaptive size, line-clamp-2 sebagai safety net */}
-          <h3
-            className={`text-gray-700 line-clamp-2 font-medium group-hover:text-emerald-600 transition-colors duration-200 min-h-[2.2rem] ${titleSize}`}
-          >
+        {/* Content Area */}
+        <div className="p-2.5 flex flex-col flex-1 gap-1">
+          {/* Title — Adaptive Size */}
+          <h3 className={`text-gray-800 line-clamp-2 font-semibold group-hover:text-emerald-600 transition-colors duration-300 min-h-[2.2rem] tracking-tight ${titleSize}`}>
             {product.name}
           </h3>
 
-          {/* Price */}
-          <div className="mt-0.5">
-            <p className="text-[14.5px] font-extrabold text-emerald-600 tracking-tight">
+          {/* Price Section — Horizontal Layout agar hemat tempat */}
+          <div className="flex items-center gap-1.5 flex-wrap leading-none mt-0.5">
+            <span className="text-[14.5px] font-bold text-emerald-600 tracking-tighter">
               {formatRupiah(product.price)}
-            </p>
+            </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-[9.5px] text-gray-400 line-through opacity-60 font-medium">
+                {formatRupiah(product.originalPrice)}
+              </span>
+            )}
           </div>
 
           {/* Divider */}

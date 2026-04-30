@@ -30,34 +30,32 @@ interface ProductImageProps {
   variant?: number;
   className?: string;
   src?: string;
+  style?: React.CSSProperties;
 }
 
-export default function ProductImage({ category, name, src, variant = 0, className = '' }: ProductImageProps) {
+export default function ProductImage({ category, name, src, variant = 0, className = '', style }: ProductImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  // Reset error state jika src berubah (penting untuk slider/gallery)
   useEffect(() => {
     setHasError(false);
   }, [src]);
 
-  // Pastikan src adalah string Base64 yang valid (minimal header data:image) atau valid HTTP URL
   const isValidSrc = !hasError && src && typeof src === 'string' && (
     src.startsWith('data:image') || src.startsWith('http')
   );
 
   if (isValidSrc) {
     return (
-      <div className={`relative overflow-hidden ${className}`}>
+      <div className={`relative overflow-hidden flex items-center justify-center ${className}`}>
         <img
           src={src}
           alt={name}
-          className="w-full h-full object-cover block"
+          /* 1. GANTI cover ke contain agar botol tidak terpotong */
+          className="max-w-full max-h-full object-contain block transition-transform duration-700"
+          /* 2. Tambahkan multiply agar background putih gambar menghilang */
+          style={{ ...style, mixBlendMode: 'multiply' }}
           loading="lazy"
-          onError={(e) => {
-            // Set state error agar merender gradient sebagai fallback
-            console.warn(`Failed to load image for product "${name}":`, src?.substring(0, 50));
-            setHasError(true);
-          }}
+          onError={() => setHasError(true)}
         />
       </div>
     );
@@ -70,7 +68,7 @@ export default function ProductImage({ category, name, src, variant = 0, classNa
   return (
     <div
       className={`flex items-center justify-center relative overflow-hidden ${className}`}
-      style={{ background: `linear-gradient(${dir}, ${from}, ${to})` }}
+      style={{ ...style, background: `linear-gradient(${dir}, ${from}, ${to})` }}
     >
       <div className="absolute inset-0 opacity-10">
         <div

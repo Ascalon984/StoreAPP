@@ -180,21 +180,22 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  // Tentukan label berdasarkan rating angka
   const getRatingLabel = (rating: number) => {
-    if (rating >= 4.8) return 'Sangat Bagus';
-    if (rating >= 4.3) return 'Bagus';
-    if (rating >= 3.5) return 'Cukup';
-    if (rating >= 2.5) return 'Kurang';
-    return 'Buruk';
+    if (rating === 0) return 'Belum ada rating';
+    if (rating >= 4.7) return 'Sangat Bagus'; // Standard produk top-tier
+    if (rating >= 4.0) return 'Bagus';        // Batas psikologis pembeli merasa aman
+    if (rating >= 3.0) return 'Cukup';        // Rating 3.x dianggap rata-rata (mediocre)
+    if (rating >= 2.0) return 'Kurang';       // Rating 2.x sudah mulai dihindari
+    return 'Buruk';                           // Dibawah 2.0 sangat jarang/buruk sekali
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.8) return 'text-emerald-600';
-    if (rating >= 4.3) return 'text-emerald-500';
-    if (rating >= 3.5) return 'text-yellow-500';
-    if (rating >= 2.5) return 'text-orange-500';
-    return 'text-red-500';
+    if (rating === 0) return 'text-gray-400';
+    if (rating >= 4.7) return 'text-emerald-600';
+    if (rating >= 4.0) return 'text-emerald-500';
+    if (rating >= 3.0) return 'text-amber-500';
+    if (rating >= 2.0) return 'text-orange-500';
+    return 'text-rose-500';
   };
 
   const handleAddToCart = () => {
@@ -346,33 +347,38 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       )}
 
-      {/* Gallery */}
+      {/* Gallery Header Nav — Refined Glassmorphism */}
       <div className="relative bg-white pt-1 pb-0 mb-1">
+        {/* Tombol Kembali */}
         <button
           onClick={handleBack}
-          className="absolute top-4 left-4 z-20 p-2.5 rounded-full bg-black/50 backdrop-blur-md hover:bg-black/70 transition-all duration-200"
+          className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
           aria-label="Kembali"
         >
-          <ChevronLeft size={20} strokeWidth={2} className="text-white" />
+          <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-800" />
         </button>
 
-        <div className="absolute top-4 right-4 z-20 flex gap-2">
+        {/* Grup Tombol Kanan */}
+        <div className="absolute top-4 right-4 z-20 flex gap-2.5">
+          {/* Tombol Share */}
           <button
             onClick={handleShare}
-            className="p-2.5 rounded-full bg-black/50 backdrop-blur-md hover:bg-black/70 transition-all duration-200"
+            className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
             aria-label="Bagikan"
           >
-            <Share2 size={18} strokeWidth={1.5} className="text-white" />
+            <Share2 size={18} strokeWidth={2} className="text-gray-700" />
           </button>
+
+          {/* Tombol Favorit */}
           <button
             onClick={() => toggleFavorite(product.id)}
-            className="p-2.5 rounded-full bg-black/50 backdrop-blur-md hover:bg-black/70 transition-all duration-200"
+            className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
             aria-label="Favorit"
           >
             <Heart
               size={18}
-              strokeWidth={1.5}
-              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-white"}
+              strokeWidth={2}
+              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
             />
           </button>
         </div>
@@ -422,21 +428,26 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         name={product.name}
                         variant={i}
                         src={productImages[i]}
-                        className="w-full aspect-[4/3] sm:aspect-video"
+                        className="w-full aspect-[3/2] sm:aspect-video"
                       />
                     </div>
                   ))}
                 </div>
 
                 {slideCount > 1 && (
-                  <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center gap-1.5">
-                    {slides.map((i) => (
-                      <div
-                        key={i}
-                        className={`transition-all duration-300 rounded-full ${currentIndex === i ? 'w-6 h-1 bg-white' : 'w-1.5 h-1 bg-white/50'
-                          }`}
-                      />
-                    ))}
+                  <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
+                    {/* Padding dikurangi dari px-3 py-1.5 ke px-2 py-1 agar lebih ramping */}
+                    <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
+                      {slides.map((i) => (
+                        <div
+                          key={i}
+                          className={`transition-all duration-500 rounded-full ${currentIndex === i
+                            ? 'w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]' // w-6 ke w-5 agar lebih proporsional
+                            : 'w-1 h-1 bg-white/40' // w-1.5 ke w-1 agar lebih minimalis
+                            }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
               </>
@@ -482,103 +493,89 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         {/* Divider */}
         <div className="border-t border-gray-200" />
 
-        {/* Description - dengan jarak lebih ke bawah */}
-        <div className="mt-2">
-          <h3 className="font-bold text-gray-800 mb-2">Deskripsi Produk</h3>
-          <p ref={descriptionRef} className="text-sm text-gray-600 leading-relaxed max-w-none whitespace-pre-wrap">
+        {/* Description Section */}
+        <div className="pt-3 space-y-2">
+          <h3 className="text-sm font-bold text-gray-800 tracking-tight">Deskripsi Produk</h3>
+          <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
             {truncatedDescription}
           </p>
           {needsTruncation && (
             <button
               onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-              className="mt-2 text-primary font-medium text-sm flex items-center gap-1 hover:text-primary-dark transition-colors"
+              className="text-emerald-600 font-bold text-[12px] flex items-center gap-0.5 mt-1"
             >
-              {isDescriptionExpanded ? (
-                <>
-                  <ChevronUp size={16} strokeWidth={1.5} />
-                  Lihat lebih sedikit
-                </>
-              ) : (
-                <>
-                  <ChevronDown size={16} strokeWidth={1.5} />
-                  Lihat selengkapnya
-                </>
-              )}
+              {isDescriptionExpanded ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
+              <ChevronDown size={14} className={`transition-transform ${isDescriptionExpanded ? 'rotate-180' : ''}`} />
             </button>
           )}
         </div>
       </div>
 
-      {/* Jaminan Palugada */}
-      <div className="bg-white px-4 py-2 mb-1">
-        <h3 className="font-semibold text-gray-800 text-sm mb-2">Alasan Pilih Kami</h3>
+      {/* Jaminan Palugada — Neutral & Clean Version */}
+      <div className="bg-white px-4 py-3 mb-1">
+        <h3 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h3>
 
-        <div className="flex gap-1.5">
-          <div className="flex-1 flex items-center gap-1.5 px-2 py-1 bg-emerald-50 rounded-lg border border-emerald-100 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-              <CheckCircle size={12} strokeWidth={1.5} className="text-emerald-600" />
-            </div>
-            <span className="text-[10px] font-semibold text-emerald-700 whitespace-nowrap truncate">
-              Tersedia
-            </span>
+        <div className="flex gap-2">
+          {/* Item 1: Tersedia */}
+          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-emerald-50/40 rounded-lg border border-emerald-100/50">
+            <CheckCircle size={13} className="text-emerald-500" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-gray-700 tracking-tight">Tersedia</span>
           </div>
 
-          <div className="flex-1 flex items-center gap-1.5 px-2 py-1 bg-yellow-50 rounded-lg border border-yellow-100 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
-              <Zap size={12} strokeWidth={1.5} className="text-yellow-600" />
-            </div>
-            <span className="text-[9px] sm:text-[10px] font-semibold text-yellow-700 whitespace-nowrap truncate">
-              Fast Respon
-            </span>
+          {/* Item 2: Fast Respon */}
+          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-amber-50/40 rounded-lg border border-amber-100/50">
+            <Zap size={13} className="text-amber-500 fill-amber-500" strokeWidth={2} />
+            <span className="text-[10px] font-bold text-gray-700 tracking-tight text-center">Fast Respon</span>
           </div>
 
-          <div className="flex-1 flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-lg border border-blue-100 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <Headphones size={12} strokeWidth={1.5} className="text-blue-600" />
-            </div>
-            <span className="text-[10px] font-semibold text-blue-700 whitespace-nowrap truncate">
-              24 Jam
-            </span>
+          {/* Item 3: 24 Jam */}
+          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-50/40 rounded-lg border border-blue-100/50">
+            <Headphones size={13} className="text-blue-500" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-gray-700 tracking-tight">24 Jam</span>
           </div>
         </div>
       </div>
 
       {/* Review Section - Clean */}
       <div className="bg-white p-3 mb-1">
-        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-bold text-gray-800 tracking-tight">
           Ulasan Pembeli ({allReviews.length})
         </h3>
 
-        {/* Rating Summary Card */}
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 mb-4 border border-gray-100">
-          <div className="flex items-center gap-3">
-            {/* Angka rating besar + label */}
-            <div className="flex flex-col items-center justify-center min-w-[72px]">
+        {/* Rating Summary Card - Refined Spacing */}
+        <div className="bg-gray-50/50 rounded-2xl p-4 mb-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2.5"> {/* Gap dikurangi dari 4 ke 2.5 agar bar lebih panjang ke kiri */}
+
+            {/* Kolom Kiri: Ringkasan Angka */}
+            <div className="flex flex-col items-center justify-center min-w-[80px] border-r border-gray-200/60 pr-2.5"> {/* pr dikurangi ke 2.5 */}
               <span className="text-3xl font-extrabold text-gray-800 leading-none">{product.rating}</span>
               <div className="flex text-yellow-500 my-1 gap-0.5">
                 {[1, 2, 3, 4, 5].map(i => renderStar(i, product.rating))}
               </div>
-              <span className={`text-[10px] font-bold ${getRatingColor(product.rating)}`}>
+              <span className={`text-[10px] font-bold text-center leading-tight mt-1 ${getRatingColor(product.rating)}`}>
                 {getRatingLabel(product.rating)}
               </span>
             </div>
 
-            {/* Bar distribusi */}
+            {/* Kolom Kanan: Bar distribusi - pl dihapus agar langsung mepet ke divider */}
             <div className="flex-1 space-y-1">
               {[5, 4, 3, 2, 1].map(star => {
                 const pct = distribution.percent[star as keyof typeof distribution.percent];
                 const count = distribution.raw[star as keyof typeof distribution.raw];
                 return (
                   <div key={star} className="flex items-center gap-1.5 group cursor-default">
-                    <span className="w-3 text-[10px] font-semibold text-gray-500 text-right tabular-nums">{star}</span>
+                    {/* Lebar angka dibuat fix (w-3) agar bar punya sisa ruang lebih banyak */}
+                    <span className="w-3 text-[10px] font-semibold text-gray-500 text-center tabular-nums">{star}</span>
                     <Star size={8} className="text-gray-400 fill-gray-400 flex-shrink-0" strokeWidth={1.5} />
-                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden relative">
+
+                    <div className="flex-1 h-2 bg-gray-200/50 rounded-full overflow-hidden relative">
                       <div
                         className={`h-full rounded-full transition-all duration-700 ease-out ${RATING_COLORS[star]}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
-                    <span className="text-[9px] text-gray-400 tabular-nums min-w-[22px] text-right">{count}</span>
+
+                    <span className="text-[9px] text-gray-400 tabular-nums min-w-[20px] text-right">{count}</span>
                   </div>
                 );
               })}
@@ -586,29 +583,21 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
-        {/* Daftar Ulasan */}
-        <div className="space-y-0 -mx-1">
+        {/* Daftar Ulasan — Lebih Soft & Clean */}
+        <div className="space-y-4 px-1">
           {displayedReviews.map((review: Review, index: number) => (
-            <div
-              key={review.id}
-              className={`py-2.5 px-1 ${index < displayedReviews.length - 1 ? 'border-b border-gray-100' : ''
-                }`}
-            >
-              {/* Baris atas */}
-              <div className="flex items-start justify-between mb-1.5">
-                <div className="flex items-center gap-2.5">
-                  {/* Avatar */}
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${getAvatarColor(review.name)}`}>
-                    <span className="text-xs font-bold">
-                      {review.name.charAt(0).toUpperCase()}
-                    </span>
+            <div key={review.id} className="py-4 border-b border-gray-50 last:border-0">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  {/* Avatar Pastel yang lebih Natural */}
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80`}>
+                    {review.name.charAt(0).toUpperCase()}
                   </div>
-
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">
+                    <p className="text-[13px] font-bold text-gray-800 tracking-tight">
                       {maskName(review.name)}
                     </p>
-                    <div className="flex items-center gap-1 mt-0.5">
+                    <div className="flex items-center gap-0.5 mt-0.5">
                       {[1, 2, 3, 4, 5].map(star => renderStar(star, review.rating))}
                     </div>
                   </div>

@@ -48,9 +48,8 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-[padding,box-shadow] duration-300 ${
-        scrolled ? 'py-2 shadow-[0_1px_8px_rgba(0,0,0,0.06)]' : 'py-3'
-      }`}
+      className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-[padding,box-shadow] duration-300 ${scrolled ? 'py-2 shadow-[0_1px_8px_rgba(0,0,0,0.06)]' : 'py-3'
+        }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         {/* Logo */}
