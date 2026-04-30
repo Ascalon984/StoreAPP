@@ -548,7 +548,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
             {/* Kolom Kiri: Ringkasan Angka */}
             <div className="flex flex-col items-center justify-center min-w-[80px] border-r border-gray-200/60 pr-2.5"> {/* pr dikurangi ke 2.5 */}
-              <span className="text-3xl font-extrabold text-gray-800 leading-none">{liveRating}</span>
+              <span className="text-3xl font-extrabold text-gray-800 leading-none">{liveRating.toFixed(1)}</span>
               <div className="flex text-yellow-500 my-1 gap-0.5">
                 {[1, 2, 3, 4, 5].map(i => renderStar(i, liveRating))}
               </div>
