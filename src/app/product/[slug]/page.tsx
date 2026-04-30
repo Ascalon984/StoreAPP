@@ -548,12 +548,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
             {/* Kolom Kiri: Ringkasan Angka */}
             <div className="flex flex-col items-center justify-center min-w-[80px] border-r border-gray-200/60 pr-2.5"> {/* pr dikurangi ke 2.5 */}
-              <span className="text-3xl font-extrabold text-gray-800 leading-none">{product.rating}</span>
+              <span className="text-3xl font-extrabold text-gray-800 leading-none">{liveRating}</span>
               <div className="flex text-yellow-500 my-1 gap-0.5">
-                {[1, 2, 3, 4, 5].map(i => renderStar(i, product.rating))}
+                {[1, 2, 3, 4, 5].map(i => renderStar(i, liveRating))}
               </div>
-              <span className={`text-[10px] font-bold text-center leading-tight mt-1 ${getRatingColor(product.rating)}`}>
-                {getRatingLabel(product.rating)}
+              <span className={`text-[10px] font-bold text-center leading-tight mt-1 ${getRatingColor(liveRating)}`}>
+                {getRatingLabel(liveRating)}
               </span>
             </div>
 

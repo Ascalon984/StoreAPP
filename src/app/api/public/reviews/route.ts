@@ -23,3 +23,32 @@ export async function GET(request: Request) {
     return NextResponse.json({ reviews: [] });
   }
 }
+
+export async function POST(request: Request) {
+  const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
+  try {
+    const body = await request.json();
+    const res = await fetch(`${adminApiUrl}/api/public/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return NextResponse.json(
+        { success: false, error: errorData.error || 'Failed to submit review' },
+        { status: res.status }
+      );
+    }
+    
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error submitting review:', error);
+    return NextResponse.json(
+      { success: false, error: 'Terjadi kesalahan proxy saat mengirim ulasan' },
+      { status: 500 }
+    );
+  }
+}

@@ -347,7 +347,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
 
       // ✅ STEP 1: POST review ke admin untuk sync & update rating
       try {
-        const adminResponse = await fetch('http://localhost:3000/api/public/reviews', {
+        const adminResponse = await fetch('/api/public/reviews', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
