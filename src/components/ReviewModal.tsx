@@ -260,14 +260,12 @@ export default function ReviewModal() {
     setIsSubmitting(true);
 
     try {
-      // ─────── STEP 1: Submit to Admin API ───────
-      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-
+      // ─────── STEP 1: Submit to Local Proxy API ───────
       const reviewsSubmitted = [];
 
       for (const product of displayProducts) {
         try {
-          const response = await fetch(`${adminApiUrl}/api/admin/reviews`, {
+          const response = await fetch(`/api/public/reviews`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
