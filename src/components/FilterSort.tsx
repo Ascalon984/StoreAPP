@@ -26,18 +26,13 @@ const DISCOUNT_FILTER = {
 
 export default function FilterSort() {
   const { sort, setSort } = useFilterStore();
-
-  // Gabungkan SORT_OPTIONS dengan filter diskon
   const allFilters = [...SORT_OPTIONS];
-  const hasDiscount = allFilters.some(f => f.id === 'discount');
-  if (!hasDiscount) {
-    allFilters.push(DISCOUNT_FILTER);
-  }
+  if (!allFilters.some(f => f.id === 'discount')) allFilters.push(DISCOUNT_FILTER);
 
   return (
-    <section className="sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-container mx-auto px-4 py-2">
-        {/* Container filter - GRID/Layout tetap, TANPA SCROLL */}
+    // 1. Ganti bg-white/95 ke background aplikasi agar menyatu secara natural
+    <section className="sticky top-[52px] z-30 bg-[#F8F9FA]/80 backdrop-blur-lg">
+      <div className="max-w-container mx-auto px-4 py-2.5">
         <div className="grid grid-cols-4 gap-2">
           {allFilters.map((option) => {
             const Icon = sortIconMap[option.id] || ArrowUpDown;
@@ -47,12 +42,26 @@ export default function FilterSort() {
               <button
                 key={option.id}
                 onClick={() => setSort(option.id)}
-                className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200 active:scale-95 ${isActive
-                  ? 'bg-primary text-white border border-primary'
-                  : 'bg-gray-50 border border-gray-200 text-gray-600'
-                  }`}
+                className={`
+                  flex items-center justify-center gap-1.5 px-1 py-1.5 
+                  rounded-xl text-[10px] font-bold tracking-tight
+                  transition-all duration-300 ease-out
+                  active:scale-95
+                  ${isActive
+                    ? 'bg-emerald-600 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
+                    : 'bg-white border border-gray-100 text-gray-500 shadow-sm'
+                  }
+                `}
               >
-                <Icon size={12} strokeWidth={2} />
+                <Icon
+                  size={12}
+                  strokeWidth={2.5} // Sedikit diturunkan dari 3 agar tetap elegan tanpa animasi
+                  className={`
+                    transition-colors duration-300
+                    /* Kuning cerah saat aktif, Abu-abu lembut saat tidak aktif */
+                    ${isActive ? 'text-yellow-400' : 'text-gray-400'}
+                  `}
+                />
                 <span className="truncate">{option.label}</span>
               </button>
             );

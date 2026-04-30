@@ -8,7 +8,7 @@ import Toast from '@/components/Toast';
 import ReviewModal from '@/components/ReviewModal';
 import { SITE_NAME } from '@/lib/constants';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], display: 'swap', });
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} | Marketplace Terpercaya`,
@@ -22,12 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${inter.className} bg-[#f8fafc] text-gray-900 mx-auto min-h-screen relative`}>
+      <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 mx-auto min-h-screen relative`}>
         <Navbar />
-        <main className="max-w-container mx-auto bg-white min-h-[calc(100vh-64px)] shadow-sm">
-           {children}
+        <main className="max-w-container mx-auto bg-white min-h-[calc(100vh-64px)] shadow-[0_0_40px_rgba(0,0,0,0.03)] antialiased">
+          {children}
         </main>
-        
+
         <SearchOverlay />
         <MiniCart />
         <Toast />

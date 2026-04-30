@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
 import { Category } from '@/lib/types';
 
-// Mapping path icon PNG untuk setiap kategori (synced with admin icon lib)
 const iconPathMap: Record<string, string> = {
   all: '/icons/all icon.png',
   snack: '/icons/snack.png',
@@ -19,19 +18,18 @@ const iconPathMap: Record<string, string> = {
   peralatan: '/icons/peralatan.png',
 };
 
-// Color mapping untuk setiap kategori
-const colorMap: Record<string, { active: string; inactive: string; bg: string; border: string }> = {
-  all: { active: 'text-gray-700', inactive: 'text-gray-400', bg: 'bg-gray-50/50', border: 'border-gray-500/20' },
-  snack: { active: 'text-amber-500', inactive: 'text-amber-300', bg: 'bg-amber-50/50', border: 'border-amber-500/20' },
-  minuman: { active: 'text-sky-500', inactive: 'text-sky-300', bg: 'bg-sky-50/50', border: 'border-sky-500/20' },
-  kebutuhan: { active: 'text-emerald-500', inactive: 'text-emerald-300', bg: 'bg-emerald-50/50', border: 'border-emerald-500/20' },
-  atk: { active: 'text-blue-500', inactive: 'text-blue-300', bg: 'bg-blue-50/50', border: 'border-blue-500/20' },
-  kebersihan: { active: 'text-purple-500', inactive: 'text-purple-400', bg: 'bg-purple-50/50', border: 'border-purple-500/20' },
-  gas: { active: 'text-orange-500', inactive: 'text-orange-300', bg: 'bg-orange-50/50', border: 'border-orange-500/20' },
-  listrik: { active: 'text-yellow-500', inactive: 'text-yellow-300', bg: 'bg-yellow-50/50', border: 'border-yellow-500/20' },
-  pakaian: { active: 'text-pink-500', inactive: 'text-pink-300', bg: 'bg-pink-50/50', border: 'border-pink-500/20' },
-  elektronik: { active: 'text-indigo-500', inactive: 'text-indigo-300', bg: 'bg-indigo-50/50', border: 'border-indigo-500/20' },
-  peralatan: { active: 'text-teal-500', inactive: 'text-teal-300', bg: 'bg-teal-50/50', border: 'border-teal-500/20' },
+const colorMap: Record<string, { active: string; bg: string; glow: string }> = {
+  all: { active: 'text-gray-700', bg: 'bg-gray-100', glow: 'bg-gray-400' },
+  snack: { active: 'text-amber-600', bg: 'bg-amber-50', glow: 'bg-amber-400' },
+  minuman: { active: 'text-sky-600', bg: 'bg-sky-50', glow: 'bg-sky-400' },
+  kebutuhan: { active: 'text-emerald-600', bg: 'bg-emerald-50', glow: 'bg-emerald-400' },
+  atk: { active: 'text-blue-600', bg: 'bg-blue-50', glow: 'bg-blue-400' },
+  kebersihan: { active: 'text-purple-600', bg: 'bg-purple-50', glow: 'bg-purple-400' },
+  gas: { active: 'text-orange-600', bg: 'bg-orange-50', glow: 'bg-orange-400' },
+  listrik: { active: 'text-yellow-600', bg: 'bg-yellow-50', glow: 'bg-yellow-400' },
+  pakaian: { active: 'text-pink-600', bg: 'bg-pink-50', glow: 'bg-pink-400' },
+  elektronik: { active: 'text-indigo-600', bg: 'bg-indigo-50', glow: 'bg-indigo-400' },
+  peralatan: { active: 'text-teal-600', bg: 'bg-teal-50', glow: 'bg-teal-400' },
 };
 
 export default function CategoryGrid() {
@@ -44,7 +42,10 @@ export default function CategoryGrid() {
     fetch('/api/public/categories')
       .then((res) => res.json())
       .then((data) => {
-        // Max 5 kategori aktif + 1 "Semua" = 6 total (3x2 grid)
+        if (!Array.isArray(data)) {
+          console.error('Category API did not return an array:', data);
+          return;
+        }
         const limited = data.slice(0, 5);
         setCategories([
           { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
@@ -60,54 +61,80 @@ export default function CategoryGrid() {
   };
 
   return (
-    <section className="px-4 py-2">
-      {/* Sub Label / Header */}
-      <div className="mb-2">
+    <section className="px-4 pt-1 pb-2">
+      {/* Header Kategori — Refined Version */}
+      <div className="mb-3 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
-          <h2 className="text-sm font-bold text-gray-800">
+          {/* Indikator vertikal dibuat lebih ramping (3px) agar elegan */}
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+
+          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Pilih Kategori
           </h2>
         </div>
 
-        <p className="text-[11px] text-gray-500 mt-0.5 ml-3 leading-tight">
+        <p className="text-[11px] text-gray-400 font-medium mt-0.5 ml-[11px] leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
 
-      {/* Category Grid */}
-      <div className="grid grid-cols-3 gap-1.5">
-        {categories.map((cat) => {
-          const iconPath = iconPathMap[cat.id] || iconPathMap.all;
-          const isActive = category === cat.id;
-          const colors = colorMap[cat.id] || colorMap.all;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => handleClick(cat.id)}
-              className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 tap-active border ${isActive
-                ? `${colors.bg} ${colors.border} shadow-sm`
-                : 'bg-white border-gray-100 hover:bg-gray-50'
-                }`}
-            >
-              <img
-                src={iconPath}
-                alt={cat.name}
-                width={24}
-                height={24}
-                className="w-7 h-7 object-contain"
-                style={{
-                  opacity: 1,
-                  mixBlendMode: 'multiply',
-                }}
-              />
-              <span className={`mt-1 text-[10px] font-semibold text-center transition-colors duration-200 ${isActive ? colors.active : 'text-gray-500'
-                }`}>
-                {cat.name}
-              </span>
-            </button>
-          );
-        })}
+      {/* Card Container — white, soft elevation, light hairline border */}
+      <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
+        <div className="grid grid-cols-3 gap-1">
+          {categories.map((cat) => {
+            const iconPath = iconPathMap[cat.id] || iconPathMap.all;
+            const isActive = category === cat.id;
+            const colors = colorMap[cat.id] || colorMap.all;
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => handleClick(cat.id)}
+                className={`
+                  group relative flex flex-col items-center justify-center
+                  py-1.5 px-1 rounded-xl
+                  transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+                  active:scale-95
+                  ${isActive
+                    ? `
+                      bg-white 
+                      /* Shadow super tipis & dekat (low elevation) */
+                      shadow-[0_2px_8px_rgba(0,0,0,0.04)]
+                    `
+                    : `bg-transparent hover:bg-gray-50/40`
+                  }
+                `}
+              >
+                <div className="relative flex items-center justify-center">
+                  <img
+                    src={iconPath}
+                    alt={cat.name}
+                    className={`
+                      w-7 h-7 object-contain transition-transform duration-300 relative z-10
+                      ${isActive ? 'scale-110' : 'group-hover:scale-105'}
+                    `}
+                    style={{ mixBlendMode: 'multiply' }}
+                  />
+
+                  {/* Glow diperkecil (inset-0) dan blur dikurangi (blur-lg) */}
+                  {isActive && (
+                    <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />
+                  )}
+                </div>
+
+                <span
+                  className={`
+                    mt-1 text-[10px] font-semibold tracking-tight text-center relative z-10
+                    transition-colors duration-200 leading-tight
+                    ${isActive ? colors.active : 'text-gray-500'}
+                  `}
+                >
+                  {cat.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

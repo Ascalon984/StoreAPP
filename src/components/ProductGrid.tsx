@@ -37,15 +37,31 @@ export default function ProductGrid() {
 
     fetch(`${url}?${params.toString()}`, { cache: 'no-store' })
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error('Product API did not return an array:', data);
+          setProducts([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch products:', err);
+        setProducts([]);
+      });
   }, [category, sort, refreshVersion]);
 
   useEffect(() => {
     fetch(`/api/public/categories?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
-        setCategories([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }, ...data]);
-      });
+        if (Array.isArray(data)) {
+          setCategories([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }, ...data]);
+        } else {
+          console.error('Category API did not return an array:', data);
+        }
+      })
+      .catch((err) => console.error('Failed to fetch categories:', err));
   }, []);
 
   useEffect(() => {
@@ -92,21 +108,34 @@ export default function ProductGrid() {
 
   return (
     <>
-      <section id="product-grid" className="px-4 py-2 min-h-[50vh]">
-        <div className="mb-2 text-[12px] text-gray-400">
-          Menampilkan {filtered.length} item
+      <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
+        {/* Header yang lebih bersih dan lapang */}
+        <div className="mb-5 flex flex-col px-0.5">
+          <h3 className="text-sm font-bold text-gray-800 tracking-tight">
+            Produk {categoryName !== 'Semua' ? categoryName : ''}
+          </h3>
+          <p className="text-[10px] text-gray-400 font-medium mt-0.5">
+            Menampilkan {filtered.length} item {sort !== 'popular' ? `• ${getSortName()}` : ''}
+          </p>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-400">
+          // Empty State (Tetap sama)
+          <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h4 className="text-gray-800 font-bold text-sm">Produk Tidak Ditemukan</h4>
+            <p className="text-[11px] text-gray-400 mt-1 max-w-[200px]">
               {sort === 'discount'
-                ? 'Belum ada produk dengan diskon saat ini.'
-                : 'Belum ada produk di kategori ini.'}
+                ? 'Wah, sepertinya belum ada promo di kategori ini.'
+                : 'Coba pilih kategori lain atau cek kata kunci pencarianmu.'}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {filtered.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
@@ -114,41 +143,26 @@ export default function ProductGrid() {
         )}
       </section>
 
-      {/* Scroll to Top Button */}
+      {/* Scroll to Top Button - Polish agar senada dengan UI */}
       <button
         onClick={scrollToTop}
-        aria-label="Gulir ke atas"
         className={`
-          fixed bottom-6 right-6 z-50
-          w-10 h-10 rounded-full
-          bg-gray-800/90 hover:bg-gray-700
-          backdrop-blur-sm
-          shadow-lg shadow-black/20
+          fixed bottom-8 right-6 z-50
+          w-11 h-11 rounded-full
+          bg-emerald-500 text-white
+          shadow-[0_8px_25px_rgba(16,185,129,0.3)]
           flex items-center justify-center
-          text-white
-          transition-all duration-300 ease-out
-          border border-gray-600/30
-          hover:scale-110 hover:shadow-xl
-          active:scale-95
-          cursor-pointer
+          transition-all duration-500 cubic-bezier(0.34,1.56,0.64,1)
+          hover:bg-emerald-600 hover:scale-110
+          active:scale-90
           ${showScrollTop
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-4 pointer-events-none'
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-10 scale-50 pointer-events-none'
           }
         `}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="18 15 12 9 6 15" />
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 15l-6-6-6 6" />
         </svg>
       </button>
     </>

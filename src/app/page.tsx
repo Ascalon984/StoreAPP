@@ -8,7 +8,6 @@ export default function Home() {
     <div className="pb-24">
       <Banner />
       <CategoryGrid />
-      <hr className="border-gray-100 my-1" />
       <FilterSort />
       <ProductGrid />
     </div>

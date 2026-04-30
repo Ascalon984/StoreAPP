@@ -13,7 +13,18 @@ export default function Banner() {
   useEffect(() => {
     fetch(`/api/public/banners?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => res.json())
-      .then((data) => setBanners(data));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setBanners(data);
+        } else {
+          console.error('Banner API did not return an array:', data);
+          setBanners([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch banners:', err);
+        setBanners([]);
+      });
   }, []);
 
   const scrollTo = useCallback((index: number) => {
@@ -42,7 +53,7 @@ export default function Banner() {
 
   useEffect(() => {
     if (banners.length === 0) return;
-    
+
     startAutoPlay();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -61,16 +72,18 @@ export default function Banner() {
 
   return (
     <section className="px-4 py-2">
-      {/* Header Label - Tetap dipertahankan di atas banner */}
-      <div className="mb-2">
+      {/* Header Label - Refined Version */}
+      <div className="mb-3 px-0.5"> {/* Tambah margin bottom sedikit agar tidak mepet ke gambar */}
         <div className="flex items-center gap-2">
-          <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
-          <h2 className="text-sm font-bold text-gray-800">
+          {/* Indikator vertikal yang lebih lembut */}
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+
+          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Spesial Buat Kamu
           </h2>
         </div>
 
-        <p className="text-[11px] text-gray-500 mt-0.5 ml-3 leading-tight">
+        <p className="text-[11px] text-gray-400 font-medium mt-0.5 ml-[11px] leading-tight">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>

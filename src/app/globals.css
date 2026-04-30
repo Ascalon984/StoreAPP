@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  background-color: #f8fafc;
+  background-color: #F8F9FA;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -16,14 +16,20 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 /* Skeleton shimmer animation */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton {
