@@ -584,9 +584,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
 
         {/* Daftar Ulasan — Lebih Soft & Clean */}
-        <div className="space-y-4 px-1">
+        <div className="space-y-3 px-1">
           {displayedReviews.map((review: Review, index: number) => (
-            <div key={review.id} className="py-4 border-b border-gray-50 last:border-0">
+            <div key={review.id} className="py-3 border-b border-gray-100 last:border-0">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-3">
                   {/* Avatar Pastel yang lebih Natural */}
@@ -619,7 +619,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
               {/* Komentar */}
               <p className="text-sm text-gray-600 leading-relaxed pl-[42px]">
-                &quot;{review.comment}&quot;
+              {review.comment};
               </p>
             </div>
           ))}
