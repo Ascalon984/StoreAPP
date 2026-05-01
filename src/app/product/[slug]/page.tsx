@@ -12,6 +12,7 @@ import { useFavoriteStore } from '@/store/useFavoriteStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
+import { useToastStore } from '@/store/useToastStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { Product, Review } from '@/lib/types';
 import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } from '@/lib/utils';
@@ -88,14 +89,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const { getReviewsForProduct, reviews: zustandReviews, fetchReviews, refreshVersion, triggerRefresh } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
+  const { showToast } = useToastStore();
   const { waNumber, fetchSettings } = useSettingsStore();
 
   const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
   const [loading, setLoading] = useState(true);
   const loaderStartTimeRef = useRef<number | null>(null);
 
-  const [toast, setToast] = useState<string | null>(null);
-  const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
   // PERBAIKAN 1: votedType dengan nilai null untuk state tidak aktif
@@ -145,32 +145,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       fetchReviews(product.id);
     }
   }, [product?.id, fetchReviews]);
-
-  const showToast = (message: string) => {
-    if (toast) {
-      setIsToastExiting(true);
-      setTimeout(() => {
-        setToast(message);
-        setIsToastExiting(false);
-        setTimeout(() => {
-          setIsToastExiting(true);
-          setTimeout(() => {
-            setToast(null);
-            setIsToastExiting(false);
-          }, 200);
-        }, 2000);
-      }, 200);
-    } else {
-      setToast(message);
-      setTimeout(() => {
-        setIsToastExiting(true);
-        setTimeout(() => {
-          setToast(null);
-          setIsToastExiting(false);
-        }, 200);
-      }, 2000);
-    }
-  };
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(5);
@@ -376,21 +350,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   return (
     <div className="bg-gray-50 pb-24 min-h-screen">
-      {/* Toast */}
-      {toast && (
-        <div
-          className={`fixed top-3 left-0 right-0 z-[60] flex justify-center pointer-events-none transition-all duration-300 ${isToastExiting
-            ? 'opacity-0 -translate-y-4 scale-95'
-            : 'opacity-100 translate-y-0 scale-100'
-            }`}
-        >
-          <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-medium px-3.5 py-2 rounded-2xl shadow-lg max-w-[280px]">
-            <CheckCircle size={18} className="text-emerald-400 flex-shrink-0" strokeWidth={2.5} />
-            <span className="leading-snug break-words">{toast}</span>
-          </div>
-        </div>
-      )}
-
       {/* Gallery Header Nav */}
       <div className="relative bg-white pt-1 pb-0 mb-1">
         <button

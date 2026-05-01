@@ -6,17 +6,21 @@ import { useToastStore } from '@/store/useToastStore';
 
 export default function Toast() {
   const { message, isVisible } = useToastStore();
+  const [shouldRender, setShouldRender] = useState(isVisible);
   const [animationClass, setAnimationClass] = useState('animate-toast-in');
 
   useEffect(() => {
     if (isVisible) {
+      setShouldRender(true);
       setAnimationClass('animate-toast-in');
     } else {
       setAnimationClass('animate-toast-out');
+      const timer = setTimeout(() => setShouldRender(false), 300);
+      return () => clearTimeout(timer);
     }
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[350px] ${animationClass}`}>
