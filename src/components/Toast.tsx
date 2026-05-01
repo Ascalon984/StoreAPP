@@ -23,18 +23,20 @@ export default function Toast() {
   if (!shouldRender) return null;
 
   return (
-    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[350px] ${animationClass}`}>
-      <div className="bg-white/90 backdrop-blur-md border border-emerald-100 px-4 py-3 rounded-2xl shadow-soft flex items-center gap-3">
-        {/* Ikon: Putih di atas Hijau (Lebih Pop) */}
-        <div className="bg-emerald-500 p-1 rounded-full flex-shrink-0 flex items-center justify-center">
-          <CheckCircle size={14} strokeWidth={3} className="text-white" />
+    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[340px] ${animationClass}`}>
+      <div className="bg-white/90 backdrop-blur-md border border-emerald-100/50 pl-3 pr-4 py-2.5 rounded-full shadow-soft flex items-center gap-3">
+        {/* Ikon Lebih Kecil & Ramping */}
+        <div className="bg-emerald-500 p-1 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm">
+          <CheckCircle size={12} strokeWidth={3.5} className="text-white" />
         </div>
 
-        <div className="flex flex-col min-w-0">
-          <p className="text-[12px] font-bold text-gray-900 leading-none mb-1">
+        {/* Kontainer Teks: Ganti ke items-center agar lebih simetris */}
+        <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+          <span className="text-[11px] font-bold text-gray-900 whitespace-nowrap">
             Berhasil
-          </p>
-          <p className="text-[11px] text-gray-500 font-medium truncate tracking-tight">
+          </span>
+          <div className="w-[1px] h-3 bg-gray-200 flex-shrink-0" />
+          <p className="text-[10px] text-gray-500 font-medium truncate tracking-tight pt-[1px]">
             {message}
           </p>
         </div>
