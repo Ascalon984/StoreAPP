@@ -12,31 +12,27 @@ export default function Toast() {
     if (isVisible) {
       setAnimationClass('animate-toast-in');
     } else {
-      // Memberikan waktu untuk animasi keluar sebelum komponen benar-benar unmount
       setAnimationClass('animate-toast-out');
     }
   }, [isVisible]);
 
-  if (!isVisible && animationClass === 'animate-toast-out') {
-    // Opsional: Jika store Anda langsung menghapus komponen, 
-    // Anda mungkin butuh logic tambahan di store untuk delay 'isVisible = false'
-  }
-
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] ${animationClass}`}>
-      <div className="bg-white/95 backdrop-blur-md border border-gray-100/50 text-gray-800 px-5 py-3 rounded-2xl shadow-soft flex items-center gap-3 border-b-2 border-b-emerald-500">
-        <div className="bg-emerald-50 p-1.5 rounded-full flex-shrink-0">
-          <CheckCircle size={16} strokeWidth={3} className="text-emerald-500" />
+    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[350px] ${animationClass}`}>
+      <div className="bg-white/90 backdrop-blur-md border border-emerald-100 px-4 py-3 rounded-2xl shadow-soft flex items-center gap-3">
+        {/* Ikon: Putih di atas Hijau (Lebih Pop) */}
+        <div className="bg-emerald-500 p-1 rounded-full flex-shrink-0 flex items-center justify-center">
+          <CheckCircle size={14} strokeWidth={3} className="text-white" />
         </div>
-        <div className="flex flex-col">
-          <span className="text-[13px] font-bold tracking-tight leading-none text-gray-900">
+
+        <div className="flex flex-col min-w-0">
+          <p className="text-[12px] font-bold text-gray-900 leading-none mb-1">
             Berhasil
-          </span>
-          <span className="text-[11px] text-gray-500 font-medium mt-0.5 whitespace-nowrap">
+          </p>
+          <p className="text-[11px] text-gray-500 font-medium truncate tracking-tight">
             {message}
-          </span>
+          </p>
         </div>
       </div>
     </div>
