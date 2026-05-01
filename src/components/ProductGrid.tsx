@@ -110,7 +110,7 @@ export default function ProductGrid() {
     <>
       <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
         {/* Header yang lebih bersih dan lapang */}
-        <div className="mb-5 flex flex-col px-0.5">
+        <div className="mb-3 flex flex-col px-0.5">
           <h3 className="text-sm font-bold text-gray-800 tracking-tight">
             Produk {categoryName !== 'Semua' ? categoryName : ''}
           </h3>

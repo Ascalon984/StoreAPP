@@ -315,12 +315,17 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   useEffect(() => {
     const checkScrollPosition = () => {
       const scrollY = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight;
-      const halfwayPoint = documentHeight * 0.5;
-      setShowBackToTop(scrollY > halfwayPoint);
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+      // Tampilkan jika sudah scroll lebih dari 50% area yang bisa di-scroll
+      if (scrollableHeight > 0 && scrollY >= scrollableHeight * 0.5) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
     };
 
-    window.addEventListener('scroll', checkScrollPosition);
+    window.addEventListener('scroll', checkScrollPosition, { passive: true });
     return () => window.removeEventListener('scroll', checkScrollPosition);
   }, []);
 
@@ -433,8 +438,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         <div
                           key={i}
                           className={`transition-all duration-500 rounded-full ${currentIndex === i
-                            ? 'w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]'
-                            : 'w-1 h-1 bg-white/40'
+                            ? 'w-5 h-1.5 bg-gray-800' // Lebih tebal dan gelap agar terlihat di background putih
+                            : 'w-1.5 h-1.5 bg-gray-300'
                             }`}
                         />
                       ))}
@@ -503,20 +508,23 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         <h3 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h3>
 
         <div className="flex gap-2">
-          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-emerald-50/40 rounded-lg border border-emerald-100/50">
-            <CheckCircle size={13} className="text-emerald-500" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-gray-700 tracking-tight">Tersedia</span>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-amber-50/40 rounded-lg border border-amber-100/50">
-            <Zap size={13} className="text-amber-500 fill-amber-500" strokeWidth={2} />
-            <span className="text-[10px] font-bold text-gray-700 tracking-tight text-center">Fast Respon</span>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-50/40 rounded-lg border border-blue-100/50">
-            <Headphones size={13} className="text-blue-500" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-gray-700 tracking-tight">24 Jam</span>
-          </div>
+          {[
+            { icon: <CheckCircle size={13} />, label: "Tersedia", bg: "bg-emerald-50/40", border: "border-emerald-100/50", text: "text-emerald-600" },
+            { icon: <Zap size={13} />, label: "Fast Respon", bg: "bg-amber-50/40", border: "border-amber-100/50", text: "text-amber-600" },
+            { icon: <Headphones size={13} />, label: "24 Jam", bg: "bg-blue-50/40", border: "border-blue-100/50", text: "text-blue-600" }
+          ].map((item, index) => (
+            <div
+              key={index}
+              className={`flex-1 flex flex-col items-center justify-center py-2 ${item.bg} rounded-xl border ${item.border} transition-all`}
+            >
+              <div className={`${item.text} mb-1`}>
+                {item.icon}
+              </div>
+              <span className="text-[9px] font-bold text-gray-700 tracking-tight leading-none">
+                {item.label}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -598,7 +606,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
               <div className="pl-[42px] flex items-end justify-between gap-3">
                 {/* KIRI: Area Komentar */}
-                <p className="text-sm text-gray-600 leading-relaxed flex-1 break-words pr-2 min-w-0">
+                <p className="text-[13px] text-gray-500 leading-snug flex-1 break-words pr-2 min-w-0">
                   {review.comment}
                 </p>
 
