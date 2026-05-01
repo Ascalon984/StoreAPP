@@ -637,14 +637,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </div>
 
               {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
-              <div className="pl-[42px] flex items-start justify-between gap-3">
-                {/* KIRI */}
-                <p className="text-sm text-gray-600 leading-relaxed flex-1 break-words pr-2">
+              <div className="pl-[42px] flex items-end justify-between gap-3">
+                {/* KIRI: Area Komentar */}
+                <p className="text-sm text-gray-600 leading-relaxed flex-1 break-words pr-2 min-w-0">
                   {review.comment}
                 </p>
 
-                {/* KANAN */}
-                <div className="flex items-center gap-2 flex-shrink-0">
+                {/* KANAN: Area Interaksi (Diberi lebar minimum/flex-shrink-0 agar tidak gepeng) */}
+                <div className="flex items-center gap-2 flex-shrink-0 min-w-[fit-content] mb-0.5">
 
                   {thankYouIds.includes(review.id) && (
                     <span className="text-[10px] text-emerald-600 font-bold italic whitespace-nowrap">
@@ -655,17 +655,21 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <button
                     onClick={() => handleVote(review.id, 'like')}
                     disabled={votedIds.includes(review.id)}
-                    className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'like'
-                      ? 'text-emerald-600 scale-110'
-                      : 'text-gray-300'
-                      } ${votedIds.includes(review.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`flex items-center gap-1.5 transition-all duration-500 ${votedType[review.id] === 'like'
+                      ? 'text-emerald-500 scale-110' // Warna garis & teks berubah jadi hijau segar
+                      : 'text-gray-300' // Warna default abu-abu sangat bersih
+                      }`}
                   >
                     <ThumbsUp
                       size={13}
-                      className={votedType[review.id] === 'like' ? 'fill-emerald-600/20' : 'fill-none'}
-                      strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.5}
+                      /* Stroke lebih tebal saat aktif membuat ikon terlihat "terisi" secara visual tanpa perlu fill */
+                      strokeWidth={votedType[review.id] === 'like' ? 2.8 : 1.8}
+                      className="transition-transform duration-300"
                     />
-                    <span className="text-[11px] font-bold">{review.likes || 0}</span>
+                    <span className={`text-[11px] font-bold tracking-tight transition-colors ${votedType[review.id] === 'like' ? 'text-emerald-600' : 'text-gray-400'
+                      }`}>
+                      {review.likes || 0}
+                    </span>
                   </button>
 
                   <button
