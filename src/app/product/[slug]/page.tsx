@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import {
-  Star, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, ChevronUp, Zap, Headphones
+  Star, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, Zap, Headphones, ThumbsUp, ThumbsDown
 } from 'lucide-react';
 
 import { useCartStore } from '@/store/useCartStore';
@@ -97,6 +97,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [toast, setToast] = useState<string | null>(null);
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [votedIds, setVotedIds] = useState<string[]>([]);
 
   useEffect(() => {
     fetchSettings();
@@ -274,6 +275,16 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
+  const handleVote = (reviewId: string, type: 'like' | 'dislike') => {
+    if (votedIds.includes(reviewId)) return;
+    setVotedIds(prev => [...prev, reviewId]);
+
+    // In a real implementation, you would call an API to update this in the database:
+    // fetch(`/api/public/reviews/${reviewId}/vote`, { method: 'POST', body: JSON.stringify({ type }) });
+
+    showToast(type === 'like' ? 'Menyukai ulasan' : 'Tidak menyukai ulasan');
+  };
+
   const handleBack = () => {
     window.history.back();
   };
@@ -287,7 +298,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
-  const handleBackToTop = () => {
+  const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -537,7 +548,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       </div>
 
       {/* Review Section - Clean */}
-      <div className="bg-white p-3 mb-1">
+      <div className="bg-white px-4 py-3 mb-1">
         <h3 className="text-sm font-bold text-gray-800 tracking-tight">
           Ulasan Pembeli ({allReviews.length})
         </h3>
@@ -618,9 +629,41 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </div>
 
               {/* Komentar */}
-              <p className="text-sm text-gray-600 leading-relaxed pl-[42px]">
-              {review.comment}
+              <p className="text-sm text-gray-600 leading-relaxed pl-[42px] mb-3">
+                {review.comment}
               </p>
+
+              {/* Fitur Like & Dislike */}
+              <div className="pl-[42px] flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleVote(review.id, 'like')}
+                    disabled={votedIds.includes(review.id)}
+                    className={`flex items-center gap-1.5 transition-colors group ${votedIds.includes(review.id) ? 'text-emerald-600' : 'text-gray-400 hover:text-emerald-600'
+                      }`}
+                  >
+                    <ThumbsUp size={14} className="group-active:scale-125 transition-transform" />
+                    <span className="text-xs font-medium">{review.likes || 0}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleVote(review.id, 'dislike')}
+                    disabled={votedIds.includes(review.id)}
+                    className={`flex items-center gap-1.5 transition-colors group ${votedIds.includes(review.id) ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'
+                      }`}
+                  >
+                    <ThumbsDown size={14} className="group-active:scale-125 transition-transform" />
+                    <span className="text-xs font-medium">{review.dislikes || 0}</span>
+                  </button>
+                </div>
+
+                {/* Feedback Pesan */}
+                {votedIds.includes(review.id) && (
+                  <span className="text-[11px] text-emerald-600 font-medium animate-in fade-in slide-in-from-left-1 duration-300">
+                    Terima kasih ulasannya!
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -655,35 +698,32 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Back to Top */}
-      {showBackToTop && (
-        <button
-          onClick={handleBackToTop}
-          className="fixed bottom-24 right-4 z-40 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary-dark transition-all duration-200 animate-fade-in-up"
-          aria-label="Kembali ke atas"
-        >
-          <ChevronUp size={20} strokeWidth={2} />
-        </button>
-      )}
+      {/* Scroll to Top Button - Polish agar senada dengan UI */}
+      <button
+        onClick={scrollToTop}
+        className={`
+          fixed bottom-24 right-6 z-50
+          w-11 h-11 rounded-full
+          bg-emerald-500 text-white
+          shadow-[0_8px_25px_rgba(16,185,129,0.3)]
+          flex items-center justify-center
+          transition-all duration-500 cubic-bezier(0.34,1.56,0.64,1)
+          hover:bg-emerald-600 hover:scale-110
+          active:scale-90
+          ${showBackToTop
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-10 scale-50 pointer-events-none'
+          }
+        `}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 15l-6-6-6 6" />
+        </svg>
+      </button>
 
       <style jsx>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.3s ease-out;
         }
       `}</style>
 

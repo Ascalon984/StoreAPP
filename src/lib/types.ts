@@ -28,6 +28,8 @@ export interface Review {
   comment: string;
   createdAt: string;
   isVerified: boolean;
+  likes?: number;
+  dislikes?: number;
 }
 
 export interface CartItem {

@@ -61,6 +61,8 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
           comment: r.comment || '',
           createdAt: r.created_at || r.createdAt || r.timestamp || r.created_on || new Date().toISOString(),
           isVerified: r.is_active !== false,
+          likes: r.likes || 0,
+          dislikes: r.dislikes || 0,
         };
       });
 
