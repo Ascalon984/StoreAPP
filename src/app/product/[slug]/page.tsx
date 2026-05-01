@@ -98,15 +98,15 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
-  const [votedType, setVotedType] = useState<Record<string, 'like' | 'dislike'>>({}); // Track jenis vote per review
-  const [thankYouIds, setThankYouIds] = useState<string[]>([]); // Track IDs yang sedang menampilkan "Terima kasih!"
+  // PERBAIKAN 1: votedType dengan nilai null untuk state tidak aktif
+  const [votedType, setVotedType] = useState<Record<string, 'like' | 'dislike' | null>>({});
+  const [thankYouIds, setThankYouIds] = useState<string[]>([]);
 
   useEffect(() => {
     fetchSettings();
     fetchReviews();
-    // Track kapan loader dimulai
     loaderStartTimeRef.current = Date.now();
-    const MIN_DISPLAY_TIME = 600; // ms - minimum 600ms agar tidak flicker
+    const MIN_DISPLAY_TIME = 600;
 
     fetch(`/api/public/products/${slug}?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => {
@@ -116,14 +116,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       .then((data) => {
         const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
 
-        // Kalau belum mencapai minimum display time, tunggu
         if (elapsed < MIN_DISPLAY_TIME) {
           setTimeout(() => {
             setProduct(data);
             setLoading(false);
           }, MIN_DISPLAY_TIME - elapsed);
         } else {
-          // Langsung hide kalau sudah beyond minimum time
           setProduct(data);
           setLoading(false);
         }
@@ -131,7 +129,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       .catch(() => {
         const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
 
-        // Ensure minimum display time bahkan saat error
         if (elapsed < MIN_DISPLAY_TIME) {
           setTimeout(() => {
             setLoading(false);
@@ -142,7 +139,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       });
   }, [slug, refreshVersion]);
 
-  // Fetch reviews spesifik produk ketika product sudah loaded
   useEffect(() => {
     if (product?.id) {
       console.log(`Fetching reviews for product: ${product.id}`);
@@ -185,11 +181,11 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const getRatingLabel = (rating: number) => {
     if (rating === 0) return 'Belum ada rating';
-    if (rating >= 4.7) return 'Sangat Bagus'; // Standard produk top-tier
-    if (rating >= 4.0) return 'Bagus';        // Batas psikologis pembeli merasa aman
-    if (rating >= 3.0) return 'Cukup';        // Rating 3.x dianggap rata-rata (mediocre)
-    if (rating >= 2.0) return 'Kurang';       // Rating 2.x sudah mulai dihindari
-    return 'Buruk';                           // Dibawah 2.0 sangat jarang/buruk sekali
+    if (rating >= 4.7) return 'Sangat Bagus';
+    if (rating >= 4.0) return 'Bagus';
+    if (rating >= 3.0) return 'Cukup';
+    if (rating >= 2.0) return 'Kurang';
+    return 'Buruk';
   };
 
   const getRatingColor = (rating: number) => {
@@ -216,7 +212,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     if (!product) return;
 
     try {
-      // ─────── STEP 1: Call Admin API to update stock ───────
       const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
 
       const orderResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
@@ -242,7 +237,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         return;
       }
 
-      // ─────── STEP 2: Success - proceed with WhatsApp ───────
       const message = generateSingleWAMessage(
         product.name,
         product.slug,
@@ -277,17 +271,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
+  // PERBAIKAN 1: Fungsi handleVote yang sudah diperbaiki
   const handleVote = async (reviewId: string, type: 'like' | 'dislike') => {
     if (votedIds.includes(reviewId)) return;
-    
+
+    // 1. Set state untuk tampilan aktif (fill & teks)
     setVotedIds(prev => [...prev, reviewId]);
     setVotedType(prev => ({ ...prev, [reviewId]: type }));
     setThankYouIds(prev => [...prev, reviewId]);
-    
-    // Hide "Terima kasih!" message setelah 2 detik
-    setTimeout(() => {
-      setThankYouIds(prev => prev.filter(id => id !== reviewId));
-    }, 2000);
 
     try {
       const response = await fetch(`/api/public/reviews/${reviewId}/vote`, {
@@ -299,27 +290,36 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       if (!response.ok) {
         const error = await response.json();
         console.error(`Error: ${error.error || 'Gagal mengupdate vote'}`);
-        // Remove from votedIds if failed
+        // Rollback jika gagal
         setVotedIds(prev => prev.filter(id => id !== reviewId));
         setVotedType(prev => {
           const newState = { ...prev };
           delete newState[reviewId];
           return newState;
         });
+        setThankYouIds(prev => prev.filter(id => id !== reviewId));
         return;
       }
 
       // Success - trigger refresh untuk update data dari database
       triggerRefresh();
+
+      // 2. Reset tampilan ke Gray (Clean) setelah 2 detik
+      setTimeout(() => {
+        setVotedType(prev => ({ ...prev, [reviewId]: null }));
+        setThankYouIds(prev => prev.filter(id => id !== reviewId));
+      }, 2000);
+
     } catch (error) {
       console.error('Vote error:', error);
-      // Remove from votedIds if error
+      // Rollback jika error
       setVotedIds(prev => prev.filter(id => id !== reviewId));
       setVotedType(prev => {
         const newState = { ...prev };
         delete newState[reviewId];
         return newState;
       });
+      setThankYouIds(prev => prev.filter(id => id !== reviewId));
     }
   };
 
@@ -356,13 +356,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
 
   const localReviews = getReviewsForProduct(product.id);
-  // Gunakan hanya reviews dari zustand store yang sudah di-filter per product_id
   const allReviews = (() => {
-    // Sort berdasarkan waktu terbaru
     return localReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   })();
 
-  // Hitung live metrics untuk sinkronisasi instan di UI
   const specificReviews = localReviews.filter(r => r.productId === product.id);
   const serverCount = product.reviewCount || 0;
   const serverRating = product.rating || 0;
@@ -396,9 +393,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       )}
 
-      {/* Gallery Header Nav — Refined Glassmorphism */}
+      {/* Gallery Header Nav */}
       <div className="relative bg-white pt-1 pb-0 mb-1">
-        {/* Tombol Kembali */}
         <button
           onClick={handleBack}
           className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
@@ -407,9 +403,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-800" />
         </button>
 
-        {/* Grup Tombol Kanan */}
         <div className="absolute top-4 right-4 z-20 flex gap-2.5">
-          {/* Tombol Share */}
           <button
             onClick={handleShare}
             className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
@@ -418,7 +412,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <Share2 size={18} strokeWidth={2} className="text-gray-700" />
           </button>
 
-          {/* Tombol Favorit */}
           <button
             onClick={() => toggleFavorite(product.id)}
             className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
@@ -434,31 +427,24 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         <div className="relative">
           {(() => {
-            // Normalisasi data gambar dari admin
             const rawImages = product.images || (product as any).image;
             let productImages: string[] = [];
 
             if (Array.isArray(rawImages)) {
-              // Jika array, cek apakah setiap elemen adalah pipe-separated (bug dari admin API)
-              // atau sudah individual images
               productImages = rawImages.flatMap(img => {
                 if (!img || typeof img !== 'string') return [];
-                // Jika string dimulai dengan data:image atau http, itu gambar individual
                 if (img.startsWith('data:image') || img.startsWith('http')) {
                   return [img];
                 }
-                // Jika tidak, coba split dengan pipe (fallback untuk admin API bug)
                 return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
               });
             } else if (typeof rawImages === 'string') {
-              // Jika string, split dengan pipe dan filter yang valid
               productImages = rawImages
                 .split('|')
                 .map(img => img?.trim())
                 .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
             }
 
-            // Tampilkan semua gambar yang ada, jika kosong tampilkan 1 slide placeholder
             const slideCount = productImages.length > 0 ? productImages.length : 1;
             const slides = Array.from({ length: slideCount }, (_, i) => i);
 
@@ -485,14 +471,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
                 {slideCount > 1 && (
                   <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
-                    {/* Padding dikurangi dari px-3 py-1.5 ke px-2 py-1 agar lebih ramping */}
                     <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
                       {slides.map((i) => (
                         <div
                           key={i}
                           className={`transition-all duration-500 rounded-full ${currentIndex === i
-                            ? 'w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]' // w-6 ke w-5 agar lebih proporsional
-                            : 'w-1 h-1 bg-white/40' // w-1.5 ke w-1 agar lebih minimalis
+                            ? 'w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]'
+                            : 'w-1 h-1 bg-white/40'
                             }`}
                         />
                       ))}
@@ -505,9 +490,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Info Section - Clean & No Redundancy */}
+      {/* Info Section */}
       <div className="bg-white p-3 mb-1">
-        {/* Header with Product Name & Sold count */}
         <div className="flex justify-between items-start gap-3 mb-2">
           <h1 className="text-lg md:text-xl font-semibold text-gray-900 leading-snug flex-1">
             {product.name}
@@ -521,7 +505,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
-        {/* Price & Stock */}
         <div className="flex items-end justify-between mb-2.5">
           <div>
             {product.originalPrice && (
@@ -539,10 +522,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
-        {/* Divider */}
         <div className="border-t border-gray-200" />
 
-        {/* Description Section */}
         <div className="pt-3 space-y-2">
           <h3 className="text-sm font-bold text-gray-800 tracking-tight">Deskripsi Produk</h3>
           <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
@@ -560,24 +541,21 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Jaminan Palugada — Neutral & Clean Version */}
+      {/* Jaminan Palugada */}
       <div className="bg-white px-4 py-3 mb-1">
         <h3 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h3>
 
         <div className="flex gap-2">
-          {/* Item 1: Tersedia */}
           <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-emerald-50/40 rounded-lg border border-emerald-100/50">
             <CheckCircle size={13} className="text-emerald-500" strokeWidth={2.5} />
             <span className="text-[10px] font-bold text-gray-700 tracking-tight">Tersedia</span>
           </div>
 
-          {/* Item 2: Fast Respon */}
           <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-amber-50/40 rounded-lg border border-amber-100/50">
             <Zap size={13} className="text-amber-500 fill-amber-500" strokeWidth={2} />
             <span className="text-[10px] font-bold text-gray-700 tracking-tight text-center">Fast Respon</span>
           </div>
 
-          {/* Item 3: 24 Jam */}
           <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-50/40 rounded-lg border border-blue-100/50">
             <Headphones size={13} className="text-blue-500" strokeWidth={2.5} />
             <span className="text-[10px] font-bold text-gray-700 tracking-tight">24 Jam</span>
@@ -585,18 +563,15 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Review Section - Clean */}
+      {/* PERBAIKAN 2: Review Section dengan inline-flex */}
       <div className="bg-white px-4 py-3 mb-1">
         <h3 className="text-sm font-bold text-gray-800 tracking-tight">
           Ulasan Pembeli ({allReviews.length})
         </h3>
 
-        {/* Rating Summary Card - Refined Spacing */}
         <div className="bg-gray-50/50 rounded-2xl p-4 mb-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-2.5"> {/* Gap dikurangi dari 4 ke 2.5 agar bar lebih panjang ke kiri */}
-
-            {/* Kolom Kiri: Ringkasan Angka */}
-            <div className="flex flex-col items-center justify-center min-w-[80px] border-r border-gray-200/60 pr-2.5"> {/* pr dikurangi ke 2.5 */}
+          <div className="flex items-center gap-2.5">
+            <div className="flex flex-col items-center justify-center min-w-[80px] border-r border-gray-200/60 pr-2.5">
               <span className="text-3xl font-extrabold text-gray-800 leading-none">{liveRating.toFixed(1)}</span>
               <div className="flex text-yellow-500 my-1 gap-0.5">
                 {[1, 2, 3, 4, 5].map(i => renderStar(i, liveRating))}
@@ -606,14 +581,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </span>
             </div>
 
-            {/* Kolom Kanan: Bar distribusi - pl dihapus agar langsung mepet ke divider */}
             <div className="flex-1 space-y-1">
               {[5, 4, 3, 2, 1].map(star => {
                 const pct = distribution.percent[star as keyof typeof distribution.percent];
                 const count = distribution.raw[star as keyof typeof distribution.raw];
                 return (
                   <div key={star} className="flex items-center gap-1.5 group cursor-default">
-                    {/* Lebar angka dibuat fix (w-3) agar bar punya sisa ruang lebih banyak */}
                     <span className="w-3 text-[10px] font-semibold text-gray-500 text-center tabular-nums">{star}</span>
                     <Star size={8} className="text-gray-400 fill-gray-400 flex-shrink-0" strokeWidth={1.5} />
 
@@ -632,13 +605,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
-        {/* Daftar Ulasan — Lebih Soft & Clean */}
+        {/* PERBAIKAN 2: Daftar Ulasan dengan inline-flex agar ikon menempel di akhir kalimat */}
         <div className="space-y-2.5 px-1">
           {displayedReviews.map((review: Review, index: number) => (
             <div key={review.id} className="py-2.5 border-b border-gray-100 last:border-0">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-3">
-                  {/* Avatar Pastel yang lebih Natural */}
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80`}>
                     {review.name.charAt(0).toUpperCase()}
                   </div>
@@ -666,59 +638,51 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {/* Komentar & Interaksi */}
+              {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
               <div className="pl-[42px]">
-                <div className="text-sm text-gray-600 leading-relaxed relative">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {/* Teks Komentar */}
-                  <span>{review.comment}</span>
+                  <span className="mr-2">{review.comment}</span>
 
-                  {/* Bar Interaksi */}
-                  <div className="mt-1 flex items-center justify-end">
-                    <div className="flex items-center gap-2">
-                      {/* Pesan Terima Kasih - Muncul di kiri */}
-                      {thankYouIds.includes(review.id) && (
-                        <>
-                          <span className="text-[10px] text-emerald-600 font-bold animate-in fade-in zoom-in duration-500 whitespace-nowrap">
-                            Terima kasih!
-                          </span>
-                          <span className="text-gray-300 text-[10px]">|</span>
-                        </>
-                      )}
+                  {/* Ikon Interaksi — Inline agar sejajar teks */}
+                  <span className="inline-flex items-center gap-2.5 translate-y-0.5">
+                    {/* Pesan Terima Kasih */}
+                    {thankYouIds.includes(review.id) && (
+                      <span className="text-[10px] text-emerald-600 font-bold italic animate-in fade-in slide-in-from-left-1 duration-300">
+                        Terima kasih!
+                      </span>
+                    )}
 
-                      {/* Tombol Like */}
+                    {/* Group Tombol */}
+                    <span className="flex items-center gap-2">
                       <button
                         onClick={() => handleVote(review.id, 'like')}
-                        disabled={votedIds.includes(review.id)}
-                        className={`flex items-center gap-1 transition-all duration-300 ${
-                          votedIds.includes(review.id) ? 'text-emerald-600 scale-110' : 'text-gray-400 hover:text-emerald-500'
-                        }`}
+                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-600 scale-110' : 'text-gray-300'
+                          }`}
                       >
-                        <ThumbsUp 
-                          size={13} 
-                          strokeWidth={2} 
-                          className={`${votedIds.includes(review.id) && votedType[review.id] === 'like' ? 'fill-current' : 'fill-none'}`} 
+                        <ThumbsUp
+                          size={13}
+                          className={`${votedType[review.id] === 'like' ? 'fill-emerald-600/20' : 'fill-none'}`}
+                          strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.5}
                         />
                         <span className="text-[11px] font-bold">{review.likes || 0}</span>
                       </button>
 
-                      {/* Tombol Dislike */}
                       <button
                         onClick={() => handleVote(review.id, 'dislike')}
-                        disabled={votedIds.includes(review.id)}
-                        className={`flex items-center gap-1 transition-all duration-300 ${
-                          votedIds.includes(review.id) ? 'text-rose-500 scale-110' : 'text-gray-400 hover:text-rose-400'
-                        }`}
+                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-500 scale-110' : 'text-gray-300'
+                          }`}
                       >
-                        <ThumbsDown 
-                          size={13} 
-                          strokeWidth={2} 
-                          className={`${votedIds.includes(review.id) && votedType[review.id] === 'dislike' ? 'fill-current' : 'fill-none'}`} 
+                        <ThumbsDown
+                          size={13}
+                          className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
+                          strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
                         />
                         <span className="text-[11px] font-bold">{review.dislikes || 0}</span>
                       </button>
-                    </div>
-                  </div>
-                </div>
+                    </span>
+                  </span>
+                </p>
               </div>
             </div>
           ))}
@@ -754,7 +718,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         </div>
       </div>
 
-      {/* Scroll to Top Button - Polish agar senada dengan UI */}
+      {/* Scroll to Top Button */}
       <button
         onClick={scrollToTop}
         className={`
