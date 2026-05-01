@@ -304,9 +304,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       // Success - trigger refresh untuk update data dari database
       triggerRefresh();
 
-      // 2. Reset tampilan ke Gray (Clean) setelah 2 detik
       setTimeout(() => {
-        setVotedType(prev => ({ ...prev, [reviewId]: null }));
         setThankYouIds(prev => prev.filter(id => id !== reviewId));
       }, 2000);
 
@@ -639,50 +637,53 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </div>
 
               {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
-              <div className="pl-[42px]">
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {/* Teks Komentar */}
-                  <span className="mr-2">{review.comment}</span>
-
-                  {/* Ikon Interaksi — Inline agar sejajar teks */}
-                  <span className="inline-flex items-center gap-2.5 translate-y-0.5">
-                    {/* Pesan Terima Kasih */}
-                    {thankYouIds.includes(review.id) && (
-                      <span className="text-[10px] text-emerald-600 font-bold italic animate-in fade-in slide-in-from-left-1 duration-300">
-                        Terima kasih!
-                      </span>
-                    )}
-
-                    {/* Group Tombol */}
-                    <span className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleVote(review.id, 'like')}
-                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-600 scale-110' : 'text-gray-300'
-                          }`}
-                      >
-                        <ThumbsUp
-                          size={13}
-                          className={`${votedType[review.id] === 'like' ? 'fill-emerald-600/20' : 'fill-none'}`}
-                          strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.5}
-                        />
-                        <span className="text-[11px] font-bold">{review.likes || 0}</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleVote(review.id, 'dislike')}
-                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-500 scale-110' : 'text-gray-300'
-                          }`}
-                      >
-                        <ThumbsDown
-                          size={13}
-                          className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
-                          strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
-                        />
-                        <span className="text-[11px] font-bold">{review.dislikes || 0}</span>
-                      </button>
-                    </span>
-                  </span>
+              <div className="pl-[42px] flex items-start justify-between gap-3">
+                {/* KIRI */}
+                <p className="text-sm text-gray-600 leading-relaxed flex-1 break-words pr-2">
+                  {review.comment}
                 </p>
+
+                {/* KANAN */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+
+                  {thankYouIds.includes(review.id) && (
+                    <span className="text-[10px] text-emerald-600 font-bold italic whitespace-nowrap">
+                      Terima kasih!
+                    </span>
+                  )}
+
+                  <button
+                    onClick={() => handleVote(review.id, 'like')}
+                    disabled={votedIds.includes(review.id)}
+                    className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'like'
+                      ? 'text-emerald-600 scale-110'
+                      : 'text-gray-300'
+                      } ${votedIds.includes(review.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <ThumbsUp
+                      size={13}
+                      className={votedType[review.id] === 'like' ? 'fill-emerald-600/20' : 'fill-none'}
+                      strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.5}
+                    />
+                    <span className="text-[11px] font-bold">{review.likes || 0}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleVote(review.id, 'dislike')}
+                    disabled={votedIds.includes(review.id)}
+                    className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike'
+                      ? 'text-rose-500 scale-110'
+                      : 'text-gray-300'
+                      } ${votedIds.includes(review.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <ThumbsDown
+                      size={13}
+                      className={votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}
+                      strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
+                    />
+                    <span className="text-[11px] font-bold">{review.dislikes || 0}</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
