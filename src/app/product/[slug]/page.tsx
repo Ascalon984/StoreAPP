@@ -367,25 +367,31 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
         </button>
 
-        {/* Right Actions - Menggunakan shadow yang lebih "deep" */}
-        <div className="absolute top-4 right-4 z-20 flex gap-2.5">
+        {/* Right Actions - Combined Pill Mode */}
+        <div className="absolute top-4 right-4 z-20 flex items-center bg-white backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] rounded-full px-1 py-1">
+
+          {/* Tombol Share */}
           <button
             onClick={handleShare}
-            className="p-2.5 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
+            className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
             aria-label="Bagikan"
           >
-            <Share2 size={18} strokeWidth={2.2} className="text-gray-800" />
+            <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
           </button>
 
+          {/* Divider Vertikal yang Halus */}
+          <div className="w-[1px] h-4 bg-gray-200 mx-0.5" />
+
+          {/* Tombol Favorit */}
           <button
             onClick={() => toggleFavorite(product.id)}
-            className="p-2.5 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
+            className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
             aria-label="Favorit"
           >
             <Heart
               size={18}
               strokeWidth={2.2}
-              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-800"}
+              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
             />
           </button>
         </div>
