@@ -10,6 +10,7 @@ export default function Toast() {
   const [animationClass, setAnimationClass] = useState('animate-toast-in');
   const [dragX, setDragX] = useState(0);
   const [opacity, setOpacity] = useState(1);
+  const [isSwiped, setIsSwiped] = useState(false);
   const startX = useRef(0);
   const isDragging = useRef(false);
 
@@ -17,16 +18,26 @@ export default function Toast() {
     if (isVisible) {
       setShouldRender(true);
       setAnimationClass('animate-toast-in');
-    } else {
-      setAnimationClass('animate-toast-out');
-      const timer = setTimeout(() => setShouldRender(false), 300);
-      return () => clearTimeout(timer);
+      setDragX(0);
+      setOpacity(1);
+      setIsSwiped(false);
+    } else if (shouldRender) {
+      // Jika ditutup via swipe, jangan jalankan animasi keluar CSS (animate-toast-out)
+      if (isSwiped) {
+        setShouldRender(false);
+      } else {
+        setAnimationClass('animate-toast-out');
+        const timer = setTimeout(() => setShouldRender(false), 300);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [isVisible]);
+  }, [isVisible, isSwiped, shouldRender]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX;
     isDragging.current = true;
+    // Hentikan animasi CSS saat mulai geser agar transform inline tidak konflik
+    setAnimationClass('');
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -48,6 +59,7 @@ export default function Toast() {
 
     // Jika geseran lebih dari 80px, anggap sebagai perintah tutup
     if (Math.abs(dragX) > 80) {
+      setIsSwiped(true);
       hideToast();
     } else {
       // Jika tidak cukup jauh, kembalikan ke posisi semula

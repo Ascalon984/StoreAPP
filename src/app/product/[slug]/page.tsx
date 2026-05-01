@@ -367,26 +367,24 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
         </button>
 
-        {/* Right Actions - Combined Pill Mode */}
-        <div className="absolute top-4 right-4 z-20 flex items-center bg-white backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] rounded-full px-1 py-1">
+        {/* Right Actions - Combined Pill Mode (REFINED) */}
+        <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 py-1">
 
-          {/* Tombol Share */}
+          {/* Tombol Share - Gunakan p-2 agar area klik tetap besar tapi visual ringkas */}
           <button
             onClick={handleShare}
             className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
-            aria-label="Bagikan"
           >
             <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
           </button>
 
-          {/* Divider Vertikal yang Halus */}
-          <div className="w-[1px] h-4 bg-gray-200 mx-0.5" />
+          {/* Divider - mx ditingkatkan sedikit agar pil terlihat lebih panjang secara natural */}
+          <div className="w-[1px] h-4 bg-gray-200/80 mx-1" />
 
           {/* Tombol Favorit */}
           <button
             onClick={() => toggleFavorite(product.id)}
             className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
-            aria-label="Favorit"
           >
             <Heart
               size={18}
