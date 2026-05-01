@@ -98,6 +98,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
+  const [votedType, setVotedType] = useState<Record<string, 'like' | 'dislike'>>({}); // Track jenis vote per review
   const [thankYouIds, setThankYouIds] = useState<string[]>([]); // Track IDs yang sedang menampilkan "Terima kasih!"
 
   useEffect(() => {
@@ -280,6 +281,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     if (votedIds.includes(reviewId)) return;
     
     setVotedIds(prev => [...prev, reviewId]);
+    setVotedType(prev => ({ ...prev, [reviewId]: type }));
     setThankYouIds(prev => [...prev, reviewId]);
     
     // Hide "Terima kasih!" message setelah 2 detik
@@ -299,17 +301,26 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         showToast(`Error: ${error.error || 'Gagal mengupdate vote'}`);
         // Remove from votedIds if failed
         setVotedIds(prev => prev.filter(id => id !== reviewId));
+        setVotedType(prev => {
+          const newState = { ...prev };
+          delete newState[reviewId];
+          return newState;
+        });
         return;
       }
 
       // Success - trigger refresh untuk update data dari database
       triggerRefresh();
-      showToast(type === 'like' ? 'Terima kasih! Ulasan disukai' : 'Terima kasih! Ulasan tidak disukai');
     } catch (error) {
       console.error('Vote error:', error);
       showToast('Gagal mengupdate vote. Silakan coba lagi.');
       // Remove from votedIds if error
       setVotedIds(prev => prev.filter(id => id !== reviewId));
+      setVotedType(prev => {
+        const newState = { ...prev };
+        delete newState[reviewId];
+        return newState;
+      });
     }
   };
 
@@ -656,45 +667,54 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {/* Komentar & Interaksi — Menggunakan Relative untuk positioning tombol */}
-              <div className="pl-[42px] relative group/comment">
-                <p className="text-sm text-gray-600 leading-relaxed pr-2">
-                  {review.comment}
-                </p>
-                
-                {/* Bar Interaksi: Diletakkan di pojok kanan bawah sejajar teks */}
-                <div className="flex items-center justify-end gap-3 mt-1.5">
-                  {/* Feedback Pesan - Muncul di sebelah kiri tombol jika sudah klik */}
-                  {thankYouIds.includes(review.id) && (
-                    <span className="text-[10px] text-emerald-600 font-medium italic animate-in fade-in slide-in-from-right-1">
-                      Terima kasih!
-                    </span>
-                  )}
+              {/* Komentar & Interaksi — Dibuat menyatu agar tidak boros baris */}
+              <div className="pl-[42px]">
+                <div className="text-sm text-gray-600 leading-relaxed relative">
+                  {/* Teks Komentar */}
+                  <span>{review.comment}</span>
 
-                  <div className="flex items-center gap-2.5 bg-gray-50/50 px-2 py-1 rounded-lg border border-gray-100">
-                    <button
-                      onClick={() => handleVote(review.id, 'like')}
-                      disabled={votedIds.includes(review.id)}
-                      className={`flex items-center gap-1 transition-colors ${
-                        votedIds.includes(review.id) ? 'text-emerald-600' : 'text-gray-400 hover:text-emerald-600'
-                      }`}
-                    >
-                      <ThumbsUp size={13} strokeWidth={votedIds.includes(review.id) ? 2.5 : 1.5} />
-                      <span className="text-[11px] font-semibold">{review.likes || 0}</span>
-                    </button>
+                  {/* Bar Interaksi — Inline agar menempel di akhir teks atau pojok kanan */}
+                  <div className="inline-flex items-center gap-3 ml-2 translate-y-0.5">
+                    <div className="flex items-center gap-3">
+                      {/* Tombol Like */}
+                      <button
+                        onClick={() => handleVote(review.id, 'like')}
+                        disabled={votedIds.includes(review.id)}
+                        className={`flex items-center gap-1 transition-all duration-300 ${
+                          votedIds.includes(review.id) ? 'text-emerald-600 scale-110' : 'text-gray-300 hover:text-emerald-500'
+                        }`}
+                      >
+                        <ThumbsUp 
+                          size={14} 
+                          strokeWidth={2} 
+                          className={`${votedIds.includes(review.id) && votedType[review.id] === 'like' ? 'fill-emerald-600/20' : 'fill-none'}`} 
+                        />
+                        <span className="text-[11px] font-bold">{review.likes || 0}</span>
+                      </button>
 
-                    <div className="w-[1px] h-3 bg-gray-200" /> {/* Divider kecil */}
+                      {/* Tombol Dislike */}
+                      <button
+                        onClick={() => handleVote(review.id, 'dislike')}
+                        disabled={votedIds.includes(review.id)}
+                        className={`flex items-center gap-1 transition-all duration-300 ${
+                          votedIds.includes(review.id) ? 'text-rose-500 scale-110' : 'text-gray-300 hover:text-rose-400'
+                        }`}
+                      >
+                        <ThumbsDown 
+                          size={14} 
+                          strokeWidth={2} 
+                          className={`${votedIds.includes(review.id) && votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`} 
+                        />
+                        <span className="text-[11px] font-bold">{review.dislikes || 0}</span>
+                      </button>
+                    </div>
 
-                    <button
-                      onClick={() => handleVote(review.id, 'dislike')}
-                      disabled={votedIds.includes(review.id)}
-                      className={`flex items-center gap-1 transition-colors ${
-                        votedIds.includes(review.id) ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'
-                      }`}
-                    >
-                      <ThumbsDown size={13} strokeWidth={votedIds.includes(review.id) ? 2.5 : 1.5} />
-                      <span className="text-[11px] font-semibold">{review.dislikes || 0}</span>
-                    </button>
+                    {/* Pesan Terima Kasih - Muncul Tipis & Elegan */}
+                    {thankYouIds.includes(review.id) && (
+                      <span className="text-[10px] text-emerald-600 font-bold italic animate-in fade-in zoom-in duration-500 whitespace-nowrap">
+                        Terima kasih!
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
