@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import {
@@ -356,28 +356,31 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   return (
     <div className="bg-gray-50 pb-24 min-h-screen">
       {/* Gallery Header Nav */}
-      <div className="relative overflow-hidden">
+      <div className="relative bg-white pt-1 pb-0 mb-1">
 
-        {/* Tombol Kembali - Dibuat lebih kontras dan ngambang */}
+        {/* Back Button - Shadow diperkuat & border dibuat lebih tajam */}
         <button
           onClick={handleBack}
-          className="absolute top-5 left-5 z-20 p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
+          className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
+          aria-label="Kembali"
         >
-          <ChevronLeft size={20} strokeWidth={3} className="text-gray-900" />
+          <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
         </button>
 
-        {/* Tombol Kanan */}
-        <div className="absolute top-5 right-5 z-20 flex gap-3">
+        {/* Right Actions - Menggunakan shadow yang lebih "deep" */}
+        <div className="absolute top-4 right-4 z-20 flex gap-2.5">
           <button
             onClick={handleShare}
-            className="p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
+            className="p-2.5 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
+            aria-label="Bagikan"
           >
             <Share2 size={18} strokeWidth={2.2} className="text-gray-800" />
           </button>
 
           <button
             onClick={() => toggleFavorite(product.id)}
-            className="p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
+            className="p-2.5 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
+            aria-label="Favorit"
           >
             <Heart
               size={18}
@@ -508,23 +511,27 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       <div className="bg-white px-4 py-3 mb-1">
         <h3 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h3>
 
-        <div className="flex gap-2">
+        <div className="flex items-center justify-between">
           {[
-            { icon: <CheckCircle size={13} />, label: "Tersedia", bg: "bg-emerald-50/40", border: "border-emerald-100/50", text: "text-emerald-600" },
-            { icon: <Zap size={13} />, label: "Fast Respon", bg: "bg-amber-50/40", border: "border-amber-100/50", text: "text-amber-600" },
-            { icon: <Headphones size={13} />, label: "24 Jam", bg: "bg-blue-50/40", border: "border-blue-100/50", text: "text-blue-600" }
+            { icon: <CheckCircle size={13} />, label: "Tersedia", text: "text-emerald-500" },
+            { icon: <Zap size={13} />, label: "Fast Respon", text: "text-amber-500" },
+            { icon: <Headphones size={13} />, label: "24 Jam", text: "text-blue-500" }
           ].map((item, index) => (
-            <div
-              key={index}
-              className={`flex-1 flex flex-col items-center justify-center py-2 ${item.bg} rounded-xl border ${item.border} transition-all`}
-            >
-              <div className={`${item.text} mb-1`}>
-                {item.icon}
+            <Fragment key={index}>
+              <div className="flex items-center gap-1.5 flex-1 justify-center">
+                <div className={item.text}>
+                  {item.icon}
+                </div>
+                <span className="text-[10px] font-bold text-gray-600 tracking-tight whitespace-nowrap">
+                  {item.label}
+                </span>
               </div>
-              <span className="text-[9px] font-bold text-gray-700 tracking-tight leading-none">
-                {item.label}
-              </span>
-            </div>
+
+              {/* Divider Vertikal - Muncul kecuali setelah elemen terakhir */}
+              {index < 2 && (
+                <div className="h-4 w-[1px] bg-gray-200" />
+              )}
+            </Fragment>
           ))}
         </div>
       </div>
