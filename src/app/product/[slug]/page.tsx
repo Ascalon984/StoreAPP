@@ -85,7 +85,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
-  const { getReviewsForProduct, reviews: zustandReviews, fetchReviews, refreshVersion } = useReviewStore();
+  const { getReviewsForProduct, reviews: zustandReviews, fetchReviews, refreshVersion, triggerRefresh } = useReviewStore();
   const { openModal } = useReviewModalStore();
   const { deliveryInfo } = useDeliveryStore();
   const { waNumber, fetchSettings } = useSettingsStore();
@@ -98,6 +98,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
+  const [thankYouIds, setThankYouIds] = useState<string[]>([]); // Track IDs yang sedang menampilkan "Terima kasih!"
 
   useEffect(() => {
     fetchSettings();
@@ -275,14 +276,41 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
-  const handleVote = (reviewId: string, type: 'like' | 'dislike') => {
+  const handleVote = async (reviewId: string, type: 'like' | 'dislike') => {
     if (votedIds.includes(reviewId)) return;
+    
     setVotedIds(prev => [...prev, reviewId]);
+    setThankYouIds(prev => [...prev, reviewId]);
+    
+    // Hide "Terima kasih!" message setelah 2 detik
+    setTimeout(() => {
+      setThankYouIds(prev => prev.filter(id => id !== reviewId));
+    }, 2000);
 
-    // In a real implementation, you would call an API to update this in the database:
-    // fetch(`/api/public/reviews/${reviewId}/vote`, { method: 'POST', body: JSON.stringify({ type }) });
+    try {
+      const response = await fetch(`/api/public/reviews/${reviewId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type }),
+      });
 
-    showToast(type === 'like' ? 'Menyukai ulasan' : 'Tidak menyukai ulasan');
+      if (!response.ok) {
+        const error = await response.json();
+        showToast(`Error: ${error.error || 'Gagal mengupdate vote'}`);
+        // Remove from votedIds if failed
+        setVotedIds(prev => prev.filter(id => id !== reviewId));
+        return;
+      }
+
+      // Success - trigger refresh untuk update data dari database
+      triggerRefresh();
+      showToast(type === 'like' ? 'Terima kasih! Ulasan disukai' : 'Terima kasih! Ulasan tidak disukai');
+    } catch (error) {
+      console.error('Vote error:', error);
+      showToast('Gagal mengupdate vote. Silakan coba lagi.');
+      // Remove from votedIds if error
+      setVotedIds(prev => prev.filter(id => id !== reviewId));
+    }
   };
 
   const handleBack = () => {
@@ -628,41 +656,47 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {/* Komentar */}
-              <p className="text-sm text-gray-600 leading-relaxed pl-[42px] mb-3">
-                {review.comment}
-              </p>
+              {/* Komentar & Interaksi — Menggunakan Relative untuk positioning tombol */}
+              <div className="pl-[42px] relative group/comment">
+                <p className="text-sm text-gray-600 leading-relaxed pr-2">
+                  {review.comment}
+                </p>
+                
+                {/* Bar Interaksi: Diletakkan di pojok kanan bawah sejajar teks */}
+                <div className="flex items-center justify-end gap-3 mt-1.5">
+                  {/* Feedback Pesan - Muncul di sebelah kiri tombol jika sudah klik */}
+                  {thankYouIds.includes(review.id) && (
+                    <span className="text-[10px] text-emerald-600 font-medium italic animate-in fade-in slide-in-from-right-1">
+                      Terima kasih!
+                    </span>
+                  )}
 
-              {/* Fitur Like & Dislike */}
-              <div className="pl-[42px] flex items-center gap-4">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => handleVote(review.id, 'like')}
-                    disabled={votedIds.includes(review.id)}
-                    className={`flex items-center gap-1.5 transition-colors group ${votedIds.includes(review.id) ? 'text-emerald-600' : 'text-gray-400 hover:text-emerald-600'
+                  <div className="flex items-center gap-2.5 bg-gray-50/50 px-2 py-1 rounded-lg border border-gray-100">
+                    <button
+                      onClick={() => handleVote(review.id, 'like')}
+                      disabled={votedIds.includes(review.id)}
+                      className={`flex items-center gap-1 transition-colors ${
+                        votedIds.includes(review.id) ? 'text-emerald-600' : 'text-gray-400 hover:text-emerald-600'
                       }`}
-                  >
-                    <ThumbsUp size={14} className="group-active:scale-125 transition-transform" />
-                    <span className="text-xs font-medium">{review.likes || 0}</span>
-                  </button>
+                    >
+                      <ThumbsUp size={13} strokeWidth={votedIds.includes(review.id) ? 2.5 : 1.5} />
+                      <span className="text-[11px] font-semibold">{review.likes || 0}</span>
+                    </button>
 
-                  <button
-                    onClick={() => handleVote(review.id, 'dislike')}
-                    disabled={votedIds.includes(review.id)}
-                    className={`flex items-center gap-1.5 transition-colors group ${votedIds.includes(review.id) ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'
+                    <div className="w-[1px] h-3 bg-gray-200" /> {/* Divider kecil */}
+
+                    <button
+                      onClick={() => handleVote(review.id, 'dislike')}
+                      disabled={votedIds.includes(review.id)}
+                      className={`flex items-center gap-1 transition-colors ${
+                        votedIds.includes(review.id) ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'
                       }`}
-                  >
-                    <ThumbsDown size={14} className="group-active:scale-125 transition-transform" />
-                    <span className="text-xs font-medium">{review.dislikes || 0}</span>
-                  </button>
+                    >
+                      <ThumbsDown size={13} strokeWidth={votedIds.includes(review.id) ? 2.5 : 1.5} />
+                      <span className="text-[11px] font-semibold">{review.dislikes || 0}</span>
+                    </button>
+                  </div>
                 </div>
-
-                {/* Feedback Pesan */}
-                {votedIds.includes(review.id) && (
-                  <span className="text-[11px] text-emerald-600 font-medium animate-in fade-in slide-in-from-left-1 duration-300">
-                    Terima kasih ulasannya!
-                  </span>
-                )}
               </div>
             </div>
           ))}
