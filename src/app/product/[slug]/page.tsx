@@ -367,27 +367,27 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
         </button>
 
-        {/* Right Actions - Combined Pill Mode (REFINED) */}
-        <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 py-1">
+        {/* Right Actions - Combined Pill Mode (ULTRA-ALIGNED) */}
+        <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]"> {/* Gunakan h-[38px] agar fix sama dengan tombol back */}
 
-          {/* Tombol Share - Gunakan p-2 agar area klik tetap besar tapi visual ringkas */}
+          {/* Tombol Share */}
           <button
             onClick={handleShare}
-            className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+            className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
           >
-            <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
+            <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
           </button>
 
-          {/* Divider - mx ditingkatkan sedikit agar pil terlihat lebih panjang secara natural */}
-          <div className="w-[1px] h-4 bg-gray-200/80 mx-1" />
+          {/* Divider - mx tetap untuk efek lonjong */}
+          <div className="w-[1px] h-3.5 bg-gray-200/80 mx-1" />
 
           {/* Tombol Favorit */}
           <button
             onClick={() => toggleFavorite(product.id)}
-            className="p-2 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+            className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
           >
             <Heart
-              size={18}
+              size={17}
               strokeWidth={2.2}
               className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
             />
