@@ -72,12 +72,12 @@ function renderStar(i: number, rating: number) {
   const diff = rating - (i - 1);
 
   if (diff >= 0.75) {
-    return <Star key={i} size={10} className="text-yellow-500 fill-yellow-500" />;
+    return <Star key={i} size={9} className="text-yellow-500 fill-yellow-500" />;
   }
   if (diff >= 0.25) {
-    return <StarHalf key={i} size={10} className="text-yellow-500 fill-yellow-500" />;
+    return <StarHalf key={i} size={9} className="text-yellow-500 fill-yellow-500" />;
   }
-  return <Star key={i} size={10} className="text-gray-200" />;
+  return <Star key={i} size={9} className="text-gray-200" />;
 }
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
@@ -356,33 +356,33 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   return (
     <div className="bg-gray-50 pb-24 min-h-screen">
       {/* Gallery Header Nav */}
-      <div className="relative bg-white pt-1 pb-0 mb-1">
+      <div className="relative overflow-hidden">
+
+        {/* Tombol Kembali - Dibuat lebih kontras dan ngambang */}
         <button
           onClick={handleBack}
-          className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
-          aria-label="Kembali"
+          className="absolute top-5 left-5 z-20 p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
         >
-          <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-800" />
+          <ChevronLeft size={20} strokeWidth={3} className="text-gray-900" />
         </button>
 
-        <div className="absolute top-4 right-4 z-20 flex gap-2.5">
+        {/* Tombol Kanan */}
+        <div className="absolute top-5 right-5 z-20 flex gap-3">
           <button
             onClick={handleShare}
-            className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
-            aria-label="Bagikan"
+            className="p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
           >
-            <Share2 size={18} strokeWidth={2} className="text-gray-700" />
+            <Share2 size={18} strokeWidth={2.2} className="text-gray-800" />
           </button>
 
           <button
             onClick={() => toggleFavorite(product.id)}
-            className="p-2.5 rounded-full bg-white/80 backdrop-blur-lg border border-gray-100/50 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white transition-all duration-300 active:scale-90"
-            aria-label="Favorit"
+            className="p-2.5 rounded-full bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white transition-all active:scale-90"
           >
             <Heart
               size={18}
-              strokeWidth={2}
-              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
+              strokeWidth={2.2}
+              className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-800"}
             />
           </button>
         </div>
@@ -431,6 +431,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   ))}
                 </div>
 
+                {/* Dots Indicator */}
                 {slideCount > 1 && (
                   <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
                     <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
@@ -438,8 +439,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         <div
                           key={i}
                           className={`transition-all duration-500 rounded-full ${currentIndex === i
-                            ? 'w-5 h-1.5 bg-gray-800' // Lebih tebal dan gelap agar terlihat di background putih
-                            : 'w-1.5 h-1.5 bg-gray-300'
+                            ? "w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]"
+                            : "w-1 h-1 bg-white/40"
                             }`}
                         />
                       ))}
@@ -606,7 +607,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
               <div className="pl-[42px] flex items-end justify-between gap-3">
                 {/* KIRI: Area Komentar */}
-                <p className="text-[13px] text-gray-500 leading-snug flex-1 break-words pr-2 min-w-0">
+                <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words pr-2 min-w-0">
                   {review.comment}
                 </p>
 
