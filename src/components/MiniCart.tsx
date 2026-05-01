@@ -151,12 +151,12 @@ export default function MiniCart() {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm animate-fade-in"
+        className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm animate-backdrop-in"
         onClick={closeCart}
       />
 
       {/* ===== DRAWER CONTAINER ===== */}
-      <div className="fixed top-0 right-0 bottom-0 w-[92%] max-w-[420px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-slide-in-right rounded-l-[2rem] overflow-hidden">
+      <div className="fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-drawer-in rounded-l-[1.5rem] overflow-hidden border-l border-white/20">
 
         {/* ===== HEADER: Ramping & Elegant Version ===== */}
         <div className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem]">
