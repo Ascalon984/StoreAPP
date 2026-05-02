@@ -81,7 +81,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-4 py-2">
+    <section className="px-4 pt-4 pb-2">
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
