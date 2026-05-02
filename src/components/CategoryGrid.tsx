@@ -137,19 +137,18 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
               return (
                 <div
                   key={cat.id}
-                  className="group relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-300 bg-transparent opacity-60"
+                  className="group relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-300"
                 >
-                  <div className="relative flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <div className="relative flex items-center justify-center opacity-50 grayscale-[0.3]">
+                    {/* Opacity dikurangi, ditambah sedikit grayscale agar terlihat 'coming soon' tapi tetap tajam */}
                     <img
                       src="/icons/segera hadir.png"
                       alt={cat.name}
-                      className="w-7 h-7 object-contain relative z-10"
-                      style={{ mixBlendMode: 'multiply' }}
+                      className="w-7 h-7 object-contain" // Disamakan dengan ukuran ikon aktif (w-7)
                       loading="lazy"
                     />
                   </div>
-                  <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-400 leading-tight">
+                  <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-300 leading-tight">
                     {cat.name}
                   </span>
                 </div>

@@ -98,23 +98,28 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-4 px-0.5"
-          style={{ scrollSnapType: 'x mandatory' }}
+          className="flex overflow-x-auto hide-scrollbar gap-0 px-0 snap-x snap-mandatory scroll-smooth"
+          style={{
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch', // Penting untuk smoothness di iPhone
+            scrollBehavior: 'smooth'
+          }}
         >
           {banners.map((banner) => (
             <div
               key={banner.id}
-              className="flex-shrink-0 w-full rounded-2xl overflow-hidden aspect-[2/1] relative shadow-sm"
-              style={{ scrollSnapAlign: 'start' }}
+              className="flex-shrink-0 w-full px-1 snap-start" // px-1 memberi 'napas' antar banner saat swipe
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={banner.image}
-                alt={banner.title}
-                className="absolute inset-0 w-full h-full object-fill"
-                loading="eager"
-                decoding="async"
-              />
+              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100">
+                <img
+                  src={banner.image}
+                  alt={banner.title}
+                  className="absolute inset-0 w-full h-full object-fill" // Tetap pakai fill sesuai kebutuhan asetmu
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -125,9 +130,8 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`h-1 rounded-full transition-all duration-300 ${
-                  i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
-                }`}
+                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                  }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
