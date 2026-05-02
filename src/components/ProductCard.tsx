@@ -127,7 +127,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               <span className="text-[11px] font-bold text-gray-700">{displayRating}</span>
               <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
             </div>
-            <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold italic">
+            <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold tracking-tight">
               {product.sold}+ Terjual
             </div>
           </div>
