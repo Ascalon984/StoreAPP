@@ -102,31 +102,32 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Content Area — Padding lebih lega */}
+        {/* Content Area — Padding ideal */}
         <div className="p-3 pt-1 flex flex-col flex-1 gap-1.5">
           <h3 className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-600 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}>
             {product.name}
           </h3>
 
           <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-base font-black text-emerald-600 tracking-tighter">
+            {/* Diubah ke font-bold agar lebih tajam dan elegan */}
+            <span className="text-base font-bold text-emerald-600 tracking-tighter">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] text-gray-400 line-through opacity-60 font-medium">
+              <span className="text-[10px] text-gray-400 line-through opacity-50 font-medium">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
           </div>
 
-          {/* Stats Row — Footer yang lebih clean */}
+          {/* Stats Row — Footer yang sangat clean */}
           <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-bold text-gray-700">{displayRating}</span>
               <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
             </div>
-            <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold">
+            <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold italic">
               {product.sold}+ Terjual
             </div>
           </div>
