@@ -1,12 +1,36 @@
 'use client';
-
+import { useEffect, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 
-export default function LoadingScreen() {
+export default function LoadingScreen({ isLoading }: { isLoading: boolean }) {
+  const [shouldRender, setShouldRender] = useState(isLoading);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsExiting(true); // Mulai animasi fade-out
+      const timer = setTimeout(() => {
+        setShouldRender(false); // Benar-benar hapus dari DOM setelah animasi selesai
+        document.body.style.overflow = ''; // Kembalikan scroll
+      }, 500); // Samakan dengan durasi durasi-500 di Tailwind
+      return () => clearTimeout(timer);
+    } else {
+      setShouldRender(true);
+      setIsExiting(false);
+      document.body.style.overflow = 'hidden';
+    }
+  }, [isLoading]);
+
+  if (!shouldRender) return null;
+
   return (
-    // Gunakan warna background yang konsisten dengan aplikasi agar transisinya halus
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center p-4">
+    <div className={`
+      fixed inset-0 z-[100] bg-[#F8F9FA] flex flex-col items-center justify-center p-4 touch-none
+      transition-all duration-500 ease-in-out
+      ${isExiting ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100 scale-100'}
+    `}>
       <div className={styles.preloader} id="preloader">
+        {/* Konten SVG Cart kamu tetap di sini */}
         <div className={styles['cart-wrapper']}>
           <svg
             className={styles.cart}
