@@ -69,12 +69,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden active:scale-[0.97] border border-gray-100 flex flex-col h-full relative">
+      <article className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden active:scale-[0.96] border border-gray-100 flex flex-col h-full relative">
 
-        {/* 1. Discount Badge — Menempel di pojok kanan atas (Absolute) */}
+        {/* 1. Discount Badge — Lebih Vibrant dengan Gradasi */}
         {discount > 0 && (
-          <div className="absolute top-0 right-0 z-20 px-2 py-1 bg-rose-500 text-white text-[10px] font-black rounded-bl-xl shadow-sm">
-            {discount}%
+          <div className="absolute top-0 right-0 z-20 px-2.5 py-1 bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[10px] font-black rounded-bl-xl shadow-sm tracking-tighter">
+            -{discount}%
           </div>
         )}
 
@@ -102,38 +102,32 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="p-2.5 flex flex-col flex-1 gap-1">
-          {/* Title — Adaptive Size */}
-          <h3 className={`text-gray-800 line-clamp-2 font-semibold group-hover:text-emerald-600 transition-colors duration-300 min-h-[2.2rem] tracking-tight ${titleSize}`}>
+        {/* Content Area — Padding lebih lega */}
+        <div className="p-3 pt-1 flex flex-col flex-1 gap-1.5">
+          <h3 className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-600 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}>
             {product.name}
           </h3>
 
-          {/* Price Section — Horizontal Layout agar hemat tempat */}
-          <div className="flex items-center gap-1.5 flex-wrap leading-none mt-0.5">
-            <span className="text-[14.5px] font-bold text-emerald-600 tracking-tighter">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="text-base font-black text-emerald-600 tracking-tighter">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[9.5px] text-gray-400 line-through opacity-60 font-medium">
+              <span className="text-[10px] text-gray-400 line-through opacity-60 font-medium">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-gray-100 my-0.5" />
-
-          {/* Stats row — selalu di bottom */}
-          <div className="flex items-center justify-between mt-auto">
-            <div className="flex items-center gap-0.5">
-              <Star size={9} strokeWidth={0} fill="#FBBF24" className="text-yellow-400" />
-              <span className="text-[10.5px] font-semibold text-gray-700">{displayRating}</span>
+          {/* Stats Row — Footer yang lebih clean */}
+          <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+            <div className="flex items-center gap-1">
+              <Star size={10} strokeWidth={0} fill="#FBBF24" />
+              <span className="text-[11px] font-bold text-gray-700">{displayRating}</span>
               <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
             </div>
-            <div className="flex items-center gap-0.5 text-[10px] text-gray-400 font-medium">
-              <Flame size={8} strokeWidth={2} className="text-orange-400" />
-              <span>{product.sold}+</span>
+            <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold">
+              {product.sold}+ Terjual
             </div>
           </div>
         </div>
