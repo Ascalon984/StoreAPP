@@ -106,9 +106,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     fetchSettings();
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
-    const MIN_DISPLAY_TIME = 600;
+    const MIN_DISPLAY_TIME = 300; // Dikurangi agar transisi lebih cepat
 
-    fetch(`/api/public/products/${slug}?t=${Date.now()}`, { cache: 'no-store' })
+    // Gunakan revalidation atau cache default Next.js jika memungkinkan
+    fetch(`/api/public/products/${slug}`, {
+      next: { revalidate: 60 } // Cache selama 1 menit
+    })
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
