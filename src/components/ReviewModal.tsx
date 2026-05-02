@@ -325,7 +325,7 @@ export default function ReviewModal() {
     } catch (error) {
       console.error('[REVIEW SUBMIT ERROR]', error);
       setIsSubmitting(false);
-      showToast('Gagal mengirim review. Silakan coba lagi.');
+      showToast('Gagal mengirim review. Silakan coba lagi.', 'error');
     }
   };
 

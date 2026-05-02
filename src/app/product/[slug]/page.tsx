@@ -94,6 +94,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const loaderStartTimeRef = useRef<number | null>(null);
 
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
@@ -189,6 +190,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     if (!product) return;
 
     try {
+      setIsSubmitting(true);
       const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
 
       const orderResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
@@ -210,7 +212,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       const orderData = await orderResponse.json();
 
       if (!orderData.success) {
-        showToast(`Error: ${orderData.error}`);
+        showToast(`Error: ${orderData.error}`, 'error');
         return;
       }
 
@@ -224,9 +226,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       openModal(product.slug);
       setIsCheckoutModalOpen(false);
       showToast('Order berhasil! Pesan dikirim ke WhatsApp');
+      router.refresh();
     } catch (error) {
       console.error('[CHECKOUT ERROR]', error);
-      showToast('Gagal memproses order. Silakan coba lagi.');
+      showToast('Gagal memproses order. Silakan coba lagi.', 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -738,6 +743,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         open={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
         onConfirm={handleBuyNowConfirm}
+        loading={isSubmitting}
       />
     </div>
   );

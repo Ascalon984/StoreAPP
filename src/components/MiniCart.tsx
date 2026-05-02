@@ -23,6 +23,7 @@ export default function MiniCart() {
   const { waNumber, fetchSettings } = useSettingsStore();
   const { triggerRefresh } = useReviewStore();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -60,65 +61,34 @@ export default function MiniCart() {
   const handleCheckoutConfirm = async () => {
     if (items.length === 0) return;
     try {
+      setIsSubmitting(true);
       // ✅ STEP 1: POST order ke admin untuk update stok
       const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-      let allOrdersSuccessful = true;
 
-      for (const item of items) {
-        const orderPayload = {
-          productId: item.product.id,
-          quantity: item.quantity,
-          customerName: deliveryInfo.name,
-          phone: deliveryInfo.phone,
-          address: deliveryInfo.address,
-          lat: deliveryInfo.lat,
-          lng: deliveryInfo.lng,
-        };
+      // Paralelkan semua request agar jauh lebih cepat
+      const orderPromises = items.map(item =>
+        fetch(`${adminApiUrl}/api/admin/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: item.product.id,
+            quantity: item.quantity,
+            customerName: deliveryInfo.name,
+            phone: deliveryInfo.phone,
+            address: deliveryInfo.address,
+            lat: deliveryInfo.lat,
+            lng: deliveryInfo.lng,
+          }),
+        })
+      );
 
-        try {
-          const adminResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderPayload),
-          });
+      await Promise.all(orderPromises);
 
-          if (!adminResponse.ok) {
-            console.error(`[Order] Failed to update stock for ${item.product.id}:`, adminResponse.statusText);
-            allOrdersSuccessful = false;
-          } else {
-            console.log(`[Order] Successfully updated stock for ${item.product.id}`);
-          }
-        } catch (itemError) {
-          console.error(`[Order] Error submitting order for ${item.product.id}:`, itemError);
-          allOrdersSuccessful = false;
-        }
-      }
-
-      // ✅ Check if all orders succeeded
-      if (!allOrdersSuccessful) {
-        showToast('Gagal mengirim beberapa pesanan. Silakan coba lagi.');
-        return; // Don't proceed with WhatsApp or review modal
-      }
-
-      // ✅ STEP 2: Refetch product data untuk sync UI
-      try {
-        console.log('[Order] Revalidating product cache...');
-        await fetch('/api/public/products');
-        // Force router refresh untuk Next.js server-side revalidation
-        router.refresh();
-        console.log('[Order] Product cache invalidated');
-      } catch (refreshError) {
-        console.warn('[Order] Cache refresh failed:', refreshError);
-      }
-
-      triggerRefresh();
-      // ✅ STEP 3: Generate & buka WhatsApp
+      // ✅ STEP 2: Buka WhatsApp segera (Critical Path)
       const message = generateWAMessage(items, deliveryInfo);
       window.open(getWALink(message, waNumber), '_blank');
 
-      // ✅ STEP 4: Buka review modal
+      // ✅ STEP 3: Refresh UI & Modal (Background Path)
       if (items.length === 1) {
         openModal(items[0].product.slug);
       } else {
@@ -127,11 +97,15 @@ export default function MiniCart() {
 
       setIsCheckoutModalOpen(false);
       closeCart();
+      triggerRefresh();
+      router.refresh();
     } catch (error) {
       console.error('[Checkout Error]', error);
-      window.open('https://wa.me/', '_blank');
+      showToast('Terjadi kesalahan saat memproses pesanan.');
       setIsCheckoutModalOpen(false);
       closeCart();
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -406,6 +380,7 @@ export default function MiniCart() {
         open={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
         onConfirm={handleCheckoutConfirm}
+        loading={isSubmitting}
       />
     </>
   );

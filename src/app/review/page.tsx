@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, AlertCircle, CheckCircle, Loader2, X, ArrowLeft } from 'lucide-react';
 import { useReviewStore } from '@/store/useReviewStore';
+import { useToastStore } from '@/store/useToastStore';
 import { Product } from '@/lib/types';
 
 // ==================== MODAL COMPONENT ====================
@@ -89,8 +90,8 @@ function Modal({
 
       <div
         className={`relative w-full sm:max-w-sm bg-white sm:rounded-2xl rounded-t-2xl shadow-xl overflow-hidden transition-transform duration-300 ease-out ${animating
-            ? 'translate-y-0 sm:scale-100 sm:translate-y-0'
-            : 'translate-y-full sm:scale-95 sm:translate-y-4'
+          ? 'translate-y-0 sm:scale-100 sm:translate-y-0'
+          : 'translate-y-full sm:scale-95 sm:translate-y-4'
           }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -187,6 +188,7 @@ interface ReviewPageProps {
 
 export default function ReviewPage({ searchParams }: ReviewPageProps) {
   const router = useRouter();
+  const { showToast } = useToastStore();
 
   // ---- Safe store access ----
   const [storeError, setStoreError] = useState<string | null>(null);
@@ -201,36 +203,6 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
       'Gagal memuat data toko. Pastikan koneksi internet Anda stabil.'
     );
   }
-
-  // ---- Local toast (identik dengan ProductDetailPage) ----
-  const [toast, setToast] = useState<string | null>(null);
-  const [isToastExiting, setIsToastExiting] = useState(false);
-
-  const showToast = useCallback((message: string) => {
-    if (toast) {
-      setIsToastExiting(true);
-      setTimeout(() => {
-        setToast(message);
-        setIsToastExiting(false);
-        setTimeout(() => {
-          setIsToastExiting(true);
-          setTimeout(() => {
-            setToast(null);
-            setIsToastExiting(false);
-          }, 200);
-        }, 2000);
-      }, 200);
-    } else {
-      setToast(message);
-      setTimeout(() => {
-        setIsToastExiting(true);
-        setTimeout(() => {
-          setToast(null);
-          setIsToastExiting(false);
-        }, 200);
-      }, 2000);
-    }
-  }, [toast]);
 
   // ---- State ----
   const [rating, setRating] = useState(0);
@@ -413,7 +385,10 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
       const errorMessage =
         err instanceof Error
           ? err.message
-          : 'Terjadi kesalahan yang tidak terduga.';
+          : 'Terjadi kesalahan.';
+
+      // Picu toast merah juga agar feedback instan terasa
+      showToast(errorMessage, 'error');
 
       setModal({
         open: true,
@@ -506,8 +481,8 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                       size={40}
                       strokeWidth={1}
                       className={`transition-colors ${star <= rating
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-300'
                         }`}
                     />
                   </button>
@@ -534,10 +509,10 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                 </label>
                 <span
                   className={`text-xs tabular-nums transition-colors ${comment.length > 1000
-                      ? 'text-red-500 font-semibold'
-                      : comment.length > 800
-                        ? 'text-amber-500'
-                        : 'text-gray-400'
+                    ? 'text-red-500 font-semibold'
+                    : comment.length > 800
+                      ? 'text-amber-500'
+                      : 'text-gray-400'
                     }`}
                 >
                   {comment.length}/1000
@@ -582,25 +557,6 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
           </form>
         </div>
       </div>
-
-      {/* Toast — format identik dengan ProductDetailPage */}
-      {toast && (
-        <div
-          className={`fixed top-3 left-0 right-0 z-[60] flex justify-center pointer-events-none transition-all duration-300 ${isToastExiting
-              ? 'opacity-0 -translate-y-4 scale-95'
-              : 'opacity-100 translate-y-0 scale-100'
-            }`}
-        >
-          <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-medium px-3.5 py-2 rounded-2xl shadow-lg">
-            <CheckCircle
-              size={18}
-              className="text-emerald-400 flex-shrink-0"
-              strokeWidth={2.5}
-            />
-            <span className="whitespace-nowrap">{toast}</span>
-          </div>
-        </div>
-      )}
 
       {/* Modal */}
       <Modal

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { useToastStore } from '@/store/useToastStore';
 
 export default function Toast() {
-  const { message, isVisible, hideToast } = useToastStore();
+  const { message, isVisible, hideToast, type = 'success' } = useToastStore() as any;
   const [shouldRender, setShouldRender] = useState(isVisible);
   const [animationClass, setAnimationClass] = useState('animate-toast-in');
   const [dragX, setDragX] = useState(0);
@@ -84,14 +84,24 @@ export default function Toast() {
     >
       <div className="bg-white/95 backdrop-blur-md border border-gray-100/80 px-4 py-3 rounded-2xl shadow-soft flex items-center gap-3.5 cursor-grab active:cursor-grabbing">
         {/* Ikon: Ukuran sedikit diperbesar agar seimbang dengan 2 baris teks */}
-        <div className="bg-emerald-500 w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm shadow-emerald-200">
-          <CheckCircle size={18} strokeWidth={2.5} className="text-white" />
+        <div className={`
+          w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm 
+          ${type === 'error'
+            ? 'bg-red-500 shadow-red-200'
+            : 'bg-emerald-500 shadow-emerald-200'
+          }
+        `}>
+          {type === 'error' ? (
+            <XCircle size={18} strokeWidth={2.5} className="text-white" />
+          ) : (
+            <CheckCircle size={18} strokeWidth={2.5} className="text-white" />
+          )}
         </div>
 
         {/* Kontainer Teks: Dibuat rapat dan tajam */}
         <div className="flex flex-col min-w-0 flex-1">
           <p className="text-[13px] font-bold text-gray-900 leading-tight">
-            Berhasil
+            {type === 'error' ? 'Gagal' : 'Berhasil'}
           </p>
           <p className="text-[11px] text-gray-500 font-medium leading-snug mt-0.5 break-words line-clamp-2 tracking-tight">
             {message}

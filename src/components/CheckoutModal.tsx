@@ -8,6 +8,7 @@ interface CheckoutModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  loading?: boolean;
 }
 
 const DRAG_CLOSE_THRESHOLD = 100;
@@ -16,7 +17,7 @@ const MAX_NAME_CHARS = 40;
 const MAX_PHONE_DIGITS = 13;
 const MAX_ADDRESS_CHARS = 250;
 
-export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModalProps) {
+export default function CheckoutModal({ open, onClose, onConfirm, loading = false }: CheckoutModalProps) {
   const { deliveryInfo, updateDeliveryInfo, isLoadingLocation, setIsLoadingLocation, getAddressFromCoords } = useDeliveryStore();
   const [error, setError] = useState<string | null>(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -651,16 +652,25 @@ export default function CheckoutModal({ open, onClose, onConfirm }: CheckoutModa
                 if (document.activeElement instanceof HTMLElement) {
                   document.activeElement.blur();
                 }
-                onConfirm();
+                if (!loading) onConfirm();
               }}
-              disabled={!isValid || isLoadingLocation}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${isValid && !isLoadingLocation
+              disabled={!isValid || isLoadingLocation || loading}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${isValid && !isLoadingLocation && !loading
                 ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
             >
-              <CheckCircle size={16} strokeWidth={2} />
-              Lanjut Pesan
+              {loading ? (
+                <>
+                  <Loader size={16} className="animate-spin" strokeWidth={2} />
+                  <span>Memproses...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle size={16} strokeWidth={2} />
+                  <span>Lanjut Pesan</span>
+                </>
+              )}
             </button>
           </div>
         </div>
