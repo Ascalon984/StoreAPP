@@ -24,9 +24,9 @@ async function getInitData(): Promise<InitData> {
 
   try {
     const [bannersRes, categoriesRes, settingsRes] = await Promise.all([
-      fetch(`${adminApiUrl}/api/public/banners`, { next: { revalidate: 60 } }),
-      fetch(`${adminApiUrl}/api/public/categories`, { next: { revalidate: 60 } }),
-      fetch(`${adminApiUrl}/api/public/settings`, { next: { revalidate: 300 } }),
+      fetch(`${adminApiUrl}/api/public/banners`, { cache: 'no-store' }),
+      fetch(`${adminApiUrl}/api/public/categories`, { cache: 'no-store' }),
+      fetch(`${adminApiUrl}/api/public/settings`, { cache: 'no-store' }),
     ]);
 
     const [banners, categories, settings] = await Promise.all([
