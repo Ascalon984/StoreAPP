@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   description: 'Palugada Store - Layanan top up pulsa, data, game, dan voucher cepat & aman.',
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
