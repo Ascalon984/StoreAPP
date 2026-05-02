@@ -337,7 +337,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return () => window.removeEventListener('scroll', checkScrollPosition);
   }, []);
 
-  if (loading) return <LoadingScreen />;
+  if (loading) return <LoadingScreen isLoading={loading} />;
   if (!product) return <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>;
 
   const localReviews = getReviewsForProduct(product.id);
@@ -623,33 +623,26 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {/* PERBAIKAN 2: Komentar & Interaksi — inline-flex agar menyatu */}
-              <div className="pl-[42px] flex items-end justify-between gap-3">
-                {/* KIRI: Area Komentar */}
-                <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words pr-2 min-w-0">
+              {/* AREA KOMENTAR & INTERAKSI */}
+              <div className="pl-[42px] flex items-end justify-between gap-4">
+                {/* KIRI: Area Komentar - Kini lebih leluasa */}
+                <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words min-w-0">
                   {review.comment}
                 </p>
 
-                {/* KANAN: Area Interaksi (Diberi lebar minimum/flex-shrink-0 agar tidak gepeng) */}
-                <div className="flex items-center gap-2 flex-shrink-0 min-w-[fit-content] mb-0.5">
-
-                  {thankYouIds.includes(review.id) && (
-                    <span className="text-[10px] text-emerald-600 font-bold italic whitespace-nowrap">
-                      Terima kasih!
-                    </span>
-                  )}
-
+                {/* KANAN: Area Interaksi (Like/Dislike) di pojok bawah */}
+                <div className="flex items-center gap-3 flex-shrink-0 mb-0.5">
+                  {/* Button Like */}
                   <button
                     onClick={() => handleVote(review.id, 'like')}
                     disabled={votedIds.includes(review.id)}
                     className={`flex items-center gap-1.5 transition-all duration-500 ${votedType[review.id] === 'like'
-                      ? 'text-emerald-500 scale-110' // Warna garis & teks berubah jadi hijau segar
-                      : 'text-gray-300' // Warna default abu-abu sangat bersih
+                        ? 'text-emerald-500 scale-110'
+                        : 'text-gray-300'
                       }`}
                   >
                     <ThumbsUp
                       size={13}
-                      /* Stroke lebih tebal saat aktif membuat ikon terlihat "terisi" secara visual tanpa perlu fill */
                       strokeWidth={votedType[review.id] === 'like' ? 2.8 : 1.8}
                       className="transition-transform duration-300"
                     />
@@ -659,12 +652,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     </span>
                   </button>
 
+                  {/* Button Dislike */}
                   <button
                     onClick={() => handleVote(review.id, 'dislike')}
                     disabled={votedIds.includes(review.id)}
                     className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike'
-                      ? 'text-rose-500 scale-110'
-                      : 'text-gray-300'
+                        ? 'text-rose-500 scale-110'
+                        : 'text-gray-300'
                       } ${votedIds.includes(review.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <ThumbsDown
@@ -672,7 +666,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       className={votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}
                       strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
                     />
-                    <span className="text-[11px] font-bold">{review.dislikes || 0}</span>
+                    <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-600' : 'text-gray-400'
+                      }`}>
+                      {review.dislikes || 0}
+                    </span>
                   </button>
                 </div>
               </div>
