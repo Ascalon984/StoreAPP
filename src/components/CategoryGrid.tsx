@@ -149,9 +149,9 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
               );
             }
 
-            const iconPath = iconPathMap[cat.id] || iconPathMap.all;
+            const iconPath = iconPathMap[cat.icon] || iconPathMap.all;
             const isActive = category === cat.id;
-            const colors = colorMap[cat.id] || colorMap.all;
+            const colors = colorMap[cat.icon] || colorMap.all;
 
             return (
               <button
