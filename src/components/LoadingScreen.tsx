@@ -7,18 +7,23 @@ export default function LoadingScreen({ isLoading }: { isLoading: boolean }) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (isLoading) {
+      setShouldRender(true);
+      setIsExiting(false);
+      document.body.style.overflow = 'hidden';
+    } else {
       setIsExiting(true); // Mulai animasi fade-out
       const timer = setTimeout(() => {
         setShouldRender(false); // Benar-benar hapus dari DOM setelah animasi selesai
         document.body.style.overflow = ''; // Kembalikan scroll
       }, 500); // Samakan dengan durasi durasi-500 di Tailwind
       return () => clearTimeout(timer);
-    } else {
-      setShouldRender(true);
-      setIsExiting(false);
-      document.body.style.overflow = 'hidden';
     }
+
+    // Cleanup function: Pastikan scroll kembali normal jika komponen di-unmount tiba-tiba
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isLoading]);
 
   if (!shouldRender) return null;
