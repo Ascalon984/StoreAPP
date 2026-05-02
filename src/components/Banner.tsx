@@ -98,18 +98,18 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-0 px-0 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-x-auto hide-scrollbar gap-3 px-0 snap-x snap-mandatory scroll-smooth"
           style={{
             msOverflowStyle: 'none',
             scrollbarWidth: 'none',
             WebkitOverflowScrolling: 'touch', // Penting untuk smoothness di iPhone
-            scrollBehavior: 'smooth'
+            scrollBehavior: 'smooth',
           }}
         >
           {banners.map((banner) => (
             <div
               key={banner.id}
-              className="flex-shrink-0 w-full px-1 snap-start" // px-1 memberi 'napas' antar banner saat swipe
+              className="flex-shrink-0 w-full snap-start" // px-1 dihapus agar sejajar dengan card kategori
             >
               <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100">
                 <img
