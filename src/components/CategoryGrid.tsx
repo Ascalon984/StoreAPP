@@ -32,27 +32,61 @@ const colorMap: Record<string, { active: string; bg: string; glow: string }> = {
   peralatan: { active: 'text-teal-600', bg: 'bg-teal-50', glow: 'bg-teal-400' },
 };
 
-export default function CategoryGrid() {
-  const { category, setCategory } = useFilterStore();
-  const [categories, setCategories] = useState<Category[]>([
-    { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
-  ]);
+interface CategoryGridProps {
+  initialCategories?: Category[];
+}
 
+function CategorySkeleton() {
+  return (
+    <section className="px-4 pt-1 pb-2">
+      <div className="mb-3 px-0.5">
+        <div className="flex items-center gap-2">
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+          <div className="h-4 w-28 skeleton rounded-md" />
+        </div>
+        <div className="h-3 w-44 skeleton rounded-md mt-1.5 ml-[11px]" />
+      </div>
+      <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
+        <div className="grid grid-cols-3 gap-1">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col items-center py-1.5 px-1 gap-1.5">
+              <div className="w-7 h-7 skeleton rounded-full" />
+              <div className="h-2.5 w-10 skeleton rounded-md" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function CategoryGrid({ initialCategories = [] }: CategoryGridProps) {
+  const { category, setCategory } = useFilterStore();
+  const [isLoading, setIsLoading] = useState(initialCategories.length === 0);
+
+  const buildCategoryList = (raw: Category[]) => [
+    { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
+    ...raw.slice(0, 5),
+  ];
+
+  const [categories, setCategories] = useState<Category[]>(
+    initialCategories.length > 0
+      ? buildCategoryList(initialCategories)
+      : [{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]
+  );
+
+  // Hanya fetch dari client jika tidak ada data SSR
   useEffect(() => {
+    if (initialCategories.length > 0) return;
+
     fetch('/api/public/categories')
       .then((res) => res.json())
       .then((data) => {
-        if (!Array.isArray(data)) {
-          console.error('Category API did not return an array:', data);
-          return;
-        }
-        const limited = data.slice(0, 5);
-        setCategories([
-          { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
-          ...limited,
-        ]);
-      });
-  }, []);
+        if (Array.isArray(data)) setCategories(buildCategoryList(data));
+      })
+      .catch((err) => console.error('Failed to fetch categories:', err))
+      .finally(() => setIsLoading(false));
+  }, [initialCategories.length]);
 
   const handleClick = (catId: string) => {
     setCategory(catId);
@@ -60,25 +94,22 @@ export default function CategoryGrid() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  if (isLoading) return <CategorySkeleton />;
+
   return (
     <section className="px-4 pt-1 pb-2">
-      {/* Header Kategori — Refined Version */}
       <div className="mb-3 px-0.5">
         <div className="flex items-center gap-2">
-          {/* Indikator vertikal dibuat lebih ramping (3px) agar elegan */}
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
-
           <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Pilih Kategori
           </h2>
         </div>
-
         <p className="text-[11px] text-gray-400 font-medium mt-0.5 ml-[11px] leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
 
-      {/* Card Container — white, soft elevation, light hairline border */}
       <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
         <div className="grid grid-cols-3 gap-1">
           {categories.map((cat) => {
@@ -96,16 +127,13 @@ export default function CategoryGrid() {
                   transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
                   active:scale-95
                   ${isActive
-                    ? `
-                      bg-white 
-                      /* Shadow super tipis & dekat (low elevation) */
-                      shadow-[0_2px_8px_rgba(0,0,0,0.04)]
-                    `
-                    : `bg-transparent hover:bg-gray-50/40`
+                    ? 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+                    : 'bg-transparent hover:bg-gray-50/40'
                   }
                 `}
               >
                 <div className="relative flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={iconPath}
                     alt={cat.name}
@@ -114,9 +142,8 @@ export default function CategoryGrid() {
                       ${isActive ? 'scale-110' : 'group-hover:scale-105'}
                     `}
                     style={{ mixBlendMode: 'multiply' }}
+                    loading="lazy"
                   />
-
-                  {/* Glow diperkecil (inset-0) dan blur dikurangi (blur-lg) */}
                   {isActive && (
                     <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />
                   )}

@@ -7,21 +7,52 @@ import { useReviewStore } from '@/store/useReviewStore';
 import { Product, Category } from '@/lib/types';
 import ProductCard from './ProductCard';
 
-export default function ProductGrid() {
+interface ProductGridProps {
+  initialCategories?: Category[];
+}
+
+// Skeleton card untuk loading state
+function ProductCardSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col">
+      <div className="w-full aspect-[3/2] skeleton" />
+      <div className="p-2.5 flex flex-col gap-2">
+        <div className="h-3 w-4/5 skeleton rounded-md" />
+        <div className="h-3 w-3/5 skeleton rounded-md" />
+        <div className="h-4 w-2/5 skeleton rounded-md mt-1" />
+        <div className="h-px bg-gray-100 my-0.5" />
+        <div className="flex justify-between">
+          <div className="h-2.5 w-14 skeleton rounded-md" />
+          <div className="h-2.5 w-10 skeleton rounded-md" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ProductGrid({ initialCategories = [] }: ProductGridProps) {
   const { category, sort } = useFilterStore();
   const { query } = useSearchStore();
   const { fetchReviews, refreshVersion } = useReviewStore();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Fetch reviews once on component mount (only once, no dependencies)
+  // Bangun daftar kategori dari props SSR (tidak perlu fetch ulang)
+  const categories: Category[] = [
+    { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
+    ...initialCategories,
+  ];
+
+  // Fetch reviews sekali saat mount
   useEffect(() => {
     fetchReviews().catch((error) => console.error('Failed to fetch reviews:', error));
   }, []);
 
+  // Fetch products saat filter/sort berubah
   useEffect(() => {
-    let url = '/api/public/products';
+    setIsLoadingProducts(true);
+
     const params = new URLSearchParams();
     if (category && category !== 'all') params.append('category', category);
 
@@ -30,71 +61,40 @@ export default function ProductGrid() {
     else if (sort === 'newest') apiFilter = 'terbaru';
     else if (sort === 'popular') apiFilter = 'populer';
     else if (sort === 'discount') apiFilter = 'hemat';
-
     if (apiFilter) params.append('filter', apiFilter);
 
-    params.append('t', Date.now().toString());
+    const url = params.toString() ? `/api/public/products?${params.toString()}` : '/api/public/products';
 
-    fetch(`${url}?${params.toString()}`, { cache: 'no-store' })
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          console.error('Product API did not return an array:', data);
-          setProducts([]);
-        }
+        setProducts(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
         console.error('Failed to fetch products:', err);
         setProducts([]);
-      });
+      })
+      .finally(() => setIsLoadingProducts(false));
   }, [category, sort, refreshVersion]);
 
-  useEffect(() => {
-    fetch(`/api/public/categories?t=${Date.now()}`, { cache: 'no-store' })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setCategories([{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }, ...data]);
-        } else {
-          console.error('Category API did not return an array:', data);
-        }
-      })
-      .catch((err) => console.error('Failed to fetch categories:', err));
-  }, []);
-
+  // Scroll-to-top button
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-      // Tampilkan jika scroll sudah melebihi 50% total halaman
-      if (docHeight > 0 && scrollY >= docHeight * 0.5) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
+      setShowScrollTop(docHeight > 0 && scrollY >= docHeight * 0.5);
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Frontend filtering only for search query, as API has already applied category and sort.
-  const filtered = products.filter((p) => {
-    if (query && !p.name.toLowerCase().includes(query.toLowerCase())) return false;
-    return true;
-  });
+  // Filter hanya untuk search query (kategori dan sort sudah ditangani API)
+  const filtered = products.filter((p) =>
+    query ? p.name.toLowerCase().includes(query.toLowerCase()) : true
+  );
 
-  // Get label untuk display
   const categoryName = categories.find((c) => c.id === category)?.name || 'Semua';
   const getSortName = () => {
     switch (sort) {
@@ -109,18 +109,26 @@ export default function ProductGrid() {
   return (
     <>
       <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
-        {/* Header yang lebih bersih dan lapang */}
         <div className="mb-3 flex flex-col px-0.5">
           <h3 className="text-sm font-bold text-gray-800 tracking-tight">
             Produk {categoryName !== 'Semua' ? categoryName : ''}
           </h3>
           <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-            Menampilkan {filtered.length} item {sort !== 'popular' ? `• ${getSortName()}` : ''}
+            {isLoadingProducts
+              ? 'Memuat produk...'
+              : `Menampilkan ${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`
+            }
           </p>
         </div>
 
-        {filtered.length === 0 ? (
-          // Empty State (Tetap sama)
+        {isLoadingProducts ? (
+          // Skeleton grid saat loading
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
               <svg className="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +151,6 @@ export default function ProductGrid() {
         )}
       </section>
 
-      {/* Scroll to Top Button - Polish agar senada dengan UI */}
       <button
         onClick={scrollToTop}
         className={`

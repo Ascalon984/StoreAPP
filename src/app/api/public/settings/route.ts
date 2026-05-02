@@ -1,21 +1,25 @@
 import { NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
+// ISR: cache settings for 5 minutes (settings rarely change)
+export const revalidate = 300;
 
-export async function GET(request: Request) {
+export async function GET() {
   const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-  
+
   try {
-    const res = await fetch(`${adminApiUrl}/api/public/settings?t=${Date.now()}`, {
-      cache: 'no-store'
+    const res = await fetch(`${adminApiUrl}/api/public/settings`, {
+      next: { revalidate: 300 },
     });
-    if (!res.ok) {
-      throw new Error('Failed to fetch settings from Admin API');
-    }
+    if (!res.ok) throw new Error('Failed to fetch settings from Admin API');
     const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: { 'Cache-Control': 's-maxage=300, stale-while-revalidate=600' },
+    });
   } catch (error) {
     console.error('Proxy error:', error);
-    return NextResponse.json({ error: 'Server proxy error' }, { status: 500 });
+    return NextResponse.json(
+      { waNumber: '6281234567890', storeNameFirst: 'Palugada', storeNameLast: 'Store' },
+      { status: 200 }
+    );
   }
 }
