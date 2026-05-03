@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
 import Navbar from '@/components/Navbar';
-import SearchOverlay from '@/components/SearchOverlay';
-import MiniCart from '@/components/MiniCart';
-import Toast from '@/components/Toast';
-import ReviewModal from '@/components/ReviewModal';
 import { SITE_NAME } from '@/lib/constants';
+
+// Load heavy client components dynamically
+const SearchOverlay = dynamic(() => import('@/components/SearchOverlay'), { ssr: false });
+const MiniCart = dynamic(() => import('@/components/MiniCart'), { ssr: false });
+const Toast = dynamic(() => import('@/components/Toast'), { ssr: false });
+const ReviewModal = dynamic(() => import('@/components/ReviewModal'), { ssr: false });
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', });
 

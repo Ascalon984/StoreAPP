@@ -99,12 +99,12 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-3 px-0 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-x-auto hide-scrollbar gap-3 px-0 snap-x snap-mandatory"
           style={{
             msOverflowStyle: 'none',
             scrollbarWidth: 'none',
             WebkitOverflowScrolling: 'touch', // Penting untuk smoothness di iPhone
-            scrollBehavior: 'smooth',
+            scrollBehavior: 'auto', // Gunakan auto untuk initial, smooth hanya via scrollTo
           }}
         >
           {banners.map((banner, index) => (
