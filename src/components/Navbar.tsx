@@ -58,19 +58,19 @@ export default function Navbar() {
             <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
               {storeNameFirst}
             </span>
-            {storeNameLast && <span className="text-orange-500">{storeNameLast}</span>}
+            {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
           </h1>
         </Link>
 
         {/* Search Bar — Desktop */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-50/80 hover:bg-gray-100/80 rounded-full text-gray-400 text-sm transition-all duration-200 border border-gray-100 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-300 active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-50/80 hover:bg-gray-100/80 rounded-full text-gray-500 text-sm transition-all duration-200 border border-gray-100 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-300 active:scale-[0.98]"
         >
-          <Search size={17} strokeWidth={1.5} className="text-gray-400" />
+          <Search size={17} strokeWidth={1.5} className="text-gray-500" />
           <span className="flex-1 text-left">Cari produk...</span>
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-400 bg-white px-1.5 py-0.5 rounded-md border border-gray-200/80 shadow-sm font-medium tracking-wide">
-            <span className="text-gray-300 mr-0.5">⌘</span>K
+          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-500 bg-white px-1.5 py-0.5 rounded-md border border-gray-200/80 shadow-sm font-medium tracking-wide">
+            <span className="text-gray-400 mr-0.5">⌘</span>K
           </kbd>
         </button>
 

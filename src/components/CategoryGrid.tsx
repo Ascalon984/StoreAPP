@@ -126,7 +126,7 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
             Pilih Kategori
           </h2>
         </div>
-        <p className="text-[11px] text-gray-400 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
@@ -151,7 +151,7 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
                       className="w-7 h-7 object-contain"
                     />
                   </div>
-                  <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-300 leading-tight">
+                  <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-500 leading-tight">
                     {cat.name}
                   </span>
                 </div>

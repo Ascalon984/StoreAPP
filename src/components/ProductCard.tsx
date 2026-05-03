@@ -109,12 +109,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </h3>
 
           <div className="flex items-baseline gap-1.5 flex-wrap">
-            {/* Diubah ke font-bold agar lebih tajam dan elegan */}
-            <span className="text-base font-bold text-emerald-600 tracking-tighter">
+            {/* Diubah ke text-emerald-700 agar contrast ratio >= 4.5:1 terhadap bg putih */}
+            <span className="text-base font-bold text-emerald-700 tracking-tighter">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] text-gray-400 line-through opacity-50 font-medium">
+              <span className="text-[10px] text-gray-500 line-through font-medium">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
@@ -125,7 +125,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-bold text-gray-700">{displayRating}</span>
-              <span className="text-[10px] text-gray-400">({displayReviewCount})</span>
+              <span className="text-[10px] text-gray-500">({displayReviewCount})</span>
             </div>
             <div className="px-2 py-0.5 bg-gray-50 rounded-md text-[10px] text-gray-500 font-semibold tracking-tight">
               {product.sold}+ Terjual

@@ -48,7 +48,7 @@ export default function FilterSort() {
                   transition-all duration-300 ease-out
                   active:scale-95
                   ${isActive
-                    ? 'bg-emerald-600 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
+                    ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
                     : 'bg-white border border-gray-100 text-gray-500 shadow-sm'
                   }
                 `}

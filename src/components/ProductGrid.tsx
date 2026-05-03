@@ -113,7 +113,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
           <h3 className="text-sm font-bold text-gray-800 tracking-tight">
             Produk {categoryName !== 'Semua' ? categoryName : ''}
           </h3>
-          <p className="text-[10px] text-gray-400 font-medium mt-0.5">
+          <p className="text-[10px] text-gray-500 font-medium mt-0.5">
             {isLoadingProducts
               ? 'Memuat produk...'
               : `Menampilkan ${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`
@@ -131,12 +131,12 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <h4 className="text-gray-800 font-bold text-sm">Produk Tidak Ditemukan</h4>
-            <p className="text-[11px] text-gray-400 mt-1 max-w-[200px]">
+            <p className="text-[11px] text-gray-500 mt-1 max-w-[200px]">
               {sort === 'discount'
                 ? 'Wah, sepertinya belum ada promo di kategori ini.'
                 : 'Coba pilih kategori lain atau cek kata kunci pencarianmu.'}
@@ -153,6 +153,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
 
       <button
         onClick={scrollToTop}
+        aria-label="Kembali ke atas"
         className={`
           fixed bottom-8 right-6 z-50
           w-11 h-11 rounded-full

@@ -89,7 +89,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             Spesial Buat Kamu
           </h2>
         </div>
-        <p className="text-[11px] text-gray-400 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>
