@@ -510,7 +510,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="border-t border-gray-200" />
 
             <div className="pt-3 space-y-2">
-              <h3 className="text-sm font-bold text-gray-800 tracking-tight">Deskripsi Produk</h3>
+              <h2 className="text-sm font-bold text-gray-800 tracking-tight">Deskripsi Produk</h2>
               <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
                 {truncatedDescription}
               </p>
@@ -528,7 +528,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
           {/* Jaminan Palugada */}
           <div className="bg-white px-4 py-3 mb-1">
-            <h3 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h3>
+            <h2 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h2>
 
             <div className="flex items-center justify-between">
               {[
@@ -557,9 +557,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
           {/* PERBAIKAN 2: Review Section dengan inline-flex */}
           <div className="bg-white px-4 py-3 mb-1">
-            <h3 className="text-sm font-bold text-gray-800 tracking-tight">
+            <h2 className="text-sm font-bold text-gray-800 tracking-tight">
               Ulasan Pembeli ({allReviews.length})
-            </h3>
+            </h2>
 
             <div className="bg-gray-50/50 rounded-2xl p-4 mb-4 border border-gray-100 shadow-sm">
               <div className="flex items-center gap-2.5">
@@ -711,7 +711,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* Tombol Pesan Sekarang: py-3.5 dan text-sm tetap sesuai request */}
               <button
                 onClick={handleBuyNow}
-                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
+                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
               >
                 <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
                 Pesan Sekarang

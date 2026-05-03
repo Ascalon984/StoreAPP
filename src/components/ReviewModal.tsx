@@ -382,7 +382,7 @@ export default function ReviewModal() {
             onTouchEnd={handleDragEnd}
           >
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-gray-300" />
+              <div className="w-10 h-1 rounded-full bg-gray-400" />
             </div>
 
             <div className="px-4 pb-3 pt-0.5 flex items-center border-b border-gray-100">
@@ -392,7 +392,7 @@ export default function ReviewModal() {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-gray-900 leading-tight">Beri Ulasan</h2>
-                  <p className="text-[10px] text-gray-400 mt-0.5">Bantu pembeli lain dengan ulasanmu</p>
+                  <p className="text-[10px] text-gray-600 mt-0.5">Bantu pembeli lain dengan ulasanmu</p>
                 </div>
               </div>
             </div>
@@ -412,7 +412,7 @@ export default function ReviewModal() {
                     <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1">
                       {isFromCart && <ShoppingBag size={10} strokeWidth={1.5} />}
                       {isFromCart ? 'Pesanan Kamu' : 'Produk'}
-                      <span className="text-gray-300 font-normal normal-case">({displayProducts.length})</span>
+                      <span className="text-gray-500 font-normal normal-case">({displayProducts.length})</span>
                     </p>
                     {displayProducts.length > 3 && (
                       <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
@@ -504,8 +504,8 @@ export default function ReviewModal() {
                             className={`transition-all duration-200 ${isActive
                               ? isFilled || isHoverFill
                                 ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
-                                : 'text-gray-300'
-                              : 'text-gray-200'
+                                : 'text-gray-400'
+                              : 'text-gray-300'
                               } ${isActive ? 'scale-100' : 'scale-90'}`}
                           />
                           {isFilled && (
@@ -529,7 +529,7 @@ export default function ReviewModal() {
                       <span>{config.label}</span>
                     </div>
                   ) : (
-                    <p className="text-xs text-gray-400">Tap bintang untuk memberi rating</p>
+                    <p className="text-xs text-gray-600">Tap bintang untuk memberi rating</p>
                   )}
                 </div>
               </div>
@@ -545,7 +545,7 @@ export default function ReviewModal() {
                       ? 'text-red-500'
                       : charCount > MAX_CHARS * 0.8
                         ? 'text-yellow-500'
-                        : 'text-gray-300'
+                        : 'text-gray-500'
                       }`}
                   >
                     {charCount}/{MAX_CHARS}
@@ -559,7 +559,7 @@ export default function ReviewModal() {
                   onChange={(e) => setComment(e.target.value)}
                   onFocus={() => handleInputFocus(commentTextareaRef.current)}
                   placeholder="Ceritakan pengalamanmu belanja di sini..."
-                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${isOverLimit
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-400 ${isOverLimit
                     ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100'
                     : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                     }`}

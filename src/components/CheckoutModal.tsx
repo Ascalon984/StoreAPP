@@ -500,7 +500,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                         type="button"
                         onClick={() => clearField('name')}
                         aria-label="Hapus nama"
-                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
+                        className="p-1.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
                       >
                         <X size={13} className="text-gray-500" strokeWidth={2} />
                       </button>
@@ -552,7 +552,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                         type="button"
                         onClick={() => clearField('phone')}
                         aria-label="Hapus nomor telepon"
-                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
+                        className="p-1.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
                       >
                         <X size={13} className="text-gray-500" strokeWidth={2} />
                       </button>
@@ -658,7 +658,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
               }}
               disabled={!isValid || isLoadingLocation || loading}
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${isValid && !isLoadingLocation && !loading
-                ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
+                ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-700/20 hover:shadow-lg hover:shadow-emerald-700/30'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
             >
