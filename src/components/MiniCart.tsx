@@ -200,7 +200,7 @@ export default function MiniCart() {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-gray-800">Keranjang Saya</h3>
-                <p className="text-[10px] text-gray-400">{totalItems} produk • {items.length} item</p>
+                <p className="text-[10px] text-gray-600">{totalItems} produk • {items.length} item</p>
               </div>
             </div>
 
@@ -219,7 +219,7 @@ export default function MiniCart() {
                 <ShoppingCart size={40} strokeWidth={1} className="text-gray-300" />
               </div>
               <p className="text-gray-800 font-semibold text-sm mb-1">Keranjang Masih Kosong</p>
-              <p className="text-xs text-gray-400 text-center leading-relaxed mb-6">
+              <p className="text-xs text-gray-600 text-center leading-relaxed mb-6">
                 Yuk mulai belanja dan temukan produk favorit kamu di Palugada!
               </p>
               <button
@@ -285,11 +285,11 @@ export default function MiniCart() {
                             {product.name}
                           </h3>
                           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                            <span className="text-primary font-bold text-sm">
+                            <span className="text-emerald-700 font-bold text-sm">
                               {formatRupiah(price)}
                             </span>
                             {hasDiscount && (
-                              <span className="text-[11px] text-gray-400 line-through">
+                              <span className="text-[11px] text-gray-600 line-through">
                                 {formatRupiah(originalPrice)}
                               </span>
                             )}
@@ -346,11 +346,11 @@ export default function MiniCart() {
                             Maks. stok
                           </span>
                         ) : isNearStockLimit ? (
-                          <span className="text-[10px] font-medium text-amber-500">
+                          <span className="text-[10px] font-medium text-amber-700">
                             Sisa {stock - qty} lagi
                           </span>
                         ) : (
-                          <span className="text-[10px] text-gray-400">
+                          <span className="text-[10px] text-gray-600">
                             Stok: {stock}
                           </span>
                         )}
@@ -377,14 +377,14 @@ export default function MiniCart() {
 
             <div className="flex items-end justify-between mb-4">
               <div>
-                <p className="text-xs text-gray-400 mb-0.5">Total Pembayaran</p>
+                <p className="text-xs text-gray-600 mb-0.5">Total Pembayaran</p>
                 <p className="text-2xl font-extrabold text-gray-800 tracking-tight">
                   {formatRupiah(total)}
                 </p>
               </div>
               <div className="text-right">
                 {totalSavings > 0 && (
-                  <p className="text-[10px] text-emerald-500 font-medium line-through">
+                  <p className="text-[10px] text-emerald-700 font-medium line-through">
                     {formatRupiah(total + totalSavings)}
                   </p>
                 )}
@@ -393,13 +393,13 @@ export default function MiniCart() {
 
             <button
               onClick={handleCheckoutClick}
-              className="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-[#25D366]/20"
+              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-emerald-700/20"
             >
               <MessageCircle size={20} strokeWidth={2} />
               Checkout via WhatsApp
             </button>
 
-            <p className="text-[10px] text-gray-400 text-center mt-2.5">
+            <p className="text-[10px] text-gray-600 text-center mt-2.5">
               Pesanan akan dikonfirmasi melalui WhatsApp
             </p>
           </div>
