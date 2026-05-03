@@ -616,10 +616,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
                     <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
                       {review.isVerified && (
-                        <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5">
-                          <CheckCircle size={10} strokeWidth={2} />
-                          Verified
-                        </span>
+                        <div className="flex items-center justify-center w-4 h-4 bg-emerald-50 rounded-full border border-emerald-100/50 shadow-sm" title="Verified Buyer">
+                          <CheckCircle size={10} strokeWidth={3} className="text-emerald-600" />
+                        </div>
                       )}
                       <span className="text-[11px] text-gray-400 flex items-center gap-1">
                         <Clock size={10} strokeWidth={1.5} />
@@ -640,19 +639,16 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       {/* Button Like */}
                       <button
                         onClick={() => handleVote(review.id, 'like')}
-                        disabled={votedIds.includes(review.id)}
-                        className={`flex items-center gap-1.5 transition-all duration-500 ${votedType[review.id] === 'like'
-                          ? 'text-emerald-500 scale-110'
-                          : 'text-gray-300'
+                        className={`flex items-center gap-1.5 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-500 scale-110' : 'text-gray-300'
                           }`}
                       >
                         <ThumbsUp
                           size={13}
-                          strokeWidth={votedType[review.id] === 'like' ? 2.8 : 1.8}
-                          className="transition-transform duration-300"
+                          /* Gunakan fill dengan opacity rendah agar tetap terlihat premium */
+                          className={`${votedType[review.id] === 'like' ? 'fill-emerald-500/20' : 'fill-none'}`}
+                          strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.8}
                         />
-                        <span className={`text-[11px] font-bold tracking-tight transition-colors ${votedType[review.id] === 'like' ? 'text-emerald-600' : 'text-gray-400'
-                          }`}>
+                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'like' ? 'text-emerald-600' : 'text-gray-400'}`}>
                           {review.likes || 0}
                         </span>
                       </button>
@@ -660,19 +656,16 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       {/* Button Dislike */}
                       <button
                         onClick={() => handleVote(review.id, 'dislike')}
-                        disabled={votedIds.includes(review.id)}
-                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike'
-                          ? 'text-rose-500 scale-110'
-                          : 'text-gray-300'
-                          } ${votedIds.includes(review.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-500 scale-110' : 'text-gray-300'
+                          }`}
                       >
                         <ThumbsDown
                           size={13}
-                          className={votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}
+                          /* Warna rose dengan opacity rendah untuk dislike */
+                          className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
                           strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
                         />
-                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-600' : 'text-gray-400'
-                          }`}>
+                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-600' : 'text-gray-400'}`}>
                           {review.dislikes || 0}
                         </span>
                       </button>
