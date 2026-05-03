@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, X, Plus, Minus, MessageCircle, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
@@ -12,7 +12,6 @@ import { useReviewStore } from '@/store/useReviewStore';
 import { formatRupiah, generateWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from './ProductImage';
 import CheckoutModal from './CheckoutModal';
-import { useEffect } from 'react';
 
 export default function MiniCart() {
   const router = useRouter();
@@ -24,6 +23,35 @@ export default function MiniCart() {
   const { triggerRefresh } = useReviewStore();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Logic untuk Swipe to Close
+  const [dragX, setDragX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startX = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startX.current = e.touches[0].clientX;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - startX.current;
+
+    // Hanya izinkan geser ke kanan (untuk menutup)
+    if (deltaX > 0) setDragX(deltaX);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (dragX > 100) { // Threshold 100px untuk menutup
+      closeCart();
+      setTimeout(() => setDragX(0), 300);
+    } else {
+      setDragX(0); // Kembali ke posisi awal jika tidak melewati threshold
+    }
+  };
 
   useEffect(() => {
     fetchSettings();
@@ -127,39 +155,50 @@ export default function MiniCart() {
       <div
         className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm animate-backdrop-in"
         onClick={closeCart}
+        style={{
+          opacity: isOpen ? Math.max(0, 1 - dragX / 300) : 0,
+          transition: isDragging ? 'none' : 'opacity 0.3s ease'
+        }}
       />
 
       {/* ===== DRAWER CONTAINER ===== */}
-      <div className="fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] bg-gray-50 z-[70] shadow-2xl flex flex-col animate-drawer-in rounded-l-[1.5rem] overflow-hidden border-l border-white/20">
+      <div
+        className="fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] bg-gray-50 z-[70] shadow-2xl flex flex-col rounded-l-[1.5rem] overflow-hidden border-l border-white/20"
+        style={{
+          transform: `translateX(${dragX}px)`,
+          transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', // Easing yang lebih 'luks'
+          opacity: Math.max(0.7, 1 - dragX / 1000) // Sedikit pudar saat ditarik
+        }}
+      >
+        {/* Handle Visual Samping (Tetap ada sebagai petunjuk) */}
+        <div
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-200 rounded-full ml-1.5 opacity-60 z-[80]"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        />
 
-        {/* ===== HEADER: Ramping & Elegant Version ===== */}
-        <div className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem]">
-          {/* py-3.5 (14px) jauh lebih ramping dibanding pt-5 pb-4 */}
+        {/* HEADER: Diberi kemampuan swipe juga */}
+        <div
+          className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem] touch-pan-x"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {/* Box ikon dikecilkan sedikit agar header tidak terdorong tinggi */}
               <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100/50">
                 <ShoppingBag size={18} strokeWidth={2.5} className="text-emerald-600" />
               </div>
-
               <div>
-                <h2 className="text-[15px] font-bold text-gray-800 leading-none tracking-tight">
-                  Keranjang Saya
-                </h2>
-                {/* Font dikecilkan ke 10px dan ditambahkan tracking-wide agar tetap elegan & mudah dibaca */}
-                <p className="text-[11px] text-gray-400 mt-1 font-medium leading-none">
-                  {items.length === 0
-                    ? 'Belum ada produk'
-                    : `${items.length} produk • ${totalItems} item`}
-                </p>
+                <h3 className="text-sm font-bold text-gray-800">Keranjang Saya</h3>
+                <p className="text-[10px] text-gray-400">{totalItems} produk • {items.length} item</p>
               </div>
             </div>
-            {/* Tombol Close yang lebih subtle */}
-            <button
-              onClick={closeCart}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 transition-all active:scale-90"
-            >
-              <X size={18} strokeWidth={2.5} className="text-gray-400" />
+
+            {/* Tombol X tetap dipertahankan sebagai cadangan */}
+            <button onClick={closeCart} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors">
+              <X size={18} className="text-gray-400" />
             </button>
           </div>
         </div>
