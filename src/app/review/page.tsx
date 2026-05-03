@@ -482,7 +482,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                       strokeWidth={1}
                       className={`transition-colors ${star <= rating
                         ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
+                        : 'text-gray-400'
                         }`}
                     />
                   </button>
@@ -505,14 +505,14 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Ceritakan pengalaman Anda{' '}
-                  <span className="text-gray-400 font-normal">(opsional)</span>
+                  <span className="text-gray-500 font-normal">(opsional)</span>
                 </label>
                 <span
                   className={`text-xs tabular-nums transition-colors ${comment.length > 1000
                     ? 'text-red-500 font-semibold'
                     : comment.length > 800
                       ? 'text-amber-500'
-                      : 'text-gray-400'
+                      : 'text-gray-500'
                     }`}
                 >
                   {comment.length}/1000
@@ -543,7 +543,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl py-4 font-bold transition-all duration-200 block text-center active:scale-[0.98] mt-8"
+              className="w-full bg-emerald-700 hover:bg-emerald-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-white rounded-xl py-4 font-bold transition-all duration-200 block text-center active:scale-[0.98] mt-8 shadow-md shadow-emerald-700/20"
             >
               {isSubmitting ? (
                 <span className="inline-flex items-center justify-center gap-2">

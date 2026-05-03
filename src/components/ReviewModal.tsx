@@ -11,11 +11,11 @@ import { Product } from '@/lib/types';
 import ProductImage from '@/components/ProductImage';
 
 const RATING_CONFIG = {
-  1: { label: 'Sangat Buruk', emoji: '😞', color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-100' },
-  2: { label: 'Buruk', emoji: '😕', color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100' },
+  1: { label: 'Sangat Buruk', emoji: '😞', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-100' },
+  2: { label: 'Buruk', emoji: '😕', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100' },
   3: { label: 'Cukup', emoji: '😐', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-100' },
-  4: { label: 'Bagus', emoji: '🙂', color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-  5: { label: 'Sangat Bagus!', emoji: '😍', color: 'text-primary', bg: 'bg-primary/5', border: 'border-primary/20' },
+  4: { label: 'Bagus', emoji: '🙂', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+  5: { label: 'Sangat Bagus!', emoji: '😍', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
 } as const;
 
 const MAX_CHARS = 300;
@@ -415,7 +415,7 @@ export default function ReviewModal() {
                       <span className="text-gray-500 font-normal normal-case">({displayProducts.length})</span>
                     </p>
                     {displayProducts.length > 3 && (
-                      <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                      <span className="flex items-center gap-0.5 text-[10px] text-gray-500">
                         Geser <ChevronRight size={10} />
                       </span>
                     )}
@@ -443,7 +443,7 @@ export default function ReviewModal() {
                               {p.name}
                             </p>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <p className="text-[10px] text-primary font-bold">
+                              <p className="text-[10px] text-emerald-700 font-bold">
                                 {p.price.toLocaleString('id-ID')}
                               </p>
                               {p.qty > 1 && (
@@ -459,7 +459,7 @@ export default function ReviewModal() {
                   </div>
 
                   {isFromCart && displayProducts.length > 1 && (
-                    <p className="text-[10px] text-gray-400 mt-1.5 pl-0.5">
+                    <p className="text-[10px] text-gray-500 mt-1.5 pl-0.5">
                       Ulasan akan diterapkan ke semua produk
                     </p>
                   )}
@@ -504,8 +504,8 @@ export default function ReviewModal() {
                             className={`transition-all duration-200 ${isActive
                               ? isFilled || isHoverFill
                                 ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
-                                : 'text-gray-400'
-                              : 'text-gray-300'
+                                : 'text-gray-500'
+                              : 'text-gray-400'
                               } ${isActive ? 'scale-100' : 'scale-90'}`}
                           />
                           {isFilled && (
@@ -578,8 +578,8 @@ export default function ReviewModal() {
                   onClick={handleSubmit}
                   disabled={!canSubmit && !isSubmitting}
                   className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${canSubmit
-                    ? 'bg-primary hover:bg-primary-dark text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-700/20 hover:shadow-lg hover:shadow-emerald-700/30'
+                    : 'bg-gray-100 text-gray-500 cursor-not-allowed'
                     }`}
                 >
                   {isSubmitting ? (
@@ -613,7 +613,7 @@ export default function ReviewModal() {
                   type="button"
                   onClick={handleClose}
                   disabled={isSubmitting}
-                  className="w-full text-gray-400 hover:text-gray-600 font-medium text-xs py-1.5 transition-colors disabled:opacity-50"
+                  className="w-full text-gray-500 hover:text-gray-700 font-medium text-xs py-1.5 transition-colors disabled:opacity-50"
                 >
                   Lewati untuk sekarang
                 </button>
