@@ -694,19 +694,22 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
 
           {/* Sticky Bottom CTA */}
-          <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-2 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
-            <div className="max-w-container mx-auto flex gap-3">
+          <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-t border-gray-100 px-4 pt-3 pb-6 shadow-[0_-8px_20px_rgba(0,0,0,0.04)]">
+            <div className="max-w-[500px] mx-auto flex gap-3">
+              {/* Tombol Keranjang: Lebih Ringan & Clean */}
               <button
                 onClick={handleAddToCart}
-                className="flex-1 py-3.5 px-4 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary-light transition-colors duration-200 tap-active text-center whitespace-nowrap text-sm"
+                className="flex-1 py-3.5 px-4 rounded-2xl border border-emerald-500 text-emerald-600 font-bold hover:bg-emerald-50 transition-all active:scale-[0.97] text-sm whitespace-nowrap"
               >
                 + Keranjang
               </button>
+
+              {/* Tombol Utama: Lebih Berbobot & Mewah */}
               <button
                 onClick={handleBuyNow}
-                className="flex-[2] py-3.5 px-4 rounded-xl bg-primary text-white font-bold hover:bg-primary-dark transition-colors duration-200 tap-active shadow-sm flex items-center justify-center gap-2 text-sm"
+                className="flex-[2] py-3.5 px-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-[0_8px_16px_rgba(16,185,129,0.25)] flex items-center justify-center gap-2 text-sm"
               >
-                <MessageCircle size={18} strokeWidth={2} />
+                <MessageCircle size={18} strokeWidth={2.5} />
                 Pesan Sekarang
               </button>
             </div>

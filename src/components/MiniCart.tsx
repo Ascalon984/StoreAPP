@@ -172,18 +172,18 @@ export default function MiniCart() {
       >
         {/* Area Handle Swipe (Dibuat full height agar mudah ditarik dari sisi mana pun) */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-10 z-[80] cursor-grab active:cursor-grabbing touch-pan-y"
+          className="absolute left-0 top-0 bottom-0 w-10 z-[80] cursor-grab active:cursor-grabbing touch-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           {/* Garis Visual (Indikator tetap berada di tengah secara vertikal) */}
-          <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-200 rounded-full opacity-60" />
+          <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-14 bg-gray-300 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.02)]" />
         </div>
 
         {/* HEADER: Diberi kemampuan swipe juga */}
         <div
-          className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem] touch-pan-x"
+          className="bg-white px-5 py-3.5 border-b border-gray-100 rounded-tl-[2rem] touch-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
