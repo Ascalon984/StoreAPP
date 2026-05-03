@@ -167,12 +167,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating === 0) return 'text-gray-500';
+    if (rating === 0) return 'text-gray-600';
     if (rating >= 4.7) return 'text-emerald-700';
-    if (rating >= 4.0) return 'text-emerald-600';
-    if (rating >= 3.0) return 'text-amber-600';
-    if (rating >= 2.0) return 'text-orange-600';
-    return 'text-rose-600';
+    if (rating >= 4.0) return 'text-emerald-700';
+    if (rating >= 3.0) return 'text-amber-700';
+    if (rating >= 2.0) return 'text-orange-700';
+    return 'text-rose-700';
   };
 
   const handleAddToCart = () => {
@@ -517,7 +517,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {needsTruncation && (
                 <button
                   onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                  className="text-emerald-600 font-bold text-[12px] flex items-center gap-0.5 mt-1"
+                  className="text-emerald-700 font-bold text-[12px] flex items-center gap-0.5 mt-1"
                 >
                   {isDescriptionExpanded ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
                   <ChevronDown size={14} className={`transition-transform ${isDescriptionExpanded ? 'rotate-180' : ''}`} />
@@ -589,7 +589,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                           />
                         </div>
 
-                        <span className="text-[9px] text-gray-500 tabular-nums min-w-[20px] text-right">{count}</span>
+                        <span className="text-[9px] text-gray-600 tabular-nums min-w-[20px] text-right">{count}</span>
                       </div>
                     );
                   })}
@@ -632,7 +632,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     </div>
 
                     {/* Info Waktu di Pojok Kanan Atas */}
-                    <div className="flex items-center gap-1 text-gray-500 flex-shrink-0 mt-0.5">
+                    <div className="flex items-center gap-1 text-gray-600 flex-shrink-0 mt-0.5">
                       <Clock size={10} strokeWidth={1.5} />
                       <span className="text-[11px] font-medium">
                         <TimeAgo date={review.createdAt} />
@@ -652,7 +652,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       {/* Button Like */}
                       <button
                         onClick={() => handleVote(review.id, 'like')}
-                        className={`flex items-center gap-1.5 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-500 scale-110' : 'text-gray-300'
+                        className={`flex items-center gap-1.5 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-700 scale-110' : 'text-gray-500'
                           }`}
                       >
                         <ThumbsUp
@@ -660,7 +660,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                           className={`${votedType[review.id] === 'like' ? 'fill-emerald-500/20' : 'fill-none'}`}
                           strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.8}
                         />
-                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'like' ? 'text-emerald-600' : 'text-gray-400'}`}>
+                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'like' ? 'text-emerald-700' : 'text-gray-600'}`}>
                           {review.likes || 0}
                         </span>
                       </button>
@@ -668,7 +668,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       {/* Button Dislike */}
                       <button
                         onClick={() => handleVote(review.id, 'dislike')}
-                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-500 scale-110' : 'text-gray-300'
+                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-700 scale-110' : 'text-gray-500'
                           }`}
                       >
                         <ThumbsDown
@@ -676,7 +676,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                           className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
                           strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
                         />
-                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-600' : 'text-gray-400'}`}>
+                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-700' : 'text-gray-600'}`}>
                           {review.dislikes || 0}
                         </span>
                       </button>

@@ -437,7 +437,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-gray-900 leading-tight">Informasi Pengiriman</h2>
-                  <p className="text-[10px] text-gray-400 mt-0.5">Isi data untuk pengiriman COD</p>
+                  <p className="text-[10px] text-gray-600 mt-0.5">Isi data untuk pengiriman COD</p>
                 </div>
               </div>
             </div>
@@ -475,7 +475,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                 <div className="relative">
                   <User
                     size={14}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${fieldErrors.name && touched.name ? 'text-red-400' : 'text-gray-300'
+                    className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${fieldErrors.name && touched.name ? 'text-red-600' : 'text-gray-400'
                       }`}
                     strokeWidth={1.5}
                   />
@@ -489,7 +489,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                     onFocus={() => handleInputFocus(nameInputRef.current)}
                     placeholder="Nama Anda"
                     autoComplete="name"
-                    className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 ${fieldErrors.name && touched.name
+                    className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-400 ${fieldErrors.name && touched.name
                       ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
                       : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
@@ -500,13 +500,13 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                         type="button"
                         onClick={() => clearField('name')}
                         aria-label="Hapus nama"
-                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90"
+                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
                       >
-                        <X size={13} className="text-gray-400" strokeWidth={2} />
+                        <X size={13} className="text-gray-500" strokeWidth={2} />
                       </button>
                     )}
                     <span
-                      className={`text-[10px] tabular-nums min-w-[30px] text-right ${deliveryInfo.name.length >= MAX_NAME_CHARS ? 'text-red-400 font-semibold' : 'text-gray-300'
+                      className={`text-[10px] tabular-nums min-w-[30px] text-right ${deliveryInfo.name.length >= MAX_NAME_CHARS ? 'text-red-600 font-semibold' : 'text-gray-500'
                         }`}
                     >
                       {deliveryInfo.name.length}/{MAX_NAME_CHARS}
@@ -514,7 +514,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                   </div>
                 </div>
                 {fieldErrors.name && touched.name && (
-                  <p className="text-[11px] text-red-500 font-medium pl-0.5">Nama wajib diisi</p>
+                  <p className="text-[11px] text-red-600 font-medium pl-0.5">Nama wajib diisi</p>
                 )}
               </div>
 
@@ -526,7 +526,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                 <div className="relative">
                   <Phone
                     size={14}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${fieldErrors.phone && touched.phone ? 'text-red-400' : 'text-gray-300'
+                    className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${fieldErrors.phone && touched.phone ? 'text-red-600' : 'text-gray-400'
                       }`}
                     strokeWidth={1.5}
                   />
@@ -541,7 +541,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                     onFocus={() => handleInputFocus(phoneInputRef.current)}
                     placeholder="081-234-567-890"
                     autoComplete="tel"
-                    className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-300 tabular-nums ${fieldErrors.phone && touched.phone
+                    className={`w-full pl-9 pr-[68px] py-2.5 rounded-xl border text-sm outline-none transition-all placeholder:text-gray-400 tabular-nums ${fieldErrors.phone && touched.phone
                       ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
                       : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
@@ -552,13 +552,13 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                         type="button"
                         onClick={() => clearField('phone')}
                         aria-label="Hapus nomor telepon"
-                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90"
+                        className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90 flex items-center justify-center"
                       >
-                        <X size={13} className="text-gray-400" strokeWidth={2} />
+                        <X size={13} className="text-gray-500" strokeWidth={2} />
                       </button>
                     )}
                     <span
-                      className={`text-[10px] tabular-nums min-w-[30px] text-right ${phoneDigits.length >= MAX_PHONE_DIGITS ? 'text-red-400 font-semibold' : 'text-gray-300'
+                      className={`text-[10px] tabular-nums min-w-[30px] text-right ${phoneDigits.length >= MAX_PHONE_DIGITS ? 'text-red-600 font-semibold' : 'text-gray-500'
                         }`}
                     >
                       {phoneDigits.length}/{MAX_PHONE_DIGITS}
@@ -566,7 +566,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                   </div>
                 </div>
                 {fieldErrors.phone && touched.phone && (
-                  <p className="text-[11px] text-red-500 font-medium pl-0.5">Nomor telepon tidak valid (min. 10 digit)</p>
+                  <p className="text-[11px] text-red-600 font-medium pl-0.5">Nomor telepon tidak valid (min. 10 digit)</p>
                 )}
               </div>
 
@@ -578,10 +578,10 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                   </label>
                   <span
                     className={`text-[10px] font-medium tabular-nums transition-colors ${deliveryInfo.address.length >= MAX_ADDRESS_CHARS
-                      ? 'text-red-400 font-semibold'
+                      ? 'text-red-600 font-semibold'
                       : deliveryInfo.address.length > MAX_ADDRESS_CHARS * 0.8
-                        ? 'text-yellow-500'
-                        : 'text-gray-300'
+                        ? 'text-yellow-600'
+                        : 'text-gray-500'
                       }`}
                   >
                     {deliveryInfo.address.length}/{MAX_ADDRESS_CHARS}
@@ -590,7 +590,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                 <div className="relative">
                   <MapPin
                     size={14}
-                    className={`absolute left-3 top-3 pointer-events-none transition-colors ${fieldErrors.address && touched.address ? 'text-red-400' : 'text-gray-300'
+                    className={`absolute left-3 top-3 pointer-events-none transition-colors ${fieldErrors.address && touched.address ? 'text-red-600' : 'text-gray-400'
                       }`}
                     strokeWidth={1.5}
                   />
@@ -603,14 +603,14 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                     onFocus={() => handleInputFocus(addressTextareaRef.current)}
                     placeholder="Jl. Xxx No. 123, Kelurahan Xxx, Kecamatan Xxx, Kota Xxx"
                     rows={3}
-                    className={`w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-300 ${fieldErrors.address && touched.address
+                    className={`w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm leading-relaxed outline-none transition-all resize-none placeholder:text-gray-400 ${fieldErrors.address && touched.address
                       ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100 animate-shake'
                       : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
                       }`}
                   />
                 </div>
                 {fieldErrors.address && touched.address && (
-                  <p className="text-[11px] text-red-500 font-medium pl-0.5">Alamat terlalu pendek (min. 10 karakter)</p>
+                  <p className="text-[11px] text-red-600 font-medium pl-0.5">Alamat terlalu pendek (min. 10 karakter)</p>
                 )}
               </div>
 
@@ -619,19 +619,19 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                 type="button"
                 onClick={handleAutoDetect}
                 disabled={isLoadingLocation}
-                className="w-full py-2.5 px-4 rounded-xl border-2 border-dashed border-primary/40 text-primary font-semibold flex items-center justify-center gap-2 hover:bg-primary/5 hover:border-primary/60 transition-all disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] text-sm"
+                className="w-full py-2.5 px-4 rounded-xl border-2 border-dashed border-emerald-600/30 text-emerald-700 font-semibold flex items-center justify-center gap-2 hover:bg-emerald-50 hover:border-emerald-600/60 transition-all disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] text-sm"
               >
                 {isLoadingLocation ? (
                   <>
                     <Loader size={16} className="animate-spin" strokeWidth={2} />
-                    <span>Mendeteksi Lokasi...</span>
+                    <span className="text-emerald-700">Mendeteksi Lokasi...</span>
                   </>
                 ) : (
                   <>
                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                       <MapPin size={13} className="text-primary" strokeWidth={2} />
                     </div>
-                    <span>Deteksi Lokasi Otomatis</span>
+                    <span className="text-emerald-700">Deteksi Lokasi Otomatis</span>
                   </>
                 )}
               </button>
