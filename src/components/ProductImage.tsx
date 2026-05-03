@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Cookie, Coffee, ShoppingBasket, Pencil, Sparkles, LayoutGrid,
 } from 'lucide-react';
@@ -47,12 +48,13 @@ export default function ProductImage({ category, name, src, variant = 0, classNa
   if (isValidSrc) {
     return (
       <div className={`relative overflow-hidden flex items-center justify-center ${className}`}>
-        <img
+        {/* Menggunakan next/image dengan fill agar memiliki explicit dimensions dan menghemat CLS */}
+        <Image
           src={src}
           alt={name}
-          /* 1. GANTI cover ke contain agar botol tidak terpotong */
-          className="max-w-full max-h-full object-contain block transition-transform duration-700"
-          /* 2. Tambahkan multiply agar background putih gambar menghilang */
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-contain block transition-transform duration-700"
           style={{ ...style, mixBlendMode: 'multiply' }}
           loading="lazy"
           onError={() => setHasError(true)}
