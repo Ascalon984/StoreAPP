@@ -18,17 +18,17 @@ interface InitData {
 }
 
 // Fetch banners, categories, settings in parallel directly from Admin API
-// Uses Next.js ISR — re-validated in background every 60 seconds
-// ISR (instead of no-store) enables BF-Cache & reduces redundant server calls
+// Disable caching (no-store) to ensure immediate data updates when Admin changes data.
+// This resolves the issue where hard refreshes still showed stale data.
 async function getInitData(): Promise<InitData> {
   const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL;
   if (!adminApiUrl) return { banners: [], categories: [], settings: null };
 
   try {
     const [bannersRes, categoriesRes, settingsRes] = await Promise.all([
-      fetch(`${adminApiUrl}/api/public/banners`, { next: { revalidate: 60 } }),
-      fetch(`${adminApiUrl}/api/public/categories`, { next: { revalidate: 60 } }),
-      fetch(`${adminApiUrl}/api/public/settings`, { next: { revalidate: 60 } }),
+      fetch(`${adminApiUrl}/api/public/banners`, { cache: 'no-store' }),
+      fetch(`${adminApiUrl}/api/public/categories`, { cache: 'no-store' }),
+      fetch(`${adminApiUrl}/api/public/settings`, { cache: 'no-store' }),
     ]);
 
     const [banners, categories, settings] = await Promise.all([

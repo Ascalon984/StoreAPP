@@ -111,7 +111,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
     // Gunakan revalidation atau cache default Next.js jika memungkinkan
     fetch(`/api/public/products/${slug}`, {
-      next: { revalidate: 60 } // Cache selama 1 menit
+      cache: 'no-store'
     })
       .then((res) => {
         if (!res.ok) throw new Error('Not found');

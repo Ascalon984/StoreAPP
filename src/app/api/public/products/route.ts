@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-// ISR: cache product listings for 30 seconds per unique URL (category+filter combo)
-export const revalidate = 30;
+// Disable caching for products to allow instant updates from Admin
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
@@ -12,12 +12,12 @@ export async function GET(request: Request) {
 
   try {
     const res = await fetch(`${adminApiUrl}/api/public/products${url.search}`, {
-      next: { revalidate: 30 },
+      cache: 'no-store',
     });
     if (!res.ok) throw new Error('Failed to fetch products from Admin API');
     const data = await res.json();
     return NextResponse.json(data, {
-      headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=60' },
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
     });
   } catch (error) {
     console.error('Proxy error:', error);
