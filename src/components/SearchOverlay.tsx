@@ -42,8 +42,8 @@ export default function SearchOverlay() {
 
   const suggestions = debouncedQuery.trim()
     ? products.filter((p) =>
-        p.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-      ).slice(0, 6)
+      p.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+    ).slice(0, 6)
     : [];
 
   const handleSelect = (productName: string) => {
@@ -65,7 +65,7 @@ export default function SearchOverlay() {
     const parts = text.split(regex);
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <span key={i} className="text-primary font-semibold">{part}</span>
+        <span key={i} className="text-emerald-700 font-semibold">{part}</span>
       ) : (
         <span key={i}>{part}</span>
       )
@@ -78,16 +78,21 @@ export default function SearchOverlay() {
     <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
       <div className="max-w-container mx-auto px-4">
         <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 py-3 border-b border-gray-100">
-          <Search size={20} strokeWidth={1.5} className="text-gray-400 flex-shrink-0" />
+          <Search size={20} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Cari produk..."
-            className="flex-1 text-sm outline-none bg-transparent placeholder:text-gray-400"
+            className="flex-1 text-sm outline-none bg-transparent placeholder:text-gray-500"
           />
-          <button type="button" onClick={closeSearch} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+          <button
+            type="button"
+            onClick={closeSearch}
+            aria-label="Tutup pencarian"
+            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          >
             <X size={20} strokeWidth={1.5} className="text-gray-500" />
           </button>
         </form>
@@ -102,9 +107,9 @@ export default function SearchOverlay() {
                   onClick={() => handleSelect(product.name)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
                 >
-                  <Search size={16} strokeWidth={1.5} className="text-gray-400 flex-shrink-0" />
+                  <Search size={16} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
                   <span className="text-sm flex-1">{highlightMatch(product.name, debouncedQuery)}</span>
-                  <ArrowRight size={14} strokeWidth={1.5} className="text-gray-300" />
+                  <ArrowRight size={14} strokeWidth={1.5} className="text-gray-500" />
                 </Link>
               ))}
             </div>
@@ -133,8 +138,8 @@ export default function SearchOverlay() {
 
           {debouncedQuery.trim() && suggestions.length === 0 && (
             <div className="text-center py-12">
-              <Search size={48} strokeWidth={1} className="text-gray-200 mx-auto mb-4" />
-              <p className="text-sm text-gray-400">
+              <Search size={48} strokeWidth={1} className="text-gray-300 mx-auto mb-4" />
+              <p className="text-sm text-gray-600">
                 Tidak ditemukan produk untuk &quot;{debouncedQuery}&quot;
               </p>
             </div>
