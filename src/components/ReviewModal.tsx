@@ -493,6 +493,7 @@ export default function ReviewModal() {
                             setRating(star);
                             setHoveredStar(0);
                           }}
+                          aria-label={`Beri rating ${star} bintang`}
                           onMouseEnter={() => setHoveredStar(star)}
                           onMouseLeave={() => setHoveredStar(0)}
                           className="relative p-0.5 transition-all duration-200 touch-manipulation"

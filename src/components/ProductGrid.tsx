@@ -110,10 +110,10 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
     <>
       <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
         <div className="mb-3 flex flex-col px-0.5">
-          <h3 className="text-sm font-bold text-gray-800 tracking-tight">
+          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Produk {categoryName !== 'Semua' ? categoryName : ''}
-          </h3>
-          <p className="text-[10px] text-gray-500 font-medium mt-0.5">
+          </h2>
+          <p className="text-[10px] text-gray-600 font-medium mt-0.5">
             {isLoadingProducts
               ? 'Memuat produk...'
               : `Menampilkan ${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`

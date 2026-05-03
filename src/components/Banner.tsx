@@ -77,17 +77,19 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
   const handleScroll = () => {
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    
-    // Matikan autoplay sementara saat user sedang scroll
+
+    // 1. Hentikan autoplay segera saat interaksi dimulai
     if (timerRef.current) clearInterval(timerRef.current);
 
-    scrollTimeout.current = setTimeout(() => {
-      const el = scrollRef.current;
-      if (!el) return;
+    // 2. Update index secara real-time agar dots responsif
+    const el = scrollRef.current;
+    if (el) {
       const index = Math.round(el.scrollLeft / el.offsetWidth);
-      if (index !== current) {
-        setCurrent(index);
-      }
+      if (index !== current) setCurrent(index);
+    }
+
+    // 3. Debounce hanya untuk memulai kembali autoplay
+    scrollTimeout.current = setTimeout(() => {
       startAutoPlay();
     }, 150); // Eksekusi setelah berhenti scroll selama 150ms
   };
@@ -103,7 +105,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             Spesial Buat Kamu
           </h2>
         </div>
-        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-gray-600 font-medium mt-0.5 ml-[11px] leading-tight">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>

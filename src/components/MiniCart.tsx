@@ -205,7 +205,7 @@ export default function MiniCart() {
             </div>
 
             {/* Tombol X tetap dipertahankan sebagai cadangan */}
-            <button onClick={closeCart} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors">
+            <button onClick={closeCart} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors" aria-label="Tutup keranjang">
               <X size={18} className="text-gray-400" />
             </button>
           </div>
@@ -319,6 +319,7 @@ export default function MiniCart() {
                         <button
                           onClick={() => handleQuantityChange(product.id, qty - 1, stock)}
                           disabled={qty <= 1}
+                          aria-label="Kurangi jumlah"
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary/30 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-90"
                         >
                           <Minus size={14} strokeWidth={2} />
@@ -331,6 +332,7 @@ export default function MiniCart() {
                         <button
                           onClick={() => handleQuantityChange(product.id, qty + 1, stock)}
                           disabled={isAtStockLimit}
+                          aria-label="Tambah jumlah"
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary/30 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-90"
                         >
                           <Plus size={14} strokeWidth={2} />

@@ -499,6 +499,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                       <button
                         type="button"
                         onClick={() => clearField('name')}
+                        aria-label="Hapus nama"
                         className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90"
                       >
                         <X size={13} className="text-gray-400" strokeWidth={2} />
@@ -550,6 +551,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
                       <button
                         type="button"
                         onClick={() => clearField('phone')}
+                        aria-label="Hapus nomor telepon"
                         className="p-0.5 hover:bg-gray-100 rounded-full transition-colors active:scale-90"
                       >
                         <X size={13} className="text-gray-400" strokeWidth={2} />
