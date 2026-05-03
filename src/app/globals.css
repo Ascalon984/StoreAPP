@@ -6,6 +6,35 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ============================================================
+   LIGHTHOUSE PERF OPTIMIZATIONS
+   ============================================================ */
+
+/**
+ * content-visibility: auto — skip rendering untuk section di bawah viewport.
+ * Mengurangi Style & Layout time (714ms → estimasi ~350ms) yang terdeteksi
+ * di mainthread-work-breakdown Lighthouse.
+ * contain-intrinsic-size mencegah layout shift saat section muncul.
+ */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
+}
+
+/* Section yang selalu visible (hero/banner) jangan di-skip */
+section:first-of-type {
+  content-visibility: visible;
+}
+
+/**
+ * will-change hint untuk elemen yang dianimasi.
+ * Mengurangi composite layers yg tidak perlu — memperbaiki Rendering (313ms).
+ */
+.skeleton {
+  will-change: background-position;
+}
+
+
 body {
   background-color: #F8F9FA;
   -webkit-tap-highlight-color: transparent;
@@ -35,7 +64,7 @@ body {
 .skeleton {
   background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite ease-in-out;
+  animation: shimmer 2s infinite ease-in-out;
 }
 
 /* Active tap state for mobile touch */

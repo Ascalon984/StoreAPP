@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useFilterStore } from '@/store/useFilterStore';
 import { Category } from '@/lib/types';
@@ -141,11 +142,13 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
                 >
                   <div className="relative flex items-center justify-center opacity-50 grayscale-[0.3]">
                     {/* Opacity dikurangi, ditambah sedikit grayscale agar terlihat 'coming soon' tapi tetap tajam */}
-                    <img
+                    {/* next/image otomatis serve WebP — mengurangi ukuran 251KB segera hadir.png */}
+                    <Image
                       src="/icons/segera hadir.png"
                       alt={cat.name}
-                      className="w-7 h-7 object-contain" // Disamakan dengan ukuran ikon aktif (w-7)
-                      loading="lazy"
+                      width={28}
+                      height={28}
+                      className="w-7 h-7 object-contain"
                     />
                   </div>
                   <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-300 leading-tight">
@@ -175,16 +178,17 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
                 `}
               >
                 <div className="relative flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  {/* next/image: WebP auto-conversion, lazy loading optimal, ukuran src 2x untuk retina */}
+                  <Image
                     src={iconPath}
                     alt={cat.name}
+                    width={28}
+                    height={28}
                     className={`
                       w-7 h-7 object-contain transition-transform duration-300 relative z-10
                       ${isActive ? 'scale-110' : 'group-hover:scale-105'}
                     `}
                     style={{ mixBlendMode: 'multiply' }}
-                    loading="lazy"
                   />
                   {isActive && (
                     <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />

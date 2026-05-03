@@ -23,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_ADMIN_API_URL} crossOrigin="anonymous" />
+      </head>
       <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 mx-auto min-h-screen relative`}>
         <Navbar />
         <main className="max-w-container mx-auto bg-white min-h-[calc(100vh-64px)] shadow-[0_0_40px_rgba(0,0,0,0.03)] antialiased">

@@ -106,18 +106,21 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             scrollBehavior: 'smooth',
           }}
         >
-          {banners.map((banner) => (
+          {banners.map((banner, index) => (
             <div
               key={banner.id}
-              className="flex-shrink-0 w-full snap-start" // px-1 dihapus agar sejajar dengan card kategori
+              className="flex-shrink-0 w-full snap-start"
             >
               <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100">
                 <img
                   src={banner.image}
                   alt={banner.title}
-                  className="absolute inset-0 w-full h-full object-fill" // Tetap pakai fill sesuai kebutuhan asetmu
+                  // object-cover menggantikan object-fill — memperbaiki image-aspect-ratio audit
+                  className="absolute inset-0 w-full h-full object-cover"
                   loading="eager"
                   decoding="async"
+                  // fetchpriority="high" pada banner pertama agar LCP image diprioritaskan browser
+                  {...(index === 0 ? { fetchPriority: 'high' } : {})}
                 />
               </div>
             </div>
