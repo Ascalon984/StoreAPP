@@ -177,8 +177,13 @@ export default function MiniCart() {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Garis Visual (Indikator tetap berada di tengah secara vertikal) */}
-          <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-14 bg-gray-300 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.02)]" />
+          {/* Garis Visual - Dioptimalkan agar ramping (w-1) dan tidak nampak seperti scrollbar */}
+          <div
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1 h-14 bg-gray-400/40 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(0,0,0,0.05)]"
+            style={{
+              boxShadow: 'inset 0.5px 0.5px 1px rgba(0,0,0,0.1)'
+            }}
+          />
         </div>
 
         {/* HEADER: Diberi kemampuan swipe juga */}
