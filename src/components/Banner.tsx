@@ -46,12 +46,15 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
   const scrollTo = useCallback((index: number) => {
     const el = scrollRef.current;
-    if (el) el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+    if (el) {
+      // Baca dimensi tanpa force reflow berlebih (atau jika dipanggil sesekali, tidak masalah)
+      el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+    }
   }, []);
 
   const startAutoPlay = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (banners.length === 0) return;
+    if (banners.length <= 1) return;
 
     timerRef.current = setInterval(() => {
       setCurrent((prev) => {
@@ -69,14 +72,24 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [banners.length, startAutoPlay]);
 
+  // Menyimpan timeout untuk debouncing scroll
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const index = Math.round(el.scrollLeft / el.offsetWidth);
-    if (index !== current) {
-      setCurrent(index);
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    
+    // Matikan autoplay sementara saat user sedang scroll
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    scrollTimeout.current = setTimeout(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const index = Math.round(el.scrollLeft / el.offsetWidth);
+      if (index !== current) {
+        setCurrent(index);
+      }
       startAutoPlay();
-    }
+    }, 150); // Eksekusi setelah berhenti scroll selama 150ms
   };
 
   if (isLoading) return <BannerSkeleton />;
@@ -120,6 +133,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
                   className="object-cover"
                   priority={index === 0}
+                  unoptimized={index === 0} // Baypass Next.js image optimization untuk banner LCP agar tidak ada Render Delay
                 />
               </div>
             </div>

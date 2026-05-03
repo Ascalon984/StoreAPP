@@ -80,16 +80,14 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
         {/* Image Area — 3:2 Seamless */}
         <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center p-3">
-          <div style={{ mixBlendMode: 'multiply' }} className="w-full h-full flex items-center justify-center">
-            <ProductImage
-              category={product.category}
-              name={product.name}
-              variant={index}
-              src={mainImage}
-              className="w-full h-full transition-transform duration-700 group-hover:scale-110"
-              style={{ objectFit: 'contain' } as React.CSSProperties}
-            />
-          </div>
+          <ProductImage
+            category={product.category}
+            name={product.name}
+            variant={index}
+            src={mainImage}
+            className="w-full h-full transition-transform duration-700 group-hover:scale-110"
+            style={{ objectFit: 'contain' } as React.CSSProperties}
+          />
 
           {/* Hot Badge — Pojok Kiri Atas */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
