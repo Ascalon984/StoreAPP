@@ -595,46 +595,57 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </div>
             </div>
 
-            {/* PERBAIKAN 2: Daftar Ulasan dengan inline-flex agar ikon menempel di akhir kalimat */}
+            {/* DAFTAR ULASAN PEMBELI */}
             <div className="space-y-2.5 px-1">
               {displayedReviews.map((review: Review, index: number) => (
                 <div key={review.id} className="py-2.5 border-b border-gray-100 last:border-0">
+                  {/* HEADER ULASAN: Profil & Waktu */}
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80`}>
+                      {/* Avatar Bulat */}
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80 flex-shrink-0`}>
                         {review.name.charAt(0).toUpperCase()}
                       </div>
+
                       <div>
-                        <p className="text-[13px] font-bold text-gray-800 tracking-tight">
-                          {maskName(review.name)}
-                        </p>
-                        <div className="flex items-center gap-0.5 mt-0.5">
+                        {/* Nama Pembeli + Ikon Verified Sejajar */}
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none">
+                            {maskName(review.name)}
+                          </p>
+                          {review.isVerified && (
+                            <CheckCircle
+                              size={11}
+                              strokeWidth={3.5}
+                              className="text-emerald-500 flex-shrink-0"
+                            />
+                          )}
+                        </div>
+
+                        {/* Rating Bintang di bawah Nama */}
+                        <div className="flex items-center gap-0.5 mt-1">
                           {[1, 2, 3, 4, 5].map(star => renderStar(star, review.rating))}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-                      {review.isVerified && (
-                        <div className="flex items-center justify-center w-4 h-4 bg-emerald-50 rounded-full border border-emerald-100/50 shadow-sm" title="Verified Buyer">
-                          <CheckCircle size={10} strokeWidth={3} className="text-emerald-600" />
-                        </div>
-                      )}
-                      <span className="text-[11px] text-gray-400 flex items-center gap-1">
-                        <Clock size={10} strokeWidth={1.5} />
+                    {/* Info Waktu di Pojok Kanan Atas */}
+                    <div className="flex items-center gap-1 text-gray-400 flex-shrink-0 mt-0.5">
+                      <Clock size={10} strokeWidth={1.5} />
+                      <span className="text-[11px] font-medium">
                         <TimeAgo date={review.createdAt} />
                       </span>
                     </div>
                   </div>
 
-                  {/* AREA KOMENTAR & INTERAKSI */}
-                  <div className="pl-[42px] flex items-end justify-between gap-4">
-                    {/* KIRI: Area Komentar - Kini lebih leluasa */}
+                  {/* BODY ULASAN: Komentar & Tombol Like/Dislike */}
+                  <div className="pl-[48px] flex items-end justify-between gap-4">
+                    {/* Teks Komentar */}
                     <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words min-w-0">
                       {review.comment}
                     </p>
 
-                    {/* KANAN: Area Interaksi (Like/Dislike) di pojok bawah */}
+                    {/* Tombol Interaksi (Like/Dislike) */}
                     <div className="flex items-center gap-3 flex-shrink-0 mb-0.5">
                       {/* Button Like */}
                       <button
@@ -644,7 +655,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       >
                         <ThumbsUp
                           size={13}
-                          /* Gunakan fill dengan opacity rendah agar tetap terlihat premium */
                           className={`${votedType[review.id] === 'like' ? 'fill-emerald-500/20' : 'fill-none'}`}
                           strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.8}
                         />
@@ -661,7 +671,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       >
                         <ThumbsDown
                           size={13}
-                          /* Warna rose dengan opacity rendah untuk dislike */
                           className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
                           strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
                         />
