@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, Fragment } from 'react';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import {
-  Star, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, Zap, Headphones, ThumbsUp, ThumbsDown
+  Star, Send, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, Zap, Headphones, ThumbsUp, ThumbsDown
 } from 'lucide-react';
 
 import { useCartStore } from '@/store/useCartStore';
@@ -709,7 +709,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 onClick={handleBuyNow}
                 className="flex-[2] py-3.5 px-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-[0_8px_16px_rgba(16,185,129,0.25)] flex items-center justify-center gap-2 text-sm"
               >
-                <MessageCircle size={18} strokeWidth={2.5} />
+                {/* Ikon Send memberikan kesan aksi transaksi yang cepat */}
+                <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
                 Pesan Sekarang
               </button>
             </div>
