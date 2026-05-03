@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { Banner as BannerType } from '@/lib/types';
 
 interface BannerProps {
@@ -112,15 +113,13 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               className="flex-shrink-0 w-full snap-start"
             >
               <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100">
-                <img
+                <Image
                   src={banner.image}
                   alt={banner.title}
-                  // object-cover menggantikan object-fill — memperbaiki image-aspect-ratio audit
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="eager"
-                  decoding="async"
-                  // fetchpriority="high" pada banner pertama agar LCP image diprioritaskan browser
-                  {...(index === 0 ? { fetchPriority: 'high' } : {})}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+                  className="object-cover"
+                  priority={index === 0}
                 />
               </div>
             </div>
