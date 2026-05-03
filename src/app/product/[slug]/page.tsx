@@ -167,12 +167,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating === 0) return 'text-gray-400';
-    if (rating >= 4.7) return 'text-emerald-600';
-    if (rating >= 4.0) return 'text-emerald-500';
-    if (rating >= 3.0) return 'text-amber-500';
-    if (rating >= 2.0) return 'text-orange-500';
-    return 'text-rose-500';
+    if (rating === 0) return 'text-gray-500';
+    if (rating >= 4.7) return 'text-emerald-700';
+    if (rating >= 4.0) return 'text-emerald-600';
+    if (rating >= 3.0) return 'text-amber-600';
+    if (rating >= 2.0) return 'text-orange-600';
+    return 'text-rose-600';
   };
 
   const handleAddToCart = () => {
@@ -387,6 +387,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <button
                 onClick={handleShare}
                 className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+                aria-label="Bagikan"
               >
                 <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
               </button>
@@ -398,6 +399,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <button
                 onClick={() => toggleFavorite(product.id)}
                 className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+                aria-label={isFavorite(product.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
               >
                 <Heart
                   size={17}
@@ -484,14 +486,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <Flame size={14} strokeWidth={1.5} />
                   <span className="font-semibold text-gray-800 text-sm">{Math.max(product.sold, product.sold || 0)}+</span>
                 </div>
-                <p className="text-[10px] text-gray-400">Terjual</p>
+                <p className="text-[10px] text-gray-500">Terjual</p>
               </div>
             </div>
 
             <div className="flex items-end justify-between mb-2.5">
               <div>
                 {product.originalPrice && (
-                  <p className="text-sm text-gray-400 line-through mb-1">
+                  <p className="text-sm text-gray-500 line-through mb-1">
                     {formatRupiah(product.originalPrice)}
                   </p>
                 )}
@@ -577,7 +579,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     const count = distribution.raw[star as keyof typeof distribution.raw];
                     return (
                       <div key={star} className="flex items-center gap-1.5 group cursor-default">
-                        <span className="w-3 text-[10px] font-semibold text-gray-500 text-center tabular-nums">{star}</span>
+                        <span className="w-3 text-[10px] font-semibold text-gray-600 text-center tabular-nums">{star}</span>
                         <Star size={8} className="text-gray-400 fill-gray-400 flex-shrink-0" strokeWidth={1.5} />
 
                         <div className="flex-1 h-2 bg-gray-200/50 rounded-full overflow-hidden relative">
@@ -587,7 +589,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                           />
                         </div>
 
-                        <span className="text-[9px] text-gray-400 tabular-nums min-w-[20px] text-right">{count}</span>
+                        <span className="text-[9px] text-gray-500 tabular-nums min-w-[20px] text-right">{count}</span>
                       </div>
                     );
                   })}
@@ -630,7 +632,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     </div>
 
                     {/* Info Waktu di Pojok Kanan Atas */}
-                    <div className="flex items-center gap-1 text-gray-400 flex-shrink-0 mt-0.5">
+                    <div className="flex items-center gap-1 text-gray-500 flex-shrink-0 mt-0.5">
                       <Clock size={10} strokeWidth={1.5} />
                       <span className="text-[11px] font-medium">
                         <TimeAgo date={review.createdAt} />
@@ -687,7 +689,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             {displayCount < allReviews.length && (
               <button
                 onClick={() => setDisplayCount(prev => prev + 5)}
-                className="w-full py-2 mt-2 text-primary font-medium text-sm border hover:bg-primary-light border-primary/20 rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2 mt-2 text-primary-dark font-bold text-sm border hover:bg-primary-light border-primary/30 rounded-xl transition-colors flex items-center justify-center gap-2"
               >
                 Lihat ulasan lainnya
                 <ChevronDown size={16} strokeWidth={1.5} />
@@ -701,7 +703,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* Tombol Keranjang: py-3.5 dan text-sm tetap sesuai request */}
               <button
                 onClick={handleAddToCart}
-                className="flex-1 py-3.5 px-4 rounded-xl border border-emerald-500/40 text-emerald-600 font-bold hover:bg-emerald-50 transition-all active:scale-[0.96] text-sm whitespace-nowrap"
+                className="flex-1 py-3.5 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-bold hover:bg-emerald-50 transition-all active:scale-[0.96] text-sm whitespace-nowrap"
               >
                 + Keranjang
               </button>
@@ -709,7 +711,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* Tombol Pesan Sekarang: py-3.5 dan text-sm tetap sesuai request */}
               <button
                 onClick={handleBuyNow}
-                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2 text-sm"
+                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
               >
                 <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
                 Pesan Sekarang
@@ -720,6 +722,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           {/* Scroll to Top Button */}
           <button
             onClick={scrollToTop}
+            aria-label="Kembali ke atas"
             className={`
           fixed bottom-24 right-6 z-50
           w-11 h-11 rounded-full
