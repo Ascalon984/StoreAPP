@@ -170,13 +170,16 @@ export default function MiniCart() {
           opacity: Math.max(0.7, 1 - dragX / 1000) // Sedikit pudar saat ditarik
         }}
       >
-        {/* Handle Visual Samping (Tetap ada sebagai petunjuk) */}
+        {/* Area Handle Swipe (Dibuat full height agar mudah ditarik dari sisi mana pun) */}
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-200 rounded-full ml-1.5 opacity-60 z-[80]"
+          className="absolute left-0 top-0 bottom-0 w-10 z-[80] cursor-grab active:cursor-grabbing touch-pan-y"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-        />
+        >
+          {/* Garis Visual (Indikator tetap berada di tengah secara vertikal) */}
+          <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-200 rounded-full opacity-60" />
+        </div>
 
         {/* HEADER: Diberi kemampuan swipe juga */}
         <div
