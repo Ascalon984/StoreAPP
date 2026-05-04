@@ -57,7 +57,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-[padding,box-shadow] duration-300 ${scrolled ? 'py-1.5 shadow-[0_1px_8px_rgba(0,0,0,0.06)]' : 'py-2'
+      className={`sticky top-0 z-50 transition-[padding,box-shadow,background-color] duration-300 ${scrolled
+        ? 'py-1.5 shadow-md bg-white' // Solid bg saat scroll untuk kontras teks maksimal
+        : 'py-2.5 bg-white/95 backdrop-blur-md'
         }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
@@ -73,34 +75,34 @@ export default function Navbar() {
                 alt="Logo"
                 fill
                 className="object-contain"
-                priority
+                priority // Tambahkan priority agar logo tidak flickering saat load
               />
             </div>
 
             <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
               }`}>
+              {/* Menggunakan emerald-700 & orange-700 untuk kontras yang lebih kuat */}
               <span className="bg-gradient-to-r from-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {/* FIXED: Menggunakan orange-700 untuk kontras aksesibilitas yang lebih baik */}
-              {storeNameLast && <span className="text-orange-700">{storeNameLast}</span>}
+              {storeNameLast && <span className="text-[#c2410c] ml-px">{storeNameLast}</span>}
             </h1>
           </div>
 
-          {/* Baris Bawah: Alamat | No Telp */}
-          <div className={`flex items-center gap-2 px-0.5 text-gray-700 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+          {/* Baris Bawah: Info Toko dengan Kontras yang Lebih Baik */}
+          <div className={`flex items-center gap-2 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1.5'
             } text-[10px]`}>
 
             <div className="flex items-center gap-1">
-              <MapPin size={11} className="text-red-600" fill="currentColor" strokeWidth={0} />
+              <MapPin size={11} className="text-red-700" fill="currentColor" strokeWidth={0} />
               <span className="truncate max-w-[120px]">Telang Indah, Kamal</span>
             </div>
 
-            {/* Divider Vertikal */}
-            <div className="w-px h-3 bg-gray-300 mx-0.5" />
+            {/* Divider Vertikal yang solid */}
+            <div className="w-[1.5px] h-3 bg-gray-300 rounded-full" aria-hidden="true" />
 
             <div className="flex items-center gap-1">
-              <Phone size={11} className="text-emerald-700" fill="currentColor" strokeWidth={0} />
+              <Phone size={11} className="text-emerald-800" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
@@ -109,12 +111,11 @@ export default function Navbar() {
         {/* Search Bar Desktop: Ubah text-gray-500 menjadi text-gray-600 untuk kontras */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 text-sm transition-all duration-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-all duration-200 border border-gray-200 active:scale-[0.98]"
         >
-          <Search size={17} strokeWidth={2} className="text-gray-500" />
-          <span className="flex-1 text-left">Cari produk...</span>
-          {/* KBD Shortcut: Pastikan warna teks cukup kontras */}
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-600 bg-white px-1.5 py-0.5 rounded-md border border-gray-300 shadow-sm font-medium">
+          <Search size={18} strokeWidth={2.5} className="text-gray-600" />
+          <span className="flex-1 text-left font-semibold">Cari produk...</span>
+          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-300 shadow-sm font-bold">
             <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
           </kbd>
         </button>
