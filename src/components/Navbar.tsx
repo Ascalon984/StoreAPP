@@ -90,25 +90,29 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Perbaikan: Hilangkan mt-1.5 dari transisi, gunakan padding di dalam konten grid */}
-          <div className={`grid transition-all duration-500 ease-in-out ${scrolled ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
+          {/* Container Grid dengan Polish Animasi */}
+          <div className={`grid transition-all duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${scrolled
+              ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
+              : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
             }`}>
             <div className="overflow-hidden">
-              <div className="flex items-center justify-between px-0.5 text-gray-800 font-bold text-[8.5px] leading-none w-full pt-1.5">
-                {/* Alamat */}
+              <div className="flex items-center justify-between px-0.5 text-gray-800 font-bold text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
+
+                {/* ALAMAT */}
                 <div className="flex items-center gap-0.5 flex-shrink-0">
-                  <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                  <MapPin size={9} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
                   <span className="whitespace-nowrap">Telang Indah, Kamal</span>
                 </div>
 
-                {/* Divider */}
+                {/* DIVIDER */}
                 <div className="w-[1px] h-2 bg-gray-300 mx-1 shrink-0" aria-hidden="true" />
 
-                {/* No Telp */}
+                {/* NO TELP */}
                 <div className="flex items-center gap-0.5 flex-shrink-0">
-                  <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                  <Phone size={9} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
                   <span className="whitespace-nowrap">081-9960-0135</span>
                 </div>
+
               </div>
             </div>
           </div>
