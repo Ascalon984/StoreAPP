@@ -87,7 +87,7 @@ export default function Navbar() {
             } text-[8.5px]`}>
             <div className="flex items-center gap-0.5">
               <MapPin size={10} className="text-red-500" strokeWidth={2.5} />
-              <span className="truncate max-w-[120px] sm:max-w-none">Perum. Telang Inda, Kamal, Bangkalan</span>
+              <span className="truncate max-w-[120px] sm:max-w-none">Perum. Telang Inda, Kamal</span>
             </div>
             <div className="w-px h-2 bg-gray-200" />
             <div className="flex items-center gap-0.5">
