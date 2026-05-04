@@ -62,9 +62,10 @@ export default function Navbar() {
         }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 active:scale-95 transition-transform duration-200 group">
-          <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
+        {/* Logo & Brand Info Container */}
+        <Link href="/" className="flex items-center gap-3 flex-shrink-0 active:scale-[0.98] transition-transform duration-200 group">
+          {/* Logo di sisi kiri (seperti tiang) */}
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
             <Image
               src="/icons/logo toko.png"
               alt="Logo"
@@ -72,17 +73,21 @@ export default function Navbar() {
               className="object-contain"
             />
           </div>
-          <div className="flex flex-col justify-center">
-            <h1 className="text-lg sm:text-xl font-extrabold select-none truncate leading-none">
+
+          {/* Container Teks di sisi kanan Logo (Stacked Vertically) */}
+          <div className="flex flex-col justify-center min-w-0">
+            {/* Baris Atas: Nama Toko */}
+            <h1 className="text-xl sm:text-2xl font-black select-none leading-none tracking-tight">
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-                {storeNameFirst}
+                {storeNameFirst || 'Palugada'}
               </span>
-              {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
+              <span className="text-orange-600">{storeNameLast || 'Store'}</span>
             </h1>
-            <div className="flex items-center gap-1.5 mt-1 text-[9px] sm:text-[10px] text-gray-500 font-bold tracking-tight">
+
+            {/* Baris Bawah: Info Sejajar (Map & Phone) */}
+            <div className="flex items-center gap-2 mt-1.5 text-[9px] sm:text-[10px] text-gray-500 font-bold tracking-tight">
               <div className="flex items-center gap-0.5 min-w-0">
-                <MapPin size={10} className="text-red-500 flex-shrink-0" strokeWidth={2.5} />
-                {/* Lebar ditambah agar tidak mudah terpotong di mobile */}
+                <MapPin size={11} className="text-red-500 flex-shrink-0" strokeWidth={3} />
                 <span className="truncate max-w-[100px] sm:max-w-none">
                   Perum. Telang Inda, Kamal
                 </span>
@@ -91,8 +96,8 @@ export default function Navbar() {
               <div className="w-px h-2.5 bg-gray-200 flex-shrink-0" />
 
               <div className="flex items-center gap-0.5 flex-shrink-0">
-                <Phone size={10} className="text-emerald-600" strokeWidth={2.5} />
-                <span className="whitespace-nowrap">0819-9600-0135</span>
+                <Phone size={11} className="text-emerald-600 flex-shrink-0" strokeWidth={3} />
+                <span className="whitespace-nowrap">081-9960-0135</span>
               </div>
             </div>
           </div>
