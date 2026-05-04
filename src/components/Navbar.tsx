@@ -73,33 +73,35 @@ export default function Navbar() {
                 alt="Logo"
                 fill
                 className="object-contain"
-                priority // Tambahkan priority agar logo tidak flickering saat load
+                priority
               />
             </div>
 
             <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
               }`}>
-              <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
+              {/* FIXED: Menggunakan orange-700 untuk kontras aksesibilitas yang lebih baik */}
+              {storeNameLast && <span className="text-orange-700">{storeNameLast}</span>}
             </h1>
           </div>
 
-          {/* Baris Bawah: Info Toko dengan Kontras yang Lebih Baik */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-600 font-semibold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
-            } text-[10px]`}> {/* Ukuran font dinaikkan sedikit untuk keterbacaan */}
+          {/* Baris Bawah: Alamat | No Telp */}
+          <div className={`flex items-center gap-2 px-0.5 text-gray-700 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+            } text-[10px]`}>
 
             <div className="flex items-center gap-1">
               <MapPin size={11} className="text-red-600" fill="currentColor" strokeWidth={0} />
               <span className="truncate max-w-[120px]">Telang Indah, Kamal</span>
             </div>
 
-            <div className="w-px h-2.5 bg-gray-300" /> {/* Garis pemisah lebih terlihat */}
+            {/* Divider Vertikal */}
+            <div className="w-px h-3 bg-gray-300 mx-0.5" />
 
             <div className="flex items-center gap-1">
               <Phone size={11} className="text-emerald-700" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap font-medium">081-9960-0135</span>
+              <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
         </Link>
