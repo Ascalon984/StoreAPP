@@ -86,30 +86,34 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Polish Transisi Alamat: Menggunakan max-height agar smooth */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-90 mt-1'
-            } text-[8.5px]`}>
-            <div className="flex items-center gap-0.5">
-              <MapPin size={10} className="text-red-500/80" fill="currentColor" strokeWidth={0} />
-              <span className="truncate max-w-[100px]">Telang Indah, Kamal</span>
+          {/* Baris Bawah: Info Toko dengan Kontras yang Lebih Baik */}
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-600 font-semibold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+            } text-[10px]`}> {/* Ukuran font dinaikkan sedikit untuk keterbacaan */}
+
+            <div className="flex items-center gap-1">
+              <MapPin size={11} className="text-red-600" fill="currentColor" strokeWidth={0} />
+              <span className="truncate max-w-[120px]">Telang Indah, Kamal</span>
             </div>
-            <div className="w-px h-2 bg-gray-200" />
-            <div className="flex items-center gap-0.5">
-              <Phone size={10} className="text-emerald-600/80" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap">081-9960-0135</span>
+
+            <div className="w-px h-2.5 bg-gray-300" /> {/* Garis pemisah lebih terlihat */}
+
+            <div className="flex items-center gap-1">
+              <Phone size={11} className="text-emerald-700" fill="currentColor" strokeWidth={0} />
+              <span className="whitespace-nowrap font-medium">081-9960-0135</span>
             </div>
           </div>
         </Link>
 
-        {/* Search Bar — Desktop */}
+        {/* Search Bar Desktop: Ubah text-gray-500 menjadi text-gray-600 untuk kontras */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-50/80 hover:bg-gray-100/80 rounded-full text-gray-500 text-sm transition-all duration-200 border border-gray-100 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-300 active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 text-sm transition-all duration-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 active:scale-[0.98]"
         >
-          <Search size={17} strokeWidth={1.5} className="text-gray-500" />
+          <Search size={17} strokeWidth={2} className="text-gray-500" />
           <span className="flex-1 text-left">Cari produk...</span>
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-500 bg-white px-1.5 py-0.5 rounded-md border border-gray-200/80 shadow-sm font-medium tracking-wide">
-            <span className="text-gray-400 mr-0.5">⌘</span>K
+          {/* KBD Shortcut: Pastikan warna teks cukup kontras */}
+          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-600 bg-white px-1.5 py-0.5 rounded-md border border-gray-300 shadow-sm font-medium">
+            <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
           </kbd>
         </button>
 
