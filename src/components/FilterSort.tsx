@@ -31,7 +31,7 @@ export default function FilterSort() {
 
   return (
     // 1. Ganti bg-white/95 ke background aplikasi agar menyatu secara natural
-    <section className="sticky top-[52px] z-30 bg-[#F8F9FA]/90 backdrop-blur-md border-y border-gray-200/50">
+    <section className="sticky top-[52px] z-30 bg-slate-100/95 backdrop-blur-md border-y border-gray-300/40 shadow-[0_4px_10px_-5px_rgba(0,0,0,0.05)]">
       <div className="max-w-container mx-auto px-4 py-2.5">
         <div className="grid grid-cols-4 gap-2">
           {allFilters.map((option) => {
@@ -43,24 +43,23 @@ export default function FilterSort() {
                 key={option.id}
                 onClick={() => setSort(option.id)}
                 className={`
-                  flex items-center justify-center gap-1.5 px-1 py-1.5 
-                  rounded-xl text-[10px] font-bold tracking-tight
-                  transition-all duration-300 ease-out
-                  active:scale-95
-                  ${isActive
-                    ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
-                    : 'bg-white border border-gray-200/80 text-gray-500 shadow-sm'
+              flex items-center justify-center gap-1.5 px-1 py-1.5 
+              rounded-2xl text-[10px] font-extrabold tracking-tight // Gunakan rounded-2xl & font-extrabold
+              transition-all duration-300 ease-out
+              active:scale-95
+              ${isActive
+                    ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]' // Emerald-800 lebih kontras
+                    : 'bg-white border border-gray-200/80 text-gray-700 shadow-sm' // Text gray-700 agar lebih terbaca
                   }
-                `}
+            `}
               >
                 <Icon
                   size={12}
-                  strokeWidth={2.5} // Sedikit diturunkan dari 3 agar tetap elegan tanpa animasi
+                  strokeWidth={3}
                   className={`
-                    transition-colors duration-300
-                    /* Kuning cerah saat aktif, Abu-abu lembut saat tidak aktif */
-                    ${isActive ? 'text-yellow-400' : 'text-gray-400'}
-                  `}
+                transition-colors duration-300
+                ${isActive ? 'text-yellow-300' : 'text-gray-400'}
+              `}
                 />
                 <span className="truncate">{option.label}</span>
               </button>
