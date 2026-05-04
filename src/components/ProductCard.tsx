@@ -69,7 +69,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 overflow-hidden active:scale-[0.96] border border-gray-100 flex flex-col h-full relative">
+      <article className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 overflow-hidden active:scale-[0.96] border border-[#E0E0E0] flex flex-col h-full relative">
 
         {/* 1. Discount Badge — Sesuaikan Radius dengan Card */}
         {discount > 0 && (
