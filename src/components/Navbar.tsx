@@ -66,9 +66,9 @@ export default function Navbar() {
           href="/"
           className="flex flex-col gap-1.5 flex-shrink-1 min-w-0 active:scale-[0.98] transition-transform duration-200 group"
         >
-          {/* Baris Atas: Logo & Nama Toko */}
+          {/* Baris Atas: Logo & Nama Toko (SIZE BOOST) */}
           <div className="flex items-center gap-2.5">
-            <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
               <Image
                 src="/icons/logo toko.png"
                 alt="Logo"
@@ -76,7 +76,8 @@ export default function Navbar() {
                 className="object-contain"
               />
             </div>
-            <h1 className="text-lg sm:text-2xl font-black select-none leading-none tracking-tight truncate">
+            {/* Menaikkan font ke text-xl (mobile) dan text-3xl (desktop) */}
+            <h1 className="text-xl sm:text-3xl font-black select-none leading-none tracking-tighter sm:tracking-tight truncate">
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 {storeNameFirst || 'Palugada'}
               </span>
@@ -84,19 +85,16 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Baris Bawah: Info Detail (Tanpa Ikon) */}
-          <div className="flex items-center gap-2 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
-            {/* Alamat - Lebih lega tanpa ikon */}
+          {/* Baris Bawah: Info Detail (Disesuaikan Jaraknya) */}
+          <div className="flex items-center gap-2 px-0.5 mt-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight opacity-90">
             <div className="min-w-0">
               <span className="truncate block max-w-[150px] sm:max-w-none">
-                Perum. Telang Inda, Kamal
+                Telang Inda, Kamal
               </span>
             </div>
 
-            {/* Pemisah Vertikal */}
             <div className="w-px h-2.5 bg-gray-200 flex-shrink-0 mx-0.5" />
 
-            {/* Phone - Lebih menonjol */}
             <div className="flex-shrink-0">
               <span className="whitespace-nowrap">+62 819-9600-0135</span>
             </div>
