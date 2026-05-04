@@ -84,21 +84,20 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Baris Bawah: Info Detail */}
-          <div className="flex items-center gap-2.5 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
-            {/* Alamat - Menggunakan items-center agar ikon & teks sejajar sempurna */}
-            <div className="flex items-center gap-1 min-w-0">
-              <MapPin size={10} className="text-red-500 flex-shrink-0" strokeWidth={3} />
-              <span className="truncate max-w-[120px] sm:max-w-none">
+          {/* Baris Bawah: Info Detail (Tanpa Ikon) */}
+          <div className="flex items-center gap-2 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
+            {/* Alamat - Lebih lega tanpa ikon */}
+            <div className="min-w-0">
+              <span className="truncate block max-w-[150px] sm:max-w-none">
                 Perum. Telang Inda, Kamal
               </span>
             </div>
 
-            <div className="w-px h-2.5 bg-gray-200 flex-shrink-0" />
+            {/* Pemisah Vertikal */}
+            <div className="w-px h-2.5 bg-gray-200 flex-shrink-0 mx-0.5" />
 
-            {/* Phone - Konsisten dengan items-center */}
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <Phone size={10} className="text-emerald-600 flex-shrink-0" strokeWidth={3} />
+            {/* Phone - Lebih menonjol */}
+            <div className="flex-shrink-0">
               <span className="whitespace-nowrap">+62 819-9600-0135</span>
             </div>
           </div>
