@@ -90,21 +90,23 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Baris Bawah: Jarak sangat rapat & teks dioptimalkan agar tidak terpotong */}
-          <div className={`flex items-center gap-1 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
-            } text-[9px]`}> {/* Ukuran turun ke 9px agar muat di HP kecil */}
+          {/* 2. Tambah leading-tight agar line-height tetap rapi */}
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100 mt-1'
+            } text-[9px] leading-tight w-full`}>
 
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <MapPin size={10} className="text-red-700" fill="currentColor" strokeWidth={0} />
-              <span>Telang Indah, Kamal</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
+            {/* min-w-0 dan truncate adalah kunci agar alamat 'mengalah' jika layar sempit */}
+            <div className="flex items-center gap-1 min-w-0">
+              <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+              <span className="truncate">Telang Indah, Kamal</span>
             </div>
 
-            {/* Divider Vertikal yang lebih tipis tapi tegas */}
+            {/* Divider tetap tegas */}
             <div className="w-[1px] h-2.5 bg-gray-300 shrink-0" aria-hidden="true" />
 
+            {/* flex-shrink-0 memastikan No Telp TIDAK AKAN PERNAH terpotong atau jadi titik-titik */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              <Phone size={10} className="text-emerald-800" fill="currentColor" strokeWidth={0} />
-              <span>081-9960-0135</span>
+              <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+              <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
         </Link>
