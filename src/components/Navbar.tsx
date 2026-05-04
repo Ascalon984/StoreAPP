@@ -63,23 +63,21 @@ export default function Navbar() {
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className={`flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 ${scrolled ? 'gap-0' : 'gap-0.5'
-            }`}
+          className="flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
         >
-          {/* Baris Atas: Logo & Nama Brand */}
           <div className="flex items-center gap-2">
-            {/* Logo dikembalikan di sini */}
-            <div className={`relative flex-shrink-0 transition-all duration-300 ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
+            <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
               }`}>
               <Image
                 src="/icons/logo toko.png"
                 alt="Logo"
                 fill
                 className="object-contain"
+                priority // Tambahkan priority agar logo tidak flickering saat load
               />
             </div>
 
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
               }`}>
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 {storeNameFirst}
@@ -88,16 +86,16 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* Baris Bawah: Ikon Fill */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-3.5 opacity-90 mt-0'
+          {/* Polish Transisi Alamat: Menggunakan max-height agar smooth */}
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-90 mt-1'
             } text-[8.5px]`}>
             <div className="flex items-center gap-0.5">
-              <MapPin size={10} className="text-red-500" fill="currentColor" strokeWidth={0} />
-              <span className="truncate max-w-[120px]">Telang Inda, Kamal</span>
+              <MapPin size={10} className="text-red-500/80" fill="currentColor" strokeWidth={0} />
+              <span className="truncate max-w-[100px]">Telang Indah, Kamal</span>
             </div>
             <div className="w-px h-2 bg-gray-200" />
             <div className="flex items-center gap-0.5">
-              <Phone size={10} className="text-emerald-600" fill="currentColor" strokeWidth={0} />
+              <Phone size={10} className="text-emerald-600/80" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
