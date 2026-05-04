@@ -64,34 +64,22 @@ export default function Navbar() {
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className={`flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-500 ease-in-out ${scrolled ? 'justify-center gap-0' : 'justify-start gap-1'
+          className={`flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 ${scrolled ? 'gap-0' : 'gap-0.5'
             }`}
         >
-          {/* BARIS ATAS: Logo & Brand Name */}
-          <div className="flex items-center gap-2">
-            <div className={`relative flex-shrink-0 transition-all duration-500 ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
-              }`}>
-              <Image
-                src="/icons/logo toko.png"
-                alt="Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-lg' : 'text-xl'
-              }`}>
-              <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-                {storeNameFirst}
-              </span>
-              {/* Tanpa Spasi */}
-              {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
-            </h1>
-          </div>
+          {/* Baris Atas: Brand Tanpa Spasi */}
+          <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl' // <--- Ukuran dinaikkan di sini
+            }`}>
+            <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+              {storeNameFirst}
+            </span>
+            {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
+          </h1>
 
-          {/* BARIS BAWAH: Info Detail (Ikon Fill) */}
-          <div className={`flex items-center gap-2 px-0.5 text-gray-500 font-bold transition-all duration-500 overflow-hidden ${scrolled ? 'max-h-0 opacity-0' : 'max-h-5 opacity-90 mt-0.5'
-            } text-[8.5px]`}>
+          {/* Baris Bawah: Ikon Fill */}
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0' : 'h-3.5 opacity-90 mt-0'} text-[8.5px]`}>
             <div className="flex items-center gap-0.5">
+              {/* Menggunakan fill agar lebih solid di ukuran kecil */}
               <MapPin size={10} className="text-red-500" fill="currentColor" strokeWidth={0} />
               <span className="truncate max-w-[120px]">Telang Inda, Kamal</span>
             </div>
