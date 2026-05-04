@@ -69,11 +69,11 @@ export default function Navbar() {
         >
           {/* Baris Atas */}
           <div className="flex items-center gap-2">
-            <div className={`relative flex-shrink-0 transition-all duration-300 ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
+            <div className={`relative flex-shrink-0 transition-all duration-300 ${scrolled ? 'w-8 h-8' : 'w-10 h-10'
               }`}>
               <Image src="/icons/logo toko.png" alt="Logo" fill className="object-contain" />
             </div>
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-lg'
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'
               }`}>
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 {storeNameFirst}
@@ -83,15 +83,15 @@ export default function Navbar() {
           </div>
 
           {/* Baris Bawah (Sembunyikan atau Perkecil saat Scroll) */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold tracking-tight transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-3.5 opacity-90 mt-0'
-            } text-[8.5px]`}>
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold tracking-tight transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-4 opacity-90 mt-0.5'
+            } text-[10px]`}>
             <div className="flex items-center gap-0.5">
-              <MapPin size={10} className="text-red-500" strokeWidth={2.5} />
+              <MapPin size={11} className="text-red-500" strokeWidth={2.5} />
               <span className="truncate max-w-[120px] sm:max-w-none">Perum. Telang Inda, Kamal, Bangkalan</span>
             </div>
-            <div className="w-px h-2 bg-gray-200" />
+            <div className="w-px h-2.5 bg-gray-200" />
             <div className="flex items-center gap-0.5">
-              <Phone size={10} className="text-emerald-600" strokeWidth={2.5} />
+              <Phone size={11} className="text-emerald-600" strokeWidth={2.5} />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
