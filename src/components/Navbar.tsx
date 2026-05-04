@@ -57,13 +57,15 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'h-[56px] shadow-sm' : 'h-[82px] shadow-none'
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'shadow-sm' : 'shadow-none'
         }`}
     >
-      <div className="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4">
+      {/* Hapus h-full, ganti dengan padding dinamis py-2 / py-3.5 */}
+      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ${scrolled ? 'py-2' : 'py-3.5'
+        }`}>
         <Link
           href="/"
-          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 h-full"
+          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
         >
           <div className="flex items-center gap-2">
             <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
@@ -88,23 +90,26 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* 2. Tambah leading-tight agar line-height tetap rapi */}
-          <div className={`flex items-center justify-between px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-4 opacity-100 mt-1'
-            } text-[9px] leading-tight w-full`}>
+          {/* Container Grid untuk transisi tinggi tanpa efek melompat */}
+          <div className={`grid transition-all duration-500 ease-in-out ${scrolled ? 'grid-rows-[0fr] opacity-0 mt-0' : 'grid-rows-[1fr] opacity-100 mt-1.5'
+            }`}>
+            <div className="overflow-hidden">
+              <div className="flex items-center justify-between px-0.5 text-gray-800 font-bold text-[8.5px] leading-none w-full">
+                {/* Alamat */}
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                  <span className="whitespace-nowrap">Telang Indah, Kamal</span>
+                </div>
 
-            {/* Alamat: Ambil ruang secukupnya, jangan dipaksa mengecil */}
-            <div className="flex items-center gap-0.5 flex-shrink-0">
-              <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap">Telang Indah, Kamal</span>
-            </div>
+                {/* Divider */}
+                <div className="w-[1px] h-2 bg-gray-300 mx-1 shrink-0" aria-hidden="true" />
 
-            {/* Divider: Beri margin agar tidak menempel */}
-            <div className="w-[1px] h-2 bg-gray-300 mx-1 shrink-0" aria-hidden="true" />
-
-            {/* No Telp: Tetap kokoh di kanan */}
-            <div className="flex items-center gap-0.5 flex-shrink-0">
-              <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap">081-9960-0135</span>
+                {/* No Telp */}
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                  <span className="whitespace-nowrap">081-9960-0135</span>
+                </div>
+              </div>
             </div>
           </div>
         </Link>
