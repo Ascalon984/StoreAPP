@@ -98,14 +98,13 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
   return (
     <section className="px-4 pt-4 pb-2">
-      <div className="mb-2 px-0.5">
-        <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
+      <div className="mb-3 px-0.5">
+        <div className="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-100/50 mb-1.5">
+          <h2 className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-[0.05em]">
             Spesial Buat Kamu
           </h2>
         </div>
-        <p className="text-[11px] text-gray-600 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-gray-500 font-medium leading-tight ml-0.5">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>
@@ -127,7 +126,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={banner.id}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100 border border-slate-200/60">
                 <Image
                   src={banner.image}
                   alt={banner.title}

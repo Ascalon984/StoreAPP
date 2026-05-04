@@ -109,10 +109,12 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
   return (
     <>
       <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
-        <div className="mb-3 flex flex-col px-0.5">
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
-            Produk {categoryName !== 'Semua' ? categoryName : ''}
-          </h2>
+        <div className="mb-4 flex flex-col px-0.5">
+          <div className="inline-flex items-center self-start px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-100/50 mb-1.5">
+            <h2 className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-[0.05em]">
+              Produk {categoryName !== 'Semua' ? categoryName : ''}
+            </h2>
+          </div>
           <p className="text-[10px] text-gray-600 font-medium mt-0.5">
             {isLoadingProducts
               ? 'Memuat produk...'
