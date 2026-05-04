@@ -81,31 +81,30 @@ export default function Navbar() {
 
             <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
               }`}>
-              <span className="bg-gradient-to-r from-emerald-800 to-emerald-700 bg-clip-text text-transparent">
+              {/* Menggunakan emerald-800 ke 700 agar lebih deep/kalem */}
+              <span className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {/* Menggunakan Orange-800 pekat untuk aksesibilitas */}
+              {/* Warna orange-800 yang lebih 'earthy' agar tidak neon */}
               {storeNameLast && <span className="text-[#9a3412] ml-px">{storeNameLast}</span>}
             </h1>
           </div>
 
-          {/* Baris Bawah: Jarak dirapatkan (gap-3) & Divider Vertikal Terlihat */}
-          <div className={`flex items-center gap-3 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
-            } text-[10px]`}>
+          {/* Baris Bawah: Jarak sangat rapat & teks dioptimalkan agar tidak terpotong */}
+          <div className={`flex items-center gap-2 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+            } text-[9px]`}> {/* Ukuran turun ke 9px agar muat di HP kecil */}
 
-            {/* Alamat */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              <MapPin size={11} className="text-red-700" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap">Telang Indah, Kamal</span>
+              <MapPin size={10} className="text-red-700" fill="currentColor" strokeWidth={0} />
+              <span>Telang Indah</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
             </div>
 
-            {/* Divider Vertikal - Diberi warna lebih gelap agar kontras */}
-            <div className="w-[1.5px] h-3 bg-gray-400 shrink-0" aria-hidden="true" />
+            {/* Divider Vertikal yang lebih tipis tapi tegas */}
+            <div className="w-[1px] h-2.5 bg-gray-300 shrink-0" aria-hidden="true" />
 
-            {/* Nomor Telepon */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              <Phone size={11} className="text-emerald-800" fill="currentColor" strokeWidth={0} />
-              <span className="whitespace-nowrap">081-9960-0135</span>
+              <Phone size={10} className="text-emerald-800" fill="currentColor" strokeWidth={0} />
+              <span>081-9960-0135</span>
             </div>
           </div>
         </Link>
@@ -170,8 +169,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Ganti div h-px tadi dengan ini */}
-      <div className={`absolute bottom-0 left-0 right-0 h-px transition-colors duration-300 ${scrolled ? 'bg-gray-100' : 'bg-gray-50'
+      {/* Ganti bagian div bottom line paling bawah dengan shadow halus */}
+      <div className={`absolute bottom-0 left-0 right-0 h-px transition-all duration-300 ${scrolled ? 'shadow-[0_1px_3px_rgba(0,0,0,0.05)]' : 'bg-gray-100/50'
         }`} />
     </header>
   );
