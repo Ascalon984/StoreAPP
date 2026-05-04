@@ -62,12 +62,11 @@ export default function Navbar() {
         }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
-        {/* Logo & Brand Info Container */}
         <Link
           href="/"
           className="flex flex-col gap-1.5 flex-shrink-1 min-w-0 active:scale-[0.98] transition-transform duration-200 group"
         >
-          {/* BARIS ATAS: Logo | PalugadaStore (Size Diperbesar) */}
+          {/* Baris Atas: Logo & Nama Toko */}
           <div className="flex items-center gap-2.5">
             <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
               <Image
@@ -77,7 +76,6 @@ export default function Navbar() {
                 className="object-contain"
               />
             </div>
-            {/* Ukuran font dinaikkan ke text-lg untuk mobile agar lebih bold */}
             <h1 className="text-lg sm:text-2xl font-black select-none leading-none tracking-tight truncate">
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 {storeNameFirst || 'Palugada'}
@@ -86,11 +84,11 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* BARIS BAWAH: Alamat Lengkap | No Telp Lengkap */}
-          <div className="flex items-center gap-2 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
+          {/* Baris Bawah: Info Detail */}
+          <div className="flex items-center gap-2.5 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
+            {/* Alamat - Menggunakan items-center agar ikon & teks sejajar sempurna */}
             <div className="flex items-center gap-1 min-w-0">
               <MapPin size={10} className="text-red-500 flex-shrink-0" strokeWidth={3} />
-              {/* max-w dilonggarkan agar alamat "Kamal" bisa masuk */}
               <span className="truncate max-w-[120px] sm:max-w-none">
                 Perum. Telang Inda, Kamal
               </span>
@@ -98,9 +96,9 @@ export default function Navbar() {
 
             <div className="w-px h-2.5 bg-gray-200 flex-shrink-0" />
 
+            {/* Phone - Konsisten dengan items-center */}
             <div className="flex items-center gap-1 flex-shrink-0">
               <Phone size={10} className="text-emerald-600 flex-shrink-0" strokeWidth={3} />
-              {/* Menampilkan nomor lebih lengkap */}
               <span className="whitespace-nowrap">+62 819-9600-0135</span>
             </div>
           </div>
