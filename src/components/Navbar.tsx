@@ -61,7 +61,7 @@ export default function Navbar() {
         }`}
     >
       {/* Hapus h-full, ganti dengan padding dinamis py-2 / py-3.5 */}
-      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ${scrolled ? 'py-2' : 'py-3.5'
+      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ${scrolled ? 'py-1.5' : 'py-2.5'
         }`}>
         <Link
           href="/"
@@ -79,14 +79,12 @@ export default function Navbar() {
               />
             </div>
 
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-lg' : 'text-2xl' // Naikkan dari base ke lg, dan xl ke 2xl
               }`}>
-              {/* Menggunakan emerald-800 ke 700 agar lebih deep/kalem */}
               <span className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {/* Warna orange-800 yang lebih 'earthy' agar tidak neon */}
-              {storeNameLast && <span className="text-[#9a3412] ml-px">{storeNameLast}</span>}
+              {storeNameLast && <span className="text-[#9a3412] ml-1">{storeNameLast}</span>}
             </h1>
           </div>
 
