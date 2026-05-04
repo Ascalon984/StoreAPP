@@ -48,8 +48,8 @@ export default function FilterSort() {
                   transition-all duration-300 ease-out
                   active:scale-95
                   ${isActive
-                    ? 'bg-emerald-600 text-white shadow-[0_4px_12px_rgba(5,150,105,0.25)]' // Hijau lebih soft, shadow lebih dalam
-                    : 'bg-white border border-gray-200/80 text-gray-500 shadow-sm' // Border lebih terlihat
+                    ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
+                    : 'bg-white border border-gray-200/80 text-gray-500 shadow-sm'
                   }
                 `}
               >
