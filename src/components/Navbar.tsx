@@ -57,13 +57,15 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'h-[56px] shadow-sm' : 'h-[82px] shadow-none'
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'shadow-sm' : 'shadow-none'
         }`}
     >
-      <div className="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4">
+      {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
+      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 overflow-hidden ${scrolled ? 'py-2 min-h-[56px]' : 'py-3 min-h-[80px]'
+        }`}>
         <Link
           href="/"
-          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 h-full"
+          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
         >
           <div className="flex items-center gap-2">
             <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
