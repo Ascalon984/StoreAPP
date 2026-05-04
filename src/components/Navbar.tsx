@@ -59,7 +59,7 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-[padding,box-shadow,background-color] duration-300 ${scrolled
         ? 'py-1.5 shadow-md bg-white' // Solid bg saat scroll untuk kontras teks maksimal
-        : 'py-2.5 bg-white/95 backdrop-blur-md'
+        : 'py-2.5 bg-white/95 backdrop-blur-md backdrop-saturate-150'
         }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
@@ -81,27 +81,29 @@ export default function Navbar() {
 
             <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-base' : 'text-xl'
               }`}>
-              {/* Menggunakan emerald-700 & orange-700 untuk kontras yang lebih kuat */}
-              <span className="bg-gradient-to-r from-emerald-700 to-emerald-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-800 to-emerald-700 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {storeNameLast && <span className="text-[#c2410c] ml-px">{storeNameLast}</span>}
+              {/* Menggunakan Orange-800 pekat untuk aksesibilitas */}
+              {storeNameLast && <span className="text-[#9a3412] ml-px">{storeNameLast}</span>}
             </h1>
           </div>
 
-          {/* Baris Bawah: Info Toko dengan Kontras yang Lebih Baik */}
-          <div className={`flex items-center gap-2 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1.5'
+          {/* Baris Bawah: Jarak dirapatkan (gap-3) & Divider Vertikal Terlihat */}
+          <div className={`flex items-center gap-3 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
             } text-[10px]`}>
 
-            <div className="flex items-center gap-1">
+            {/* Alamat */}
+            <div className="flex items-center gap-1 flex-shrink-0">
               <MapPin size={11} className="text-red-700" fill="currentColor" strokeWidth={0} />
-              <span className="truncate max-w-[120px]">Telang Indah, Kamal</span>
+              <span className="whitespace-nowrap">Telang Indah, Kamal</span>
             </div>
 
-            {/* Divider Vertikal yang solid */}
-            <div className="w-[1.5px] h-3 bg-gray-300 rounded-full" aria-hidden="true" />
+            {/* Divider Vertikal - Diberi warna lebih gelap agar kontras */}
+            <div className="w-[1.5px] h-3 bg-gray-400 shrink-0" aria-hidden="true" />
 
-            <div className="flex items-center gap-1">
+            {/* Nomor Telepon */}
+            <div className="flex items-center gap-1 flex-shrink-0">
               <Phone size={11} className="text-emerald-800" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
@@ -168,8 +170,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Gradient bottom line — subtle premium touch */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+      {/* Ganti div h-px tadi dengan ini */}
+      <div className={`absolute bottom-0 left-0 right-0 h-px transition-colors duration-300 ${scrolled ? 'bg-gray-100' : 'bg-gray-50'
+        }`} />
     </header>
   );
 }
