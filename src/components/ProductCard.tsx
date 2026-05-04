@@ -111,7 +111,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-[10px] text-gray-400 line-through font-medium">
+              <span className="text-[10px] text-gray-600 line-through font-medium">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
@@ -122,9 +122,9 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-extrabold text-gray-700">{displayRating}</span>
-              <span className="text-[10px] text-gray-500">({displayReviewCount})</span>
+              <span className="text-[10px] text-gray-600">({displayReviewCount})</span>
             </div>
-            <div className="text-[10px] text-gray-500 font-bold">
+            <div className="text-[10px] text-gray-600 font-bold">
               {product.sold}+ Terjual
             </div>
           </div>
