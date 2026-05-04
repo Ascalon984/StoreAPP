@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { Search, ShoppingCart, MessageCircle, MapPin, Phone } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
@@ -67,31 +66,46 @@ export default function Navbar() {
           className={`flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 ${scrolled ? 'gap-0' : 'gap-0.5'
             }`}
         >
-          {/* Baris Atas */}
-          <div className="flex items-center gap-2">
-            <div className={`relative flex-shrink-0 transition-all duration-300 ${scrolled ? 'w-8 h-8' : 'w-10 h-10'
-              }`}>
-              <Image src="/icons/logo toko.png" alt="Logo" fill className="object-contain" />
-            </div>
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'
-              }`}>
-              <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-                {storeNameFirst}
-              </span>
-              {storeNameLast && <span className="text-orange-600"> {storeNameLast}</span>}
-            </h1>
-          </div>
+          {/* Baris Atas: Brand Tanpa Spasi */}
+          <h1
+            className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl' // <--- Ukuran dinaikkan di sini
+              }`}
+          >
+            <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+              {storeNameFirst}
+            </span>
+            {storeNameLast && (
+              <span className="text-orange-600">{storeNameLast}</span>
+            )}
+          </h1>
 
-          {/* Baris Bawah (Sembunyikan atau Perkecil saat Scroll) */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold tracking-tight transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-4 opacity-90 mt-0.5'
-            } text-[10px]`}>
+          {/* Baris Bawah: Ikon Fill */}
+          <div
+            className={`flex items-center gap-1.5 px-0.5 text-gray-500 font-bold transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0' : 'h-3.5 opacity-90 mt-0'
+              } text-[8.5px]`}
+          >
             <div className="flex items-center gap-0.5">
-              <MapPin size={11} className="text-red-500" strokeWidth={2.5} />
-              <span className="truncate max-w-[120px] sm:max-w-none">Perum. Telang Inda, Kamal, Bangkalan</span>
+              {/* Menggunakan fill agar lebih solid di ukuran kecil */}
+              <MapPin
+                size={10}
+                className="text-red-500"
+                fill="currentColor"
+                strokeWidth={0}
+              />
+              <span className="truncate max-w-[120px]">
+                Telang Inda, Kamal
+              </span>
             </div>
-            <div className="w-px h-2.5 bg-gray-200" />
+
+            <div className="w-px h-2 bg-gray-200" />
+
             <div className="flex items-center gap-0.5">
-              <Phone size={11} className="text-emerald-600" strokeWidth={2.5} />
+              <Phone
+                size={10}
+                className="text-emerald-600"
+                fill="currentColor"
+                strokeWidth={0}
+              />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
           </div>
@@ -126,7 +140,11 @@ export default function Navbar() {
             className="relative p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
             aria-label="Cart"
           >
-            <ShoppingCart size={22} strokeWidth={1.5} className="text-gray-600" />
+            <ShoppingCart
+              size={22}
+              strokeWidth={1.5}
+              className="text-gray-600"
+            />
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-white shadow-sm animate-scale-in">
                 {totalItems > 99 ? '99+' : totalItems}
@@ -142,7 +160,11 @@ export default function Navbar() {
             className="relative p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
             aria-label="WhatsApp"
           >
-            <MessageCircle size={22} strokeWidth={1.5} className="text-gray-600" />
+            <MessageCircle
+              size={22}
+              strokeWidth={1.5}
+              className="text-gray-600"
+            />
             {/* Online indicator dot */}
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-white" />
           </a>
