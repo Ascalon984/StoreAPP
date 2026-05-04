@@ -44,12 +44,12 @@ export default function FilterSort() {
                 onClick={() => setSort(option.id)}
                 className={`
                   flex items-center justify-center gap-1.5 px-1 py-1.5 
-                  rounded-2xl text-[10px] font-bold tracking-tight
+                  rounded-xl text-[10px] font-bold tracking-tight
                   transition-all duration-300 ease-out
                   active:scale-95
                   ${isActive
                     ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
-                    : 'bg-white border border-gray-100 text-gray-600 shadow-[0_1px_3px_rgba(0,0,0,0.04)]'
+                    : 'bg-white border border-gray-200 text-gray-600 shadow-[0_1px_3px_rgba(0,0,0,0.04)]'
                   }
                 `}
               >
