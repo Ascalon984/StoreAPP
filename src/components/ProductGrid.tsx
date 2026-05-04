@@ -14,7 +14,7 @@ interface ProductGridProps {
 // Skeleton card untuk loading state
 function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-3xl border border-[#E0E0E0] shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
+    <div className="bg-white rounded-2xl border border-[#E0E0E0] shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
       <div className="w-full aspect-[3/2] skeleton" />
       <div className="p-2.5 flex flex-col gap-2">
         <div className="h-3 w-4/5 skeleton rounded-md" />

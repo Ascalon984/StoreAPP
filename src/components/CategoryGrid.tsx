@@ -47,7 +47,7 @@ function CategorySkeleton() {
         </div>
         <div className="h-3 w-44 skeleton rounded-md mt-1.5 ml-[11px]" />
       </div>
-      <div className="bg-white rounded-3xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
+      <div className="bg-white rounded-2xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
         <div className="grid grid-cols-3 gap-1">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center py-1.5 px-1 gap-1.5">
@@ -131,7 +131,7 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
+      <div className="bg-white rounded-2xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
         <div className="grid grid-cols-3 gap-1">
           {categories.map((cat) => {
             if (cat.id.startsWith('empty-slot-')) {

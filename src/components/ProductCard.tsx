@@ -69,7 +69,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden active:scale-[0.96] border border-[#E0E0E0] flex flex-col h-full relative">
+      <article className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden active:scale-[0.96] border border-[#E0E0E0] flex flex-col h-full relative">
 
         {/* 1. Discount Badge — Lebih Vibrant dengan Gradasi */}
         {discount > 0 && (
