@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, ShoppingCart, MessageCircle } from 'lucide-react';
+import { Search, ShoppingCart, MessageCircle, MapPin, Phone } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useSearchStore } from '@/store/useSearchStore';
 import { WA_NUMBER } from '@/lib/constants';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -62,13 +63,34 @@ export default function Navbar() {
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0 active:scale-95 transition-transform duration-200">
-          <h1 className="text-xl sm:text-2xl font-extrabold select-none truncate max-w-[150px] sm:max-w-[200px]">
-            <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-              {storeNameFirst}
-            </span>
-            {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
-          </h1>
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 active:scale-95 transition-transform duration-200 group">
+          <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
+            <Image
+              src="/icons/logo toko.png"
+              alt="Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-lg sm:text-xl font-extrabold select-none truncate leading-none">
+              <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+                {storeNameFirst}
+              </span>
+              {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
+            </h1>
+            <div className="flex items-center gap-1.5 mt-1 text-[9px] sm:text-[10px] text-gray-500 font-semibold tracking-tight">
+              <div className="flex items-center gap-0.5">
+                <MapPin size={10} className="text-red-500" strokeWidth={2.5} />
+                <span className="truncate max-w-[70px] sm:max-w-none">Perum. Telang Inda, Kamal, Bangkalan</span>
+              </div>
+              <div className="w-px h-2.5 bg-gray-200" />
+              <div className="flex items-center gap-0.5">
+                <Phone size={10} className="text-emerald-600" strokeWidth={2.5} />
+                <span className="whitespace-nowrap">081-9960-0135</span>
+              </div>
+            </div>
+          </div>
         </Link>
 
         {/* Search Bar — Desktop */}
