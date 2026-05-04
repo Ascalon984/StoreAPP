@@ -57,15 +57,13 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-[padding,box-shadow,background-color] duration-300 ${scrolled
-        ? 'py-1.5 shadow-sm bg-white' // Solid bg saat scroll untuk kontras teks maksimal
-        : 'py-2.5 bg-white shadow-sm'
+      className={`sticky top-0 z-50 transition-all duration-300 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'h-[56px] shadow-sm' : 'h-[82px] shadow-none'
         }`}
     >
-      <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
+      <div className="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
+          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 h-full"
         >
           <div className="flex items-center gap-2">
             <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
@@ -91,7 +89,7 @@ export default function Navbar() {
           </div>
 
           {/* 2. Tambah leading-tight agar line-height tetap rapi */}
-          <div className={`flex items-center justify-between px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100 mt-1'
+          <div className={`flex items-center justify-between px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-4 opacity-100 mt-1'
             } text-[9px] leading-tight w-full`}>
 
             {/* Alamat: Ambil ruang secukupnya, jangan dipaksa mengecil */}
@@ -170,15 +168,6 @@ export default function Navbar() {
           </a>
         </div>
       </div>
-
-      {/* Border bawah sebagai pembatas yang lebih jelas */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 h-[1px] transition-colors duration-300 ${scrolled
-          ? 'bg-[#E0E0E0] shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
-          : 'bg-[#E0E0E0]'           // Disesuaikan agar batas lebih jelas saat belum scroll
-          }`}
-        aria-hidden="true"
-      />
     </header>
   );
 }
