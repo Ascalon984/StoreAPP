@@ -79,7 +79,7 @@ export default function Navbar() {
               />
             </div>
 
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-lg' : 'text-xl' // Naikkan dari base ke lg, dan xl ke 2xl
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-[16px]' : 'text-[22px]'
               }`}>
               <span className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
