@@ -91,19 +91,19 @@ export default function Navbar() {
           </div>
 
           {/* 2. Tambah leading-tight agar line-height tetap rapi */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100 mt-1'
+          <div className={`flex items-center justify-between px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100 mt-1'
             } text-[9px] leading-tight w-full`}>
 
-            {/* min-w-0 dan truncate adalah kunci agar alamat 'mengalah' jika layar sempit */}
-            <div className="flex items-center gap-1 min-w-0">
+            {/* Alamat: Ambil ruang secukupnya, jangan dipaksa mengecil */}
+            <div className="flex items-center gap-1 flex-shrink-0">
               <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
-              <span className="truncate">Telang Indah, Kamal</span>
+              <span className="whitespace-nowrap">Telang Indah, Kamal</span>
             </div>
 
-            {/* Divider tetap tegas */}
-            <div className="w-[1px] h-2.5 bg-gray-300 shrink-0" aria-hidden="true" />
+            {/* Divider: Beri margin agar tidak menempel */}
+            <div className="w-[1px] h-2.5 bg-gray-300 mx-1.5 shrink-0" aria-hidden="true" />
 
-            {/* flex-shrink-0 memastikan No Telp TIDAK AKAN PERNAH terpotong atau jadi titik-titik */}
+            {/* No Telp: Tetap kokoh di kanan */}
             <div className="flex items-center gap-1 flex-shrink-0">
               <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">081-9960-0135</span>
