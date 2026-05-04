@@ -65,11 +65,11 @@ export default function Navbar() {
         {/* Logo & Brand Info Container */}
         <Link
           href="/"
-          className="flex flex-col gap-1 flex-shrink-1 min-w-0 active:scale-[0.98] transition-transform duration-200 group"
+          className="flex flex-col gap-1.5 flex-shrink-1 min-w-0 active:scale-[0.98] transition-transform duration-200 group"
         >
-          {/* BARIS ATAS: Logo | PalugadaStore */}
-          <div className="flex items-center gap-2">
-            <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+          {/* BARIS ATAS: Logo | PalugadaStore (Size Diperbesar) */}
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
               <Image
                 src="/icons/logo toko.png"
                 alt="Logo"
@@ -77,7 +77,8 @@ export default function Navbar() {
                 className="object-contain"
               />
             </div>
-            <h1 className="text-base sm:text-xl font-black select-none leading-none tracking-tight truncate">
+            {/* Ukuran font dinaikkan ke text-lg untuk mobile agar lebih bold */}
+            <h1 className="text-lg sm:text-2xl font-black select-none leading-none tracking-tight truncate">
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 {storeNameFirst || 'Palugada'}
               </span>
@@ -85,21 +86,22 @@ export default function Navbar() {
             </h1>
           </div>
 
-          {/* BARIS BAWAH: Alamat | No Telp */}
-          <div className="flex items-center gap-1.5 px-0.5 text-[8px] sm:text-[10px] text-gray-500 font-bold tracking-tighter sm:tracking-tight">
-            <div className="flex items-center gap-0.5 min-w-0">
-              <MapPin size={9} className="text-red-500 flex-shrink-0" strokeWidth={3} />
-              {/* max-w yang dinamis agar tidak mendorong ikon kanan */}
-              <span className="truncate max-w-[60px] xs:max-w-[100px] sm:max-w-none">
-                Perum. Telang Inda
+          {/* BARIS BAWAH: Alamat Lengkap | No Telp Lengkap */}
+          <div className="flex items-center gap-2 px-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight">
+            <div className="flex items-center gap-1 min-w-0">
+              <MapPin size={10} className="text-red-500 flex-shrink-0" strokeWidth={3} />
+              {/* max-w dilonggarkan agar alamat "Kamal" bisa masuk */}
+              <span className="truncate max-w-[120px] sm:max-w-none">
+                Perum. Telang Inda, Kamal
               </span>
             </div>
 
-            <div className="w-px h-2 bg-gray-200 flex-shrink-0" />
+            <div className="w-px h-2.5 bg-gray-200 flex-shrink-0" />
 
-            <div className="flex items-center gap-0.5 flex-shrink-0">
-              <Phone size={9} className="text-emerald-600 flex-shrink-0" strokeWidth={3} />
-              <span className="whitespace-nowrap">081-9960</span>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Phone size={10} className="text-emerald-600 flex-shrink-0" strokeWidth={3} />
+              {/* Menampilkan nomor lebih lengkap */}
+              <span className="whitespace-nowrap">+62 819-9600-0135</span>
             </div>
           </div>
         </Link>
