@@ -95,7 +95,7 @@ export default function Navbar() {
             } text-[9px] leading-tight w-full`}>
 
             {/* Alamat: Ambil ruang secukupnya, jangan dipaksa mengecil */}
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-0.5 flex-shrink-0">
               <MapPin size={10} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">Telang Indah, Kamal</span>
             </div>
@@ -104,7 +104,7 @@ export default function Navbar() {
             <div className="w-[1px] h-2.5 bg-gray-300 mx-1.5 shrink-0" aria-hidden="true" />
 
             {/* No Telp: Tetap kokoh di kanan */}
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-0.5 flex-shrink-0">
               <Phone size={10} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
               <span className="whitespace-nowrap">081-9960-0135</span>
             </div>
