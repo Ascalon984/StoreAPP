@@ -47,7 +47,7 @@ function CategorySkeleton() {
         </div>
         <div className="h-3 w-44 skeleton rounded-md mt-1.5 ml-[11px]" />
       </div>
-      <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
+      <div className="bg-white rounded-3xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
         <div className="grid grid-cols-3 gap-1">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center py-1.5 px-1 gap-1.5">
@@ -126,12 +126,12 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
             Pilih Kategori
           </h2>
         </div>
-        <p className="text-[11px] text-gray-600 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
+      <div className="bg-white rounded-3xl p-2 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E0E0E0]">
         <div className="grid grid-cols-3 gap-1">
           {categories.map((cat) => {
             if (cat.id.startsWith('empty-slot-')) {

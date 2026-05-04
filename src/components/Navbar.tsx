@@ -58,8 +58,8 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 transition-[padding,box-shadow,background-color] duration-300 ${scrolled
-        ? 'py-1.5 shadow-md bg-white' // Solid bg saat scroll untuk kontras teks maksimal
-        : 'py-2.5 bg-white/95 backdrop-blur-md backdrop-saturate-150'
+        ? 'py-1.5 shadow-sm bg-white' // Solid bg saat scroll untuk kontras teks maksimal
+        : 'py-2.5 bg-white shadow-sm'
         }`}
     >
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
@@ -112,11 +112,11 @@ export default function Navbar() {
         {/* Search Bar Desktop: Ubah text-gray-500 menjadi text-gray-600 untuk kontras */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-all duration-200 border border-gray-200 active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-white hover:bg-gray-50 rounded-full text-gray-700 text-sm transition-all duration-200 border border-[#E0E0E0] shadow-sm active:scale-[0.98]"
         >
           <Search size={18} strokeWidth={2.5} className="text-gray-600" />
           <span className="flex-1 text-left font-semibold">Cari produk...</span>
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-300 shadow-sm font-bold">
+          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-[#E0E0E0] shadow-sm font-bold">
             <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
           </kbd>
         </button>
@@ -172,8 +172,8 @@ export default function Navbar() {
       {/* Border bawah sebagai pembatas yang lebih jelas */}
       <div
         className={`absolute bottom-0 left-0 right-0 h-[1px] transition-colors duration-300 ${scrolled
-          ? 'bg-gray-200/80 shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
-          : 'bg-gray-200/70'           // Disesuaikan agar batas lebih jelas saat belum scroll
+          ? 'bg-[#E0E0E0] shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
+          : 'bg-[#E0E0E0]'           // Disesuaikan agar batas lebih jelas saat belum scroll
           }`}
         aria-hidden="true"
       />

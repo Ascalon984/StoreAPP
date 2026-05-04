@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="id">
       <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 mx-auto min-h-screen relative`}>
         <Navbar />
-        <main className="max-w-container mx-auto bg-white min-h-[calc(100vh-64px)] shadow-[0_0_40px_rgba(0,0,0,0.03)] antialiased">
+        <main className="max-w-container mx-auto bg-[#F8F9FA] min-h-[calc(100vh-64px)] shadow-[0_0_40px_rgba(0,0,0,0.03)] antialiased">
           {children}
         </main>
 

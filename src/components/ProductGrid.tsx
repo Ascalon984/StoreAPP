@@ -14,7 +14,7 @@ interface ProductGridProps {
 // Skeleton card untuk loading state
 function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col">
+    <div className="bg-white rounded-3xl border border-[#E0E0E0] shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
       <div className="w-full aspect-[3/2] skeleton" />
       <div className="p-2.5 flex flex-col gap-2">
         <div className="h-3 w-4/5 skeleton rounded-md" />
@@ -113,7 +113,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
           <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Produk {categoryName !== 'Semua' ? categoryName : ''}
           </h2>
-          <p className="text-[10px] text-gray-600 font-medium mt-0.5">
+          <p className="text-[10px] text-gray-500 font-medium mt-0.5">
             {isLoadingProducts
               ? 'Memuat produk...'
               : `Menampilkan ${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`
