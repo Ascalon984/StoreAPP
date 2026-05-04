@@ -64,40 +64,30 @@ export default function Navbar() {
       <div className="max-w-container mx-auto px-4 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="flex flex-col gap-1.5 flex-shrink-1 min-w-0 active:scale-[0.98] transition-transform duration-200 group"
+          className={`flex flex-col flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300 ${scrolled ? 'gap-0' : 'gap-1.5' // Menyempit saat scroll
+            }`}
         >
-          {/* Baris Atas: Logo & Nama Toko (SIZE BOOST) */}
-          <div className="flex items-center gap-2.5">
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
-              <Image
-                src="/icons/logo toko.png"
-                alt="Logo"
-                fill
-                className="object-contain"
-              />
+          {/* Baris Atas */}
+          <div className="flex items-center gap-2">
+            <div className={`relative flex-shrink-0 transition-all duration-300 ${scrolled ? 'w-8 h-8' : 'w-10 h-10' // Logo mengecil saat scroll
+              }`}>
+              <Image src="/icons/logo toko.png" alt="Logo" fill className="object-contain" />
             </div>
-            {/* Menaikkan font ke text-xl (mobile) dan text-3xl (desktop) */}
-            <h1 className="text-xl sm:text-3xl font-black select-none leading-none tracking-tighter sm:tracking-tight truncate">
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl' // Font mengecil saat scroll
+              }`}>
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
-                {storeNameFirst || 'Palugada'}
+                {storeNameFirst}
               </span>
-              <span className="text-orange-600">{storeNameLast || 'Store'}</span>
+              <span className="text-orange-600">{storeNameLast}</span>
             </h1>
           </div>
 
-          {/* Baris Bawah: Info Detail (Disesuaikan Jaraknya) */}
-          <div className="flex items-center gap-2 px-0.5 mt-0.5 text-[9px] sm:text-[11px] text-gray-500 font-bold tracking-tight opacity-90">
-            <div className="min-w-0">
-              <span className="truncate block max-w-[150px] sm:max-w-none">
-                Telang Inda, Kamal
-              </span>
-            </div>
-
-            <div className="w-px h-2.5 bg-gray-200 flex-shrink-0 mx-0.5" />
-
-            <div className="flex-shrink-0">
-              <span className="whitespace-nowrap">+62 819-9600-0135</span>
-            </div>
+          {/* Baris Bawah (Sembunyikan atau Perkecil saat Scroll) */}
+          <div className={`flex items-center gap-2 px-0.5 text-gray-500 font-bold tracking-tight transition-all duration-300 overflow-hidden ${scrolled ? 'h-0 opacity-0 mt-0' : 'h-4 opacity-90 mt-0.5'
+            } text-[9px]`}>
+            <span className="truncate max-w-[150px]">Telang Inda, Kamal</span>
+            <div className="w-px h-2.5 bg-gray-200 mx-0.5" />
+            <span className="whitespace-nowrap">+62 819-9600-0135</span>
           </div>
         </Link>
 
