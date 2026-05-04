@@ -25,14 +25,14 @@ export default function Navbar() {
 
   // Scroll listener
   useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
+      const offset = window.scrollY;
+      // Gunakan Histeresis: 
+      // Masuk ke mode compact di > 40px, kembali ke normal hanya jika < 10px
+      if (offset > 40) {
+        setScrolled(true);
+      } else if (offset < 10) {
+        setScrolled(false);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -61,7 +61,9 @@ export default function Navbar() {
         }`}
     >
       {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
-      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 overflow-hidden ${scrolled ? 'py-2 min-h-[56px]' : 'py-3 min-h-[80px]'
+      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
+        // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
+        scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2.5 pb-2.5 min-h-[72px]'
         }`}>
         <Link
           href="/"
