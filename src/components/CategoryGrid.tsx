@@ -41,8 +41,11 @@ function CategorySkeleton() {
   return (
     <section className="px-4 pt-1 pb-2">
       <div className="mb-2 px-0.5">
-        <div className="h-6 w-28 skeleton rounded-lg mb-1.5" />
-        <div className="h-3 w-44 skeleton rounded-md ml-0.5" />
+        <div className="flex items-center gap-2">
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+          <div className="h-4 w-28 skeleton rounded-md" />
+        </div>
+        <div className="h-3 w-44 skeleton rounded-md mt-1.5 ml-[11px]" />
       </div>
       <div className="bg-white rounded-2xl p-2 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_12px_rgba(0,0,0,0.04)] border border-gray-100/80">
         <div className="grid grid-cols-3 gap-1">
@@ -117,12 +120,13 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   return (
     <section className="px-4 pt-3 pb-2">
       <div className="mb-2 px-0.5">
-        <div className="inline-flex items-center bg-[#F2F2F2] border border-[#E5E5E5] px-2.5 py-1 rounded-md mb-1.5">
-          <h2 className="text-[12px] font-bold text-gray-700 tracking-wide uppercase">
+        <div className="flex items-center gap-2">
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
             Pilih Kategori
           </h2>
         </div>
-        <p className="text-[11px] text-gray-500 font-medium px-0.5 leading-tight">
+        <p className="text-[11px] text-gray-600 font-medium mt-0.5 ml-[11px] leading-tight">
           Cari produk yang kamu butuhkan di sini
         </p>
       </div>
