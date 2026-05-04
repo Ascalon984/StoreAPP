@@ -79,15 +79,20 @@ export default function Navbar() {
               </span>
               {storeNameLast && <span className="text-orange-600">{storeNameLast}</span>}
             </h1>
-            <div className="flex items-center gap-1.5 mt-1 text-[9px] sm:text-[10px] text-gray-500 font-semibold tracking-tight">
-              <div className="flex items-center gap-0.5">
-                <MapPin size={10} className="text-red-500" strokeWidth={2.5} />
-                <span className="truncate max-w-[70px] sm:max-w-none">Perum. Telang Inda, Kamal, Bangkalan</span>
+            <div className="flex items-center gap-1.5 mt-1 text-[9px] sm:text-[10px] text-gray-500 font-bold tracking-tight">
+              <div className="flex items-center gap-0.5 min-w-0">
+                <MapPin size={10} className="text-red-500 flex-shrink-0" strokeWidth={2.5} />
+                {/* Lebar ditambah agar tidak mudah terpotong di mobile */}
+                <span className="truncate max-w-[100px] sm:max-w-none">
+                  Perum. Telang Inda, Kamal
+                </span>
               </div>
-              <div className="w-px h-2.5 bg-gray-200" />
-              <div className="flex items-center gap-0.5">
+
+              <div className="w-px h-2.5 bg-gray-200 flex-shrink-0" />
+
+              <div className="flex items-center gap-0.5 flex-shrink-0">
                 <Phone size={10} className="text-emerald-600" strokeWidth={2.5} />
-                <span className="whitespace-nowrap">081-9960-0135</span>
+                <span className="whitespace-nowrap">0819-9600-0135</span>
               </div>
             </div>
           </div>
