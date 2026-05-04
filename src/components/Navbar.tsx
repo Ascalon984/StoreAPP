@@ -79,12 +79,12 @@ export default function Navbar() {
               />
             </div>
 
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-lg' : 'text-2xl' // Naikkan dari base ke lg, dan xl ke 2xl
+            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-lg' : 'text-xl' // Naikkan dari base ke lg, dan xl ke 2xl
               }`}>
               <span className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 bg-clip-text text-transparent">
                 {storeNameFirst}
               </span>
-              {storeNameLast && <span className="text-[#9a3412] ml-1">{storeNameLast}</span>}
+              {storeNameLast && <span className="text-[#9a3412]">{storeNameLast}</span>}
             </h1>
           </div>
 
