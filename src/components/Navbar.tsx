@@ -96,7 +96,7 @@ export default function Navbar() {
 
             <div className="flex items-center gap-1 flex-shrink-0">
               <MapPin size={10} className="text-red-700" fill="currentColor" strokeWidth={0} />
-              <span>Perum. Telang Indah, Kamal</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
+              <span>Telang Indah, Kamal</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
             </div>
 
             {/* Divider Vertikal yang lebih tipis tapi tegas */}
@@ -172,8 +172,8 @@ export default function Navbar() {
       {/* Border bawah sebagai pembatas yang lebih jelas */}
       <div
         className={`absolute bottom-0 left-0 right-0 h-[1px] transition-colors duration-300 ${scrolled
-            ? 'bg-gray-200/80 shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
-            : 'bg-gray-200/60'           // Saat di atas: garis tetap ada sebagai pembatas konten
+          ? 'bg-gray-200/80 shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
+          : 'bg-gray-200/70'           // Disesuaikan agar batas lebih jelas saat belum scroll
           }`}
         aria-hidden="true"
       />
