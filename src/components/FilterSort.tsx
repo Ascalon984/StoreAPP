@@ -49,7 +49,7 @@ export default function FilterSort() {
                   active:scale-95
                   ${isActive
                     ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
-                    : 'bg-white border border-gray-300 text-gray-700 shadow-sm'
+                    : 'bg-white border border-gray-300 text-gray-600 shadow-sm'
                   }
                 `}
               >
