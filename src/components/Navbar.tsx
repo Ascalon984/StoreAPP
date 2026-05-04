@@ -91,7 +91,7 @@ export default function Navbar() {
           </div>
 
           {/* Baris Bawah: Jarak sangat rapat & teks dioptimalkan agar tidak terpotong */}
-          <div className={`flex items-center gap-1.5 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+          <div className={`flex items-center gap-1 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
             } text-[9px]`}> {/* Ukuran turun ke 9px agar muat di HP kecil */}
 
             <div className="flex items-center gap-1 flex-shrink-0">
