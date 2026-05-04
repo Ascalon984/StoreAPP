@@ -101,7 +101,7 @@ export default function Navbar() {
             </div>
 
             {/* Divider: Beri margin agar tidak menempel */}
-            <div className="w-[1px] h-2.5 bg-gray-300 mx-1.5 shrink-0" aria-hidden="true" />
+            <div className="w-[1px] h-2 bg-gray-300 mx-1 shrink-0" aria-hidden="true" />
 
             {/* No Telp: Tetap kokoh di kanan */}
             <div className="flex items-center gap-0.5 flex-shrink-0">
