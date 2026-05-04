@@ -91,12 +91,12 @@ export default function Navbar() {
           </div>
 
           {/* Baris Bawah: Jarak sangat rapat & teks dioptimalkan agar tidak terpotong */}
-          <div className={`flex items-center gap-2 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
+          <div className={`flex items-center gap-1.5 px-0.5 text-gray-800 font-bold transition-all duration-300 ease-in-out overflow-hidden ${scrolled ? 'max-h-0 opacity-0 mt-0' : 'max-h-5 opacity-100 mt-1'
             } text-[9px]`}> {/* Ukuran turun ke 9px agar muat di HP kecil */}
 
             <div className="flex items-center gap-1 flex-shrink-0">
               <MapPin size={10} className="text-red-700" fill="currentColor" strokeWidth={0} />
-              <span>Telang Indah</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
+              <span>Perum. Telang Indah, Kamal</span> {/* Persingkat teks jika perlu agar tidak makan tempat */}
             </div>
 
             {/* Divider Vertikal yang lebih tipis tapi tegas */}
@@ -169,9 +169,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Ganti bagian div bottom line paling bawah dengan shadow halus */}
-      <div className={`absolute bottom-0 left-0 right-0 h-px transition-all duration-300 ${scrolled ? 'shadow-[0_1px_3px_rgba(0,0,0,0.05)]' : 'bg-gray-100/50'
-        }`} />
+      {/* Border bawah sebagai pembatas yang lebih jelas */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-[1px] transition-colors duration-300 ${scrolled
+            ? 'bg-gray-200/80 shadow-sm' // Saat scroll: garis lebih tegas + shadow halus
+            : 'bg-gray-200/60'           // Saat di atas: garis tetap ada sebagai pembatas konten
+          }`}
+        aria-hidden="true"
+      />
     </header>
   );
 }
