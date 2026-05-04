@@ -15,31 +15,26 @@ interface ProductGridProps {
 function ProductCardSkeleton() {
   return (
     <div className="bg-white rounded-2xl border border-[#E0E0E0] shadow-sm overflow-hidden flex flex-col h-full">
-      {/* 1. Image Area Skeleton - Harus aspect-[3/2] dan p-3 sesuai aslinya */}
-      <div className="relative w-full aspect-[3/2] bg-white p-3 flex items-center justify-center">
-        <div className="w-full h-full bg-gray-100 skeleton rounded-xl animate-pulse" />
-      </div>
+      {/* 1. Image Area - Tetap gaya lama tapi aspect 3/2 sesuai asli */}
+      <div className="w-full aspect-[3/2] bg-gray-100 skeleton animate-pulse" />
 
-      {/* 2. Content Area Skeleton - pt-0 dan gap-1.5 agar presisi */}
-      <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
-        {/* Title Placeholder (2 baris sesuai min-h-2.4rem) */}
-        <div className="mt-1">
-          <div className="h-3 w-full bg-gray-100 skeleton rounded-md mb-1.5 animate-pulse" />
+      {/* 2. Content Area - disesuaikan agar tidak melompat */}
+      <div className="p-3 pt-0 flex flex-col flex-1 gap-2">
+        <div className="mt-2.5 space-y-1.5">
+          <div className="h-3 w-full bg-gray-100 skeleton rounded-md animate-pulse" />
           <div className="h-3 w-3/4 bg-gray-100 skeleton rounded-md animate-pulse" />
         </div>
 
-        {/* Price Placeholder */}
         <div className="mt-1">
-          <div className="h-5 w-24 bg-gray-100 skeleton rounded-md animate-pulse" />
+          <div className="h-4 w-2/5 bg-gray-100 skeleton rounded-md animate-pulse" />
         </div>
 
-        {/* 3. Stats Row Skeleton - Harus ada border-t agar layout tidak melompat */}
-        <div className="flex items-center justify-between mt-auto pt-2 pb-1 border-t border-gray-50">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-gray-100 skeleton rounded-full animate-pulse" />
-            <div className="w-8 h-2.5 bg-gray-100 skeleton rounded-md animate-pulse" />
+        {/* 3. Stats Row - Perbaikan tinggi agar tidak melompat (pb-1.5 untuk ekstra ruang bawah) */}
+        <div className="flex items-center justify-between mt-auto pt-2 pb-1.5 border-t border-gray-50">
+          <div className="flex items-center gap-2">
+            <div className="h-2.5 w-12 bg-gray-100 skeleton rounded-md animate-pulse" />
           </div>
-          <div className="w-16 h-2.5 bg-gray-100 skeleton rounded-md animate-pulse" />
+          <div className="h-2.5 w-10 bg-gray-100 skeleton rounded-md animate-pulse" />
         </div>
       </div>
     </div>
