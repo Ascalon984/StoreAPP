@@ -118,7 +118,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
 
           {/* Stats Row — Pemisahan lebih tegas */}
-          <div className="flex items-center justify-between mt-auto pt-2.5 pb-3 px-3 border-t border-gray-200">
+          <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100/80">
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-extrabold text-gray-700">{displayRating}</span>
