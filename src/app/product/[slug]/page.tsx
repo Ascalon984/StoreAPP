@@ -512,38 +512,39 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="pt-3">
               <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
               <div className="relative">
+                {/* Container dengan transisi tinggi yang sangat halus */}
                 <div
-                  className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
+                  className={`description-container overflow-hidden ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
                     }`}
                 >
-                  <p
-                    ref={descriptionRef}
-                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap pb-1"
-                  >
+                  <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
                     {product.description}
                   </p>
                 </div>
 
                 {needsTruncation && (
-                  <button
-                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                        ? 'absolute bottom-0 right-0 pl-20 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
-                        : 'mt-2 flex items-center gap-0.5'
-                      }`}
-                  >
-                    {!isDescriptionExpanded ? (
-                      <span className="flex items-center translate-y-[0.5px] bg-white pl-1">
-                        <span className="text-gray-400 font-normal mr-1">...</span>
-                        <span className="hover:underline">Lihat selengkapnya</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-0.5 animate-in fade-in duration-500">
-                        Lihat lebih sedikit
-                        <ChevronDown size={14} className="rotate-180" />
-                      </span>
-                    )}
-                  </button>
+                  <div className={`transition-all duration-500 ${!isDescriptionExpanded
+                      ? 'absolute bottom-0 right-0 w-full flex justify-end items-end h-10 read-more-fade'
+                      : 'relative mt-2'
+                    }`}>
+                    <button
+                      onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                      className="text-emerald-700 font-bold text-[12px] flex items-center bg-white pl-2 h-full"
+                    >
+                      {!isDescriptionExpanded ? (
+                        <span className="flex items-center">
+                          <span className="text-gray-400 font-normal mr-1.5">...</span>
+                          <span className="hover:underline">Lihat selengkapnya</span>
+                          <ChevronDown size={14} className="ml-1 animate-bounce-subtle" />
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-1 opacity-0 animate-in fade-in duration-700">
+                          Lihat lebih sedikit
+                          <ChevronDown size={14} className="rotate-180" />
+                        </div>
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

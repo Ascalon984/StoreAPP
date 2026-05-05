@@ -179,6 +179,11 @@ body {
 
 /* Efek gradien untuk memicu rasa penasaran pada teks panjang */
 .read-more-fade {
-  /* Menggunakan 20% agar transisi putih dimulai lebih awal dan lebih halus */
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.9) 20%, white 40%);
+  /* Gradasi dimulai dari 0% (transparan) ke 100% (putih) secara perlahan */
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.7) 10%, rgba(255, 255, 255, 0.95) 50%, white 100%);
+}
+
+.description-container {
+  /* Menggunakan cubic-bezier untuk gerakan 'fluid' seperti aplikasi iOS */
+  transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
 }
