@@ -98,10 +98,11 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
   return (
     <section className="px-4 pt-4 pb-2">
-      <div className="mb-2 px-0.5">
+      {/* Header Section: Menggunakan font-bold tracking-tight yang sudah kamu tentukan */}
+      <div className="mb-3 px-0.5">
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
+          <h2 className="text-sm font-bold text-gray-900 tracking-tight">
             Spesial Buat Kamu
           </h2>
         </div>
@@ -110,16 +111,16 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         </p>
       </div>
 
-      <div className="relative">
+      <div className="relative group">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-3 px-0 snap-x snap-mandatory"
+          // Tambahkan gap sedikit agar antar banner ada ruang napas
+          className="flex overflow-x-auto hide-scrollbar gap-4 snap-x snap-mandatory"
           style={{
             msOverflowStyle: 'none',
             scrollbarWidth: 'none',
-            WebkitOverflowScrolling: 'touch', // Penting untuk smoothness di iPhone
-            scrollBehavior: 'auto', // Gunakan auto untuk initial, smooth hanya via scrollTo
+            WebkitOverflowScrolling: 'touch',
           }}
         >
           {banners.map((banner, index) => (
@@ -127,29 +128,36 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={banner.id}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100 border border-slate-200/60">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+                  sizes="100vw"
                   className="object-cover"
                   priority={index === 0}
-                  unoptimized={index === 0} // Baypass Next.js image optimization untuk banner LCP agar tidak ada Render Delay
+                  unoptimized={index === 0} 
                 />
+                
+                {/* Efek Inner Shadow Gradient agar teks banner (jika ada) lebih kontras */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
             </div>
           ))}
         </div>
 
         {banners.length > 1 && (
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
-                  }`}
+                // Menggunakan transisi lebar (shopee-style) dan backdrop-blur tipis
+                className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${
+                  i === current 
+                    ? 'w-6 bg-white shadow-sm' 
+                    : 'w-1.5 bg-white/40 hover:bg-white/60'
+                }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
