@@ -513,7 +513,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
               <div className="relative">
                 <div
-                  className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
+                  className={`overflow-hidden transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[1000px]'
                     }`}
                 >
                   <p
@@ -527,14 +527,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 {needsTruncation && (
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                      ? 'absolute bottom-0 right-0 pl-20 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
+                    className={`text-emerald-700 font-bold text-[12px] transition-all duration-500 ${!isDescriptionExpanded
+                      ? 'absolute bottom-0 right-0 pl-16 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
                       : 'mt-2 flex items-center gap-0.5'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
-                      <span className="flex items-center translate-y-[0.5px] bg-white pl-1">
-                        <span className="text-gray-400 font-normal mr-1">...</span>
+                      <span className="flex items-center translate-y-[0.5px]">
+                        <span className="text-gray-500 font-normal mr-1.5">...</span>
                         <span className="hover:underline">Lihat selengkapnya</span>
                       </span>
                     ) : (
