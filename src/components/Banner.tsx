@@ -99,7 +99,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   return (
     <section className="px-4 pt-4 pb-2">
       {/* Header Section: Menggunakan font-bold tracking-tight yang sudah kamu tentukan */}
-      <div className="mb-3 px-0.5">
+      <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
           <h2 className="text-sm font-bold text-gray-900 tracking-tight">
