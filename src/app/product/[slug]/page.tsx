@@ -544,7 +544,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             </div>
           </div>
 
-          {/* Jaminan Palugadaa */}
+          {/* Jaminan Palugada */}
           <div className="bg-white px-4 py-3 mb-1">
             <h2 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h2>
 
