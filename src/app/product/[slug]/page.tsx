@@ -513,7 +513,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
               <div className="relative">
                 <div
-                  className={`overflow-hidden transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[1000px]'
+                  className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
                     }`}
                 >
                   <p
@@ -528,8 +528,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                     className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                      ? 'absolute bottom-0 right-0 pl-20 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
-                      : 'mt-2 flex items-center gap-0.5'
+                        ? 'absolute bottom-0 right-0 pl-20 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
+                        : 'mt-2 flex items-center gap-0.5'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
