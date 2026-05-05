@@ -509,20 +509,35 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
             <div className="border-t border-gray-200" />
 
-            <div className="pt-3 space-y-2">
-              <h2 className="text-sm font-bold text-gray-800 tracking-tight">Deskripsi Produk</h2>
-              <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
-                {truncatedDescription}
-              </p>
-              {needsTruncation && (
-                <button
-                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                  className="text-emerald-700 font-bold text-[12px] flex items-center gap-0.5 mt-1"
+            <div className="pt-3">
+              <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
+              <div className="relative">
+                <p
+                  ref={descriptionRef}
+                  className={`text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap transition-all duration-300 ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}
                 >
-                  {isDescriptionExpanded ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
-                  <ChevronDown size={14} className={`transition-transform ${isDescriptionExpanded ? 'rotate-180' : ''}`} />
-                </button>
-              )}
+                  {product.description}
+                </p>
+
+                {needsTruncation && (
+                  <button
+                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                    className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
+                        ? 'absolute bottom-0 right-0 pl-16 pr-0.5 pt-4 read-more-fade flex items-center'
+                        : 'mt-2 flex items-center gap-0.5'
+                      }`}
+                  >
+                    {!isDescriptionExpanded ? (
+                      <span>... <span className="hover:underline">Lihat selengkapnya</span></span>
+                    ) : (
+                      <>
+                        Lihat lebih sedikit
+                        <ChevronDown size={14} className="rotate-180" />
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
