@@ -179,5 +179,5 @@ body {
 
 /* Efek gradien untuk memicu rasa penasaran pada teks panjang */
 .read-more-fade {
-  background: linear-gradient(to right, transparent, white 30%, white 100%);
+  background: linear-gradient(to right, transparent, white 20%, white 100%);
 }

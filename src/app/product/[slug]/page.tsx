@@ -512,42 +512,43 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="pt-3">
               <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
               <div className="relative">
-                {/* Container Teks */}
+                {/* Container Teks dengan animasi max-height yang smooth */}
                 <div
-                  className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
+                  className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
                     }`}
                 >
-                  <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap">
+                  <p
+                    ref={descriptionRef}
+                    className={`text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap ${isDescriptionExpanded ? 'pb-8' : ''}`}
+                  >
                     {product.description}
                   </p>
                 </div>
 
                 {needsTruncation && (
-                  <>
-                    {/* 1. Tombol 'Lihat Selengkapnya' (Hanya muncul saat tertutup) */}
+                  <div className="absolute bottom-0 w-full flex items-center h-8 pointer-events-none">
+                    {/* Tombol 'Lihat selengkapnya' - Melayang di kanan dengan shadow */}
                     <button
                       onClick={() => setIsDescriptionExpanded(true)}
-                      className={`absolute bottom-0 right-0 pl-16 pr-0.5 h-[22px] read-more-fade flex items-center justify-end text-emerald-700 font-bold text-[12px] transition-opacity duration-500 ${!isDescriptionExpanded ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
+                      className={`absolute right-0 pl-16 pr-0.5 h-full read-more-fade flex items-center justify-end text-emerald-700 font-bold text-[12px] transition-opacity duration-300 pointer-events-auto ${isDescriptionExpanded ? 'opacity-0' : 'opacity-100'
                         }`}
                     >
-                      <span className="flex items-center translate-y-[0.5px] bg-white pl-1">
-                        <span className="text-gray-400 font-normal mr-1">...</span>
+                      <span className="flex items-center translate-y-[0.5px]">
+                        <span className="text-gray-500 font-normal mr-1.5">...</span>
                         <span className="hover:underline">Lihat selengkapnya</span>
                       </span>
                     </button>
 
-                    {/* 2. Tombol 'Lihat Lebih Sedikit' (Hanya muncul saat terbuka) */}
-                    <div className={`transition-all duration-500 overflow-hidden ${isDescriptionExpanded ? 'max-h-10 opacity-100 mt-2' : 'max-h-0 opacity-0'
-                      }`}>
-                      <button
-                        onClick={() => setIsDescriptionExpanded(false)}
-                        className="text-emerald-700 font-bold text-[12px] flex items-center gap-0.5"
-                      >
-                        Lihat lebih sedikit
-                        <ChevronDown size={14} className="rotate-180" />
-                      </button>
-                    </div>
-                  </>
+                    {/* Tombol 'Lihat lebih sedikit' - Muncul di kiri bawah setelah konten terbuka */}
+                    <button
+                      onClick={() => setIsDescriptionExpanded(false)}
+                      className={`absolute left-0 h-full flex items-center gap-0.5 text-emerald-700 font-bold text-[12px] transition-opacity duration-300 pointer-events-auto ${!isDescriptionExpanded ? 'opacity-0' : 'opacity-100'
+                        }`}
+                    >
+                      Lihat lebih sedikit
+                      <ChevronDown size={14} className="rotate-180" />
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
