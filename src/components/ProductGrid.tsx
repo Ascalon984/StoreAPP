@@ -169,7 +169,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
         onClick={scrollToTop}
         aria-label="Kembali ke atas"
         className={`
-          fixed bottom-8 right-6 z-9
+          fixed bottom-8 right-6 z-50
           w-11 h-11 rounded-full
           bg-emerald-500 text-white
           shadow-[0_8px_25px_rgba(16,185,129,0.3)]
