@@ -19,7 +19,7 @@ function BannerSkeleton() {
         </div>
         <div className="h-3 w-48 skeleton rounded-md mt-1.5 ml-[11px]" />
       </div>
-      <div className="w-full aspect-[2/1] skeleton rounded-2xl" />
+      <div className="w-full aspect-[2/1] skeleton rounded-2xl shadow-layer-md" />
     </section>
   );
 }
@@ -128,31 +128,33 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={banner.id}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-layer-md hover:shadow-layer-lg transition-all duration-500 group active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}
                   fill
                   sizes="100vw"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                   priority={index === 0}
                   unoptimized={index === 0} 
                 />
                 
-                {/* Efek Inner Shadow Gradient agar teks banner (jika ada) lebih kontras */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                {/* Efek Inner Shadow Gradient dengan rounded corner yang match */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none rounded-2xl" />
               </div>
             </div>
           ))}
         </div>
 
         {banners.length > 1 && (
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 px-4">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                className={`rounded-full transition-all duration-300 backdrop-blur-sm ${i === current 
+                  ? 'w-6 h-2 bg-white shadow-layer-sm' 
+                  : 'w-2 h-2 bg-white/60 hover:bg-white/80 shadow-layer-xs'
                   }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
