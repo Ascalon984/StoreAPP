@@ -511,36 +511,40 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
             <div className="pt-3">
               <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
-              <div className="relative">
+              <div className="relative overflow-hidden">
+                {/* Container Teks dengan animasi max-height yang smooth */}
                 <div
-                  className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
+                  className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
                     }`}
                 >
                   <p
                     ref={descriptionRef}
-                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap pb-1"
+                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap"
                   >
                     {product.description}
                   </p>
+                  {/* Spacer agar tombol 'Lihat lebih sedikit' tidak menutupi baris terakhir teks */}
+                  <div className={`transition-all duration-500 ${isDescriptionExpanded ? 'h-8' : 'h-0'}`} />
                 </div>
 
                 {needsTruncation && (
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                        ? 'absolute bottom-0 right-0 pl-20 pr-0.5 h-[22px] read-more-fade flex items-center justify-end'
-                        : 'mt-2 flex items-center gap-0.5'
+                    className={`absolute bottom-0 transition-all duration-500 ease-in-out flex items-center h-8 z-10
+                      ${!isDescriptionExpanded
+                        ? 'left-full -translate-x-full pl-20 pr-0.5 read-more-fade'
+                        : 'left-0 translate-x-0 pl-0 pr-0'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
-                      <span className="flex items-center translate-y-[0.5px] bg-white pl-1">
-                        <span className="text-gray-400 font-normal mr-1">...</span>
-                        <span className="hover:underline">Lihat selengkapnya</span>
+                      <span className="flex items-center text-emerald-700 font-bold text-[12px] whitespace-nowrap">
+                        <span className="text-gray-500 font-normal mr-1.5">...</span>
+                        <span className="hover:underline translate-y-[0.5px]">Lihat selengkapnya</span>
                       </span>
                     ) : (
-                      <span className="flex items-center gap-0.5 animate-in fade-in duration-500">
+                      <span className="flex items-center gap-0.5 text-emerald-700 font-bold text-[12px] whitespace-nowrap">
                         Lihat lebih sedikit
-                        <ChevronDown size={14} className="rotate-180" />
+                        <ChevronDown size={14} className="rotate-180 transition-transform duration-500" />
                       </span>
                     )}
                   </button>
