@@ -75,7 +75,7 @@ export default function SearchOverlay() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
+    <div className="fixed inset-0 z-[60] bg-white/95 backdrop-blur-md animate-fade-in border-b border-gray-100 shadow-layer-md">
       <div className="max-w-container mx-auto px-4">
         <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 py-3 border-b border-gray-100">
           <Search size={20} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
@@ -105,7 +105,7 @@ export default function SearchOverlay() {
                   key={product.id}
                   href={`/product/${product.slug}`}
                   onClick={() => handleSelect(product.name)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 hover:shadow-layer-xs transition-all duration-200"
                 >
                   <Search size={16} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
                   <span className="text-sm flex-1">{highlightMatch(product.name, debouncedQuery)}</span>
@@ -126,7 +126,7 @@ export default function SearchOverlay() {
                   <button
                     key={i}
                     onClick={() => setQuery(term)}
-                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-gray-50 hover:shadow-layer-xs transition-all duration-200 text-left"
                   >
                     <Clock size={16} strokeWidth={1.5} className="text-gray-400 flex-shrink-0" />
                     <span className="text-sm text-gray-700">{term}</span>

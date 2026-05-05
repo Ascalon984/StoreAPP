@@ -153,7 +153,7 @@ export default function MiniCart() {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm animate-backdrop-in"
+        className="fixed inset-0 bg-black/40 z-[60] backdrop-blur-md animate-backdrop-in"
         onClick={closeCart}
         style={{
           opacity: isOpen ? Math.max(0, 1 - dragX / 300) : 0,
@@ -163,7 +163,7 @@ export default function MiniCart() {
 
       {/* ===== DRAWER CONTAINER ===== */}
       <div
-        className="fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] bg-gray-50 z-[70] shadow-2xl flex flex-col rounded-l-[1.5rem] overflow-hidden border-l border-white/20"
+        className="fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] bg-gray-50 z-[70] shadow-layer-xl flex flex-col rounded-l-[1.5rem] overflow-hidden border-l border-white/20"
         style={{
           transform: `translateX(${dragX}px)`,
           transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', // Easing yang lebih 'luks'

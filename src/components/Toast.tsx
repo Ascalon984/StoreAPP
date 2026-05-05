@@ -82,7 +82,7 @@ export default function Toast() {
         transition: isDragging.current ? 'none' : 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}
     >
-      <div className="bg-white/95 backdrop-blur-md border border-gray-100/80 px-4 py-3 rounded-2xl shadow-soft flex items-center gap-3.5 cursor-grab active:cursor-grabbing">
+      <div className="bg-white/95 backdrop-blur-md border border-gray-100/80 px-4 py-3 rounded-2xl shadow-layer-lg flex items-center gap-3.5 cursor-grab active:cursor-grabbing">
         {/* Ikon: Ukuran sedikit diperbesar agar seimbang dengan 2 baris teks */}
         <div className={`
           w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm 

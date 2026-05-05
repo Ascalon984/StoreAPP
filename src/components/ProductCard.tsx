@@ -69,17 +69,20 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 overflow-hidden active:scale-[0.96] border border-[#E0E0E0] flex flex-col h-full relative">
+      <article className="bg-white rounded-2xl shadow-layer-sm hover:shadow-layer-lg transition-all duration-500 overflow-hidden active:scale-[0.96] border border-gray-200 flex flex-col h-full relative backdrop-blur-sm">
+
+        {/* Gradient Overlay untuk premium feel */}
+        <div className="absolute inset-0 bg-gradient-premium pointer-events-none z-0" />
 
         {/* 1. Discount Badge — Sesuaikan Radius dengan Card */}
         {discount > 0 && (
-          <div className="absolute top-0 right-0 z-20 px-2.5 py-1 bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[10px] font-black rounded-bl-2xl shadow-sm tracking-tighter">
+          <div className="absolute top-0 right-0 z-30 px-2.5 py-1 bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[10px] font-black rounded-bl-2xl shadow-layer-md backdrop-blur-sm tracking-tighter">
             -{discount}%
           </div>
         )}
 
         {/* Image Area — 3:2 Seamless */}
-        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center p-3">
+        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center p-3 z-10">
           <ProductImage
             category={product.category}
             name={product.name}
@@ -92,7 +95,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           {/* Hot Badge — Lebih Modern */}
           <div className="absolute top-2 left-2">
             {isHot && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-100 text-orange-600 text-[8px] font-bold uppercase tracking-wider shadow-sm">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-white/85 backdrop-blur-md border border-orange-200 text-orange-600 text-[8px] font-bold uppercase tracking-wider shadow-layer-sm">
                 <Flame size={9} className="fill-orange-500 text-orange-500" />
                 Hot
               </span>
@@ -101,7 +104,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         </div>
 
         {/* Content Area */}
-        <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
+        <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3 className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-700 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}>
             {product.name}
           </h3>
@@ -117,8 +120,8 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             )}
           </div>
 
-          {/* Stats Row — Pemisahan lebih tegas */}
-          <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100/80">
+          {/* Stats Row — Pemisahan lebih tegas dengan gradient divider */}
+          <div className="flex items-center justify-between mt-auto pt-2 border-t border-gradient-to-r from-transparent via-gray-200 to-transparent">
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-extrabold text-gray-700">{displayRating}</span>

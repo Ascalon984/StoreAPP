@@ -392,7 +392,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
     <>
       {/* ── Backdrop ── */}
       <div
-        className={`fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isClosing ? 'opacity-0 pointer-events-none' : ''
+        className={`fixed inset-0 z-[80] bg-black/40 backdrop-blur-md transition-opacity duration-300 ${isClosing ? 'opacity-0 pointer-events-none' : ''
           }`}
         style={{
           touchAction: 'none' as const,
@@ -412,7 +412,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
       >
         <div
           ref={panelRef}
-          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
+          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-layer-xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
             }`}
           style={{
             maxHeight: panelMaxHeight,

@@ -47,7 +47,7 @@ export default function FilterSort() {
       className={`
         sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 
         transition-all duration-300 ease-in-out pb-2 pt-1
-        ${isScrolled ? 'shadow-[0_10px_15px_-10px_rgba(0,0,0,0.1)]' : 'shadow-none'}
+        ${isScrolled ? 'shadow-layer-md' : 'shadow-layer-xs'}
       `}
     >
       <div className="max-w-container mx-auto px-4 py-2">
@@ -66,8 +66,8 @@ export default function FilterSort() {
                   transition-all duration-300 ease-out
                   active:scale-95
                   ${isActive
-                    ? 'bg-emerald-700 text-white shadow-[0_4px_10px_rgba(5,150,105,0.2)]'
-                    : 'bg-white border border-gray-200 text-gray-600 shadow-[0_1px_3px_rgba(0,0,0,0.04)]'
+                    ? 'bg-emerald-700 text-white shadow-layer-lg'
+                    : 'bg-white border border-gray-200 text-gray-600 shadow-layer-xs'
                   }
                 `}
               >

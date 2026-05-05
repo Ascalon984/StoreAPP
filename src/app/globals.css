@@ -2,8 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   PREMIUM LAYERING SYSTEM
+   ============================================================ */
+
+:root {
+  /* Shadow layers for depth hierarchy */
+  --shadow-layer-1: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-layer-2: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-layer-3: 0 8px 20px rgba(0, 0, 0, 0.12);
+  
+  /* Color overlays for premium feel */
+  --overlay-light: rgba(255, 255, 255, 0.8);
+  --overlay-dark: rgba(0, 0, 0, 0.05);
+  
+  /* Premium transitions */
+  --transition-smooth: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+/* ============================================================
+   ENHANCED BASE STYLES
+   ============================================================ */
+
+body {
+  background-color: #F8F9FA;
+  -webkit-tap-highlight-color: transparent;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(13, 148, 136, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.02) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Smooth scrolling enhancement */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(13, 148, 136, 0.3);
+  border-radius: 4px;
+  transition: background 200ms ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(13, 148, 136, 0.5);
 }
 
 /* ============================================================
@@ -148,6 +199,100 @@ body {
 .animate-shake {
   animation: shake 0.2s ease-in-out 0s 2;
 }
+
+/* ============================================================
+   ADVANCED PREMIUM EFFECTS
+   ============================================================ */
+
+/* Premium Card Hover Effect */
+.card-hover {
+  transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Premium Button States */
+.btn-premium {
+  @apply transition-all duration-300 ease-out;
+}
+
+.btn-premium:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-layer-2);
+}
+
+.btn-premium:active {
+  transform: translateY(0px);
+  box-shadow: var(--shadow-layer-1);
+}
+
+/* Focus Ring dengan Premium Styling */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500/20;
+}
+
+/* Backdrop Blur Premium */
+.backdrop-premium {
+  @apply bg-white/80 backdrop-blur-lg;
+}
+
+/* Premium Text Truncate dengan Gradient */
+.text-gradient-primary {
+  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced Border Styling */
+.border-premium {
+  @apply border border-gray-200/60 transition-colors duration-300;
+}
+
+.border-premium:hover {
+  @apply border-gray-300/80;
+}
+
+/* Premium Divider */
+.divider-premium {
+  @apply bg-gradient-to-r from-transparent via-gray-200 to-transparent;
+  height: 1px;
+}
+
+/* Layered Card Container */
+.card-layered {
+  @apply relative overflow-hidden rounded-2xl bg-white;
+  background-image: 
+    linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(20, 184, 166, 0.02) 100%);
+}
+
+/* Premium Interaction States */
+.interactive-premium {
+  @apply transition-all duration-300 ease-out active:scale-95;
+}
+
+.interactive-premium:focus-visible {
+  @apply outline-none ring-2 ring-emerald-500/30 ring-offset-2;
+}
+
+/* Smooth Collapse Animation */
+@keyframes smooth-collapse {
+  from {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  to {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+}
+
+.collapse-smooth {
+  animation: smooth-collapse 0.3s ease-out forwards;
+}
+
 
 @keyframes drawer-slide-in {
   0% {

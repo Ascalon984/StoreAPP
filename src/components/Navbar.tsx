@@ -57,7 +57,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-[#E0E0E0] ${scrolled ? 'shadow-sm' : 'shadow-none'
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-gray-100 ${scrolled ? 'shadow-layer-md' : 'shadow-layer-xs'
         }`}
     >
       {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -121,11 +121,11 @@ export default function Navbar() {
         {/* Search Bar Desktop: Ubah text-gray-500 menjadi text-gray-600 untuk kontras */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-white hover:bg-gray-50 rounded-full text-gray-700 text-sm transition-all duration-200 border border-[#E0E0E0] shadow-sm active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-white hover:bg-gray-50 rounded-full text-gray-700 text-sm transition-all duration-300 border border-gray-200 shadow-layer-sm hover:shadow-layer-md active:scale-[0.98]"
         >
           <Search size={18} strokeWidth={2.5} className="text-gray-600" />
           <span className="flex-1 text-left font-semibold">Cari produk...</span>
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-[#E0E0E0] shadow-sm font-bold">
+          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
             <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
           </kbd>
         </button>
