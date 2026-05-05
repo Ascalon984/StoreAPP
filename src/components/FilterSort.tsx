@@ -47,7 +47,7 @@ export default function FilterSort() {
       className={`
         sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 
         transition-all duration-300 ease-in-out pb-2 pt-1
-        ${isScrolled ? 'shadow-[0_12px_20px_-10px_rgba(0,0,0,0.1)]' : 'shadow-none'}
+        ${isScrolled ? 'shadow-[0_10px_15px_-10px_rgba(0,0,0,0.1)]' : 'shadow-none'}
       `}
     >
       <div className="max-w-container mx-auto px-4 py-2">
