@@ -523,12 +523,15 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                     className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                      ? 'absolute bottom-0 right-0 pl-16 pr-0.5 pt-4 read-more-fade flex items-center'
+                      ? 'absolute bottom-0 right-0 pl-12 pr-0.5 h-[20px] read-more-fade flex items-center'
                       : 'mt-2 flex items-center gap-0.5'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
-                      <span>... <span className="hover:underline">Lihat selengkapnya</span></span>
+                      <span className="flex items-center">
+                        <span className="text-gray-500 font-normal mr-0.5">...</span>
+                        <span className="hover:underline">Lihat selengkapnya</span>
+                      </span>
                     ) : (
                       <>
                         Lihat lebih sedikit
