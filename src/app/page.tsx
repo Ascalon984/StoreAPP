@@ -54,20 +54,21 @@ export default async function Home() {
     <div className="pb-24 relative bg-[#F8F9FA]">
       {/* Prime Zustand store dari SSR — eliminasi duplicate /api/public/settings fetch dari Navbar */}
       {settings && <SettingsHydrator settings={settings} />}
-      
+
       {/* LAYER BAWAH: Tertahan saat scroll (Sticky Canvas) */}
       <div className="sticky top-[52px] z-0">
         <Banner initialBanners={banners} />
         <CategoryGrid initialCategories={categories} />
       </div>
 
-      {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
-      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] min-h-screen">
-        {/* Sheet Handle Indicator */}
-        <div className="w-full flex justify-center pt-3 pb-1">
-          <div className="w-12 h-1.5 bg-gray-200 rounded-full"></div>
+      {/* LAYER ATAS: Foreground Sheet */}
+      <div className="relative z-10 bg-white rounded-t-[30px] -mt-8 shadow-[0_-12px_40px_rgba(0,0,0,0.08)] min-h-screen">
+        {/* Indikator Handle yang sedikit lebih halus warnanya */}
+        <div className="w-full flex justify-center pt-3 pb-2">
+          <div className="w-10 h-1.5 bg-gray-200/80 rounded-full"></div>
         </div>
 
+        {/* Filter & Grid */}
         <FilterSort />
         <ProductGrid initialCategories={categories} />
       </div>
