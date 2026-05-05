@@ -519,27 +519,27 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 >
                   <p
                     ref={descriptionRef}
-                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap"
+                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap relative"
                   >
                     {product.description}
                   </p>
                   {/* Spacer agar tombol 'Lihat lebih sedikit' tidak menutupi baris terakhir teks */}
-                  <div className={`transition-all duration-500 ${isDescriptionExpanded ? 'h-8' : 'h-0'}`} />
+                  <div className={`transition-all duration-300 ${isDescriptionExpanded ? 'h-8' : 'h-0'}`} />
                 </div>
 
                 {needsTruncation && (
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className={`absolute bottom-0 transition-all duration-500 ease-in-out flex items-center h-8 z-10
+                    className={`absolute bottom-0 transition-all duration-500 ease-in-out flex items-center h-7 z-10
                       ${!isDescriptionExpanded
-                        ? 'left-full -translate-x-full pl-20 pr-0.5 read-more-fade'
-                        : 'left-0 translate-x-0 pl-0 pr-0'
+                        ? 'left-full -translate-x-full pl-24 pr-0 read-more-fade'
+                        : 'left-0 translate-x-0'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
-                      <span className="flex items-center text-emerald-700 font-bold text-[12px] whitespace-nowrap">
+                      <span className="flex items-center text-emerald-700 font-bold text-[12px] whitespace-nowrap pr-0.5">
                         <span className="text-gray-500 font-normal mr-1.5">...</span>
-                        <span className="hover:underline translate-y-[0.5px]">Lihat selengkapnya</span>
+                        <span className="hover:underline">Lihat selengkapnya</span>
                       </span>
                     ) : (
                       <span className="flex items-center gap-0.5 text-emerald-700 font-bold text-[12px] whitespace-nowrap">
