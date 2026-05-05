@@ -147,17 +147,13 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         </div>
 
         {banners.length > 1 && (
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                // Menggunakan transisi lebar (shopee-style) dan backdrop-blur tipis
-                className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${
-                  i === current 
-                    ? 'w-6 bg-white shadow-sm' 
-                    : 'w-1.5 bg-white/40 hover:bg-white/60'
-                }`}
+                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                  }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
