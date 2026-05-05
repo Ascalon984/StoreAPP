@@ -19,7 +19,7 @@ function BannerSkeleton() {
         </div>
         <div className="h-3 w-48 skeleton rounded-md mt-1.5 ml-[11px]" />
       </div>
-      <div className="w-full aspect-[2/1] skeleton rounded-2xl shadow-layer-md" />
+      <div className="w-full aspect-[2/1] skeleton rounded-2xl" />
     </section>
   );
 }
@@ -127,32 +127,28 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={banner.id}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-layer-md bg-gray-100 border border-gray-200 group">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] shadow-sm bg-gray-100 border border-slate-200/60">
                 <Image
                   src={banner.image}
                   alt={banner.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover"
                   priority={index === 0}
                   unoptimized={index === 0} // Baypass Next.js image optimization untuk banner LCP agar tidak ada Render Delay
                 />
-                {/* Premium overlay untuk depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
               </div>
             </div>
           ))}
         </div>
 
         {banners.length > 1 && (
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 px-4">
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`rounded-full transition-all duration-300 backdrop-blur-sm ${i === current 
-                  ? 'w-6 h-2 bg-white shadow-layer-sm' 
-                  : 'w-2 h-2 bg-white/60 hover:bg-white/80 shadow-layer-xs'
+                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
                   }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
