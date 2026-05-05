@@ -523,8 +523,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <button
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                     className={`text-emerald-700 font-bold text-[12px] transition-all duration-300 ${!isDescriptionExpanded
-                        ? 'absolute bottom-0 right-0 pl-16 pr-0.5 pt-4 read-more-fade flex items-center'
-                        : 'mt-2 flex items-center gap-0.5'
+                      ? 'absolute bottom-0 right-0 pl-16 pr-0.5 pt-4 read-more-fade flex items-center'
+                      : 'mt-2 flex items-center gap-0.5'
                       }`}
                   >
                     {!isDescriptionExpanded ? (
@@ -541,7 +541,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             </div>
           </div>
 
-          {/* Jaminan Palugada */}
+          {/* Jaminann Palugada */}
           <div className="bg-white px-4 py-3 mb-1">
             <h2 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h2>
 
