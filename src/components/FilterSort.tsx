@@ -1,6 +1,7 @@
 'use client';
 
 import { useFilterStore } from '@/store/useFilterStore';
+import { useState, useEffect } from 'react';
 import { SORT_OPTIONS } from '@/lib/constants';
 import {
   ArrowUpDown,
@@ -26,12 +27,29 @@ const DISCOUNT_FILTER = {
 
 export default function FilterSort() {
   const { sort, setSort } = useFilterStore();
+  const [isScrolled, setIsScrolled] = useState(false);
+
   const allFilters = [...SORT_OPTIONS];
   if (!allFilters.some(f => f.id === 'discount')) allFilters.push(DISCOUNT_FILTER);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      // Threshold ini menandakan saat sheet sudah naik dan FilterSort mulai sticky.
+      // Dihitung kasar dari tinggi Banner (~200px) + CategoryGrid (~150px).
+      setIsScrolled(window.scrollY > 340);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    // Ganti bg ke white/95 untuk menyatu dengan bottom sheet baru
-    <section className="sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-[0_4px_10px_-5px_rgba(0,0,0,0.03)] pb-2 pt-1">
+    <section
+      className={`
+        sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 
+        transition-all duration-300 ease-in-out pb-2 pt-1
+        ${isScrolled ? 'shadow-[0_12px_20px_-10px_rgba(0,0,0,0.1)]' : 'shadow-none'}
+      `}
+    >
       <div className="max-w-container mx-auto px-4 py-2">
         <div className="grid grid-cols-4 gap-2">
           {allFilters.map((option) => {

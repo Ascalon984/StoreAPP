@@ -62,11 +62,11 @@ export default async function Home() {
       </div>
 
       {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
-      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] min-h-screen">
+      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.1)] min-h-screen">
         {/* Sheet Handle Indicator - Lebih Thin & Compact */}
         <div className="w-full flex justify-center pt-2.5 pb-0.5">
           {/* Ukuran h diubah dari 1.5 ke 1 (4px) untuk kesan lebih thin */}
-          <div className="w-10 h-1 bg-gray-200/80 rounded-full" />
+          <div className="w-10 h-1 bg-gray-300/60 rounded-full" />
         </div>
 
         <FilterSort />
