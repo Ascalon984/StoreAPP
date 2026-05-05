@@ -51,13 +51,26 @@ export default async function Home() {
   const { banners, categories, settings } = await getInitData();
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 relative bg-[#F8F9FA]">
       {/* Prime Zustand store dari SSR — eliminasi duplicate /api/public/settings fetch dari Navbar */}
       {settings && <SettingsHydrator settings={settings} />}
-      <Banner initialBanners={banners} />
-      <CategoryGrid initialCategories={categories} />
-      <FilterSort />
-      <ProductGrid initialCategories={categories} />
+      
+      {/* LAYER BAWAH: Tertahan saat scroll (Sticky Canvas) */}
+      <div className="sticky top-[52px] z-0">
+        <Banner initialBanners={banners} />
+        <CategoryGrid initialCategories={categories} />
+      </div>
+
+      {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
+      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] min-h-screen">
+        {/* Sheet Handle Indicator */}
+        <div className="w-full flex justify-center pt-3 pb-1">
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full"></div>
+        </div>
+
+        <FilterSort />
+        <ProductGrid initialCategories={categories} />
+      </div>
     </div>
   );
 }

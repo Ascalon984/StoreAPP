@@ -30,9 +30,9 @@ export default function FilterSort() {
   if (!allFilters.some(f => f.id === 'discount')) allFilters.push(DISCOUNT_FILTER);
 
   return (
-    // 1. Ganti bg-white/95 ke background aplikasi agar menyatu secara natural
-    <section className="sticky top-[52px] z-30 bg-[#F8F9FA]/95 backdrop-blur-md border-y border-gray-200 shadow-[0_4px_10px_-5px_rgba(0,0,0,0.05)]">
-      <div className="max-w-container mx-auto px-4 py-2.5">
+    // Ganti bg ke white/95 untuk menyatu dengan bottom sheet baru
+    <section className="sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-[0_4px_10px_-5px_rgba(0,0,0,0.03)] pb-2 pt-1">
+      <div className="max-w-container mx-auto px-4 py-2">
         <div className="grid grid-cols-4 gap-2">
           {allFilters.map((option) => {
             const Icon = sortIconMap[option.id] || ArrowUpDown;
