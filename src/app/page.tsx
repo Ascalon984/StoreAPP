@@ -61,16 +61,19 @@ export default async function Home() {
         <CategoryGrid initialCategories={categories} />
       </div>
 
-      {/* LAYER ATAS: Foreground Sheet */}
-      <div className="relative z-10 bg-white rounded-t-[30px] -mt-8 shadow-[0_-12px_40px_rgba(0,0,0,0.08)] min-h-screen">
-        {/* Indikator Handle yang sedikit lebih halus warnanya */}
-        <div className="w-full flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1.5 bg-gray-200/80 rounded-full"></div>
+      {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
+      <div className="relative z-10 bg-white rounded-t-[30px] -mt-6 shadow-[0_-12px_40px_rgba(0,0,0,0.06)] min-h-screen">
+
+        {/* Sheet Handle Indicator - Lebih Thin & Compact */}
+        <div className="w-full flex justify-center pt-2.5 pb-0.5">
+          {/* Ukuran h diubah dari 1.5 ke 1 (4px) untuk kesan lebih thin */}
+          <div className="w-10 h-1 bg-gray-200/80 rounded-full" />
         </div>
 
-        {/* Filter & Grid */}
         <FilterSort />
-        <ProductGrid initialCategories={categories} />
+        <div className="px-4 py-2">
+          <ProductGrid initialCategories={categories} />
+        </div>
       </div>
     </div>
   );
