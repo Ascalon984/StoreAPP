@@ -138,7 +138,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                   unoptimized={index === 0} // Baypass Next.js image optimization untuk banner LCP agar tidak ada Render Delay
                 />
                 {/* Premium overlay untuk depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
               </div>
             </div>
           ))}
