@@ -51,7 +51,7 @@ export default async function Home() {
   const { banners, categories, settings } = await getInitData();
 
   return (
-    <div className="pb-24 relative bg-[#F8F9FA]">
+    <div className="relative bg-[#F8F9FA]">
       {/* Prime Zustand store dari SSR — eliminasi duplicate /api/public/settings fetch dari Navbar */}
       {settings && <SettingsHydrator settings={settings} />}
 
@@ -63,7 +63,7 @@ export default async function Home() {
 
       {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
       {/* Shadow dipoles: satu lapis halus untuk depth, satu lapis tipis untuk border top agar tajam */}
-      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.04),0_-1px_0_rgba(0,0,0,0.05)] min-h-screen">
+      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.04),0_-1px_0_rgba(0,0,0,0.05)] min-h-screen pb-24">
         {/* Sheet Handle Indicator - Lebih Thin & Compact */}
         <div className="w-full flex justify-center pt-2.5 pb-0.5">
           {/* Ukuran h diubah dari 1.5 ke 1 (4px) untuk kesan lebih thin */}
