@@ -65,8 +65,11 @@ export default function Navbar() {
   return (
     <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[72px]'}`}>
       <header
-        className={`absolute top-0 w-full transition-all duration-500 ease-in-out border-b border-white/25 ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
-          }`}
+        className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${
+          scrolled 
+            ? 'bg-emerald-800 border-b-2 border-emerald-950/30 shadow-layer-md' // Bold saat scroll
+            : 'bg-emerald-700 border-b-2 border-white/20' // Bold saat diam
+        }`}
       >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
@@ -113,7 +116,7 @@ export default function Navbar() {
                   </div>
 
                   {/* DIVIDER */}
-                  <div className="w-[2px] h-1 bg-emerald-500/70 mx-1 shrink-0" aria-hidden="true" />
+                  <div className="w-[1.5px] h-2.5 bg-white/40 mx-2 shrink-0 rounded-full" aria-hidden="true" />
 
                   {/* NO TELP */}
                   <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
