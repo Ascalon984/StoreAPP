@@ -67,10 +67,10 @@ export default function Navbar() {
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${
           scrolled 
-            ? 'bg-emerald-800 border-b-2 border-emerald-950/30 shadow-layer-md' // Bold saat scroll
-            : 'bg-emerald-700 border-b-2 border-white/35' // Bold saat diam
+            ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md' 
+            : 'bg-emerald-700 border-b-[1.5px] border-white/35'
         }`}
-      >
+        >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
           // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
