@@ -428,7 +428,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
             onTouchEnd={handleDragEnd}
           >
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-0.5 rounded-full bg-gray-300" />
+              <div className="w-10 h-1 rounded-full bg-gray-300" />
             </div>
             <div className="px-4 pb-3 pt-0.5 flex items-center border-b border-gray-100">
               <div className="flex items-center gap-2">
