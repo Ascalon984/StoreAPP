@@ -57,7 +57,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-emerald-800 ${scrolled ? 'shadow-layer-md' : ''
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
         }`}
     >
       {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -152,7 +152,7 @@ export default function Navbar() {
               strokeWidth={1.5}
             />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-800 shadow-sm animate-scale-in">
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-700 shadow-sm animate-scale-in">
                 {totalItems > 99 ? '99+' : totalItems}
               </span>
             )}
@@ -171,9 +171,16 @@ export default function Navbar() {
               strokeWidth={1.5}
             />
             {/* Online indicator dot */}
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-800" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
           </a>
         </div>
+      </div>
+      {/* ELEMEN DIVIDER PREMIUM (Letakkan di paling bawah setelah div container) */}
+      <div className={`absolute bottom-0 left-0 w-full transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Garis halus pembatas */}
+        <div className="w-full h-[0.5px] bg-black/10" />
+        {/* Bayangan berlapis (Ambient Shadow) */}
+        <div className="w-full h-[4px] bg-gradient-to-b from-black/[0.04] to-transparent" />
       </div>
     </header>
   );
