@@ -105,6 +105,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [thankYouIds, setThankYouIds] = useState<string[]>([]);
 
   useEffect(() => {
+    // Scroll to top saat halaman dimuat
+    window.scrollTo(0, 0);
+    
     fetchSettings();
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
