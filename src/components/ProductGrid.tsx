@@ -123,14 +123,18 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
   return (
     <>
       <section id="product-grid" className="px-4 py-3 min-h-[50vh]">
-        <div className="mb-3 flex flex-col px-0.5">
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
-            Produk {categoryName !== 'Semua' ? categoryName : ''}
-          </h2>
-          <p className="text-[10px] text-gray-500 font-medium mt-0.5">
+        <div className="mb-3 flex items-end justify-between px-0.5">
+          <div className="flex flex-col">
+            <h2 className="text-sm font-bold text-gray-800 tracking-tight leading-none">
+              Produk {categoryName !== 'Semua' ? categoryName : ''}
+            </h2>
+            {/* Optional: Jika ingin kategori sangat pendek, p bisa ditaruh di bawahnya atau sampingnya */}
+          </div>
+
+          <p className="text-[10px] text-gray-400 font-medium leading-none mb-[1px]">
             {isLoadingProducts
-              ? 'Memuat produk...'
-              : `Menampilkan ${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`
+              ? 'Memuat...'
+              : `${filtered.length} item ${sort !== 'popular' ? `• ${getSortName()}` : ''}`
             }
           </p>
         </div>

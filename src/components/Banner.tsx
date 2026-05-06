@@ -103,7 +103,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div className="flex items-center gap-2">
           {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
           <div className="w-[3px] h-4 bg-orange-400 rounded-full shadow-sm" />
-          <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
+          <h2 id="special-promo-label" className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Spesial Buat Kamu
           </h2>
         </div>
@@ -137,9 +137,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                   sizes="100vw"
                   className="object-cover"
                   priority={index === 0}
-                  unoptimized={index === 0} 
+                  unoptimized={index === 0}
                 />
-                
+
                 {/* Efek Inner Shadow Gradient agar teks banner (jika ada) lebih kontras */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
