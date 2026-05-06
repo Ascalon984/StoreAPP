@@ -64,7 +64,7 @@ export default async function Home() {
         {/* Ketinggian dikurangi menjadi 170px untuk mengimbangi Banner yang dinaikkan agar lebih menempel ke header */}
         <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-emerald-700 z-[-1]">
           <svg
-            className="absolute top-full left-0 w-full h-[35px] text-emerald-700 scale-x-[1.02] antialiased"
+            className="absolute top-full left-0 w-full h-[35px] text-emerald-700 antialiased"
             viewBox="0 0 100 35"
             preserveAspectRatio="none"
             fill="currentColor"
