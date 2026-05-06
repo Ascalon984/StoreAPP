@@ -63,7 +63,7 @@ export default function Navbar() {
   }, [handleKeyDown]);
 
   return (
-    <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[72px]'}`}>
+    <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[68px]'}`}>
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${
           scrolled 
@@ -74,7 +74,7 @@ export default function Navbar() {
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
           // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
-          scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2.5 pb-2.5 min-h-[72px]'
+          scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2 pb-2 min-h-[68px]'
           }`}>
           <Link
             href="/"
