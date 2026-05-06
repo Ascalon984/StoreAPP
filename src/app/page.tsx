@@ -57,7 +57,7 @@ export default async function Home() {
       {/* LAYER BAWAH: Sticky Canvas */}
       {/* Diubah ke top-[72px] agar langsung sticky sejak awal. 
           Ini mencegah banner bergerak naik/tertarik sebelum header menyusut. */}
-      <div className="sticky top-[72px] z-0 pt-2">
+      <div className="sticky top-[52px] z-0 pt-0">
 
         {/* BACKGROUND N-CURVE */}
         {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
