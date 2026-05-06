@@ -66,8 +66,8 @@ export default function Navbar() {
     <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[64px]'}`}>
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${scrolled
-            ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md'
-            : 'bg-emerald-700 border-b-[1.5px] border-white/35'
+          ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md'
+          : 'bg-emerald-700 border-b-[1.5px] border-white/35'
           }`}
       >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -159,7 +159,7 @@ export default function Navbar() {
             >
               <ShoppingCart size={22} strokeWidth={1.5} />
               {totalItems > 0 && (
-                <span className="absolute top-[3px] right-[3px] bg-white text-orange-600 text-[9px] font-black min-w-[15px] h-[15px] rounded-full flex items-center justify-center shadow-sm animate-scale-in leading-none pt-[0.5px]">
+                <span className="absolute top-[1.5px] right-[1.5px] bg-orange-500 text-white text-[10.5px] font-black min-w-[17px] h-[17px] rounded-full flex items-center justify-center animate-scale-in leading-none shadow-[0_1px_4px_rgba(0,0,0,0.3)] pt-[0.5px]">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
