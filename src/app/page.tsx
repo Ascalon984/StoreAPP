@@ -84,12 +84,17 @@ export default async function Home() {
       {/* LAYER ATAS: Bottomsheet */}
       <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
 
-        {/* Handle Indicator */}
-        <div className="w-full flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 bg-gray-200/60 rounded-full" />
+        {/* STICKY HEADER SHEET */}
+        {/* top-[52px] agar menempel persis di bawah navbar saat navbar menyusut */}
+        <div className="sticky top-[52px] z-30 bg-white rounded-t-[28px] pt-3 pb-2 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] border-b border-gray-50/50">
+          {/* Handle Indicator */}
+          <div className="w-full flex justify-center pb-2">
+            <div className="w-10 h-1 bg-gray-200/60 rounded-full" />
+          </div>
+
+          <FilterSort />
         </div>
 
-        <FilterSort />
         <ProductGrid initialCategories={categories} />
       </div>
     </div>

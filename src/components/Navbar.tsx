@@ -7,9 +7,15 @@ import { WA_NUMBER } from '@/lib/constants';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isProductDetail = pathname?.startsWith('/product/');
+
+  const [scrolledState, setScrolledState] = useState(false);
+  // Jika di halaman product detail, navbar selalu dalam mode hide (compact)
+  const scrolled = isProductDetail || scrolledState;
   const toggleCart = useCartStore((s) => s.toggleCart);
   const openSearch = useSearchStore((s) => s.openSearch);
   const { storeNameFirst, storeNameLast, waNumber, fetchSettings } = useSettingsStore();
@@ -25,18 +31,20 @@ export default function Navbar() {
 
   // Scroll listener
   useEffect(() => {
+    if (isProductDetail) return; // Tidak perlu listener di product detail karena selalu hide
+
     const handleScroll = () => {
       const offset = window.scrollY;
       // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu' (~350px scroll)
       if (offset > 370) {
-        setScrolled(true);
+        setScrolledState(true);
       } else if (offset < 320) {
-        setScrolled(false);
+        setScrolledState(false);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isProductDetail]);
 
   // ⌘K / Ctrl+K shortcut
   const handleKeyDown = useCallback(
@@ -55,7 +63,7 @@ export default function Navbar() {
   }, [handleKeyDown]);
 
   return (
-    <div className="sticky top-0 z-50 w-full h-[72px]">
+    <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[72px]'}`}>
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out border-b border-white/15 ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
           }`}
