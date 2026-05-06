@@ -20,7 +20,7 @@ export default function ScrollToBottomSheet() {
           
           // Scroll ke posisi di atas bottom sheet agar sheet indicator dan header terlihat jelas
           // Gunakan buffer lebih besar (120px) untuk memastikan bottom sheet fully expanded
-          const targetScroll = Math.max(bottomSheetTop - 120, 0);
+          const targetScroll = Math.max(bottomSheetTop - 70, 0);
           
           window.scrollTo({
             top: targetScroll,
