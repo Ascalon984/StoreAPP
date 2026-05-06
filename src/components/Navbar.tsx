@@ -26,20 +26,12 @@ export default function Navbar() {
   // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      const label = document.getElementById('special-promo-label');
-      if (label) {
-        const rect = label.getBoundingClientRect();
-
-        /**
-         * rect.top adalah posisi elemen terhadap viewport.
-         * Jika rect.top <= 72 (tinggi navbar), berarti label sudah menyentuh navbar.
-         * Kita beri sedikit buffer (misal 80) agar transisi terasa lebih halus sebelum benar-benar tertutup.
-         */
-        if (rect.top <= 80) {
-          setScrolled(true);
-        } else if (rect.top > 100) {
-          setScrolled(false);
-        }
+      const offset = window.scrollY;
+      // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu' (~350px scroll)
+      if (offset > 370) {
+        setScrolled(true);
+      } else if (offset < 320) {
+        setScrolled(false);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -81,7 +73,7 @@ export default function Navbar() {
               <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
                 }`}>
                 <Image
-                  src="/icons/logo toko pg.png"
+                  src="/icons/logo toko.png"
                   alt="Logo"
                   fill
                   className="object-contain"

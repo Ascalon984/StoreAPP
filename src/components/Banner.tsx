@@ -103,7 +103,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div className="flex items-center gap-2">
           {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
           <div className="w-[3px] h-4 bg-orange-400 rounded-full shadow-sm" />
-          <h2 id="special-promo-label" className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
+          <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Spesial Buat Kamu
           </h2>
         </div>
