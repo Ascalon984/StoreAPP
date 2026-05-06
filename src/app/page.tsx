@@ -59,20 +59,28 @@ export default async function Home() {
           Ini mencegah banner bergerak naik/tertarik sebelum header menyusut. */}
       <div className="sticky top-[72px] z-0">
 
-        {/* BACKGROUND N-CURVE */}
-        {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
-        {/* Ketinggian dikurangi menjadi 170px untuk mengimbangi Banner yang dinaikkan agar lebih menempel ke header */}
-        <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-emerald-700 z-[-1]">
-          <svg
-            className="absolute top-full left-0 w-full h-[35px] text-emerald-700 scale-x-[1.02] antialiased"
-            viewBox="0 0 100 35"
-            preserveAspectRatio="none"
-            fill="currentColor"
-            xmlns="http://w3.org"
-          >
-            {/* Q50 0 berarti titik puncak lengkungan ditarik ke koordinat 0 (paling atas) */}
-            <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
-          </svg>
+        {/* LAYER BAWAH: Sticky Canvas */}
+        <div className="sticky top-[72px] z-0">
+
+          {/* BACKGROUND N-CURVE */}
+          {/* Gunakan left-[-1%] dan w-[102%] untuk memastikan warna emerald menabrak pinggiran layar tanpa celah */}
+          <div className="absolute top-[-25px] left-[-1%] w-[102%] h-[170px] bg-emerald-700 z-[-1]">
+            <svg
+              className="absolute top-full left-0 w-full h-[35px] text-emerald-700 scale-x-[1.05] antialiased"
+              viewBox="0 0 100 35"
+              preserveAspectRatio="none"
+              fill="currentColor"
+              xmlns="http://w3.org"
+            >
+              <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
+            </svg>
+          </div>
+
+          {/* Area Konten Utama */}
+          <div className="relative">
+            <Banner initialBanners={banners} />
+            <CategoryGrid initialCategories={categories} />
+          </div>
         </div>
 
         {/* Konten dinaikkan agar merapat dengan header (menghapus mt-1) */}
