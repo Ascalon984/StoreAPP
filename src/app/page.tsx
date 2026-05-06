@@ -52,40 +52,47 @@ export default async function Home() {
 
   return (
     <div className="relative bg-[#F8F9FA]">
-      {/* Prime Zustand store dari SSR — eliminasi duplicate /api/public/settings fetch dari Navbar */}
       {settings && <SettingsHydrator settings={settings} />}
 
-      {/* LAYER BAWAH: Tertahan saat scroll (Sticky Canvas) */}
-      {/* Tambahkan pt-2 agar banner menabrak area hijau dengan overlap yang presisi */}
+      {/* LAYER BAWAH: Sticky Canvas */}
+      {/* top-[52px] disesuaikan dengan tinggi Navbar kamu */}
       <div className="sticky top-[52px] z-0 pt-2">
 
-        {/* BACKGROUND N-CURVE (HEADER EXTENSION) */}
-        {/* Dipindah ke dalam layer sticky agar tetap fixed saat discroll.
-            Base height 180px + curve 35px = 215px. Ini akan menutupi sekitar 80% dari total
-            ketinggian banner (menyisakan 20% area bawah banner menjuntai keluar dari lengkungan). 
-        */}
+        {/* BACKGROUND N-CURVE */}
         <div className="absolute top-0 left-0 w-full h-[160px] bg-emerald-700 z-[-1]">
+          {/* 
+            Optimasi SVG: 
+            - viewBox disamakan h-[30] agar tidak stretch aneh.
+            - Menambahkan scale-105 untuk memastikan tidak ada celah putih di pinggir layar.
+          */}
           <svg
-            className="absolute top-full left-0 w-full h-[30px] text-emerald-700"
-            viewBox="0 0 100 35"
+            className="absolute top-full left-0 w-full h-[30px] text-emerald-700 scale-[1.02]"
+            viewBox="0 0 100 30"
             preserveAspectRatio="none"
             fill="currentColor"
           >
+            {/* Q50 0 berarti titik puncak lengkungan ditarik ke koordinat 0 (paling atas) */}
             <path d="M0 0 L100 0 L100 30 Q50 0 0 30 Z" />
           </svg>
         </div>
 
-        <Banner initialBanners={banners} />
-        <CategoryGrid initialCategories={categories} />
+        {/* Beri sedikit margin agar teks 'Spesial Buat Kamu' tidak menempel ke header */}
+        <div className="mt-1">
+          <Banner initialBanners={banners} />
+          <CategoryGrid initialCategories={categories} />
+        </div>
       </div>
 
-      {/* LAYER ATAS: Bottomsheet yang meluncur naik (Foreground Sheet) */}
-      {/* Shadow dipoles: satu lapis halus untuk depth, satu lapis tipis untuk border top agar tajam */}
-      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-8px_30px_rgba(0,0,0,0.04),0_-1px_0_rgba(0,0,0,0.05)] min-h-screen pb-24">
-        {/* Sheet Handle Indicator - Lebih Thin & Compact */}
-        <div className="w-full flex justify-center pt-2.5 pb-0.5">
-          {/* Ukuran h diubah dari 1.5 ke 1 (4px) untuk kesan lebih thin */}
-          <div className="w-10 h-1 bg-gray-200/50 rounded-full" />
+      {/* LAYER ATAS: Bottomsheet */}
+      {/* 
+        Tips: mt-4 sudah bagus, tapi jika ingin banner terlihat lebih menyatu saat scroll, 
+        kamu bisa kurangi mt-nya sedikit atau gunakan mt-[-10px] jika ingin efek overlap.
+      */}
+      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
+
+        {/* Handle Indicator */}
+        <div className="w-full flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 bg-gray-200/60 rounded-full" />
         </div>
 
         <FilterSort />
