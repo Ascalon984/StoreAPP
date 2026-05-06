@@ -65,12 +65,11 @@ export default function Navbar() {
   return (
     <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[64px]'}`}>
       <header
-        className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${
-          scrolled 
-            ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md' 
+        className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${scrolled
+            ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md'
             : 'bg-emerald-700 border-b-[1.5px] border-white/35'
-        }`}
-        >
+          }`}
+      >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
           // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
@@ -158,12 +157,9 @@ export default function Navbar() {
               className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="Cart"
             >
-              <ShoppingCart
-                size={22}
-                strokeWidth={1.5}
-              />
+              <ShoppingCart size={22} strokeWidth={1.5} />
               {totalItems > 0 && (
-                <span className="absolute top-0.5 right-0.5 text-orange-500 text-[11px] font-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] animate-scale-in leading-none">
+                <span className="absolute top-[3px] right-[3px] bg-white text-orange-600 text-[9px] font-black min-w-[15px] h-[15px] rounded-full flex items-center justify-center shadow-sm animate-scale-in leading-none pt-[0.5px]">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
