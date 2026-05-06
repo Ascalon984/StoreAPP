@@ -90,8 +90,8 @@ export default async function Home() {
         {/* top-[52px] agar menempel persis di bawah navbar saat navbar menyusut */}
         <div className="sticky top-[52px] z-30 bg-white rounded-t-[28px] pt-3 pb-2 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] border-b border-gray-50/50">
           {/* Handle Indicator */}
-          <div className="w-full flex justify-center pb-1">
-            <div className="w-14 h-0.5 bg-gray-200/80 rounded-full" />
+          <div className="w-full flex justify-center pb-2">
+            <div className="w-14 h-1 bg-gray-200/60 rounded-full" />
           </div>
 
           <FilterSort />
