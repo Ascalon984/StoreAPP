@@ -64,14 +64,14 @@ export default async function Home() {
             Base height 180px + curve 35px = 215px. Ini akan menutupi sekitar 80% dari total
             ketinggian banner (menyisakan 20% area bawah banner menjuntai keluar dari lengkungan). 
         */}
-        <div className="absolute top-0 left-0 w-full h-[120px] bg-emerald-700 z-[-1]">
+        <div className="absolute top-0 left-0 w-full h-[160px] bg-emerald-700 z-[-1]">
           <svg
-            className="absolute top-full left-0 w-full h-[24px] text-emerald-700"
+            className="absolute top-full left-0 w-full h-[30px] text-emerald-700"
             viewBox="0 0 100 35"
             preserveAspectRatio="none"
             fill="currentColor"
           >
-            <path d="M0 0 L100 0 L100 24 Q50 0 0 24 Z" />
+            <path d="M0 0 L100 0 L100 30 Q50 0 0 30 Z" />
           </svg>
         </div>
 
