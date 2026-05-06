@@ -68,7 +68,6 @@ export default async function Home() {
             viewBox="0 0 100 35"
             preserveAspectRatio="none"
             fill="currentColor"
-            xmlns="http://w3.org"
           >
             {/* Q50 0 berarti titik puncak lengkungan ditarik ke koordinat 0 (paling atas) */}
             <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
