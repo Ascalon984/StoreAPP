@@ -175,13 +175,6 @@ export default function Navbar() {
           </a>
         </div>
       </div>
-      {/* ELEMEN DIVIDER PREMIUM (Letakkan di paling bawah setelah div container) */}
-      <div className={`absolute bottom-0 left-0 w-full transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
-        {/* Garis halus pembatas */}
-        <div className="w-full h-[0.5px] bg-black/10" />
-        {/* Bayangan berlapis (Ambient Shadow) */}
-        <div className="w-full h-[4px] bg-gradient-to-b from-black/[0.04] to-transparent" />
-      </div>
     </header>
   );
 }
