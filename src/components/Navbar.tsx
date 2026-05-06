@@ -57,7 +57,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700/95 backdrop-blur-[2px]'
         }`}
     >
       {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -92,8 +92,8 @@ export default function Navbar() {
 
           {/* Container Grid dengan Polish Animasi */}
           <div className={`grid transition-all duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${scrolled
-              ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
-              : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
+            ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
+            : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
             }`}>
             <div className="overflow-hidden">
               <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
