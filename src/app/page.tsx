@@ -88,7 +88,7 @@ export default async function Home() {
 
         <div className="sticky top-[52px] z-30 bg-white rounded-t-[28px] pt-2 pb-1.5 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] border-b border-gray-50/50">
           {/* Handle Indicator */}
-          <div className="w-full flex justify-center pb-1">
+          <div className="w-full flex justify-center pb-1.5">
             <div className="w-14 h-1 bg-gray-200/60 rounded-full" />
           </div>
 
