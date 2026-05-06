@@ -11,23 +11,22 @@ export default function ScrollToBottomSheet() {
       // Delay untuk memastikan DOM sudah siap dan rendering selesai
       const timer = setTimeout(() => {
         const bottomSheetElement = document.getElementById('bottom-sheet');
-        
+
         if (bottomSheetElement) {
           // Dapatkan posisi top dari bottom sheet relative ke window
           const rect = bottomSheetElement.getBoundingClientRect();
           const scrollY = window.scrollY;
           const bottomSheetTop = scrollY + rect.top;
-          
-          // Scroll ke posisi di atas bottom sheet agar sheet indicator dan header terlihat jelas
+
           // Gunakan buffer lebih besar (60px) untuk memastikan bottom sheet fully expanded
           const targetScroll = Math.max(bottomSheetTop - 60, 0);
-          
+
           window.scrollTo({
             top: targetScroll,
             behavior: 'smooth'
           });
         }
-        
+
         setIsReturningFromDetail(false);
       }, 200);
 
