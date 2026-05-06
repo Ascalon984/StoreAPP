@@ -27,11 +27,10 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      // Gunakan Histeresis: 
-      // Masuk ke mode compact di > 40px, kembali ke normal hanya jika < 10px
-      if (offset > 40) {
+      // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu' (~350px scroll)
+      if (offset > 350) {
         setScrolled(true);
-      } else if (offset < 10) {
+      } else if (offset < 310) {
         setScrolled(false);
       }
     };
@@ -56,15 +55,15 @@ export default function Navbar() {
   }, [handleKeyDown]);
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
-        }`}
-    >
-      {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
-      <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
-        // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
-        scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2.5 pb-2.5 min-h-[72px]'
-        }`}>
+    // WRAPPER: Tinggi dibuat konstan 72px agar tidak terjadi 'lompatan' konten di bawahnya saat navbar menyusut
+    <div className="sticky top-0 z-50 w-full h-[72px]">
+      <header
+        className={`absolute top-0 w-full transition-all duration-500 ease-in-out border-b border-white/15 ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
+          }`}
+      >
+        <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
+          scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2.5 pb-2.5 min-h-[72px]'
+          }`}>
         <Link
           href="/"
           className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
@@ -174,7 +173,7 @@ export default function Navbar() {
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
           </a>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }
