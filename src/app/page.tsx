@@ -3,6 +3,7 @@ import CategoryGrid from '@/components/CategoryGrid';
 import FilterSort from '@/components/FilterSort';
 import ProductGrid from '@/components/ProductGrid';
 import SettingsHydrator from '@/components/SettingsHydrator';
+import ScrollToBottomSheet from '@/components/ScrollToBottomSheet';
 import { Banner as BannerType, Category } from '@/lib/types';
 
 interface Settings {
@@ -53,6 +54,7 @@ export default async function Home() {
   return (
     <div className="relative bg-[#F8F9FA]">
       {settings && <SettingsHydrator settings={settings} />}
+      <ScrollToBottomSheet />
 
       {/* LAYER BAWAH: Sticky Canvas */}
       {/* Diubah ke top-[72px] agar langsung sticky sejak awal. 
@@ -82,7 +84,7 @@ export default async function Home() {
       </div>
 
       {/* LAYER ATAS: Bottomsheet */}
-      <div className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
+      <div id="bottom-sheet" className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
 
         {/* STICKY HEADER SHEET */}
         {/* top-[52px] agar menempel persis di bawah navbar saat navbar menyusut */}

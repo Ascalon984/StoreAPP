@@ -14,6 +14,7 @@ import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { useNavigationStore } from '@/store/useNavigationStore';
 import { Product, Review } from '@/lib/types';
 import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
@@ -303,7 +304,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
+  const { setIsReturningFromDetail } = useNavigationStore();
+
   const handleBack = () => {
+    setIsReturningFromDetail(true);
     window.history.back();
   };
 
