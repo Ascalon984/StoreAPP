@@ -113,7 +113,7 @@ export default function Navbar() {
                   </div>
 
                   {/* DIVIDER */}
-                  <div className="w-[1.5px] h-3 bg-emerald-500/70 mx-1 shrink-0" aria-hidden="true" />
+                  <div className="w-[2px] h-1 bg-emerald-500/70 mx-1 shrink-0" aria-hidden="true" />
 
                   {/* NO TELP */}
                   <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
