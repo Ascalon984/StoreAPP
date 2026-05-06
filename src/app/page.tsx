@@ -55,10 +55,13 @@ export default async function Home() {
       {settings && <SettingsHydrator settings={settings} />}
 
       {/* LAYER BAWAH: Sticky Canvas */}
-      <div className="sticky top-[52px] z-0 pt-2">
+      {/* Diubah ke top-[72px] agar langsung sticky sejak awal. 
+          Ini mencegah banner bergerak naik/tertarik sebelum header menyusut. */}
+      <div className="sticky top-[72px] z-0 pt-2">
 
         {/* BACKGROUND N-CURVE */}
-        <div className="absolute top-0 left-0 w-full h-[165px] bg-emerald-700 z-[-1]">
+        {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
+        <div className="absolute top-[-25px] left-0 w-full h-[190px] bg-emerald-700 z-[-1]">
           <svg
             className="absolute top-full left-0 w-full h-[35px] text-emerald-700 scale-x-[1.02] antialiased"
             viewBox="0 0 100 35"
