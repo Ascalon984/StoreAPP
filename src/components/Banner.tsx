@@ -97,7 +97,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-4 pt-4 pb-2">
+    <section className="px-4 pt-2 pb-2">
       {/* Header Section: Menggunakan font-bold tracking-tight yang sudah kamu tentukan */}
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
