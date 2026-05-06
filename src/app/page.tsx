@@ -57,12 +57,12 @@ export default async function Home() {
       {/* LAYER BAWAH: Sticky Canvas */}
       {/* Diubah ke top-[72px] agar langsung sticky sejak awal. 
           Ini mencegah banner bergerak naik/tertarik sebelum header menyusut. */}
-      <div className="sticky top-[52px] z-0">
+      <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE */}
         {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
         {/* Ketinggian dikurangi menjadi 170px untuk mengimbangi Banner yang dinaikkan agar lebih menempel ke header */}
-        <div className="absolute top-[-25px] left-0 w-full h-[150px] bg-emerald-700 z-[-1]">
+        <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-emerald-700 z-[-1]">
           <svg
             className="absolute top-full left-0 w-full h-[35px] text-emerald-700 scale-x-[1.02] antialiased"
             viewBox="0 0 100 35"
