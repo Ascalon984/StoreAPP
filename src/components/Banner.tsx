@@ -101,12 +101,13 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
       {/* Header Section: Menggunakan font-bold tracking-tight yang sudah kamu tentukan */}
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
-          <h2 className="text-sm font-bold text-gray-900 tracking-tight">
+          {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
+          <div className="w-[3px] h-4 bg-orange-400 rounded-full shadow-sm" />
+          <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Spesial Buat Kamu
           </h2>
         </div>
-        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
+        <p className="text-[11px] text-emerald-100 font-medium mt-0.5 ml-[11px] leading-tight drop-shadow-sm">
           Promo eksklusif hanya untukmu hari ini
         </p>
       </div>

@@ -57,7 +57,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out bg-white border-b border-gray-100 ${scrolled ? 'shadow-layer-md' : 'shadow-layer-xs'
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
         }`}
     >
       {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -83,10 +83,10 @@ export default function Navbar() {
 
             <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-[16px]' : 'text-[22px]'
               }`}>
-              <span className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 bg-clip-text text-transparent">
+              <span className="text-white drop-shadow-sm">
                 {storeNameFirst}
               </span>
-              {storeNameLast && <span className="text-[#9a3412]">{storeNameLast}</span>}
+              {storeNameLast && <span className="text-emerald-100 drop-shadow-sm">{storeNameLast}</span>}
             </h1>
           </div>
 
@@ -96,20 +96,20 @@ export default function Navbar() {
               : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
             }`}>
             <div className="overflow-hidden">
-              <div className="flex items-center justify-between px-0.5 text-gray-800 font-bold text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
+              <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
 
                 {/* ALAMAT */}
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                  <MapPin size={9} className="text-red-700 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                  <MapPin size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
                   <span className="whitespace-nowrap">Telang Indah, Kamal</span>
                 </div>
 
                 {/* DIVIDER */}
-                <div className="w-[1px] h-2 bg-gray-300 mx-1 shrink-0" aria-hidden="true" />
+                <div className="w-[1px] h-2 bg-emerald-500/50 mx-1 shrink-0" aria-hidden="true" />
 
                 {/* NO TELP */}
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                  <Phone size={9} className="text-emerald-800 flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                  <Phone size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
                   <span className="whitespace-nowrap">081-9960-0135</span>
                 </div>
 
@@ -118,12 +118,12 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Search Bar Desktop: Ubah text-gray-500 menjadi text-gray-600 untuk kontras */}
+        {/* Search Bar Desktop */}
         <button
           onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2.5 bg-white hover:bg-gray-50 rounded-full text-gray-700 text-sm transition-all duration-300 border border-gray-200 shadow-layer-sm hover:shadow-layer-md active:scale-[0.98]"
+          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2 bg-white/95 hover:bg-white rounded-full text-gray-700 text-sm transition-all duration-300 shadow-sm hover:shadow-md active:scale-[0.98]"
         >
-          <Search size={18} strokeWidth={2.5} className="text-gray-600" />
+          <Search size={18} strokeWidth={2.5} className="text-emerald-700" />
           <span className="flex-1 text-left font-semibold">Cari produk...</span>
           <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
             <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
@@ -135,25 +135,24 @@ export default function Navbar() {
           {/* Search — Mobile */}
           <button
             onClick={openSearch}
-            className="sm:hidden p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
+            className="sm:hidden p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
             aria-label="Search"
           >
-            <Search size={22} strokeWidth={1.5} className="text-gray-600" />
+            <Search size={22} strokeWidth={1.5} />
           </button>
 
           {/* Cart */}
           <button
             onClick={toggleCart}
-            className="relative p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
+            className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
             aria-label="Cart"
           >
             <ShoppingCart
               size={22}
               strokeWidth={1.5}
-              className="text-gray-600"
             />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-white shadow-sm animate-scale-in">
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-700 shadow-sm animate-scale-in">
                 {totalItems > 99 ? '99+' : totalItems}
               </span>
             )}
@@ -164,16 +163,15 @@ export default function Navbar() {
             href={`https://wa.me/${waNumber}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative p-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 active:scale-90 transition-all duration-200"
+            className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
             aria-label="WhatsApp"
           >
             <MessageCircle
               size={22}
               strokeWidth={1.5}
-              className="text-gray-600"
             />
             {/* Online indicator dot */}
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-white" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
           </a>
         </div>
       </div>

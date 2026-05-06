@@ -55,8 +55,22 @@ export default async function Home() {
       {/* Prime Zustand store dari SSR — eliminasi duplicate /api/public/settings fetch dari Navbar */}
       {settings && <SettingsHydrator settings={settings} />}
 
+      {/* BACKGROUND N-CURVE (HEADER EXTENSION) */}
+      {/* 85px base height covers the Banner title area, 25px curve overlaps ~20% of the banner image */}
+      <div className="absolute top-0 left-0 w-full h-[85px] bg-emerald-700 z-0">
+        <svg 
+          className="absolute top-full left-0 w-full h-[25px] text-emerald-700" 
+          viewBox="0 0 100 25" 
+          preserveAspectRatio="none"
+          fill="currentColor"
+        >
+          <path d="M0 0 L100 0 L100 25 Q50 0 0 25 Z" />
+        </svg>
+      </div>
+
       {/* LAYER BAWAH: Tertahan saat scroll (Sticky Canvas) */}
-      <div className="sticky top-[52px] z-0">
+      {/* Tambahkan pt-2 agar banner menabrak area hijau dengan overlap yang presisi */}
+      <div className="sticky top-[52px] z-0 pt-2">
         <Banner initialBanners={banners} />
         <CategoryGrid initialCategories={categories} />
       </div>
