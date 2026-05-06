@@ -163,7 +163,7 @@ export default function Navbar() {
                 strokeWidth={1.5}
               />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-700 shadow-sm animate-scale-in">
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 animate-scale-in">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
