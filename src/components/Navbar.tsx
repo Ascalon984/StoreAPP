@@ -68,7 +68,7 @@ export default function Navbar() {
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${
           scrolled 
             ? 'bg-emerald-800 border-b-2 border-emerald-950/30 shadow-layer-md' // Bold saat scroll
-            : 'bg-emerald-700 border-b-2 border-white/20' // Bold saat diam
+            : 'bg-emerald-700 border-b-2 border-white/35' // Bold saat diam
         }`}
       >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -116,7 +116,7 @@ export default function Navbar() {
                   </div>
 
                   {/* DIVIDER */}
-                  <div className="w-[1.5px] h-2.5 bg-white/40 mx-2 shrink-0 rounded-full" aria-hidden="true" />
+                  <div className="w-[1.5px] h-2 bg-white/40 mx-2 shrink-0 rounded-full" aria-hidden="true" />
 
                   {/* NO TELP */}
                   <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
