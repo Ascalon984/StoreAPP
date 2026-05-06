@@ -55,123 +55,125 @@ export default function Navbar() {
   }, [handleKeyDown]);
 
   return (
-    // WRAPPER: Tinggi dibuat konstan 72px agar tidak terjadi 'lompatan' konten di bawahnya saat navbar menyusut
     <div className="sticky top-0 z-50 w-full h-[72px]">
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out border-b border-white/15 ${scrolled ? 'bg-emerald-800 shadow-layer-md' : 'bg-emerald-700'
           }`}
       >
+        {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
+          // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
           scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2.5 pb-2.5 min-h-[72px]'
           }`}>
-        <Link
-          href="/"
-          className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
-        >
-          <div className="flex items-center gap-2">
-            <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
-              }`}>
-              <Image
-                src="/icons/logo toko.png"
-                alt="Logo"
-                fill
-                className="object-contain"
-                priority // Tambahkan priority agar logo tidak flickering saat load
-              />
+          <Link
+            href="/"
+            className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
+                }`}>
+                <Image
+                  src="/icons/logo toko.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain"
+                  priority // Tambahkan priority agar logo tidak flickering saat load
+                />
+              </div>
+
+              <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-[16px]' : 'text-[22px]'
+                }`}>
+                <span className="text-white drop-shadow-sm">
+                  {storeNameFirst}
+                </span>
+                {storeNameLast && <span className="text-emerald-100 drop-shadow-sm">{storeNameLast}</span>}
+              </h1>
             </div>
 
-            <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500 ${scrolled ? 'text-[16px]' : 'text-[22px]'
+            {/* Container Grid dengan Polish Animasi */}
+            <div className={`grid transition-all duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${scrolled
+              ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
+              : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
               }`}>
-              <span className="text-white drop-shadow-sm">
-                {storeNameFirst}
-              </span>
-              {storeNameLast && <span className="text-emerald-100 drop-shadow-sm">{storeNameLast}</span>}
-            </h1>
-          </div>
+              <div className="overflow-hidden">
+                <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
 
-          {/* Container Grid dengan Polish Animasi */}
-          <div className={`grid transition-all duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${scrolled
-            ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
-            : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
-            }`}>
-            <div className="overflow-hidden">
-              <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
+                  {/* ALAMAT */}
+                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                    <MapPin size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                    <span className="whitespace-nowrap">Telang Indah, Kamal</span>
+                  </div>
 
-                {/* ALAMAT */}
-                <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
-                  <MapPin size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
-                  <span className="whitespace-nowrap">Telang Indah, Kamal</span>
+                  {/* DIVIDER */}
+                  <div className="w-[1px] h-2 bg-emerald-500/50 mx-1 shrink-0" aria-hidden="true" />
+
+                  {/* NO TELP */}
+                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                    <Phone size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
+                    <span className="whitespace-nowrap">081-9960-0135</span>
+                  </div>
+
                 </div>
-
-                {/* DIVIDER */}
-                <div className="w-[1px] h-2 bg-emerald-500/50 mx-1 shrink-0" aria-hidden="true" />
-
-                {/* NO TELP */}
-                <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
-                  <Phone size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
-                  <span className="whitespace-nowrap">081-9960-0135</span>
-                </div>
-
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Search Bar Desktop */}
-        <button
-          onClick={openSearch}
-          className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2 bg-white/95 hover:bg-white rounded-full text-gray-700 text-sm transition-all duration-300 shadow-sm hover:shadow-md active:scale-[0.98]"
-        >
-          <Search size={18} strokeWidth={2.5} className="text-emerald-700" />
-          <span className="flex-1 text-left font-semibold">Cari produk...</span>
-          <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
-            <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
-          </kbd>
-        </button>
-
-        {/* Actions */}
-        <div className="flex items-center gap-0.5 sm:gap-1">
-          {/* Search — Mobile */}
+          {/* Search Bar Desktop */}
           <button
             onClick={openSearch}
-            className="sm:hidden p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-            aria-label="Search"
+            className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2 bg-white/95 hover:bg-white rounded-full text-gray-700 text-sm transition-all duration-300 shadow-sm hover:shadow-md active:scale-[0.98]"
           >
-            <Search size={22} strokeWidth={1.5} />
+            <Search size={18} strokeWidth={2.5} className="text-emerald-700" />
+            <span className="flex-1 text-left font-semibold">Cari produk...</span>
+            <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
+              <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
+            </kbd>
           </button>
 
-          {/* Cart */}
-          <button
-            onClick={toggleCart}
-            className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-            aria-label="Cart"
-          >
-            <ShoppingCart
-              size={22}
-              strokeWidth={1.5}
-            />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-700 shadow-sm animate-scale-in">
-                {totalItems > 99 ? '99+' : totalItems}
-              </span>
-            )}
-          </button>
+          {/* Actions */}
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            {/* Search — Mobile */}
+            <button
+              onClick={openSearch}
+              className="sm:hidden p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              aria-label="Search"
+            >
+              <Search size={22} strokeWidth={1.5} />
+            </button>
 
-          {/* WhatsApp */}
-          <a
-            href={`https://wa.me/${waNumber}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-            aria-label="WhatsApp"
-          >
-            <MessageCircle
-              size={22}
-              strokeWidth={1.5}
-            />
-            {/* Online indicator dot */}
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
-          </a>
+            {/* Cart */}
+            <button
+              onClick={toggleCart}
+              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              aria-label="Cart"
+            >
+              <ShoppingCart
+                size={22}
+                strokeWidth={1.5}
+              />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 ring-[2.5px] ring-emerald-700 shadow-sm animate-scale-in">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </button>
+
+            {/* WhatsApp */}
+            <a
+              href={`https://wa.me/${waNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle
+                size={22}
+                strokeWidth={1.5}
+              />
+              {/* Online indicator dot */}
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
+            </a>
+          </div>
         </div>
       </header>
     </div>
