@@ -58,20 +58,20 @@ export default async function Home() {
       {/* LAYER BAWAH: Tertahan saat scroll (Sticky Canvas) */}
       {/* Tambahkan pt-2 agar banner menabrak area hijau dengan overlap yang presisi */}
       <div className="sticky top-[52px] z-0 pt-2">
-        
+
         {/* BACKGROUND N-CURVE (HEADER EXTENSION) */}
         {/* Dipindah ke dalam layer sticky agar tetap fixed saat discroll.
             Base height 180px + curve 35px = 215px. Ini akan menutupi sekitar 80% dari total
             ketinggian banner (menyisakan 20% area bawah banner menjuntai keluar dari lengkungan). 
         */}
-        <div className="absolute top-0 left-0 w-full h-[180px] bg-emerald-700 z-[-1]">
-          <svg 
-            className="absolute top-full left-0 w-full h-[35px] text-emerald-700" 
-            viewBox="0 0 100 35" 
+        <div className="absolute top-0 left-0 w-full h-[120px] bg-emerald-700 z-[-1]">
+          <svg
+            className="absolute top-full left-0 w-full h-[24px] text-emerald-700"
+            viewBox="0 0 100 35"
             preserveAspectRatio="none"
             fill="currentColor"
           >
-            <path d="M0 0 L100 0 L100 35 Q50 0 0 35 Z" />
+            <path d="M0 0 L100 0 L100 24 Q50 0 0 24 Z" />
           </svg>
         </div>
 
