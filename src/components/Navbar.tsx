@@ -159,7 +159,7 @@ export default function Navbar() {
             >
               <ShoppingCart size={22} strokeWidth={1.5} />
               {totalItems > 0 && (
-                <span className="absolute top-[1.5px] right-[1.5px] bg-orange-500 text-white text-[10.5px] font-black min-w-[17px] h-[17px] rounded-full flex items-center justify-center animate-scale-in leading-none shadow-[0_1px_4px_rgba(0,0,0,0.3)] pt-[0.5px]">
+                <span className="absolute top-[3px] right-[3px] bg-orange-600 text-white text-[9px] font-black min-w-[15px] h-[15px] rounded-full flex items-center justify-center shadow-sm animate-scale-in leading-none pt-[0.5px]">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
