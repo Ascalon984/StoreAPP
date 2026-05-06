@@ -74,7 +74,7 @@ export default function Navbar() {
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
         <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
           // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
-          scrolled ? 'pt-2 pb-1.5 min-h-[52px]' : 'pt-2 pb-1.5 min-h-[64px]'
+          scrolled ? 'pt-1.5 pb-1.5 min-h-[52px]' : 'pt-1.5 pb-1.5 min-h-[64px]'
           }`}>
           <Link
             href="/"
@@ -107,7 +107,7 @@ export default function Navbar() {
               : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
               }`}>
               <div className="overflow-hidden">
-                <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1.5 pb-0.5">
+                <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1 pb-0.5">
 
                   {/* ALAMAT */}
                   <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
