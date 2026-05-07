@@ -385,14 +385,21 @@ export default function ReviewModal() {
               <div className="w-10 h-1 rounded-full bg-gray-400" />
             </div>
 
-            <div className="px-4 pb-3 pt-0.5 flex items-center border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <MessageSquareText size={16} className="text-primary" strokeWidth={1.5} />
-                </div>
+            <div className="px-4 pb-4 pt-1 flex items-center border-b border-gray-50">
+              <div className="flex items-center gap-3">
+                {/* Ikon Tanpa Box - Lebih Clean */}
+                <MessageSquareText 
+                  size={20} 
+                  className="text-emerald-600" 
+                  strokeWidth={2} 
+                />
                 <div>
-                  <h2 className="text-sm font-bold text-gray-900 leading-tight">Beri Ulasan</h2>
-                  <p className="text-[10px] text-gray-600 mt-0.5">Bantu pembeli lain dengan ulasanmu</p>
+                  <h2 className="text-[15px] font-black text-gray-800 leading-tight tracking-tight">
+                    Beri Ulasan
+                  </h2>
+                  <p className="text-[10px] text-gray-500 mt-0.5 font-medium">
+                    Bantu pembeli lain dengan ulasanmu
+                  </p>
                 </div>
               </div>
             </div>

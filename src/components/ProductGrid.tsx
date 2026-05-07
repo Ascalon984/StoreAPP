@@ -126,7 +126,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
         <div className="mb-3 flex items-end justify-between px-0.5">
           <div className="flex flex-col">
             <h2 className="text-sm font-bold text-gray-800 tracking-tight leading-none">
-              Produk {categoryName !== 'Semua' ? categoryName : ''}
+              Semua Produk {categoryName !== 'Semua' ? categoryName : ''}
             </h2>
             {/* Optional: Jika ingin kategori sangat pendek, p bisa ditaruh di bawahnya atau sampingnya */}
           </div>

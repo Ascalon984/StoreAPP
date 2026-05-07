@@ -645,17 +645,17 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
                       <div>
                         {/* Nama Pembeli + Ikon Verified Sejajar */}
-                        <div className="flex items-center gap-1.5">
-                          <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none truncate">
                             {maskName(review.name)}
                           </p>
-                          {review.isVerified && (
+                          {/* {review.isVerified && (
                             <CheckCircle
                               size={11}
                               strokeWidth={3.5}
                               className="text-emerald-500 flex-shrink-0"
                             />
-                          )}
+                          )} */}
                         </div>
 
                         {/* Rating Bintang di bawah Nama */}
