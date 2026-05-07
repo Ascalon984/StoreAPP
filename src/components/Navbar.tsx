@@ -94,7 +94,7 @@ export default function Navbar() {
               <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500
   ${scrolled ? 'text-[16px]' : 'text-[22px]'}`}>
 
-                <span className="text-white drop-shadow-md">
+                <span className="text-teal-400 drop-shadow-md">
                   {storeNameFirst}
                 </span>
 
@@ -115,7 +115,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1 pb-0.5">
 
                   {/* ALAMAT */}
-                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/95">
                     <MapPin size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
                     <span className="whitespace-nowrap">Telang Indah, Kamal</span>
                   </div>
@@ -124,7 +124,7 @@ export default function Navbar() {
                   <div className="w-[1.5px] h-2 bg-white/25 mx-2 shrink-0 rounded-full" aria-hidden="true" />
 
                   {/* NO TELP */}
-                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">
+                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/95">
                     <Phone size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
                     <span className="whitespace-nowrap">081-9960-0135</span>
                   </div>
