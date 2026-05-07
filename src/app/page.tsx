@@ -61,21 +61,26 @@ export default async function Home() {
           Ini mencegah banner bergerak naik/tertarik sebelum header menyusut. */}
       <div className="sticky top-[72px] z-0">
 
-        {/* BACKGROUND N-CURVE */}
-        {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
-        {/* Ketinggian dikurangi menjadi 170px untuk mengimbangi Banner yang dinaikkan agar lebih menempel ke header */}
-        <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-teal-700 z-[-1]">
-          <svg
-            className="absolute top-full left-0 w-full h-[35px] text-teal-700 antialiased"
-            viewBox="0 0 100 35"
-            preserveAspectRatio="none"
-            fill="currentColor"
-          >
-            {/* Q50 0 berarti titik puncak lengkungan ditarik ke koordinat 0 (paling atas) */}
-            <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
-          </svg>
-        </div>
+        {/* BACKGROUND N-CURVE CONTAINER */}
+        <div className="absolute top-[-25px] left-0 w-full h-[170px] z-[-1]">
+          {/* LAYER 1: Background Emerald Utama */}
+          <div className="relative w-full h-full bg-[#065F46]">
 
+            {/* LAYER 2: Shape N Amber */}
+            <svg
+              className="absolute top-full left-0 w-full h-[38px] text-[#D97706] antialiased"
+              viewBox="0 0 100 35"
+              preserveAspectRatio="none"
+              fill="currentColor"
+            >
+              {/* Q50 0 menarik puncak lengkungan ke tengah atas secara sempurna */}
+              <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
+            </svg>
+
+            {/* Penutup gap untuk anti-aliasing browser */}
+            <div className="absolute -bottom-[0.5px] left-0 w-full h-[1px] bg-[#065F46]" />
+          </div>
+        </div>
 
         {/* Konten dinaikkan agar merapat dengan header (menghapus mt-1) */}
         <div>

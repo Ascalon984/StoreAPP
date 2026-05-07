@@ -96,7 +96,7 @@ export default function Navbar() {
                 <span className="text-white drop-shadow-sm">
                   {storeNameFirst}
                 </span>
-                {storeNameLast && <span className="text-teal-100 drop-shadow-sm">{storeNameLast}</span>}
+                {storeNameLast && <span className="text-emerald-100 drop-shadow-sm">{storeNameLast}</span>}
               </h1>
             </div>
 
@@ -133,7 +133,7 @@ export default function Navbar() {
             onClick={openSearch}
             className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2 bg-white/95 hover:bg-white rounded-full text-gray-700 text-sm transition-all duration-300 shadow-sm hover:shadow-md active:scale-[0.98]"
           >
-            <Search size={18} strokeWidth={2.5} className="text-teal-700" />
+            <Search size={18} strokeWidth={2.5} className="text-emerald-700" />
             <span className="flex-1 text-left font-semibold">Cari produk...</span>
             <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
               <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
@@ -145,7 +145,7 @@ export default function Navbar() {
             {/* Search — Mobile */}
             <button
               onClick={openSearch}
-              className="sm:hidden p-2 rounded-xl hover:bg-teal-600 active:bg-teal-800 active:scale-90 transition-all duration-200 text-white"
+              className="sm:hidden p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="Search"
             >
               <Search size={22} strokeWidth={1.5} />
@@ -154,7 +154,7 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={toggleCart}
-              className="relative p-2 rounded-xl hover:bg-teal-600 active:bg-teal-800 active:scale-90 transition-all duration-200 text-white"
+              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="Cart"
             >
               <ShoppingCart size={22} strokeWidth={1.5} />
@@ -170,7 +170,7 @@ export default function Navbar() {
               href={`https://wa.me/${waNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative p-2 rounded-xl hover:bg-teal-600 active:bg-teal-800 active:scale-90 transition-all duration-200 text-white"
+              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="WhatsApp"
             >
               <MessageCircle
@@ -178,7 +178,7 @@ export default function Navbar() {
                 strokeWidth={1.5}
               />
               {/* Online indicator dot */}
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-teal-400 rounded-full ring-[1.5px] ring-teal-700" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
             </a>
           </div>
         </div>
