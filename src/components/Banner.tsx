@@ -102,7 +102,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
           {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
-          <div className="w-[3px] h-4 bg-orange-400 rounded-full shadow-sm" />
+          <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
           <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Spesial Buat Kamu
           </h2>
@@ -112,7 +112,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         </p>
       </div>
 
-      <div className="relative group">
+      {/* Wrapper dengan background dan border-radius yang sama dengan banner
+          untuk mencegah celah tembus pandang saat transisi antar banner */}
+      <div className="relative group bg-gray-100/50 backdrop-blur-sm rounded-2xl overflow-hidden">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
