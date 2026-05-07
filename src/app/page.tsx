@@ -70,11 +70,11 @@ export default async function Home() {
             preserveAspectRatio="none"
           >
             {/* LAYER 1: Background Emerald Utama dengan Lekukan Bawah */}
-            <path d="M0 0 H100 V82 Q50 65 0 82 Z" fill="#065F46" />
+            <path d="M0 0 H100 V92 Q50 80 0 92 Z" fill="#065F46" />
 
             {/* LAYER 2: Shape N Amber yang Mengikuti Lekukan (Parallel Band) */}
-            {/* Titik Q50 65 memastikan transisi warna amber sejajar sempurna dengan batas emerald */}
-            <path d="M0 82 Q50 65 100 82 V100 Q50 83 0 100 Z" fill="#D97706" />
+            {/* Mengurangi ketebalan: Baseline diturunkan ke 92, dan kurva bawah dibuat lebih landai (Q50 84) */}
+            <path d="M0 92 Q50 80 100 92 V100 Q50 84 0 100 Z" fill="#D97706" />
           </svg>
         </div>
 
