@@ -76,6 +76,7 @@ export default async function Home() {
           </svg>
         </div>
 
+
         {/* Konten dinaikkan agar merapat dengan header (menghapus mt-1) */}
         <div>
           <Banner initialBanners={banners} />
