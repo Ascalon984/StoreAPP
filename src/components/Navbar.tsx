@@ -91,19 +91,15 @@ export default function Navbar() {
                 />
               </div>
 
-              <h1
-                className={`font-black select-none leading-none tracking-tighter transition-all duration-500
-  ${scrolled ? 'text-[16px]' : 'text-[22px]'}`}
-                style={{
-                  WebkitTextStroke: '1px rgba(255,255,255,0.9)',
-                }}
-              >
-                <span className="text-teal-400 drop-shadow-sm">
+              <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500
+  ${scrolled ? 'text-[18px]' : 'text-[24px]'}`}>
+
+                <span className="text-white drop-shadow-md">
                   {storeNameFirst}
                 </span>
 
                 {storeNameLast && (
-                  <span className="text-orange-400 drop-shadow-sm">
+                  <span className="text-orange-400 drop-shadow-md">
                     {storeNameLast}
                   </span>
                 )}
