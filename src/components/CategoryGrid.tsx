@@ -132,11 +132,11 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
           <h2 className="text-sm font-bold text-gray-800 tracking-tight">
-            Pilih Kategori
+            Kategori Favorit
           </h2>
         </div>
         <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
-          Cari produk yang kamu butuhkan di sini
+          Temukan kebutuhanmu dengan lebih mudah
         </p>
       </div>
 

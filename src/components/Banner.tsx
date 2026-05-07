@@ -107,7 +107,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             Rekomendasi Hari Ini
           </h2>
         </div>
-        <p className="text-[11px] text-emerald-100 font-medium mt-0.5 ml-[11px] leading-tight drop-shadow-sm">
+        <p className="text-[11px] text-white/80 font-medium mt-0.5 ml-[11px] leading-tight drop-shadow-sm">
           Jelajahi berbagai penawaran menarik kami
         </p>
       </div>
