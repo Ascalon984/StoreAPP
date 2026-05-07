@@ -78,7 +78,7 @@ export default async function Home() {
             {/* LAYER 2: Shape N Amber */}
             <path
               d="M0 87 Q50 67 100 87 V96 Q50 76 0 96 Z"
-              fill="#D97706"
+              fill="#B45309"
             />
 
           </svg>

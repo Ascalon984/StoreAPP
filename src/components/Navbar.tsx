@@ -66,8 +66,8 @@ export default function Navbar() {
     <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[64px]'}`}>
       <header
         className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${scrolled
-          ? 'bg-emerald-800 border-b-[1.5px] border-emerald-950/30 shadow-layer-md'
-          : 'bg-emerald-700 border-b-[1.5px] border-white/35'
+          ? 'bg-[#064E3B] border-b-[1.5px] border-black/20 shadow-layer-md'
+          : 'bg-[#0B6B52] border-b-[1.5px] border-white/20'
           }`}
       >
         {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
@@ -115,7 +115,7 @@ export default function Navbar() {
                   </div>
 
                   {/* DIVIDER */}
-                  <div className="w-[1.5px] h-2 bg-white/40 mx-2 shrink-0 rounded-full" aria-hidden="true" />
+                  <div className="w-[1.5px] h-2 bg-white/25 mx-2 shrink-0 rounded-full" aria-hidden="true" />
 
                   {/* NO TELP */}
                   <div className="flex items-center gap-0.5 flex-shrink-0 text-white/90">

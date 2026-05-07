@@ -433,13 +433,13 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
             <div className="px-4 pb-3 pt-0.5 flex items-center border-b border-gray-100">
               <div className="flex items-center gap-3"> {/* Gap dinaikkan sedikit ke 3 */}
                 {/* Ikon langsung tanpa background kotak */}
-                <Truck 
+                <Truck
                   size={20} // Ukuran sedikit diperbesar karena tidak ada box
-                  className="text-emerald-600" 
+                  className="text-emerald-600"
                   strokeWidth={2} // Stroke sedikit lebih tebal agar tetap tegas
                 />
                 <div>
-                  <h2 className="text-[15px] font-black text-gray-900 leading-tight tracking-tight">
+                  <h2 className="text-[15px] font-bold text-gray-800 leading-tight tracking-tight">
                     Informasi Pengiriman
                   </h2>
                   <p className="text-[10px] text-gray-500 mt-0.5 font-medium">

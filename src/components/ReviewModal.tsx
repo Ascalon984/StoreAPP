@@ -388,13 +388,13 @@ export default function ReviewModal() {
             <div className="px-4 pb-4 pt-1 flex items-center border-b border-gray-50">
               <div className="flex items-center gap-3">
                 {/* Ikon Tanpa Box - Lebih Clean */}
-                <MessageSquareText 
-                  size={20} 
-                  className="text-emerald-600" 
-                  strokeWidth={2} 
+                <MessageSquareText
+                  size={20}
+                  className="text-emerald-600"
+                  strokeWidth={2}
                 />
                 <div>
-                  <h2 className="text-[15px] font-black text-gray-800 leading-tight tracking-tight">
+                  <h2 className="text-[15px] font-bold text-gray-800 leading-tight tracking-tight">
                     Beri Ulasan
                   </h2>
                   <p className="text-[10px] text-gray-500 mt-0.5 font-medium">
@@ -475,18 +475,7 @@ export default function ReviewModal() {
 
               {/* Rating Section */}
               <div className="flex flex-col items-center">
-                <div className="relative flex items-center justify-center mb-2.5">
-                  {rating > 0 && (
-                    <div
-                      className={`absolute inset-0 blur-xl rounded-full transition-all duration-500 ${rating >= 4
-                        ? 'bg-yellow-300/30'
-                        : rating >= 3
-                          ? 'bg-yellow-300/20'
-                          : 'bg-orange-300/20'
-                        }`}
-                      style={{ padding: '14px 22px' }}
-                    />
-                  )}
+                <div className="flex items-center justify-center mb-2">
                   <div className="relative flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => {
                       const isActive = star <= displayRating;
@@ -512,7 +501,7 @@ export default function ReviewModal() {
                               ? isFilled || isHoverFill
                                 ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                                 : 'text-gray-500'
-                              : 'text-gray-400'
+                              : 'text-gray-300'
                               } ${isActive ? 'scale-100' : 'scale-90'}`}
                           />
                           {isFilled && (
@@ -527,10 +516,10 @@ export default function ReviewModal() {
                   </div>
                 </div>
 
-                <div className="h-7 flex items-center justify-center">
+                <div className="h-8 flex items-center justify-center">
                   {config ? (
                     <div
-                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${config.color} ${config.bg} border ${config.border} animate-badge-pop`}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-semibold ${config.color} ${config.bg} border ${config.border} animate-badge-pop`}
                     >
                       <span>{config.emoji}</span>
                       <span>{config.label}</span>
