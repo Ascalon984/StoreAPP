@@ -111,8 +111,17 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
 
   const handleClick = (catId: string) => {
     setCategory(catId);
-    const el = document.getElementById('product-grid');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const bottomSheetElement = document.getElementById('bottom-sheet');
+    if (bottomSheetElement) {
+      const rect = bottomSheetElement.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const bottomSheetTop = scrollY + rect.top;
+      const targetScroll = Math.max(bottomSheetTop - 60, 0);
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth'
+      });
+    }
   };
 
   if (isLoading) return <CategorySkeleton />;
