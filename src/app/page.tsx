@@ -69,13 +69,13 @@ export default async function Home() {
             preserveAspectRatio="none"
           >
             {/* LAYER 1: Background Emerald Utama */}
-            {/* Kita buat kurva bawahnya (V85 Q50 70) agar ada ruang untuk Amber */}
-            <path d="M0 0 H100 V85 Q50 70 0 85 Z" fill="#065F46" />
+            {/* V80 di pinggir dan Q50 72 di tengah membuat lengkungan lebih landai & melingkar */}
+            <path d="M0 0 H100 V80 Q50 72 0 80 Z" fill="#065F46" />
 
             {/* LAYER 2: Shape N Amber (Parallel Band) */}
-            {/* Mengikuti persis kurva bawah Emerald agar terlihat 'Fit' */}
+            {/* Mengikuti alur Emerald dengan ketebalan yang konsisten (selisih 7-8 unit) */}
             <path
-              d="M0 85 Q50 70 100 85 V95 Q50 80 0 95 Z"
+              d="M0 80 Q50 72 100 80 V88 Q50 80 0 88 Z"
               fill="#D97706"
             />
           </svg>
