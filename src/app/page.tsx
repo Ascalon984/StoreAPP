@@ -62,28 +62,20 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        <div className="absolute top-[-25px] left-0 w-full h-[170px] z-[-1] overflow-hidden">
+        <div className="absolute top-[-25px] left-0 w-full h-[208px] z-[-1]">
+          {/* Menggunakan Unified SVG agar Layer Emerald dan Amber saling mengikuti (fit) */}
+          <svg
+            className="w-full h-full antialiased"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            {/* LAYER 1: Background Emerald Utama dengan Lekukan Bawah */}
+            <path d="M0 0 H100 V82 Q50 65 0 82 Z" fill="#065F46" />
 
-          {/* LAYER 1: Emerald */}
-          <div className="relative w-full h-full bg-[#065F46]">
-
-            {/* LAYER 2: Amber N Curve */}
-            <svg
-              className="
-        absolute bottom-[-34px] left-0
-        w-full h-[38px]
-        text-[#D97706]
-      "
-              viewBox="0 0 100 35"
-              preserveAspectRatio="none"
-              fill="currentColor"
-            >
-              <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
-            </svg>
-
-            {/* Anti-aliasing seam fix */}
-            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#D97706]" />
-          </div>
+            {/* LAYER 2: Shape N Amber yang Mengikuti Lekukan (Parallel Band) */}
+            {/* Titik Q50 65 memastikan transisi warna amber sejajar sempurna dengan batas emerald */}
+            <path d="M0 82 Q50 65 100 82 V100 Q50 83 0 100 Z" fill="#D97706" />
+          </svg>
         </div>
 
         {/* Konten dinaikkan agar merapat dengan header (menghapus mt-1) */}
