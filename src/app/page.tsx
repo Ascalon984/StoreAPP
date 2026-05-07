@@ -93,7 +93,6 @@ export default async function Home() {
           <div className="w-full flex justify-center pb-1.5">
             <div className="w-14 h-1 bg-gray-200/60 rounded-full" />
           </div>
-
           <FilterSort />
         </div>
         <ProductGrid initialCategories={categories} />
