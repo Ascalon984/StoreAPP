@@ -92,7 +92,7 @@ export default function Navbar() {
               </div>
 
               <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500
-  ${scrolled ? 'text-[18px]' : 'text-[24px]'}`}>
+  ${scrolled ? 'text-[16px]' : 'text-[22px]'}`}>
 
                 <span className="text-white drop-shadow-md">
                   {storeNameFirst}
@@ -151,7 +151,7 @@ export default function Navbar() {
             {/* Search — Mobile */}
             <button
               onClick={openSearch}
-              className="sm:hidden p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              className="sm:hidden p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="Search"
             >
               <Search size={22} strokeWidth={1.5} />
@@ -160,7 +160,7 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={toggleCart}
-              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              className="relative p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="Cart"
             >
               <ShoppingCart size={22} strokeWidth={1.5} />
@@ -176,7 +176,7 @@ export default function Navbar() {
               href={`https://wa.me/${waNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative p-2 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
+              className="relative p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
               aria-label="WhatsApp"
             >
               <MessageCircle
