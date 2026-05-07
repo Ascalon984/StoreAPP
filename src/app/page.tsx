@@ -90,7 +90,6 @@ export default async function Home() {
 
       {/* LAYER ATAS: Bottomsheet */}
       <div id="bottom-sheet" className="relative z-10 bg-white rounded-t-[28px] mt-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
-
         <div className="sticky top-[52px] z-30 bg-white rounded-t-[28px] pt-2 pb-1.5 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] border-b border-gray-50/50">
           {/* Handle Indicator */}
           <div className="w-full flex justify-center pb-1.5">
