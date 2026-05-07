@@ -62,19 +62,22 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        <div className="absolute top-[-25px] left-0 w-full h-[208px] z-[-1]">
-          {/* Menggunakan Unified SVG agar Layer Emerald dan Amber saling mengikuti (fit) */}
+        <div className="absolute top-[-25px] left-0 w-full h-[210px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
           >
-            {/* LAYER 1: Background Emerald Utama dengan Lekukan Bawah */}
-            <path d="M0 0 H100 V92 Q50 80 0 92 Z" fill="#065F46" />
+            {/* LAYER 1: Background Emerald Utama */}
+            {/* Kita buat kurva bawahnya (V85 Q50 70) agar ada ruang untuk Amber */}
+            <path d="M0 0 H100 V85 Q50 70 0 85 Z" fill="#065F46" />
 
-            {/* LAYER 2: Shape N Amber yang Mengikuti Lekukan (Parallel Band) */}
-            {/* Mengurangi ketebalan: Baseline diturunkan ke 92, dan kurva bawah dibuat lebih landai (Q50 84) */}
-            <path d="M0 92 Q50 80 100 92 V100 Q50 84 0 100 Z" fill="#D97706" />
+            {/* LAYER 2: Shape N Amber (Parallel Band) */}
+            {/* Mengikuti persis kurva bawah Emerald agar terlihat 'Fit' */}
+            <path
+              d="M0 85 Q50 70 100 85 V95 Q50 80 0 95 Z"
+              fill="#D97706"
+            />
           </svg>
         </div>
 
