@@ -114,7 +114,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
       {/* Wrapper dengan background dan border-radius yang sama dengan banner
           untuk mencegah celah tembus pandang saat transisi antar banner */}
-      <div className="relative group bg-gray-100/50 backdrop-blur-sm rounded-2xl overflow-hidden">
+      <div className="relative group bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-inner">
         <div
           ref={scrollRef}
           onScroll={handleScroll}

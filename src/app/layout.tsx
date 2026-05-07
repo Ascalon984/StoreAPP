@@ -14,10 +14,15 @@ const ReviewModal = dynamic(() => import('@/components/ReviewModal'), { ssr: fal
 const inter = Inter({ subsets: ['latin'], display: 'swap', });
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} | Marketplace Terpercaya`,
-  description: 'Palugada Store - Layanan top up pulsa, data, game, dan voucher cepat & aman.',
+  title: `PalugadaStore — Belanja Harian Lebih Mudah`,
+  description:
+    'Belanja kebutuhan harian, snack, minuman, dan produk pilihan dengan cepat dan praktis di PalugadaStore.',
+  icons: {
+    icon: '/icons/logo-web.png',
+    shortcut: '/icons/logo-web.png',
+    apple: '/icons/logo-web.png',
+  },
 };
-
 
 export default function RootLayout({
   children,
