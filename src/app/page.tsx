@@ -62,7 +62,7 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        <div className="absolute top-[-25px] left-0 w-full h-[235px] z-[-1]">
+        <div className="absolute top-[-25px] left-0 w-full h-[230px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
@@ -78,7 +78,7 @@ export default async function Home() {
             {/* LAYER 2: Shape N Amber */}
             <path
               d="M0 87 Q50 67 100 87 V96 Q50 76 0 96 Z"
-              fill="#B45309"
+              fill="#D97706"
             />
 
           </svg>
