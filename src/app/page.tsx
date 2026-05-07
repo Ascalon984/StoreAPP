@@ -64,9 +64,9 @@ export default async function Home() {
         {/* BACKGROUND N-CURVE */}
         {/* top-[-25px] ditambahkan untuk meng-cover ruang kosong yang muncul saat header menyusut (hide) menjadi 52px. */}
         {/* Ketinggian dikurangi menjadi 170px untuk mengimbangi Banner yang dinaikkan agar lebih menempel ke header */}
-        <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-emerald-700 z-[-1]">
+        <div className="absolute top-[-25px] left-0 w-full h-[170px] bg-teal-700 z-[-1]">
           <svg
-            className="absolute top-full left-0 w-full h-[35px] text-emerald-700 antialiased"
+            className="absolute top-full left-0 w-full h-[35px] text-teal-700 antialiased"
             viewBox="0 0 100 35"
             preserveAspectRatio="none"
             fill="currentColor"
