@@ -68,14 +68,14 @@ export default async function Home() {
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
           >
-            {/* LAYER 1: Background Emerald Utama */}
-            {/* V80 di pinggir dan Q50 72 di tengah membuat lengkungan lebih landai & melingkar */}
-            <path d="M0 0 H100 V80 Q50 72 0 80 Z" fill="#065F46" />
+            {/* LAYER 1: Emerald Utama */}
+            {/* Pinggir dinaikkan ke 85 dan Tengah ditarik ke 65 agar lengkungan lebih terasa (N-Shape) */}
+            <path d="M0 0 H100 V85 Q50 65 0 85 Z" fill="#065F46" />
 
             {/* LAYER 2: Shape N Amber (Parallel Band) */}
-            {/* Mengikuti alur Emerald dengan ketebalan yang konsisten (selisih 7-8 unit) */}
+            {/* Mengikuti alur Emerald dengan ketebalan yang pas (selisih 8 unit) */}
             <path
-              d="M0 80 Q50 72 100 80 V88 Q50 80 0 88 Z"
+              d="M0 85 Q50 65 100 85 V93 Q50 73 0 93 Z"
               fill="#D97706"
             />
           </svg>
