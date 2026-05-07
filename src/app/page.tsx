@@ -62,24 +62,27 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        <div className="absolute top-[-25px] left-0 w-full h-[170px] z-[-1] overflow-visible">
-          {/* LAYER 1: Background Emerald Utama */}
+        <div className="absolute top-[-25px] left-0 w-full h-[170px] z-[-1] overflow-hidden">
+
+          {/* LAYER 1: Emerald */}
           <div className="relative w-full h-full bg-[#065F46]">
 
-            {/* LAYER 2: Shape N Amber yang FIT */}
-            {/* Kita ubah top-full menjadi top-[99%] agar tidak ada celah putih/pixel gap */}
+            {/* LAYER 2: Amber N Curve */}
             <svg
-              className="absolute top-[99%] left-0 w-full h-[50px] text-[#D97706] antialiased"
+              className="
+        absolute bottom-[-34px] left-0
+        w-full h-[38px]
+        text-[#D97706]
+      "
               viewBox="0 0 100 35"
               preserveAspectRatio="none"
               fill="currentColor"
             >
-              {/* PATH BARU: Mengikuti bentuk lekukan N yang lebih natural dan fit */}
-              <path d="M0 0 C 30 0, 40 35, 50 35 C 60 35, 70 0, 100 0 V 35 H 0 Z" />
+              <path d="M0 0 H100 V35 Q50 0 0 35 Z" />
             </svg>
 
-            {/* Penutup gap pixel */}
-            <div className="absolute -bottom-[1px] left-0 w-full h-[2px] bg-[#065F46]" />
+            {/* Anti-aliasing seam fix */}
+            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#D97706]" />
           </div>
         </div>
 
