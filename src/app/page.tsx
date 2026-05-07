@@ -62,26 +62,27 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        {/* Height diturunkan dari 210px ke sekitar 240px-250px untuk mendorong lengkungan lebih ke bawah */}
-        <div className="absolute top-[-25px] left-0 w-full h-[245px] z-[-1]">
+        <div className="absolute top-[-25px] left-0 w-full h-[235px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
           >
+
             {/* LAYER 1: Emerald Utama */}
-            {/* Titik pinggir diturunkan ke 90 dan tengah ke 75 agar menyisakan ruang banner di bawahnya */}
-            <path d="M0 0 H100 V90 Q50 75 0 90 Z" fill="#065F46" />
+            <path
+              d="M0 0 H100 V87 Q50 67 0 87 Z"
+              fill="#065F46"
+            />
 
             {/* LAYER 2: Shape N Amber */}
-            {/* Mengikuti alur dengan presisi di area yang lebih rendah */}
             <path
-              d="M0 90 Q50 75 100 90 V97 Q50 82 0 97 Z"
-              fill="#D97706"
+              d="M0 87 Q50 67 100 87 V96 Q50 76 0 96 Z"
+              fill="#B45309"
             />
+
           </svg>
         </div>
-
 
         {/* Konten dinaikkan agar merapat dengan header (menghapus mt-1) */}
         <div>
