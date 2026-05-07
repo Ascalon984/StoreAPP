@@ -104,11 +104,11 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
           {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
           <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
           <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
-            Spesial Buat Kamu
+            Rekomendasi Hari Ini
           </h2>
         </div>
         <p className="text-[11px] text-emerald-100 font-medium mt-0.5 ml-[11px] leading-tight drop-shadow-sm">
-          Promo eksklusif hanya untukmu hari ini
+          Jelajahi berbagai penawaran menarik kami
         </p>
       </div>
 
