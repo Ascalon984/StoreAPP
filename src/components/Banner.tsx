@@ -8,16 +8,18 @@ interface BannerProps {
   initialBanners?: BannerType[];
 }
 
-// Skeleton saat data belum tersedia
+// Skeleton dioptimalkan: sub-label dihapus agar konsisten dengan UI utama
 function BannerSkeleton() {
   return (
-    <section className="px-4 py-2">
-      <div className="mb-2 px-0.5">
+    <section className="px-4 pt-1 pb-2">
+      {/* mb-1.5 diselaraskan dengan container utama */}
+      <div className="mb-1.5 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
+          {/* Batang dekorator disesuaikan memakai warna oranye */}
+          <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
           <div className="h-4 w-32 skeleton rounded-md" />
         </div>
-        <div className="h-3 w-48 skeleton rounded-md mt-1.5 ml-[11px]" />
+        {/* Sub-label skeleton <div className="h-3 w-48 ... mt-1.5" /> telah dihapus dari sini */}
       </div>
       <div className="w-full aspect-[2/1] skeleton rounded-2xl" />
     </section>
@@ -28,10 +30,14 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   const [banners, setBanners] = useState<BannerType[]>(initialBanners);
   const [isLoading, setIsLoading] = useState(initialBanners.length === 0);
   const [current, setCurrent] = useState(0);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isResettingRef = useRef(false);
 
-  // Hanya fetch dari client jika tidak ada data dari SSR
+  // GAP_SIZE diatur ke 16 karena menggunakan kelas tailwind `gap-4` (16px)
+  const GAP_SIZE = 16;
+
   useEffect(() => {
     if (initialBanners.length > 0) return;
 
@@ -44,27 +50,40 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
       .finally(() => setIsLoading(false));
   }, [initialBanners.length]);
 
+  const hasMultipleBanners = banners.length > 1;
+  const displayBanners = hasMultipleBanners
+    ? [banners[banners.length - 1], ...banners, banners[0]]
+    : banners;
+
+  // Set posisi awal tepat di slide asli pertama dengan memperhitungkan jarak gap-4
+  useEffect(() => {
+    if (!isLoading && hasMultipleBanners && scrollRef.current) {
+      const el = scrollRef.current;
+      el.scrollLeft = el.offsetWidth + GAP_SIZE;
+    }
+  }, [isLoading, hasMultipleBanners]);
+
   const scrollTo = useCallback((index: number) => {
     const el = scrollRef.current;
     if (el) {
-      // Baca dimensi tanpa force reflow berlebih (atau jika dipanggil sesekali, tidak masalah)
-      el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+      // Perhitungan melompat melibatkan perkalian ukuran elemen ditambah celah gap
+      el.scrollTo({ left: (index + 1) * (el.offsetWidth + GAP_SIZE), behavior: 'smooth' });
     }
   }, []);
 
   const startAutoPlay = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (banners.length <= 1) return;
+    if (!hasMultipleBanners) return;
 
     timerRef.current = setInterval(() => {
-      setCurrent((prev) => {
-        const next = (prev + 1) % banners.length;
-        const el = scrollRef.current;
-        if (el) el.scrollTo({ left: next * el.offsetWidth, behavior: 'smooth' });
-        return next;
-      });
+      const el = scrollRef.current;
+      if (el && !isResettingRef.current) {
+        const stepWidth = el.offsetWidth + GAP_SIZE;
+        const currentVisualIndex = Math.round(el.scrollLeft / stepWidth);
+        el.scrollTo({ left: (currentVisualIndex + 1) * stepWidth, behavior: 'smooth' });
+      }
     }, 5000);
-  }, [banners.length]);
+  }, [hasMultipleBanners]);
 
   useEffect(() => {
     if (banners.length === 0) return;
@@ -72,53 +91,69 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [banners.length, startAutoPlay]);
 
-  // Menyimpan timeout untuk debouncing scroll
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleScroll = () => {
+    const el = scrollRef.current;
+    if (!el || banners.length <= 1) return;
+
+    if (timerRef.current) clearInterval(timerRef.current);
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
-    // 1. Hentikan autoplay segera saat interaksi dimulai
-    if (timerRef.current) clearInterval(timerRef.current);
+    const currentScrollLeft = el.scrollLeft;
+    const width = el.offsetWidth;
+    const stepWidth = width + GAP_SIZE;
 
-    // 2. Update index secara real-time agar dots responsif
-    const el = scrollRef.current;
-    if (el) {
-      const index = Math.round(el.scrollLeft / el.offsetWidth);
-      if (index !== current) setCurrent(index);
+    const visualIndex = Math.round(currentScrollLeft / stepWidth);
+
+    if (!isResettingRef.current) {
+      let activeDot = visualIndex - 1;
+      if (activeDot < 0) activeDot = banners.length - 1;
+      if (activeDot >= banners.length) activeDot = 0;
+      if (activeDot !== current) setCurrent(activeDot);
     }
 
-    // 3. Debounce hanya untuk memulai kembali autoplay
+    // Pindah instan ke slide asli pertama jika mentok kanan (Kloning Slide Pertama)
+    if (visualIndex >= displayBanners.length - 1 && currentScrollLeft >= (displayBanners.length - 1) * stepWidth - 5) {
+      isResettingRef.current = true;
+      el.style.scrollSnapType = 'none';
+      el.scrollLeft = stepWidth;
+      el.style.scrollSnapType = 'x mandatory';
+      setCurrent(0);
+      setTimeout(() => { isResettingRef.current = false; }, 50);
+    }
+    // Pindah instan ke slide asli terakhir jika mentok kiri (Kloning Slide Terakhir)
+    else if (visualIndex <= 0 && currentScrollLeft <= 5) {
+      isResettingRef.current = true;
+      el.style.scrollSnapType = 'none';
+      el.scrollLeft = banners.length * stepWidth;
+      el.style.scrollSnapType = 'x mandatory';
+      setCurrent(banners.length - 1);
+      setTimeout(() => { isResettingRef.current = false; }, 50);
+    }
+
     scrollTimeout.current = setTimeout(() => {
       startAutoPlay();
-    }, 150); // Eksekusi setelah berhenti scroll selama 150ms
+    }, 150);
   };
 
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-4 pt-2 pb-2">
-      {/* Header Section: Menggunakan font-bold tracking-tight yang sudah kamu tentukan */}
-      <div className="mb-2 px-0.5">
+    <section className="px-4 pt-1 pb-2">
+      <div className="mb-1.5 px-0.5">
         <div className="flex items-center gap-2">
-          {/* Bar indikator diganti ke orange agar lebih kontras di atas hijau */}
           <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
           <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Rekomendasi Hari Ini
           </h2>
         </div>
-        <p className="text-[11px] text-white/80 font-medium mt-0.5 ml-[11px] leading-tight drop-shadow-sm">
-          Jelajahi berbagai penawaran menarik kami
-        </p>
       </div>
 
-      {/* Wrapper dengan background dan border-radius yang sama dengan banner
-          untuk mencegah celah tembus pandang saat transisi antar banner */}
       <div className="relative group bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-inner">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          // Tambahkan gap sedikit agar antar banner ada ruang napas
           className="flex overflow-x-auto hide-scrollbar gap-4 snap-x snap-mandatory"
           style={{
             msOverflowStyle: 'none',
@@ -126,11 +161,8 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             WebkitOverflowScrolling: 'touch',
           }}
         >
-          {banners.map((banner, index) => (
-            <div
-              key={banner.id}
-              className="flex-shrink-0 w-full snap-start"
-            >
+          {displayBanners.map((banner, index) => (
+            <div key={`${banner.id}-clone-${index}`} className="flex-shrink-0 w-full snap-start">
               <div className="relative rounded-2xl overflow-hidden aspect-[2/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
                 <Image
                   src={banner.image}
@@ -138,11 +170,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                   fill
                   sizes="100vw"
                   className="object-cover"
-                  priority={index === 0}
-                  unoptimized={index === 0}
+                  priority={index === 1}
+                  unoptimized={index === 1}
                 />
-
-                {/* Efek Inner Shadow Gradient agar teks banner (jika ada) lebih kontras */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
             </div>
@@ -155,8 +185,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               <button
                 key={i}
                 onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
-                  }`}
+                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}

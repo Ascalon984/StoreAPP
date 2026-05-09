@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Search, ShoppingCart, MessageCircle, MapPin, Phone } from 'lucide-react';
+import { Search, ShoppingCart, MessageCircle, MapPin, Phone, Bell } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useSearchStore } from '@/store/useSearchStore';
 import { WA_NUMBER } from '@/lib/constants';
@@ -35,10 +35,10 @@ export default function Navbar() {
 
     const handleScroll = () => {
       const offset = window.scrollY;
-      // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu' (~350px scroll)
-      if (offset > 370) {
+      // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu'
+      if (offset > 380) {
         setScrolledState(true);
-      } else if (offset < 320) {
+      } else if (offset < 330) {
         setScrolledState(false);
       }
     };
@@ -63,130 +63,102 @@ export default function Navbar() {
   }, [handleKeyDown]);
 
   return (
-    <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[52px]' : 'h-[64px]'}`}>
+    <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[48px]' : 'h-[58px]'}`}>
       <header
-        className={`absolute top-0 w-full transition-all duration-500 ease-in-out ${scrolled
-          ? 'bg-[#064E3B] border-b-[1.5px] border-black/20 shadow-layer-md'
-          : 'bg-[#0B6B52] border-b-[1.5px] border-white/20'
+        className={`absolute top-0 w-full h-full flex items-center transition-colors duration-500 ease-in-out ${scrolled
+          ? 'bg-[#064E3B] border-b-[1px] border-black/10 shadow-md'
+          : 'bg-[#0B6B52] border-b-[1px] border-white/10'
           }`}
       >
-        {/* FIX: Gunakan min-height yang stabil untuk menahan 'lompatan' */}
-        <div className={`max-w-container mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-500 ease-in-out ${
-          // KUNCINYA: Padding atas tetap sama, yang berubah hanya padding bawah
-          scrolled ? 'pt-1.5 pb-1.5 min-h-[52px]' : 'pt-1.5 pb-1.5 min-h-[64px]'
-          }`}>
+        {/* Container Utama - Gunakan h-full agar semua elemen terpusat secara vertikal */}
+        <div className="max-w-container mx-auto px-4 w-full flex items-center justify-between gap-3 h-full">
+
+          {/* BAGIAN KIRI: LOGO & BRAND (Beradaptasi saat Search Memanjang) */}
+          {/* BAGIAN KIRI: LOGO & BRAND */}
           <Link
             href="/"
-            className="flex flex-col justify-center flex-shrink-1 min-w-0 active:scale-[0.98] transition-all duration-300"
+            className="flex items-center gap-2 flex-shrink-0 active:scale-[0.98] transition-all duration-300"
           >
-            <div className="flex items-center gap-2">
-              <div className={`relative flex-shrink-0 transition-all duration-500 ease-in-out ${scrolled ? 'w-7 h-7' : 'w-9 h-9'
-                }`}>
-                <Image
-                  src="/icons/logo toko.png"
-                  alt="Logo"
-                  fill
-                  className="object-contain"
-                  priority // Tambahkan priority agar logo tidak flickering saat load
-                />
-              </div>
-
-              <h1 className={`font-black select-none leading-none tracking-tighter transition-all duration-500
-  ${scrolled ? 'text-[16px]' : 'text-[22px]'}`}>
-
-                <span className="text-teal-400 drop-shadow-md">
-                  {storeNameFirst}
-                </span>
-
-                {storeNameLast && (
-                  <span className="text-orange-400 drop-shadow-md">
-                    {storeNameLast}
-                  </span>
-                )}
-              </h1>
+            {/* Logo: Mengecil saat scroll */}
+            <div className={`relative flex-shrink-0 transition-[width,height] duration-500 ${scrolled ? 'w-8 h-8' : 'w-9 h-9'}`}>
+              <Image src="/icons/logo toko.png" alt="Logo" fill className="object-contain" priority />
             </div>
 
-            {/* Container Grid dengan Polish Animasi */}
-            <div className={`grid transition-all duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${scrolled
-              ? 'grid-rows-[0fr] opacity-0 -translate-y-2' // Geser sedikit ke atas saat menghilang
-              : 'grid-rows-[1fr] opacity-100 translate-y-0' // Kembali ke posisi semula
+            {/* Group Teks: Menggunakan max-width agar transisi lebih smooth daripada CSS Grid */}
+            <div className={`flex flex-col justify-center transition-[max-width,opacity]
+duration-500
+ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity-0' : 'max-w-[200px] transition-opacity duration-300 delay-100'
               }`}>
-              <div className="overflow-hidden">
-                <div className="flex items-center justify-between px-0.5 text-white font-medium text-[8.5px] leading-none w-full pt-1 pb-0.5">
+              <div className="min-w-max">
+                <h1 className="font-black select-none leading-none tracking-tighter text-[19px] whitespace-nowrap">
+                  <span className="text-white drop-shadow-md">{storeNameFirst}</span>
+                  {storeNameLast && <span className="text-orange-400 drop-shadow-md ml-1">{storeNameLast}</span>}
+                </h1>
 
-                  {/* ALAMAT */}
-                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/95">
-                    <MapPin size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
-                    <span className="whitespace-nowrap">Telang Indah, Kamal</span>
-                  </div>
-
-                  {/* DIVIDER */}
-                  <div className="w-[1.5px] h-2 bg-white/25 mx-2 shrink-0 rounded-full" aria-hidden="true" />
-
-                  {/* NO TELP */}
-                  <div className="flex items-center gap-0.5 flex-shrink-0 text-white/95">
-                    <Phone size={9} className="text-white flex-shrink-0" fill="currentColor" strokeWidth={0} />
-                    <span className="whitespace-nowrap">081-9960-0135</span>
-                  </div>
-
+                {/* Alamat tepat di bawah Brand */}
+                <div className="flex items-center gap-1 text-white/90 font-medium text-[8.5px] leading-none pt-1">
+                  <MapPin size={9} fill="currentColor" strokeWidth={0} className="flex-shrink-0" />
+                  <span className="whitespace-nowrap">Telang Indah, Kamal</span>
                 </div>
               </div>
             </div>
           </Link>
 
-          {/* Search Bar Desktop */}
-          <button
-            onClick={openSearch}
-            className="hidden sm:flex flex-1 max-w-md items-center gap-2.5 px-4 py-2 bg-white/95 hover:bg-white rounded-full text-gray-700 text-sm transition-all duration-300 shadow-sm hover:shadow-md active:scale-[0.98]"
-          >
-            <Search size={18} strokeWidth={2.5} className="text-emerald-700" />
-            <span className="flex-1 text-left font-semibold">Cari produk...</span>
-            <kbd className="hidden md:inline-flex items-center text-[10px] text-gray-800 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 shadow-layer-xs font-bold">
-              <span className="text-gray-500 mr-0.5 text-[9px]">⌘</span>K
-            </kbd>
-          </button>
+          {/* BAGIAN TENGAH & KANAN: Search Area & Actions */}
+          <div className="flex-1 flex justify-end items-center gap-1 sm:gap-2 min-w-0">
 
-          {/* Actions */}
-          <div className="flex items-center gap-0.5 sm:gap-1">
-            {/* Search — Mobile */}
-            <button
-              onClick={openSearch}
-              className="sm:hidden p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-              aria-label="Search"
-            >
-              <Search size={22} strokeWidth={1.5} />
-            </button>
-
-            {/* Cart */}
-            <button
-              onClick={toggleCart}
-              className="relative p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={22} strokeWidth={1.5} />
-              {totalItems > 0 && (
-                <span className="absolute top-[3px] right-[3px] bg-orange-600 text-white text-[9px] font-black min-w-[15px] h-[15px] rounded-full flex items-center justify-center shadow-sm animate-scale-in leading-none pt-[0.5px]">
-                  {totalItems > 99 ? '99+' : totalItems}
+            {/* Search Box Area - Diperhalus dengan Liquid Expansion */}
+            <div className="relative flex items-center justify-end flex-1 h-9 min-w-0">
+              <button
+                onClick={openSearch}
+                className={`
+    relative flex items-center transition-all duration-700
+    rounded-full overflow-hidden origin-right /* KUNCI: Animasi dimulai dari sisi kanan */
+    ${scrolled
+                    ? 'w-full bg-white/95 h-8 px-3 shadow-md opacity-100 scale-x-100 blur-0'
+                    : 'w-10 h-8 bg-white/0 opacity-0 scale-x-0 blur-sm justify-center pointer-events-none'
+                  }
+  `}
+                style={{
+                  transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                  transitionProperty: 'width, opacity, transform, background-color, blur'
+                }}
+              >
+                {/* Teks Search: Muncul belakangan agar tidak terlihat 'terjepit' saat ekspansi */}
+                <span className={`text-left font-medium text-[11px] text-emerald-900/60 transition-all duration-500 whitespace-nowrap ${scrolled ? 'opacity-100 translate-x-0 delay-300' : 'opacity-0 -translate-x-10'
+                  }`}>
+                  Cari di {storeNameFirst}...
                 </span>
-              )}
-            </button>
 
-            {/* WhatsApp */}
-            <a
-              href={`https://wa.me/${waNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative p-1.5 rounded-xl hover:bg-emerald-600 active:bg-emerald-800 active:scale-90 transition-all duration-200 text-white"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle
-                size={22}
-                strokeWidth={1.5}
-              />
-              {/* Online indicator dot */}
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-400 rounded-full ring-[1.5px] ring-emerald-700" />
-            </a>
+                {/* Icon Search di dalam Box: Mengikuti gerakan ujung kanan box */}
+                <div className={`absolute right-0 w-10 h-full flex items-center justify-center transition-all duration-500 ${scrolled ? 'text-emerald-700 opacity-100' : 'text-white opacity-0'
+                  }`}>
+                  <Search size={16} strokeWidth={2.5} />
+                </div>
+              </button>
+
+              {/* Icon Search PENGGANTI: Tetap diam di kanan saat posisi normal (Tidak Scrolled) */}
+              {!scrolled && (
+                <div className="absolute right-0 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-300">
+                  <Search size={20} strokeWidth={2} />
+                </div>
+              )}
+            </div>
+
+            {/* Actions: Bell & WhatsApp */}
+            <div className="flex items-center gap-0.5 flex-shrink-0">
+              <button className="relative p-2 text-white transition-all">
+                <Bell size={20} strokeWidth={2} />
+                <span className={`absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 ${scrolled ? 'border-[#064E3B]' : 'border-[#0B6B52]'}`} />
+              </button>
+
+              <a href={`https://wa.me{waNumber}`} target="_blank" className="relative p-2 text-white">
+                <MessageCircle size={20} strokeWidth={2} />
+                <span className={`absolute top-2 right-2 w-2 h-2 bg-emerald-400 rounded-full border-2 ${scrolled ? 'border-[#064E3B]' : 'border-[#0B6B52]'}`} />
+              </a>
+            </div>
           </div>
+
         </div>
       </header>
     </div>

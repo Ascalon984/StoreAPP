@@ -36,7 +36,7 @@ export default function FilterSort() {
     const handleScroll = () => {
       // Threshold ini menandakan saat sheet sudah naik dan FilterSort mulai sticky.
       // Dihitung kasar dari tinggi Banner (~200px) + CategoryGrid (~150px).
-      setIsScrolled(window.scrollY > 340);
+      setIsScrolled(window.scrollY > 350);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

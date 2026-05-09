@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import BottomNav from '@/components/BottomNav';
 import { SITE_NAME } from '@/lib/constants';
 
 // Load heavy client components dynamically
@@ -41,6 +42,7 @@ export default function RootLayout({
         <MiniCart />
         <Toast />
         <ReviewModal />
+        <BottomNav />
       </body>
     </html>
   );

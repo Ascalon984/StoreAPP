@@ -39,19 +39,22 @@ interface CategoryGridProps {
 
 function CategorySkeleton() {
   return (
-    <section className="px-4 pt-1 pb-2">
+    /* 1. pt-2.5 disamakan dengan komponen utama agar tidak melompat saat data selesai dimuat */
+    <section className="px-4 pt-2.5 pb-2">
+      {/* mb-2 dipertahankan demi menjaga kesamaan jarak struktural */}
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
           <div className="h-4 w-28 skeleton rounded-md" />
         </div>
-        <div className="h-3 w-44 skeleton rounded-md mt-1.5 ml-[11px]" />
+        {/* 2. Sub-label skeleton <div className="h-3 w-44 ... mt-1.5" /> telah dihapus dari sini */}
       </div>
       <div className="bg-white rounded-2xl p-2 shadow-layer-md border border-gray-200">
         <div className="grid grid-cols-3 gap-1">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center py-1.5 px-1 gap-1.5">
-              <div className="w-7 h-7 skeleton rounded-full" />
+              {/* Radius diubah ke rounded-xl menyesuaikan bentuk ikon kotak kategori di mockup */}
+              <div className="w-7 h-7 skeleton rounded-xl" />
               <div className="h-2.5 w-10 skeleton rounded-md" />
             </div>
           ))}
@@ -127,38 +130,28 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   if (isLoading) return <CategorySkeleton />;
 
   return (
-    <section className="px-4 pt-3 pb-2">
+    /* pt-2.5 memberikan jarak bernapas yang ideal dari batas bawah container banner */
+    <section className="px-4 pt-2.5 pb-3.5">
+      {/* mb-2 menjaga kerapatan teks judul terhadap container grid putih di bawahnya */}
       <div className="mb-2 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight">
+          {/* h-4 disamakan dengan komponen banner agar elemen dekorator vertikal konsisten */}
+          <div className="w-[3px] h-4 bg-emerald-500 rounded-full shadow-sm" />
+          <h2 className="text-sm font-bold text-gray-800 tracking-tight drop-shadow-sm">
             Kategori Favorit
           </h2>
         </div>
-        <p className="text-[11px] text-gray-500 font-medium mt-0.5 ml-[11px] leading-tight">
-          Temukan kebutuhanmu dengan lebih mudah
-        </p>
       </div>
 
+      {/* Container Grid Kategori */}
       <div className="bg-white rounded-2xl p-2 shadow-layer-md border border-gray-200">
         <div className="grid grid-cols-3 gap-1">
           {categories.map((cat) => {
             if (cat.id.startsWith('empty-slot-')) {
               return (
-                <div
-                  key={cat.id}
-                  className="group relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-300"
-                >
+                <div key={cat.id} className="group relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-300">
                   <div className="relative flex items-center justify-center opacity-50 grayscale-[0.3]">
-                    {/* Opacity dikurangi, ditambah sedikit grayscale agar terlihat 'coming soon' tapi tetap tajam */}
-                    {/* next/image otomatis serve WebP — mengurangi ukuran 251KB segera hadir.png */}
-                    <Image
-                      src="/icons/segera hadir.png"
-                      alt={cat.name}
-                      width={28}
-                      height={28}
-                      className="w-7 h-7 object-contain"
-                    />
+                    <Image src="/icons/segera hadir.png" alt={cat.name} width={28} height={28} className="w-7 h-7 object-contain" />
                   </div>
                   <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-500 leading-tight">
                     {cat.name}
@@ -176,41 +169,25 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
                 key={cat.id}
                 onClick={() => handleClick(cat.id)}
                 className={`
-                  group relative flex flex-col items-center justify-center
-                  py-1.5 px-1 rounded-xl
-                  transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-                  active:scale-95
-                  ${isActive
-                    ? 'bg-white shadow-layer-sm'
-                    : 'bg-transparent hover:bg-gray-50/40'
-                  }
-                `}
+                group relative flex flex-col items-center justify-center
+                py-1.5 px-1 rounded-xl
+                transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+                active:scale-95
+                ${isActive ? 'bg-white shadow-layer-sm' : 'bg-transparent hover:bg-gray-50/40'}
+              `}
               >
                 <div className="relative flex items-center justify-center">
-                  {/* next/image: WebP auto-conversion, lazy loading optimal, ukuran src 2x untuk retina */}
                   <Image
                     src={iconPath}
                     alt={cat.name}
                     width={28}
                     height={28}
-                    className={`
-                      w-7 h-7 object-contain transition-transform duration-300 relative z-10
-                      ${isActive ? 'scale-110' : 'group-hover:scale-105'}
-                    `}
+                    className={`w-7 h-7 object-contain transition-transform duration-300 relative z-10 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}
                     style={{ mixBlendMode: 'multiply' }}
                   />
-                  {isActive && (
-                    <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />
-                  )}
+                  {isActive && <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />}
                 </div>
-
-                <span
-                  className={`
-                    mt-1 text-[10px] font-semibold tracking-tight text-center relative z-10
-                    transition-colors duration-200 leading-tight
-                    ${isActive ? colors.active : 'text-gray-500'}
-                  `}
-                >
+                <span className={`mt-1 text-[10px] font-semibold tracking-tight text-center relative z-10 transition-colors duration-200 leading-tight ${isActive ? colors.active : 'text-gray-500'}`}>
                   {cat.name}
                 </span>
               </button>
