@@ -32,9 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 mx-auto min-h-screen relative`}>
+      <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 min-h-screen relative`}>
         <Navbar />
-        <main className="max-w-container mx-auto bg-[#F8F9FA] min-h-[calc(100vh-64px)] shadow-layer-sm antialiased">
+        <main className="w-full bg-[#F8F9FA] min-h-[calc(100vh-64px)] shadow-layer-sm antialiased">
           {children}
         </main>
 

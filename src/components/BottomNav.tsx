@@ -50,7 +50,7 @@ export default function BottomNav() {
   return (
     <>
       {/* FIXED WRAPPER - Transparan agar konten di balik cekungan terlihat */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-40">
 
         <div className="relative w-full max-w-container mx-auto h-[58px]">
 

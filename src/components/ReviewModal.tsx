@@ -358,7 +358,7 @@ export default function ReviewModal() {
       {/* Modal Panel */}
       <div
         ref={overlayRef}
-        className="fixed inset-x-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        className="fixed inset-x-0 z-[90] flex items-end justify-center pointer-events-none"
         style={{
           height: '100dvh',
           top: 0,
@@ -366,7 +366,7 @@ export default function ReviewModal() {
       >
         <div
           ref={panelRef}
-          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-layer-xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
+          className={`pointer-events-auto bg-white w-full rounded-t-3xl shadow-layer-xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full' : ''
             }`}
           style={{
             maxHeight: panelMaxHeight,
@@ -433,7 +433,7 @@ export default function ReviewModal() {
                       {displayProducts.slice(0, 10).map((p) => (
                         <div
                           key={p.id}
-                          className={`product-card flex items-center gap-2.5 py-2.5 px-3 bg-gray-50 rounded-xl border border-gray-100 ${displayProducts.length === 1 ? 'w-full' : 'min-w-[150px] sm:min-w-[170px]'
+                          className={`product-card flex items-center gap-2.5 py-2.5 px-3 bg-gray-50 rounded-xl border border-gray-100 ${displayProducts.length === 1 ? 'w-full' : 'min-w-[150px]'
                             }`}
                         >
                           <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-100 shadow-sm">

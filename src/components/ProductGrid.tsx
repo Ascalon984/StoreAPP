@@ -141,7 +141,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
 
         {isLoadingProducts ? (
           // Skeleton grid saat loading
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
@@ -161,7 +161,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {filtered.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}

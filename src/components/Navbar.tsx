@@ -112,7 +112,7 @@ ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity
           </Link>
 
           {/* BAGIAN TENGAH & KANAN: Search Area & Actions */}
-          <div className="flex-1 flex justify-end items-center gap-1 sm:gap-2 min-w-0">
+          <div className="flex-1 flex justify-end items-center gap-1 min-w-0">
 
             {/* Search Box Area - Diperhalus dengan Liquid Expansion */}
             <div className="relative flex items-center justify-end flex-1 h-9 min-w-0">

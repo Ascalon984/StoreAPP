@@ -404,7 +404,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
       {/* ── Modal Panel ── */}
       <div
         ref={overlayRef}
-        className="fixed inset-x-0 z-[90] flex items-end sm:items-center justify-center pointer-events-none"
+        className="fixed inset-x-0 z-[90] flex items-end justify-center pointer-events-none"
         style={{
           height: '100dvh',
           top: 0,
@@ -412,7 +412,7 @@ export default function CheckoutModal({ open, onClose, onConfirm, loading = fals
       >
         <div
           ref={panelRef}
-          className={`pointer-events-auto bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-3xl shadow-layer-xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full sm:translate-y-8 sm:scale-95 sm:opacity-0' : ''
+          className={`pointer-events-auto bg-white w-full rounded-t-3xl shadow-layer-xl overflow-hidden flex flex-col ${isClosing ? 'translate-y-full' : ''
             }`}
           style={{
             maxHeight: panelMaxHeight,
