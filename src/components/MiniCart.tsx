@@ -2,27 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, X, Plus, Minus, MessageCircle, Trash2, ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus, Trash2, ShoppingBag, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
-import { useReviewModalStore } from '@/store/useReviewModalStore';
-import { useDeliveryStore } from '@/store/useDeliveryStore';
-import { useToastStore } from '@/store/useToastStore';
-import { useSettingsStore } from '@/store/useSettingsStore';
-import { useReviewStore } from '@/store/useReviewStore';
-import { formatRupiah, generateWAMessage, getWALink } from '@/lib/utils';
+import { formatRupiah } from '@/lib/utils';
 import ProductImage from './ProductImage';
-import CheckoutModal from './CheckoutModal';
 
 export default function MiniCart() {
   const router = useRouter();
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore();
-  const { openModal } = useReviewModalStore();
-  const { deliveryInfo } = useDeliveryStore();
-  const { showToast } = useToastStore();
-  const { waNumber, fetchSettings } = useSettingsStore();
-  const { triggerRefresh } = useReviewStore();
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Logic untuk Swipe to Close
   const [dragX, setDragX] = useState(0);
@@ -53,9 +40,7 @@ export default function MiniCart() {
     }
   };
 
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
+
 
   const total = items.reduce((sum, item) => {
     try {
@@ -83,58 +68,8 @@ export default function MiniCart() {
 
   const handleCheckoutClick = () => {
     if (items.length === 0) return;
-    setIsCheckoutModalOpen(true);
-  };
-
-  const handleCheckoutConfirm = async () => {
-    if (items.length === 0) return;
-    try {
-      setIsSubmitting(true);
-      // ✅ STEP 1: POST order ke admin untuk update stok
-      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-
-      // Paralelkan semua request agar jauh lebih cepat
-      const orderPromises = items.map(item =>
-        fetch(`${adminApiUrl}/api/admin/orders`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            productId: item.product.id,
-            quantity: item.quantity,
-            customerName: deliveryInfo.name,
-            phone: deliveryInfo.phone,
-            address: deliveryInfo.address,
-            lat: deliveryInfo.lat,
-            lng: deliveryInfo.lng,
-          }),
-        })
-      );
-
-      await Promise.all(orderPromises);
-
-      // ✅ STEP 2: Buka WhatsApp segera (Critical Path)
-      const message = generateWAMessage(items, deliveryInfo);
-      window.open(getWALink(message, waNumber), '_blank');
-
-      // ✅ STEP 3: Refresh UI & Modal (Background Path)
-      if (items.length === 1) {
-        openModal(items[0].product.slug);
-      } else {
-        openModal();
-      }
-
-      setIsCheckoutModalOpen(false);
-      closeCart();
-      triggerRefresh();
-      router.refresh();
-    } catch (error) {
-      console.error('[Checkout Error]', error);
-      showToast('Terjadi kesalahan saat memproses pesanan.');
-      setIsCheckoutModalOpen(false);
-      closeCart();
-    } finally {
-      setIsSubmitting(false);
-    }
+    closeCart();
+    router.push('/checkout');
   };
 
   const handleQuantityChange = (productId: string, newQty: number, currentStock: number) => {
@@ -395,12 +330,12 @@ export default function MiniCart() {
               onClick={handleCheckoutClick}
               className="w-full bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-emerald-700/20"
             >
-              <MessageCircle size={20} strokeWidth={2} />
-              Checkout via WhatsApp
+              <ShieldCheck size={20} strokeWidth={2} />
+              Checkout Sekarang
             </button>
 
             <p className="text-[10px] text-gray-600 text-center mt-2.5">
-              Pesanan akan dikonfirmasi melalui WhatsApp
+              Lanjutkan ke halaman pembayaran
             </p>
           </div>
         )}
@@ -425,12 +360,6 @@ export default function MiniCart() {
         .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
       `}</style>
 
-      <CheckoutModal
-        open={isCheckoutModalOpen}
-        onClose={() => setIsCheckoutModalOpen(false)}
-        onConfirm={handleCheckoutConfirm}
-        loading={isSubmitting}
-      />
     </>
   );
 }

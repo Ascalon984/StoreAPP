@@ -69,7 +69,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="bg-white rounded-2xl shadow-layer-sm hover:shadow-layer-lg transition-all duration-500 overflow-hidden active:scale-[0.96] border border-gray-200 flex flex-col h-full relative backdrop-blur-sm">
+      <article className="bg-white rounded-xl shadow-layer-sm hover:shadow-layer-lg transition-all duration-500 overflow-hidden active:scale-[0.96] border border-gray-200 flex flex-col h-full relative backdrop-blur-sm">
 
         {/* Gradient Overlay untuk premium feel */}
         <div className="absolute inset-0 bg-gradient-premium pointer-events-none z-0" />

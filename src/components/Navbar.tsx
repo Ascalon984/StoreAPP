@@ -12,11 +12,16 @@ import { usePathname } from 'next/navigation';
 export default function Navbar() {
   const pathname = usePathname();
   const isProductDetail = pathname?.startsWith('/product/');
+  const isCheckout = pathname === '/checkout';
+  const isProfile = pathname === '/profile';
+  const isOrders = pathname === '/orders';
+
+  // Sembunyikan Navbar di halaman checkout, profile & orders (punya sticky header sendiri)
+  if (isCheckout || isProfile || isOrders) return null;
 
   const [scrolledState, setScrolledState] = useState(false);
   // Jika di halaman product detail, navbar selalu dalam mode hide (compact)
   const scrolled = isProductDetail || scrolledState;
-  const toggleCart = useCartStore((s) => s.toggleCart);
   const openSearch = useSearchStore((s) => s.openSearch);
   const { storeNameFirst, storeNameLast, waNumber, fetchSettings } = useSettingsStore();
 
@@ -113,7 +118,7 @@ ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity
                 onClick={openSearch}
                 className={`
     relative flex items-center transition-all duration-700
-    rounded-full overflow-hidden origin-right /* KUNCI: Animasi dimulai dari sisi kanan */
+    rounded-xl overflow-hidden origin-right /* KUNCI: Animasi dimulai dari sisi kanan */
     ${scrolled
                     ? 'w-full bg-white/95 h-8 px-3 shadow-md opacity-100 scale-x-100 blur-0'
                     : 'w-10 h-8 bg-white/0 opacity-0 scale-x-0 blur-sm justify-center pointer-events-none'

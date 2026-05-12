@@ -2,27 +2,53 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ReceiptText, ShoppingCart, Bookmark, User } from 'lucide-react';
+import { ReceiptText, ShoppingCart, Bookmark, User } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+
+function HomeIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Body rumah - filled hijau saat active */}
+      <path
+        d="M3 10.5L12 3L21 10.5V21H15V15H9V21H3V10.5Z"
+        fill={active ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinejoin="round"
+      />
+      {/* Pintu - stroke putih saat active agar terlihat */}
+      <path
+        d="M9.5 21V15.5H14.5V21"
+        fill="none"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const toggleCart = useCartStore((s) => s.toggleCart);
 
-  // Sembunyikan navbar di halaman detail produk jika diperlukan
+  // Sembunyikan navbar di halaman detail produk dan checkout
   const isProductDetail = pathname?.startsWith('/product/');
+  const isCheckout = pathname === '/checkout';
 
   const totalItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0)
   );
 
-  if (isProductDetail) return null;
+  if (isProductDetail || isCheckout) return null;
 
   return (
     <>
-      {/* Spacer agar konten bawah page tidak tertutup navbar */}
-      <div className="h-[75px] sm:hidden" />
-
       {/* FIXED WRAPPER - Transparan agar konten di balik cekungan terlihat */}
       <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden">
 
@@ -85,12 +111,7 @@ export default function BottomNav() {
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/' ? 'text-emerald-700 scale-105' : 'text-gray-400'
                   }`}
               >
-                <Home
-                  size={21}
-                  strokeWidth={pathname === '/' ? 1.8 : 1.5}
-                  fill={pathname === '/' ? 'currentColor' : 'none'}
-                  className="transition-transform duration-200 group-hover:scale-105"
-                />
+                <HomeIcon active={pathname === '/'} />
                 <span className={`text-[10px] tracking-tight transition-colors ${pathname === '/' ? 'font-bold' : 'font-semibold'}`}>Home</span>
               </Link>
 
@@ -102,6 +123,7 @@ export default function BottomNav() {
                 <ReceiptText
                   size={21}
                   strokeWidth={pathname === '/orders' ? 1.8 : 1.5}
+                  stroke={pathname === '/orders' ? 'white' : 'currentColor'}
                   fill={pathname === '/orders' ? 'currentColor' : 'none'}
                   className="transition-transform duration-200 group-hover:scale-105"
                 />
@@ -111,14 +133,30 @@ export default function BottomNav() {
 
             {/* Tombol Tengah: Keranjang Floating */}
             <div className="w-[60px] flex justify-center relative -top-5">
-              <button
-                onClick={toggleCart}
+              <Link
+                href="/checkout"
                 className="group relative w-[52px] h-[52px] rounded-full 
-                  bg-[#065F46] text-white flex items-center justify-center 
-                  shadow-[0_6px_16px_rgba(6,95,70,0.35)]
-                  active:scale-90 transition-all duration-300"
+      bg-[#065F46] text-white flex items-center justify-center 
+      shadow-[0_6px_16px_rgba(6,95,70,0.35)]
+      active:scale-90 transition-all duration-300 overflow-hidden"
                 aria-label="Keranjang"
               >
+                {/* 1. Glossy Glassmorphism Highlight - Posisi dinaikkan sedikit ke top-[1px] */}
+                <div className="absolute top-[1px] left-[7px] right-[7px] h-[38%] 
+      bg-gradient-to-b from-white/35 to-white/0 
+      rounded-[100%_100%_80%_80%] pointer-events-none z-0"
+                />
+
+                {/* 2. "n" Curve Pattern Background (Subtle Texture) */}
+                <div className="absolute inset-0 opacity-[0.12] pointer-events-none z-0">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full scale-125 translate-y-3">
+                    <path
+                      d="M0 100 V87 Q50 67 100 87 V100 Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+
                 <div className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-active:opacity-100 transition-opacity duration-200" />
                 {/* Menyeimbangkan ketebalan ikon utama di tengah */}
                 <ShoppingCart size={22} strokeWidth={1.8} className="transition-transform group-hover:scale-110 duration-300" />
@@ -127,7 +165,7 @@ export default function BottomNav() {
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
-              </button>
+              </Link>
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}

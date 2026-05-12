@@ -10,15 +10,11 @@ import {
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoriteStore } from '@/store/useFavoriteStore';
 import { useReviewStore } from '@/store/useReviewStore';
-import { useReviewModalStore } from '@/store/useReviewModalStore';
-import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { useToastStore } from '@/store/useToastStore';
-import { useSettingsStore } from '@/store/useSettingsStore';
 import { useNavigationStore } from '@/store/useNavigationStore';
 import { Product, Review } from '@/lib/types';
-import { formatRupiah, timeAgo, maskName, generateSingleWAMessage, getWALink } from '@/lib/utils';
+import { formatRupiah, maskName } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
-import CheckoutModal from '@/components/CheckoutModal';
 import LoadingScreen from '@/components/LoadingScreen';
 import TimeAgo from '@/components/TimeAgo';
 
@@ -88,17 +84,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const { addItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
   const { getReviewsForProduct, reviews: zustandReviews, fetchReviews, refreshVersion, triggerRefresh } = useReviewStore();
-  const { openModal } = useReviewModalStore();
-  const { deliveryInfo } = useDeliveryStore();
   const { showToast } = useToastStore();
-  const { waNumber, fetchSettings } = useSettingsStore();
 
   const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const loaderStartTimeRef = useRef<number | null>(null);
 
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
   // PERBAIKAN 1: votedType dengan nilai null untuk state tidak aktif
   const [votedType, setVotedType] = useState<Record<string, 'like' | 'dislike' | null>>({});
@@ -108,7 +99,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     // Scroll to top saat halaman dimuat
     window.scrollTo(0, 0);
     
-    fetchSettings();
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 300; // Dikurangi agar transisi lebih cepat
@@ -187,56 +177,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   };
 
   const handleBuyNow = () => {
-    setIsCheckoutModalOpen(true);
-  };
-
-  const handleBuyNowConfirm = async () => {
     if (!product) return;
-
-    try {
-      setIsSubmitting(true);
-      const adminApiUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || 'http://localhost:3000';
-
-      const orderResponse = await fetch(`${adminApiUrl}/api/admin/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: 1,
-          customerName: deliveryInfo.name,
-          phone: deliveryInfo.phone,
-          address: deliveryInfo.address,
-          lat: deliveryInfo.lat,
-          lng: deliveryInfo.lng,
-        }),
-      });
-
-      const orderData = await orderResponse.json();
-
-      if (!orderData.success) {
-        showToast(`Error: ${orderData.error}`, 'error');
-        return;
-      }
-
-      const message = generateSingleWAMessage(
-        product.name,
-        product.slug,
-        product.price,
-        deliveryInfo
-      );
-      window.open(getWALink(message, waNumber), '_blank');
-      openModal(product.slug);
-      setIsCheckoutModalOpen(false);
-      showToast('Order berhasil! Pesan dikirim ke WhatsApp');
-      router.refresh();
-    } catch (error) {
-      console.error('[CHECKOUT ERROR]', error);
-      showToast('Gagal memproses order. Silakan coba lagi.', 'error');
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Add to cart if not already there, then navigate to checkout
+    addItem(product);
+    router.push('/checkout');
   };
 
   const handleShare = async () => {
@@ -783,12 +727,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         }
       `}</style>
 
-          <CheckoutModal
-            open={isCheckoutModalOpen}
-            onClose={() => setIsCheckoutModalOpen(false)}
-            onConfirm={handleBuyNowConfirm}
-            loading={isSubmitting}
-          />
+
         </>
       ) : null}
     </div>
