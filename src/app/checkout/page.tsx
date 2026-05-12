@@ -274,21 +274,36 @@ export default function CheckoutPage() {
   return (
     <>
       <div className="min-h-screen bg-white flex flex-col">
-        {/* ── HEADER (Sticky, Polished & Accessible) ── */}
-        <div className="sticky top-0 z-40 flex-shrink-0 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shadow-layer-xs">
-          {/* Area target sentuh tombol kembali dioptimalkan secara ergonomis */}
-          <button
-            onClick={handleBack}
-            className="w-9 h-9 -ml-1 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all active:scale-90"
-            aria-label="Kembali ke halaman sebelumnya"
-          >
-            <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-800" />
-          </button>
+        {/* ── HEADER ── */}
+        <div
+          className="sticky top-0 z-50 bg-[#0B6B52]
+  border-b border-white/10 shadow-md"
+          style={{ height: 48 }}
+        >
+          <div className="flex items-center h-full px-4">
 
-          <div className="flex-1 min-w-0">
-            <h1 className="text-[13px] font-bold text-gray-900 tracking-[0.15em] leading-none uppercase">
-              Checkout
-            </h1>
+            {/* Back */}
+            <button
+              onClick={handleBack}
+              aria-label="Kembali"
+              className="flex items-center gap-1.5
+      active:opacity-70 transition-opacity duration-150"
+            >
+              <ChevronLeft
+                size={23}
+                strokeWidth={2.7}
+                className="text-white
+        drop-shadow-[0_1px_2px_rgba(0,0,0,0.18)]"
+              />
+
+              <h1
+                className="text-[14px] font-bold text-white
+        tracking-tight leading-none -mt-[1px]"
+              >
+                Checkout
+              </h1>
+            </button>
+
           </div>
         </div>
 

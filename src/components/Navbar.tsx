@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Search, ShoppingCart, MessageCircle, MapPin, Phone, Bell } from 'lucide-react';
+import { Search, MapPin, Bell } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useSearchStore } from '@/store/useSearchStore';
-import { WA_NUMBER } from '@/lib/constants';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -67,6 +66,10 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  if (isCheckout || isProfile || isOrders || isProductDetail) {
+    return null;
+  }
+
   return (
     <div className={`sticky top-0 z-50 w-full ${isProductDetail ? 'h-[48px]' : 'h-[58px]'}`}>
       <header
@@ -79,7 +82,6 @@ export default function Navbar() {
         <div className="max-w-container mx-auto px-4 w-full flex items-center justify-between gap-3 h-full">
 
           {/* BAGIAN KIRI: LOGO & BRAND (Beradaptasi saat Search Memanjang) */}
-          {/* BAGIAN KIRI: LOGO & BRAND */}
           <Link
             href="/"
             className="flex items-center gap-2 flex-shrink-0 active:scale-[0.98] transition-all duration-300"
@@ -151,16 +153,12 @@ ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity
             </div>
 
             {/* Actions: Bell & WhatsApp */}
-            <div className="flex items-center gap-0.5 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <button className="relative p-2 text-white transition-all">
                 <Bell size={20} strokeWidth={2} />
                 <span className={`absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 ${scrolled ? 'border-[#064E3B]' : 'border-[#0B6B52]'}`} />
               </button>
 
-              <a href={`https://wa.me{waNumber}`} target="_blank" className="relative p-2 text-white">
-                <MessageCircle size={20} strokeWidth={2} />
-                <span className={`absolute top-2 right-2 w-2 h-2 bg-emerald-400 rounded-full border-2 ${scrolled ? 'border-[#064E3B]' : 'border-[#0B6B52]'}`} />
-              </a>
             </div>
           </div>
 

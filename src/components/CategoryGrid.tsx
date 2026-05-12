@@ -39,26 +39,31 @@ interface CategoryGridProps {
 
 function CategorySkeleton() {
   return (
-    /* 1. pt-2.5 disamakan dengan komponen utama agar tidak melompat saat data selesai dimuat */
-    <section className="px-4 pt-2.5 pb-2">
-      {/* mb-2 dipertahankan demi menjaga kesamaan jarak struktural */}
-      <div className="mb-2 px-0.5">
+    <section className="px-4 pt-1 pb-3.5">
+      <div className="mb-0.5 px-0.5">
         <div className="flex items-center gap-2">
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
           <div className="h-4 w-28 skeleton rounded-md" />
         </div>
-        {/* 2. Sub-label skeleton <div className="h-3 w-44 ... mt-1.5" /> telah dihapus dari sini */}
       </div>
-      <div className="bg-white rounded-2xl p-2 shadow-layer-md border border-gray-200">
-        <div className="grid grid-cols-3 gap-1">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex flex-col items-center py-1.5 px-1 gap-1.5">
-              {/* Radius diubah ke rounded-xl menyesuaikan bentuk ikon kotak kategori di mockup */}
-              <div className="w-7 h-7 skeleton rounded-xl" />
-              <div className="h-2.5 w-10 skeleton rounded-md" />
+
+      <div className="flex gap-2 overflow-hidden">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex flex-col items-center flex-shrink-0 w-[64px] pt-3 pb-2.5 px-1 rounded-2xl"
+          >
+            {/* Icon area dengan elips di bawahnya */}
+            <div className="relative flex items-center justify-center w-8 h-8">
+              <div className="w-7 h-7 skeleton rounded-xl relative z-10" />
+              {/* Elips skeleton */}
+              <div className="absolute top-[56%] left-1/2 -translate-x-1/2 -translate-y-[10%]
+                w-[38px] h-[19px] rounded-[100%] skeleton opacity-40 z-0" />
             </div>
-          ))}
-        </div>
+            {/* Label skeleton */}
+            <div className="h-2.5 w-10 skeleton rounded-md mt-2" />
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -130,12 +135,9 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   if (isLoading) return <CategorySkeleton />;
 
   return (
-    /* pt-2.5 memberikan jarak bernapas yang ideal dari batas bawah container banner */
-    <section className="px-4 pt-2.5 pb-3.5">
-      {/* mb-2 menjaga kerapatan teks judul terhadap container grid putih di bawahnya */}
-      <div className="mb-2 px-0.5">
+    <section className="px-4 pt-1 pb-3.5">
+      <div className="mb-0.5 px-0.5">
         <div className="flex items-center gap-2">
-          {/* h-4 disamakan dengan komponen banner agar elemen dekorator vertikal konsisten */}
           <div className="w-[3px] h-4 bg-emerald-500 rounded-full shadow-sm" />
           <h2 className="text-sm font-bold text-gray-800 tracking-tight drop-shadow-sm">
             Kategori Favorit
@@ -143,57 +145,71 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
         </div>
       </div>
 
-      {/* Container Grid Kategori */}
-      <div className="bg-white rounded-2xl p-2 shadow-layer-md border border-gray-200">
-        <div className="grid grid-cols-3 gap-1">
-          {categories.map((cat) => {
-            if (cat.id.startsWith('empty-slot-')) {
-              return (
-                <div key={cat.id} className="group relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-300">
-                  <div className="relative flex items-center justify-center opacity-50 grayscale-[0.3]">
-                    <Image src="/icons/segera hadir.png" alt={cat.name} width={28} height={28} className="w-7 h-7 object-contain" />
-                  </div>
-                  <span className="mt-1 text-[10px] font-medium tracking-tight text-center text-gray-500 leading-tight">
-                    {cat.name}
-                  </span>
-                </div>
-              );
-            }
+      <div
+        className="flex gap-2 overflow-x-auto"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {categories.map((cat) => {
+          if (cat.id.startsWith('empty-slot-')) return null;
 
-            const iconPath = iconPathMap[cat.icon] || iconPathMap.all;
-            const isActive = category === cat.id;
-            const colors = colorMap[cat.icon] || colorMap.all;
+          const iconPath = iconPathMap[cat.icon] || iconPathMap.all;
+          const isActive = category === cat.id;
 
-            return (
-              <button
-                key={cat.id}
-                onClick={() => handleClick(cat.id)}
-                className={`
-                group relative flex flex-col items-center justify-center
-                py-1.5 px-1 rounded-xl
-                transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-                active:scale-95
-                ${isActive ? 'bg-white shadow-layer-sm' : 'bg-transparent hover:bg-gray-50/40'}
-              `}
-              >
-                <div className="relative flex items-center justify-center">
-                  <Image
-                    src={iconPath}
-                    alt={cat.name}
-                    width={28}
-                    height={28}
-                    className={`w-7 h-7 object-contain transition-transform duration-300 relative z-10 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}
-                    style={{ mixBlendMode: 'multiply' }}
-                  />
-                  {isActive && <div className={`absolute inset-0 blur-lg opacity-20 ${colors.glow} rounded-full`} />}
-                </div>
-                <span className={`mt-1 text-[10px] font-semibold tracking-tight text-center relative z-10 transition-colors duration-200 leading-tight ${isActive ? colors.active : 'text-gray-500'}`}>
-                  {cat.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+          return (
+            <button
+              key={cat.id}
+              onClick={() => handleClick(cat.id)}
+              className={`
+              group relative flex flex-col items-center flex-shrink-0
+              w-[64px] pt-3 pb-2.5 px-1
+              transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+              active:scale-95
+              ${isActive
+                  ? 'bg-transparent shadow-none'
+                  : 'bg-transparent hover:bg-transparent'
+                }
+            `}
+            >
+              {/* KONTEN IKON & ELIPS OVAL */}
+              <div className="relative flex items-center justify-center w-8 h-8">
+                {/* ELIPS OVAL SEMPURNA — Menggunakan ukuran w-11 h-6 untuk rasio elips ideal */}
+                <div
+                  className={`
+                  absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
+                  w-[38px] h-[19px] rounded-[100%] transition-all duration-300 z-0
+                  ${isActive
+                      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-105 shadow-[0_1px_6px_rgba(251,191,36,0.4)]'
+                      : 'bg-emerald-500 opacity-75 blur-[0.5px]'
+                    }
+                `}
+                />
+
+                {/* Icon */}
+                <Image
+                  src={iconPath}
+                  alt={cat.name}
+                  width={28}
+                  height={28}
+                  className={`
+                  w-7 h-7 object-contain relative z-10
+                  transition-transform duration-300
+                  ${isActive ? 'scale-110 -translate-y-[1px]' : 'group-hover:scale-105'}
+                `}
+                  style={{ mixBlendMode: 'multiply' }}
+                />
+              </div>
+
+              {/* Label / Teks */}
+              <span className={`
+              mt-2 text-[10px] font-semibold tracking-tight text-center
+              leading-tight w-full truncate relative z-10
+              ${isActive ? 'text-amber-600' : 'text-gray-500'}
+            `}>
+                {cat.name}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </section>
   );

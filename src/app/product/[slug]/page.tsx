@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, Fragment } from 'react';
 import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import {
-  Star, Send, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, Zap, Headphones, ThumbsUp, ThumbsDown
+  Star, Send, StarHalf, Flame, CheckCircle, Clock, Share2, Heart, MessageCircle, ChevronLeft, ChevronDown, Zap, Headphones, ThumbsUp, ThumbsDown, Search
 } from 'lucide-react';
 
 import { useCartStore } from '@/store/useCartStore';
@@ -98,7 +98,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   useEffect(() => {
     // Scroll to top saat halaman dimuat
     window.scrollTo(0, 0);
-    
+
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 300; // Dikurangi agar transisi lebih cepat
@@ -148,6 +148,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [displayCount, setDisplayCount] = useState(5);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showHeader, setShowHeader] = useState(false);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
@@ -276,11 +278,18 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       const scrollY = window.scrollY;
       const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-      // Tampilkan jika sudah scroll lebih dari 50% area yang bisa di-scroll
+      // Back to top button
       if (scrollableHeight > 0 && scrollY >= scrollableHeight * 0.5) {
         setShowBackToTop(true);
       } else {
         setShowBackToTop(false);
+      }
+
+      // Scroll-aware header: tampil saat image sudah tertutup
+      if (imageContainerRef.current) {
+        const imageBottom = imageContainerRef.current.getBoundingClientRect().bottom;
+        // Header muncul saat bottom image sudah di atas viewport (< 56px = tinggi header)
+        setShowHeader(imageBottom < 56);
       }
     };
 
@@ -319,10 +328,53 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>
       ) : product ? (
         <>
-          {/* Gallery Header Nav */}
+          {/* Scroll-aware Header — muncul saat image tertutup scroll */}
+          <div
+            className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm
+    transition-all duration-300 ease-in-out
+    ${showHeader ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-full pointer-events-none'}
+  `}
+          >
+            <div className="max-w-[500px] mx-auto flex items-center gap-2 px-3 h-14">
+              <button
+                onClick={handleBack}
+                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
+                aria-label="Kembali"
+              >
+                <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
+              </button>
+
+              <div className="flex-1 flex items-center gap-2 bg-gray-100 rounded-full px-3 h-9">
+                <Search size={14} className="text-gray-400 flex-shrink-0" />
+                <span className="text-sm text-gray-400 truncate">Cari di Palugada...</span>
+              </div>
+
+              <button
+                onClick={handleShare}
+                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
+                aria-label="Bagikan"
+              >
+                <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
+              </button>
+
+              <button
+                onClick={() => product && toggleFavorite(product.id)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
+                aria-label={product && isFavorite(product.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
+              >
+                <Heart
+                  size={18}
+                  strokeWidth={2.2}
+                  className={product && isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Gallery — floating buttons + image carousel */}
           <div className="relative bg-white pt-1 pb-0 mb-1">
 
-            {/* Back Button - Shadow diperkuat & border dibuat lebih tajam */}
+            {/* Floating Back Button */}
             <button
               onClick={handleBack}
               className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
@@ -331,10 +383,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
             </button>
 
-            {/* Right Actions - Combined Pill Mode (ULTRA-ALIGNED) */}
-            <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]"> {/* Gunakan h-[38px] agar fix sama dengan tombol back */}
-
-              {/* Tombol Share */}
+            {/* Floating Share + Favorit */}
+            <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]">
               <button
                 onClick={handleShare}
                 className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
@@ -342,11 +392,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               >
                 <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
               </button>
-
-              {/* Divider - mx tetap untuk efek lonjong */}
               <div className="w-[1px] h-3.5 bg-gray-200/80 mx-1" />
-
-              {/* Tombol Favorit */}
               <button
                 onClick={() => toggleFavorite(product.id)}
                 className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
@@ -360,7 +406,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </button>
             </div>
 
-            <div className="relative">
+            {/* Image container — ref untuk deteksi scroll threshold */}
+            <div ref={imageContainerRef}>
               {(() => {
                 const rawImages = product.images || (product as any).image;
                 let productImages: string[] = [];

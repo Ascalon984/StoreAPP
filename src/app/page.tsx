@@ -52,7 +52,7 @@ export default async function Home() {
   const { banners, categories, settings } = await getInitData();
 
   return (
-    <div className="relative bg-[#F8F9FA]">
+    <div className="min-h-screen bg-gray-50/80 pb-24">
       {settings && <SettingsHydrator settings={settings} />}
       <ScrollToBottomSheet />
 
@@ -62,7 +62,7 @@ export default async function Home() {
       <div className="sticky top-[72px] z-0">
 
         {/* BACKGROUND N-CURVE CONTAINER */}
-        <div className="absolute top-[-25px] left-0 w-full h-[230px] z-[-1]">
+        <div className="absolute top-[-18px] left-0 w-full h-[210px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
@@ -71,13 +71,13 @@ export default async function Home() {
 
             {/* LAYER 1: Emerald Utama */}
             <path
-              d="M0 0 H100 V87 Q50 67 0 87 Z"
+              d="M0 0 H100 V84 Q50 64 0 84 Z"
               fill="#065F46"
             />
 
             {/* LAYER 2: Shape N Amber */}
             <path
-              d="M0 87 Q50 67 100 87 V96 Q50 76 0 96 Z"
+              d="M0 83.5 Q50 63 100 83.5 V93.5 Q50 75.5 0 93.5 Z"
               fill="#B45309"
             />
 
@@ -92,11 +92,11 @@ export default async function Home() {
       </div>
 
       {/* LAYER ATAS: Bottomsheet */}
-      <div id="bottom-sheet" className="relative z-10 bg-white rounded-t-[28px] mt-6 shadow-[0_-12px_40px_rgba(0,0,0,0.06),0_-1px_0_rgba(0,0,0,0.02)] min-h-screen pb-24">
-        <div className="sticky top-[52px] z-30 bg-white rounded-t-[28px] pt-2 pb-1.5 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] border-b border-gray-50/50">
+      <div id="bottom-sheet" className="relative z-10 bg-white rounded-t-[28px] mt-6 shadow-layer-xl min-h-screen pb-24">
+        <div className="sticky top-[52px] z-10 bg-white rounded-t-[28px] pt-2 pb-1.5 shadow-[0_1px_4px_rgba(15,23,42,0.025)]">
           {/* Handle Indicator */}
-          <div className="w-full flex justify-center pb-1.5">
-            <div className="w-14 h-1 bg-gray-200/60 rounded-full" />
+          <div className="w-full flex justify-center pb-1">
+            <div className="w-14 h-1 bg-gray-200/80 rounded-full" />
           </div>
           <FilterSort />
         </div>

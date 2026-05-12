@@ -4,12 +4,13 @@ import { useState, useRef } from 'react';
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import {
-  ChevronRight, ChevronUp, ChevronDown,
+  ChevronRight, ChevronUp, ChevronDown, ChevronLeft,
   Pencil, Check, X, Bell, HelpCircle, Info,
   ShoppingBag, Heart, Star, LogOut, Trash2,
   MapPinHouse, MapPinPlus, Phone, Mail, User, ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 // ── Mock data — ganti dengan store/API asli ──
 const mockUser = {
@@ -199,6 +200,8 @@ function FieldRow({
 
 // ── Main Page ──
 export default function ProfilePage() {
+  const router = useRouter();
+
   const [user, setUser] = useState(mockUser);
   const [notifPrefs, setNotifPrefs] = useState(mockNotifPrefs);
 
@@ -236,6 +239,8 @@ export default function ProfilePage() {
     const url = URL.createObjectURL(file);
     setCropSrc(url);
   };
+
+  const handleBack = () => router.back();
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
@@ -335,6 +340,25 @@ export default function ProfilePage() {
 
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
+
+        {/* Back Button - Style konsisten dengan halaman detail produk */}
+        <button
+          onClick={handleBack}
+          className="absolute top-5 left-4 z-20
+  flex items-center gap-0.5
+  active:opacity-70 transition-opacity duration-150"
+          aria-label="Profil"
+        >
+          <ChevronLeft
+            size={22}
+            strokeWidth={2.7}
+            className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.18)]"
+          />
+
+          <span className="text-[13px] font-medium text-white/95 tracking-tight">
+            Profil
+          </span>
+        </button>
 
         {/* SVG Convex background — referensi dari codebase */}
         <div className="absolute top-0 left-0 w-full h-[230px] z-0">

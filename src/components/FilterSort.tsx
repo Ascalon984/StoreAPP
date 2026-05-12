@@ -45,7 +45,7 @@ export default function FilterSort() {
   return (
     <section
       className={`
-        sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 
+        sticky top-[52px] z-30 bg-white backdrop-blur-md border-b border-gray-100 
         transition-all duration-300 ease-in-out pb-2 pt-1 rounded-t-[26px]
         ${isScrolled ? 'shadow-layer-md' : 'shadow-layer-xs'}
       `}

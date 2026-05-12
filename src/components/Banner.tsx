@@ -21,7 +21,7 @@ function BannerSkeleton() {
         </div>
         {/* Sub-label skeleton <div className="h-3 w-48 ... mt-1.5" /> telah dihapus dari sini */}
       </div>
-      <div className="w-full aspect-[2/1] skeleton rounded-2xl" />
+      <div className="w-full aspect-[2.15/1] skeleton rounded-2xl" />
     </section>
   );
 }
@@ -163,7 +163,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         >
           {displayBanners.map((banner, index) => (
             <div key={`${banner.id}-clone-${index}`} className="flex-shrink-0 w-full snap-start">
-              <div className="relative rounded-2xl overflow-hidden aspect-[2/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2.15/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}
