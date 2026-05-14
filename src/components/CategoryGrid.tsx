@@ -51,17 +51,13 @@ function CategorySkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="flex flex-col items-center flex-shrink-0 w-[64px] pt-3 pb-2.5 px-1 rounded-2xl"
+            className="flex flex-col items-center flex-shrink-0 
+              w-[68px] pt-3.5 pb-2.5 px-1"
           >
-            {/* Icon area dengan elips di bawahnya */}
-            <div className="relative flex items-center justify-center w-8 h-8">
-              <div className="w-7 h-7 skeleton rounded-xl relative z-10" />
-              {/* Elips skeleton */}
-              <div className="absolute top-[56%] left-1/2 -translate-x-1/2 -translate-y-[10%]
-                w-[38px] h-[19px] rounded-[100%] skeleton opacity-40 z-0" />
-            </div>
+            {/* Circle skeleton */}
+            <div className="w-12 h-12 skeleton rounded-full" />
             {/* Label skeleton */}
-            <div className="h-2.5 w-10 skeleton rounded-md mt-2" />
+            <div className="h-2.5 w-11 skeleton rounded-md mt-2.5" />
           </div>
         ))}
       </div>
@@ -160,51 +156,54 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
               key={cat.id}
               onClick={() => handleClick(cat.id)}
               className={`
-              group relative flex flex-col items-center flex-shrink-0
-              w-[64px] pt-3 pb-2.5 px-1
-              transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-              active:scale-95
-              ${isActive
-                  ? 'bg-transparent shadow-none'
-                  : 'bg-transparent hover:bg-transparent'
-                }
-            `}
+    group relative flex flex-col items-center flex-shrink-0
+    w-[68px]        // ← 64 → 68
+    pt-3.5 pb-2.5   // ← pt-3 → pt-3.5
+    px-1
+    transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+    active:scale-95
+  `}
             >
-              {/* KONTEN IKON & ELIPS OVAL */}
-              <div className="relative flex items-center justify-center w-8 h-8">
-                {/* ELIPS OVAL SEMPURNA — Menggunakan ukuran w-11 h-6 untuk rasio elips ideal */}
+              {/* Icon + Ellipse Container */}
+              <div className="relative flex items-center justify-center 
+    w-9 h-9        // ← w-8 h-8 → w-9 h-9 (32→36px)
+  ">
+                {/* Ellipse */}
                 <div
                   className={`
-                  absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
-                  w-[38px] h-[19px] rounded-[100%] transition-all duration-300 z-0
-                  ${isActive
-                      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-105 shadow-[0_1px_6px_rgba(251,191,36,0.4)]'
+        absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
+        w-[46px] h-[23px]     // ← 38×19 → 46×23
+        rounded-[100%] transition-all duration-300 z-0
+        ${isActive
+                      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]'
                       : 'bg-emerald-500 opacity-75 blur-[0.5px]'
                     }
-                `}
+      `}
                 />
 
                 {/* Icon */}
                 <Image
                   src={iconPath}
                   alt={cat.name}
-                  width={28}
-                  height={28}
+                  width={32}              // ← 28 → 32
+                  height={32}             // ← 28 → 32
                   className={`
-                  w-7 h-7 object-contain relative z-10
-                  transition-transform duration-300
-                  ${isActive ? 'scale-110 -translate-y-[1px]' : 'group-hover:scale-105'}
-                `}
+        w-8 h-8               // ← w-7 h-7 → w-8 h-8
+        object-contain relative z-10
+        transition-transform duration-300
+        ${isActive ? 'scale-110 -translate-y-[1px]' : 'group-hover:scale-105'}
+      `}
                   style={{ mixBlendMode: 'multiply' }}
                 />
               </div>
 
-              {/* Label / Teks */}
+              {/* Label */}
               <span className={`
-              mt-2 text-[10px] font-semibold tracking-tight text-center
-              leading-tight w-full truncate relative z-10
-              ${isActive ? 'text-amber-600' : 'text-gray-500'}
-            `}>
+    mt-2 text-[10.5px]       // ← 10px → 10.5px
+    font-semibold tracking-tight text-center
+    leading-tight w-full truncate relative z-10
+    ${isActive ? 'text-amber-600' : 'text-gray-500'}
+  `}>
                 {cat.name}
               </span>
             </button>

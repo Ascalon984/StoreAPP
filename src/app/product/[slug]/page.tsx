@@ -182,6 +182,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     if (!product) return;
     // Add to cart if not already there, then navigate to checkout
     addItem(product);
+    const { setCheckoutSource } = useNavigationStore.getState();
+    setCheckoutSource('product');
     router.push('/checkout');
   };
 

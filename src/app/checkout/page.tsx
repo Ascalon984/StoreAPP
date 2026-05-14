@@ -11,6 +11,7 @@ import {
 import { useCartStore } from '@/store/useCartStore';
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { useToastStore } from '@/store/useToastStore';
+import { useNavigationStore } from '@/store/useNavigationStore';
 import { useReviewModalStore } from '@/store/useReviewModalStore';
 import { useReviewStore } from '@/store/useReviewStore';
 import { formatRupiah } from '@/lib/utils';
@@ -222,7 +223,18 @@ export default function CheckoutPage() {
       triggerRefresh();
       clearCart();
       showToast('Pesanan berhasil dibuat! 🎉');
-      router.replace('/');
+      
+      // Smart navigation based on checkout source
+      const source = navStore.checkoutSource;
+      navStore.setCheckoutSource(null);  // Reset for next use
+      
+      if (source === 'product' && items.length === 1) {
+        // Single product from detail page: go back to product
+        router.back();
+      } else {
+        // Multi-product or from cart: go home
+        router.replace('/');
+      }
       router.refresh();
     } catch (error) {
       console.error('[Checkout Error]', error);
@@ -233,13 +245,22 @@ export default function CheckoutPage() {
   };
 
   // ── Back handler with confirmation ──
+  const navStore = useNavigationStore();
+  
   const handleBack = useCallback(() => {
     setShowCancelModal(true);
   }, []);
 
   const confirmCancel = () => {
     setShowCancelModal(false);
-    router.back();
+    const source = navStore.checkoutSource;
+    navStore.setCheckoutSource(null);
+    
+    if (source === 'product') {
+      router.back();
+    } else {
+      router.push('/');
+    }
   };
 
   // ── Helper: get cart image ──
@@ -758,10 +779,7 @@ export default function CheckoutPage() {
                   Tetap di Sini
                 </button>
                 <button
-                  onClick={() => {
-                    setShowCancelModal(false);
-                    // router.back();
-                  }}
+                  onClick={confirmCancel}
                   className="flex-1 h-11 bg-emerald-800 text-white rounded-xl text-xs font-bold hover:bg-emerald-900 shadow-md shadow-emerald-800/25 active:scale-95 transition-all"
                 >
                   Ya, Keluar

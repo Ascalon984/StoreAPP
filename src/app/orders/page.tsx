@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   RefreshCw, ShoppingBag, ArrowRight, Package, CheckCircle, XCircle,
-  ChevronLeft
 } from 'lucide-react';
 import { formatRupiah } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
@@ -672,7 +671,6 @@ function groupOrders(orders: Order[]): OrderGroup[] {
 // ── Main Page ──
 export default function OrdersPage() {
   const router = useRouter();
-  const handleBack = () => router.back();
 
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [orders, setOrders] = useState<Order[]>([]);
@@ -732,30 +730,10 @@ export default function OrdersPage() {
         style={{ height: HEADER_H }}
       >
         <div className="flex items-center h-full px-4">
-
-          {/* Back + Title */}
-          <button
-            onClick={handleBack}
-            aria-label="Kembali"
-            className="flex items-center gap-1.5
-      active:opacity-70 transition-opacity duration-150"
-          >
-            <ChevronLeft
-              size={23}
-              strokeWidth={2.7}
-              className="text-white
-        drop-shadow-[0_1px_2px_rgba(0,0,0,0.18)]"
-            />
-
-            <h1
-              className="text-[14px] font-bold text-white
-        tracking-tight leading-none -mt-[1px]"
-            >
-              Riwayat Pesanan
-            </h1>
-          </button>
-
+        <div className="text-[14px] font-bold text-white tracking-tight leading-none">
+          Riwayat Pesanan
         </div>
+      </div>
       </div>
 
       {/* Filter tabs */}

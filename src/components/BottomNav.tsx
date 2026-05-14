@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ReceiptText, ShoppingCart, Bookmark, User } from 'lucide-react';
+import { NotebookText, ShoppingCart, Bookmark, User } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
 function HomeIcon({ active }: { active: boolean }) {
@@ -29,6 +29,78 @@ function HomeIcon({ active }: { active: boolean }) {
         stroke={active ? 'white' : 'currentColor'}
         strokeWidth="1.4"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function NotebookTextIcon({ active }: { active: boolean }) {
+  const strokeColor = active ? 'white' : 'currentColor';
+  const fillColor = active ? 'currentColor' : 'none';
+
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Body buku - filled saat active */}
+      <path
+        d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4V3Z"
+        fill={fillColor}
+        stroke={strokeColor}
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinejoin="round"
+      />
+
+      {/* Garis sisi kiri (binding edge) */}
+      <path
+        d="M4 3V21"
+        stroke={strokeColor}
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinecap="round"
+      />
+
+      {/* Spiral binding - selalu kontras dengan body */}
+      <path
+        d="M2 7H4"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinecap="round"
+      />
+      <path
+        d="M2 12H4"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinecap="round"
+      />
+      <path
+        d="M2 17H4"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.8 : 1.5}
+        strokeLinecap="round"
+      />
+
+      {/* Garis teks internal - putih saat active */}
+      <path
+        d="M8 8H17"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.6 : 1.3}
+        strokeLinecap="round"
+      />
+      <path
+        d="M8 12H17"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.6 : 1.3}
+        strokeLinecap="round"
+      />
+      <path
+        d="M8 16H13"
+        stroke={active ? 'white' : 'currentColor'}
+        strokeWidth={active ? 1.6 : 1.3}
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -93,7 +165,7 @@ export default function BottomNav() {
                   L400 0
                 "
                 fill="none"
-                stroke="#EEF2F6"
+                stroke="rgba(0,0,0,0.1)"
                 strokeWidth="1.2"
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
@@ -108,7 +180,7 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/' ? 'text-emerald-700 scale-105' : 'text-gray-400'
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/' ? 'text-emerald-700 scale-105' : 'text-gray-500'
                   }`}
               >
                 <HomeIcon active={pathname === '/'} />
@@ -117,17 +189,16 @@ export default function BottomNav() {
 
               <Link
                 href="/orders"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/orders' ? 'text-emerald-700 scale-105' : 'text-gray-400'
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/orders' ? 'text-emerald-700 scale-105' : 'text-gray-500'
                   }`}
               >
-                <ReceiptText
-                  size={21}
-                  strokeWidth={pathname === '/orders' ? 1.8 : 1.5}
-                  stroke={pathname === '/orders' ? 'white' : 'currentColor'}
-                  fill={pathname === '/orders' ? 'currentColor' : 'none'}
-                  className="transition-transform duration-200 group-hover:scale-105"
-                />
-                <span className={`text-[10px] tracking-tight transition-colors ${pathname === '/orders' ? 'font-bold' : 'font-semibold'}`}>Pesanan</span>
+                <NotebookTextIcon active={pathname === '/orders'} />
+                <span
+                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${pathname === '/orders' ? 'font-bold' : 'font-semibold'
+                    }`}
+                >
+                  Pesanan
+                </span>
               </Link>
             </div>
 
@@ -138,30 +209,45 @@ export default function BottomNav() {
                 className="group relative w-[52px] h-[52px] rounded-full 
       bg-[#065F46] text-white flex items-center justify-center 
       shadow-[0_6px_16px_rgba(6,95,70,0.35)]
-      active:scale-90 transition-all duration-300 overflow-hidden"
+      active:scale-90 transition-all duration-300"
                 aria-label="Keranjang"
               >
-                {/* 1. Glossy Glassmorphism Highlight - Posisi dinaikkan sedikit ke top-[1px] */}
-                <div className="absolute top-[1px] left-[7px] right-[7px] h-[38%] 
-      bg-gradient-to-b from-white/35 to-white/0 
-      rounded-[100%_100%_80%_80%] pointer-events-none z-0"
-                />
+                {/* === CONVEX GLOSSY EFFECT === */}
+                <div className="absolute inset-[1.5px] rounded-full pointer-events-none z-0 overflow-hidden translate-y-[0.5px]">
 
-                {/* 2. "n" Curve Pattern Background (Subtle Texture) */}
-                <div className="absolute inset-0 opacity-[0.12] pointer-events-none z-0">
-                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full scale-125 translate-y-3">
-                    <path
-                      d="M0 100 V87 Q50 67 100 87 V100 Z"
-                      fill="white"
-                    />
-                  </svg>
+                  {/* 1. Inner shadow bawah - kedalaman cekung */}
+                  <div className="absolute inset-0 rounded-full 
+    shadow-[inset_0_-4px_10px_rgba(0,0,0,0.12),inset_0_2px_4px_rgba(255,255,255,0.1)]"
+                  />
+
+                  {/* 2. Main highlight atas — menembus overflow untuk menyatu di tepi */}
+                  <div className="absolute -top-[3px] left-[4px] right-[4px] h-[48%] 
+    bg-gradient-to-b from-white/45 via-white/15 to-transparent 
+    rounded-[55%_55%_40%_40%]"
+                  />
+
+                  {/* 3. Bright spot — titik terang melebar di garis atas */}
+                  <div className="absolute -top-[2px] left-1/2 -translate-x-1/2 
+    w-[62%] h-[28%] 
+    bg-gradient-to-b from-white/70 via-white/20 to-transparent 
+    rounded-full blur-[1.5px]"
+                  />
+
+                  {/* 4. Edge darkening — tepi menggelap untuk volume */}
+                  <div className="absolute inset-0 rounded-full 
+  bg-radial-[circle_at_50%_45%] from-transparent 55% to-black/8"
+                  />
                 </div>
 
-                <div className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-active:opacity-100 transition-opacity duration-200" />
-                {/* Menyeimbangkan ketebalan ikon utama di tengah */}
-                <ShoppingCart size={22} strokeWidth={1.8} className="transition-transform group-hover:scale-110 duration-300" />
+                {/* Active state overlay */}
+                <div className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-active:opacity-100 transition-opacity duration-200 z-10" />
+
+                {/* Icon */}
+                <ShoppingCart size={22} strokeWidth={1.8} className="relative z-10 transition-transform group-hover:scale-110 duration-300" />
+
+                {/* Badge */}
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[9px] font-black min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white leading-none shadow-md animate-in zoom-in duration-200">
+                  <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[9px] font-black min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white leading-none shadow-md z-20">
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
@@ -172,7 +258,7 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/wishlist"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/wishlist' ? 'text-emerald-700 scale-105' : 'text-gray-400'
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/wishlist' ? 'text-emerald-700 scale-105' : 'text-gray-500'
                   }`}
               >
                 <Bookmark
@@ -186,7 +272,7 @@ export default function BottomNav() {
 
               <Link
                 href="/profile"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/profile' ? 'text-emerald-700 scale-105' : 'text-gray-400'
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/profile' ? 'text-emerald-700 scale-105' : 'text-gray-500'
                   }`}
               >
                 <User

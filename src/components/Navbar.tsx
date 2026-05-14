@@ -14,9 +14,7 @@ export default function Navbar() {
   const isCheckout = pathname === '/checkout';
   const isProfile = pathname === '/profile';
   const isOrders = pathname === '/orders';
-
-  // Sembunyikan Navbar di halaman checkout, profile & orders (punya sticky header sendiri)
-  if (isCheckout || isProfile || isOrders) return null;
+  const isWishlist = pathname === '/wishlist';
 
   const [scrolledState, setScrolledState] = useState(false);
   // Jika di halaman product detail, navbar selalu dalam mode hide (compact)
@@ -66,7 +64,7 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  if (isCheckout || isProfile || isOrders || isProductDetail) {
+  if (isCheckout || isProfile || isOrders || isWishlist || isProductDetail) {
     return null;
   }
 
