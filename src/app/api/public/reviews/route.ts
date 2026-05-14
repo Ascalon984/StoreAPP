@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import { defaultReviews } from '@/lib/data';
+
 // [DISABLED] Admin API Connection - Using mock data for local development
 // export const dynamic = 'force-dynamic';
 
@@ -24,9 +26,9 @@ export async function GET(request: Request) {
   //   return NextResponse.json({ reviews: [] });
   // }
   
-  // [LOCAL DEVELOPMENT] Returning empty reviews for local development
-  console.log('[LOCAL DEV] Fetching reviews - API disabled, returning empty array');
-  return NextResponse.json({ reviews: [] });
+  // [LOCAL DEVELOPMENT] Returning mock reviews for local development
+  console.log('[LOCAL DEV] Fetching reviews - API disabled, returning mock data');
+  return NextResponse.json({ reviews: defaultReviews });
 }
 
 export async function POST(request: Request) {

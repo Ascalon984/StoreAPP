@@ -11,17 +11,12 @@ interface ProductGridProps {
   initialCategories?: Category[];
 }
 
-// Skeleton card untuk loading state
 function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-layer-sm overflow-hidden flex flex-col h-full">
-      {/* 1. Image Area - Tetap gaya lama tapi aspect 3/2 sesuai asli */}
+    <div className="bg-white rounded-xl shadow-layer-xs overflow-hidden flex flex-col h-full">
       <div className="w-full aspect-[3/2] bg-gray-100 skeleton animate-pulse" />
 
-      {/* Content */}
       <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
-
-        {/* Title */}
         <div className="mt-2.5 min-h-[2.4rem] flex flex-col justify-center gap-1.5">
           <div className="h-3 w-full bg-gray-100 skeleton rounded-md animate-pulse" />
           <div className="h-3 w-3/4 bg-gray-100 skeleton rounded-md animate-pulse" />
@@ -32,7 +27,6 @@ function ProductCardSkeleton() {
           <div className="h-3 w-10 bg-gray-100 skeleton rounded-md animate-pulse" />
         </div>
 
-        {/* Stats */}
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100/80">
           <div className="flex items-center gap-1">
             <div className="h-2.5 w-10 bg-gray-100 skeleton rounded-md animate-pulse" />
@@ -52,18 +46,15 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Bangun daftar kategori dari props SSR (tidak perlu fetch ulang)
   const categories: Category[] = [
     { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
     ...initialCategories,
   ];
 
-  // Fetch reviews sekali saat mount
   useEffect(() => {
     fetchReviews().catch((error) => console.error('Failed to fetch reviews:', error));
   }, []);
 
-  // Fetch products saat filter/sort berubah
   useEffect(() => {
     setIsLoadingProducts(true);
 
@@ -91,7 +82,6 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
       .finally(() => setIsLoadingProducts(false));
   }, [category, sort, refreshVersion]);
 
-  // Scroll-to-top button
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -104,7 +94,6 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Filter hanya untuk search query (kategori dan sort sudah ditangani API)
   const filtered = products.filter((p) =>
     query ? p.name.toLowerCase().includes(query.toLowerCase()) : true
   );
@@ -128,7 +117,6 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
             <h2 className="text-sm font-bold text-gray-800 tracking-tight leading-none">
               Semua Produk {categoryName !== 'Semua' ? categoryName : ''}
             </h2>
-            {/* Optional: Jika ingin kategori sangat pendek, p bisa ditaruh di bawahnya atau sampingnya */}
           </div>
 
           <p className="text-[10px] text-gray-400 font-medium leading-none mb-[1px]">
@@ -140,8 +128,7 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
         </div>
 
         {isLoadingProducts ? (
-          // Skeleton grid saat loading
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
@@ -161,36 +148,13 @@ export default function ProductGrid({ initialCategories = [] }: ProductGridProps
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-3">
             {filtered.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
         )}
       </section>
-
-      <button
-        onClick={scrollToTop}
-        aria-label="Kembali ke atas"
-        className={`
-          fixed bottom-8 right-6 z-50
-          w-11 h-11 rounded-full
-          bg-emerald-500 text-white
-          shadow-[0_8px_25px_rgba(16,185,129,0.3)]
-          flex items-center justify-center
-          transition-all duration-500 cubic-bezier(0.34,1.56,0.64,1)
-          hover:bg-emerald-600 hover:scale-110
-          active:scale-90
-          ${showScrollTop
-            ? 'opacity-100 translate-y-0 scale-100'
-            : 'opacity-0 translate-y-10 scale-50 pointer-events-none'
-          }
-        `}
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 15l-6-6-6 6" />
-        </svg>
-      </button>
     </>
   );
 }

@@ -91,19 +91,20 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const loaderStartTimeRef = useRef<number | null>(null);
 
   const [votedIds, setVotedIds] = useState<string[]>([]);
-  // PERBAIKAN 1: votedType dengan nilai null untuk state tidak aktif
   const [votedType, setVotedType] = useState<Record<string, 'like' | 'dislike' | null>>({});
   const [thankYouIds, setThankYouIds] = useState<string[]>([]);
 
+  // State untuk Varian Produk
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [isVariantOpen, setIsVariantOpen] = useState<boolean>(true);
+
   useEffect(() => {
-    // Scroll to top saat halaman dimuat
     window.scrollTo(0, 0);
 
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
-    const MIN_DISPLAY_TIME = 300; // Dikurangi agar transisi lebih cepat
+    const MIN_DISPLAY_TIME = 300;
 
-    // Gunakan revalidation atau cache default Next.js jika memungkinkan
     fetch(`/api/public/products/${slug}`, {
       cache: 'no-store'
     })
@@ -117,10 +118,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         if (elapsed < MIN_DISPLAY_TIME) {
           setTimeout(() => {
             setProduct(data);
+            // Auto-select varian pertama jika ada
+            if (data.variants?.length > 0) setSelectedVariant(data.variants[0].id);
             setLoading(false);
           }, MIN_DISPLAY_TIME - elapsed);
         } else {
           setProduct(data);
+          if (data.variants?.length > 0) setSelectedVariant(data.variants[0].id);
           setLoading(false);
         }
       })
@@ -128,9 +132,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
 
         if (elapsed < MIN_DISPLAY_TIME) {
-          setTimeout(() => {
-            setLoading(false);
-          }, MIN_DISPLAY_TIME - elapsed);
+          setTimeout(() => { setLoading(false); }, MIN_DISPLAY_TIME - elapsed);
         } else {
           setLoading(false);
         }
@@ -139,7 +141,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   useEffect(() => {
     if (product?.id) {
-      console.log(`Fetching reviews for product: ${product.id}`);
       fetchReviews(product.id);
     }
   }, [product?.id, fetchReviews]);
@@ -180,7 +181,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const handleBuyNow = () => {
     if (!product) return;
-    // Add to cart if not already there, then navigate to checkout
     addItem(product);
     const { setCheckoutSource } = useNavigationStore.getState();
     setCheckoutSource('product');
@@ -205,11 +205,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     }
   };
 
-  // PERBAIKAN 1: Fungsi handleVote yang sudah diperbaiki
   const handleVote = async (reviewId: string, type: 'like' | 'dislike') => {
     if (votedIds.includes(reviewId)) return;
 
-    // 1. Set state untuk tampilan aktif (fill & teks)
     setVotedIds(prev => [...prev, reviewId]);
     setVotedType(prev => ({ ...prev, [reviewId]: type }));
     setThankYouIds(prev => [...prev, reviewId]);
@@ -224,18 +222,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       if (!response.ok) {
         const error = await response.json();
         console.error(`Error: ${error.error || 'Gagal mengupdate vote'}`);
-        // Rollback jika gagal
         setVotedIds(prev => prev.filter(id => id !== reviewId));
-        setVotedType(prev => {
-          const newState = { ...prev };
-          delete newState[reviewId];
-          return newState;
-        });
+        setVotedType(prev => { const newState = { ...prev }; delete newState[reviewId]; return newState; });
         setThankYouIds(prev => prev.filter(id => id !== reviewId));
         return;
       }
 
-      // Success - trigger refresh untuk update data dari database
       triggerRefresh();
 
       setTimeout(() => {
@@ -244,13 +236,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
     } catch (error) {
       console.error('Vote error:', error);
-      // Rollback jika error
       setVotedIds(prev => prev.filter(id => id !== reviewId));
-      setVotedType(prev => {
-        const newState = { ...prev };
-        delete newState[reviewId];
-        return newState;
-      });
+      setVotedType(prev => { const newState = { ...prev }; delete newState[reviewId]; return newState; });
       setThankYouIds(prev => prev.filter(id => id !== reviewId));
     }
   };
@@ -280,17 +267,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       const scrollY = window.scrollY;
       const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-      // Back to top button
       if (scrollableHeight > 0 && scrollY >= scrollableHeight * 0.5) {
         setShowBackToTop(true);
       } else {
         setShowBackToTop(false);
       }
 
-      // Scroll-aware header: tampil saat image sudah tertutup
       if (imageContainerRef.current) {
         const imageBottom = imageContainerRef.current.getBoundingClientRect().bottom;
-        // Header muncul saat bottom image sudah di atas viewport (< 56px = tinggi header)
         setShowHeader(imageBottom < 56);
       }
     };
@@ -299,7 +283,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return () => window.removeEventListener('scroll', checkScrollPosition);
   }, []);
 
-  // Data ulasan & metrics (diolah secara aman dengan pengecekan product)
   const localReviews = product ? getReviewsForProduct(product.id) : [];
   const allReviews = (() => {
     return localReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -323,267 +306,204 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   return (
     <div className="bg-gray-50 pb-24 min-h-screen">
-      {/* Render LoadingScreen di sini agar bisa menangani animasi exit secara halus */}
       <LoadingScreen isLoading={loading} />
 
       {!loading && !product ? (
         <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">Product not found.</div>
       ) : product ? (
         <>
-          {/* Scroll-aware Header — muncul saat image tertutup scroll */}
-          <div
-            className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm
-    transition-all duration-300 ease-in-out
-    ${showHeader ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-full pointer-events-none'}
-  `}
-          >
+          {/* Scroll-aware Header */}
+          <div className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm transition-all duration-300 ease-in-out ${showHeader ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-full pointer-events-none'}`}>
             <div className="max-w-[500px] mx-auto flex items-center gap-2 px-3 h-14">
-              <button
-                onClick={handleBack}
-                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
-                aria-label="Kembali"
-              >
+              <button onClick={handleBack} className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0" aria-label="Kembali">
                 <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
               </button>
-
               <div className="flex-1 flex items-center gap-2 bg-gray-100 rounded-full px-3 h-9">
                 <Search size={14} className="text-gray-400 flex-shrink-0" />
                 <span className="text-sm text-gray-400 truncate">Cari di Palugada...</span>
               </div>
-
-              <button
-                onClick={handleShare}
-                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
-                aria-label="Bagikan"
-              >
+              <button onClick={handleShare} className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0" aria-label="Bagikan">
                 <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
               </button>
-
-              <button
-                onClick={() => product && toggleFavorite(product.id)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
-                aria-label={product && isFavorite(product.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
-              >
-                <Heart
-                  size={18}
-                  strokeWidth={2.2}
-                  className={product && isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
-                />
+              <button onClick={() => product && toggleFavorite(product.id)} className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0" aria-label="Favorit">
+                <Heart size={18} strokeWidth={2.2} className={product && isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"} />
               </button>
             </div>
           </div>
 
-          {/* Gallery — floating buttons + image carousel */}
-          <div className="relative bg-white pt-1 pb-0 mb-1">
-
-            {/* Floating Back Button */}
-            <button
-              onClick={handleBack}
-              className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90"
-              aria-label="Kembali"
-            >
-              <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
-            </button>
-
-            {/* Floating Share + Favorit */}
-            <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]">
-              <button
-                onClick={handleShare}
-                className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
-                aria-label="Bagikan"
-              >
-                <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
+          {/* PERBAIKAN 1: GABUNGKAN SATU BLOK PUTIH TANPA CELAH */}
+          <div className="relative bg-white">
+            {/* Gallery */}
+            <div className="pt-1 pb-0">
+              <button onClick={handleBack} className="absolute top-4 left-4 z-20 p-2 rounded-full bg-white backdrop-blur-md border border-gray-200/50 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:bg-white transition-all duration-300 active:scale-90" aria-label="Kembali">
+                <ChevronLeft size={22} strokeWidth={2.5} className="text-gray-900" />
               </button>
-              <div className="w-[1px] h-3.5 bg-gray-200/80 mx-1" />
-              <button
-                onClick={() => toggleFavorite(product.id)}
-                className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
-                aria-label={isFavorite(product.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
-              >
-                <Heart
-                  size={17}
-                  strokeWidth={2.2}
-                  className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"}
-                />
-              </button>
-            </div>
+              <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]">
+                <button onClick={handleShare} className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90" aria-label="Bagikan">
+                  <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
+                </button>
+                <div className="w-[1px] h-3.5 bg-gray-200/80 mx-1" />
+                <button onClick={() => toggleFavorite(product.id)} className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90" aria-label="Favorit">
+                  <Heart size={17} strokeWidth={2.2} className={isFavorite(product.id) ? "fill-red-500 text-red-500" : "text-gray-700"} />
+                </button>
+              </div>
 
-            {/* Image container — ref untuk deteksi scroll threshold */}
-            <div ref={imageContainerRef}>
-              {(() => {
-                const rawImages = product.images || (product as any).image;
-                let productImages: string[] = [];
+              <div ref={imageContainerRef}>
+                {(() => {
+                  const rawImages = product.images || (product as any).image;
+                  let productImages: string[] = [];
 
-                if (Array.isArray(rawImages)) {
-                  productImages = rawImages.flatMap(img => {
-                    if (!img || typeof img !== 'string') return [];
-                    if (img.startsWith('data:image') || img.startsWith('http')) {
-                      return [img];
-                    }
-                    return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
-                  });
-                } else if (typeof rawImages === 'string') {
-                  productImages = rawImages
-                    .split('|')
-                    .map(img => img?.trim())
-                    .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
-                }
+                  if (Array.isArray(rawImages)) {
+                    productImages = rawImages.flatMap(img => {
+                      if (!img || typeof img !== 'string') return [];
+                      if (img.startsWith('data:image') || img.startsWith('http')) return [img];
+                      return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
+                    });
+                  } else if (typeof rawImages === 'string') {
+                    productImages = rawImages.split('|').map(img => img?.trim()).filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
+                  }
 
-                const slideCount = productImages.length > 0 ? productImages.length : 1;
-                const slides = Array.from({ length: slideCount }, (_, i) => i);
+                  const slideCount = productImages.length > 0 ? productImages.length : 1;
+                  const slides = Array.from({ length: slideCount }, (_, i) => i);
 
-                return (
-                  <>
-                    <div
-                      ref={scrollContainerRef}
-                      onScroll={handleScroll}
-                      className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
-                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                    >
-                      {slides.map((i) => (
-                        <div key={i} className="flex-shrink-0 w-full snap-start">
-                          <ProductImage
-                            category={product.category}
-                            name={product.name}
-                            variant={i}
-                            src={productImages[i]}
-                            className="w-full aspect-[3/2] sm:aspect-video"
-                          />
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Dots Indicator */}
-                    {slideCount > 1 && (
-                      <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
-                        <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
-                          {slides.map((i) => (
-                            <div
-                              key={i}
-                              className={`transition-all duration-500 rounded-full ${currentIndex === i
-                                ? "w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]"
-                                : "w-1 h-1 bg-white/40"
-                                }`}
-                            />
-                          ))}
-                        </div>
+                  return (
+                    <>
+                      <div ref={scrollContainerRef} onScroll={handleScroll} className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        {slides.map((i) => (
+                          <div key={i} className="flex-shrink-0 w-full snap-start">
+                            <ProductImage category={product.category} name={product.name} variant={i} src={productImages[i]} className="w-full aspect-[3/2] sm:aspect-video" />
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-
-          {/* Info Section */}
-          <div className="bg-white p-3 mb-1">
-            <div className="flex justify-between items-start gap-3 mb-2">
-              <h1 className="text-lg md:text-xl font-semibold text-gray-900 leading-snug flex-1">
-                {product.name}
-              </h1>
-              <div className="text-right flex-shrink-0">
-                <div className="flex items-center gap-1 text-orange-500">
-                  <Flame size={14} strokeWidth={1.5} />
-                  <span className="font-semibold text-gray-800 text-sm">{Math.max(product.sold, product.sold || 0)}+</span>
-                </div>
-                <p className="text-[10px] text-gray-500">Terjual</p>
+                      {slideCount > 1 && (
+                        <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
+                          <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
+                            {slides.map((i) => (
+                              <div key={i} className={`transition-all duration-500 rounded-full ${currentIndex === i ? "w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "w-1 h-1 bg-white/40"}`} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
-            <div className="flex items-end justify-between mb-2.5">
-              <div>
-                {product.originalPrice && (
-                  <p className="text-sm text-gray-500 line-through mb-1">
-                    {formatRupiah(product.originalPrice)}
-                  </p>
-                )}
-                <p className="text-2xl font-bold text-primary tracking-tight">
-                  {formatRupiah(product.price)}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-500 mb-1">Sisa Stok</p>
-                <p className="font-semibold text-gray-800">{product.stock}</p>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-200" />
-
-            <div className="pt-3">
-              <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
-              <div className="relative overflow-hidden">
-                {/* Container Teks dengan animasi max-height yang smooth */}
-                <div
-                  className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'
-                    }`}
-                >
-                  <p
-                    ref={descriptionRef}
-                    className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap relative"
-                  >
-                    {product.description}
-                  </p>
-                  {/* Spacer agar tombol 'Lihat lebih sedikit' tidak menutupi baris terakhir teks */}
-                  <div className={`transition-all duration-300 ${isDescriptionExpanded ? 'h-8' : 'h-0'}`} />
-                </div>
-
-                {needsTruncation && (
-                  <button
-                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                    className={`absolute bottom-0 transition-all duration-500 ease-in-out flex items-center h-7 z-10
-                      ${!isDescriptionExpanded
-                        ? 'left-full -translate-x-full pl-24 pr-0 read-more-fade'
-                        : 'left-0 translate-x-0'
-                      }`}
-                  >
-                    {!isDescriptionExpanded ? (
-                      <span className="flex items-center text-emerald-700 font-bold text-[12px] whitespace-nowrap pr-0.5">
-                        <span className="text-gray-500 font-normal mr-1.5">...</span>
-                        <span className="hover:underline">Lihat selengkapnya</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-0.5 text-emerald-700 font-bold text-[12px] whitespace-nowrap">
-                        Lihat lebih sedikit
-                        <ChevronDown size={14} className="rotate-180 transition-transform duration-500" />
-                      </span>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Jaminan Palugada */}
-          <div className="bg-white px-4 py-3 mb-1">
-            <h2 className="font-bold text-gray-800 text-[12px] mb-2.5 tracking-tight">Alasan Pilih Kami</h2>
-
-            <div className="flex items-center justify-between">
-              {[
-                { icon: <CheckCircle size={13} />, label: "Tersedia", text: "text-emerald-500" },
-                { icon: <Zap size={13} />, label: "Fast Respon", text: "text-amber-500" },
-                { icon: <Headphones size={13} />, label: "24 Jam", text: "text-blue-500" }
-              ].map((item, index) => (
-                <Fragment key={index}>
-                  <div className="flex items-center gap-1.5 flex-1 justify-center">
-                    <div className={item.text}>
-                      {item.icon}
-                    </div>
-                    <span className="text-[10px] font-bold text-gray-600 tracking-tight whitespace-nowrap">
-                      {item.label}
-                    </span>
+            {/* Info Section — langsung menyambung tanpa jeda atau border */}
+            <div className="p-3 pt-2">
+              <div className="flex justify-between items-start gap-3 mb-2">
+                <h1 className="text-lg md:text-xl font-semibold text-gray-900 leading-snug flex-1">{product.name}</h1>
+                <div className="text-right flex-shrink-0">
+                  <div className="flex items-center gap-1 text-orange-500">
+                    <Flame size={14} strokeWidth={1.5} />
+                    <span className="font-semibold text-gray-800 text-sm">{Math.max(product.sold, product.sold || 0)}+</span>
                   </div>
+                  <p className="text-[10px] text-gray-500">Terjual</p>
+                </div>
+              </div>
 
-                  {/* Divider Vertikal - Muncul kecuali setelah elemen terakhir */}
-                  {index < 2 && (
-                    <div className="h-4 w-[1px] bg-gray-200" />
+              <div className="flex items-end justify-between mb-2.5">
+                <div>
+                  {product.originalPrice && <p className="text-sm text-gray-500 line-through mb-1">{formatRupiah(product.originalPrice)}</p>}
+                  {/* PERBAIKAN: text-primary diganti text-emerald-700 agar tidak error di Tailwind default */}
+                  <p className="text-2xl font-bold text-emerald-700 tracking-tight">{formatRupiah(product.price)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mb-1">Sisa Stok</p>
+                  <p className="font-semibold text-gray-800">{product.stock}</p>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100" />
+
+              <div className="pt-3">
+                <h2 className="text-sm font-bold text-gray-800 tracking-tight mb-2">Deskripsi Produk</h2>
+                <div className="relative overflow-hidden">
+                  <div className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${!isDescriptionExpanded ? 'max-h-[64px]' : 'max-h-[2000px]'}`}>
+                    <p ref={descriptionRef} className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap relative">{product.description}</p>
+                    <div className={`transition-all duration-300 ${isDescriptionExpanded ? 'h-8' : 'h-0'}`} />
+                  </div>
+                  {needsTruncation && (
+                    <button onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)} className={`absolute bottom-0 transition-all duration-500 ease-in-out flex items-center h-7 z-10 ${!isDescriptionExpanded ? 'left-full -translate-x-full pl-24 pr-0 read-more-fade' : 'left-0 translate-x-0'}`}>
+                      {!isDescriptionExpanded ? (
+                        <span className="flex items-center text-emerald-700 font-bold text-[12px] whitespace-nowrap pr-0.5">
+                          <span className="text-gray-500 font-normal mr-1.5">...</span>
+                          <span className="hover:underline">Lihat selengkapnya</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-0.5 text-emerald-700 font-bold text-[12px] whitespace-nowrap">
+                          Lihat lebih sedikit
+                          <ChevronDown size={14} className="rotate-180 transition-transform duration-500" />
+                        </span>
+                      )}
+                    </button>
                   )}
-                </Fragment>
-              ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* PERBAIKAN 2: Review Section dengan inline-flex */}
-          <div className="bg-white px-4 py-3 mb-1">
+          {/* PERBAIKAN: VARIAN PRODUK SEBAGAI ACCORDION SLIM */}
+          {(product as any).variants?.length > 0 && (
+            <div className="bg-white px-4 py-2.5 mt-1">
+              <button
+                onClick={() => setIsVariantOpen(!isVariantOpen)}
+                className="w-full flex items-center justify-between py-1 group"
+              >
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-bold text-gray-800 tracking-tight">Pilih Varian</h2>
+                  {selectedVariant && !isVariantOpen && (
+                    <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                      {(product as any).variants.find((v: any) => v.id === selectedVariant)?.name}
+                    </span>
+                  )}
+                </div>
+                <ChevronDown
+                  size={18}
+                  strokeWidth={2}
+                  className={`text-gray-400 transition-transform duration-300 ${isVariantOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {/* Dropdown Variasi (Slim Chips) */}
+              <div
+                className="overflow-hidden transition-all duration-300 ease-in-out"
+                style={{ maxHeight: isVariantOpen ? '200px' : '0px', opacity: isVariantOpen ? 1 : 0 }}
+              >
+                <div className="flex flex-wrap gap-2 pt-3 pb-1">
+                  {(product as any).variants.map((variant: any) => {
+                    const isSelected = selectedVariant === variant.id;
+                    const isOutOfStock = variant.stock === 0;
+
+                    return (
+                      <button
+                        key={variant.id}
+                        onClick={() => !isOutOfStock && setSelectedVariant(variant.id)}
+                        disabled={isOutOfStock}
+                        className={`
+                          px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all duration-200
+                          ${isSelected
+                            ? 'border-emerald-600 bg-emerald-50 text-emerald-700 shadow-sm'
+                            : 'border-gray-200 text-gray-700 bg-white hover:border-gray-300'
+                          }
+                          ${isOutOfStock
+                            ? 'opacity-40 cursor-not-allowed line-through border-gray-100 bg-gray-50 text-gray-400'
+                            : 'active:scale-95'
+                          }
+                        `}
+                      >
+                        {variant.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Review Section */}
+          <div className="bg-white px-4 py-3 mt-1">
             <h2 className="text-sm font-bold text-gray-800 tracking-tight">
               Ulasan Pembeli ({allReviews.length})
             </h2>
@@ -608,14 +528,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                       <div key={star} className="flex items-center gap-1.5 group cursor-default">
                         <span className="w-3 text-[10px] font-semibold text-gray-600 text-center tabular-nums">{star}</span>
                         <Star size={8} className="text-gray-400 fill-gray-400 flex-shrink-0" strokeWidth={1.5} />
-
                         <div className="flex-1 h-2 bg-gray-200/50 rounded-full overflow-hidden relative">
-                          <div
-                            className={`h-full rounded-full transition-all duration-700 ease-out ${RATING_COLORS[star]}`}
-                            style={{ width: `${pct}%` }}
-                          />
+                          <div className={`h-full rounded-full transition-all duration-700 ease-out ${RATING_COLORS[star]}`} style={{ width: `${pct}%` }} />
                         </div>
-
                         <span className="text-[9px] text-gray-600 tabular-nums min-w-[20px] text-right">{count}</span>
                       </div>
                     );
@@ -624,89 +539,52 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </div>
             </div>
 
-            {/* DAFTAR ULASAN PEMBELI */}
             <div className="space-y-2.5 px-1">
               {displayedReviews.map((review: Review, index: number) => (
                 <div key={review.id} className="py-2.5 border-b border-gray-100 last:border-0">
-                  {/* HEADER ULASAN: Profil & Waktu */}
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      {/* Avatar Bulat */}
                       <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80 flex-shrink-0`}>
                         {review.name.charAt(0).toUpperCase()}
                       </div>
-
                       <div>
-                        {/* Nama Pembeli + Ikon Verified Sejajar */}
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none truncate">
-                            {maskName(review.name)}
-                          </p>
-                          {/* {review.isVerified && (
-                            <CheckCircle
-                              size={11}
-                              strokeWidth={3.5}
-                              className="text-emerald-500 flex-shrink-0"
-                            />
-                          )} */}
+                          <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none truncate">{maskName(review.name)}</p>
                         </div>
-
-                        {/* Rating Bintang di bawah Nama */}
                         <div className="flex items-center gap-0.5 mt-1">
                           {[1, 2, 3, 4, 5].map(star => renderStar(star, review.rating))}
                         </div>
                       </div>
                     </div>
-
-                    {/* Info Waktu di Pojok Kanan Atas */}
                     <div className="flex items-center gap-1 text-gray-600 flex-shrink-0 mt-0.5">
                       <Clock size={10} strokeWidth={1.5} />
-                      <span className="text-[11px] font-medium">
-                        <TimeAgo date={review.createdAt} />
-                      </span>
+                      <span className="text-[11px] font-medium"><TimeAgo date={review.createdAt} /></span>
                     </div>
                   </div>
 
-                  {/* BODY ULASAN: Komentar & Tombol Like/Dislike */}
                   <div className="pl-[48px] flex items-end justify-between gap-4">
-                    {/* Teks Komentar */}
-                    <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words min-w-0">
-                      {review.comment}
-                    </p>
+                    <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words min-w-0">{review.comment}</p>
 
-                    {/* Tombol Interaksi (Like/Dislike) */}
-                    <div className="flex items-center gap-3 flex-shrink-0 mb-0.5">
-                      {/* Button Like */}
-                      <button
-                        onClick={() => handleVote(review.id, 'like')}
-                        className={`flex items-center gap-1.5 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-700 scale-110' : 'text-gray-500'
-                          }`}
-                      >
-                        <ThumbsUp
-                          size={13}
-                          className={`${votedType[review.id] === 'like' ? 'fill-emerald-500/20' : 'fill-none'}`}
-                          strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.8}
-                        />
-                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'like' ? 'text-emerald-700' : 'text-gray-600'}`}>
-                          {review.likes || 0}
+                    {/* PERBAIKAN: Container Interaksi Fixed Width agar layout tidak bergeser */}
+                    <div className="flex-shrink-0 mb-0.5 w-[76px] flex items-center justify-end">
+                      {thankYouIds.includes(review.id) ? (
+                        /* State "Terima kasih" — Menggantikan tombol sementara */
+                        <span className="text-[10px] font-bold text-emerald-600 animate-pulse whitespace-nowrap">
+                          Terima kasih!
                         </span>
-                      </button>
-
-                      {/* Button Dislike */}
-                      <button
-                        onClick={() => handleVote(review.id, 'dislike')}
-                        className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-700 scale-110' : 'text-gray-500'
-                          }`}
-                      >
-                        <ThumbsDown
-                          size={13}
-                          className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`}
-                          strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5}
-                        />
-                        <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-700' : 'text-gray-600'}`}>
-                          {review.dislikes || 0}
-                        </span>
-                      </button>
+                      ) : (
+                        /* State Default — Tombol Like & Dislike */
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => handleVote(review.id, 'like')} className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'like' ? 'text-emerald-700 scale-110' : 'text-gray-500'}`}>
+                            <ThumbsUp size={13} className={`${votedType[review.id] === 'like' ? 'fill-emerald-500/20' : 'fill-none'}`} strokeWidth={votedType[review.id] === 'like' ? 2.5 : 1.8} />
+                            <span className={`text-[11px] font-bold ${votedType[review.id] === 'like' ? 'text-emerald-700' : 'text-gray-600'}`}>{review.likes || 0}</span>
+                          </button>
+                          <button onClick={() => handleVote(review.id, 'dislike')} className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === 'dislike' ? 'text-rose-700 scale-110' : 'text-gray-500'}`}>
+                            <ThumbsDown size={13} className={`${votedType[review.id] === 'dislike' ? 'fill-rose-500/20' : 'fill-none'}`} strokeWidth={votedType[review.id] === 'dislike' ? 2.5 : 1.5} />
+                            <span className={`text-[11px] font-bold ${votedType[review.id] === 'dislike' ? 'text-rose-700' : 'text-gray-600'}`}>{review.dislikes || 0}</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -714,69 +592,31 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             </div>
 
             {displayCount < allReviews.length && (
-              <button
-                onClick={() => setDisplayCount(prev => prev + 5)}
-                className="w-full py-2 mt-2 text-primary-dark font-bold text-sm border hover:bg-primary-light border-primary/30 rounded-xl transition-colors flex items-center justify-center gap-2"
-              >
+              <button onClick={() => setDisplayCount(prev => prev + 5)} className="w-full py-2 mt-2 text-emerald-700 font-bold text-sm border hover:bg-emerald-50 border-emerald-200 rounded-xl transition-colors flex items-center justify-center gap-2">
                 Lihat ulasan lainnya
                 <ChevronDown size={16} strokeWidth={1.5} />
               </button>
             )}
           </div>
 
-          {/* Sticky Bottom CTA - Tombol & Font Tetap, Area Luar Dirampingkan */}
+          {/* Sticky Bottom CTA */}
           <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-gray-100 px-4 pt-1.5 pb-5 shadow-[0_-6px_20px_rgba(0,0,0,0.04)]">
             <div className="max-w-[500px] mx-auto flex gap-3">
-              {/* Tombol Keranjang: py-3.5 dan text-sm tetap sesuai request */}
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 py-3.5 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-bold hover:bg-emerald-50 transition-all active:scale-[0.96] text-sm whitespace-nowrap"
-              >
+              <button onClick={handleAddToCart} className="flex-1 py-3.5 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-bold hover:bg-emerald-50 transition-all active:scale-[0.96] text-sm whitespace-nowrap">
                 + Keranjang
               </button>
-
-              {/* Tombol Pesan Sekarang: py-3.5 dan text-sm tetap sesuai request */}
-              <button
-                onClick={handleBuyNow}
-                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
-              >
+              <button onClick={handleBuyNow} className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm">
                 <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
                 Pesan Sekarang
               </button>
             </div>
           </div>
 
-          {/* Scroll to Top Button */}
-          <button
-            onClick={scrollToTop}
-            aria-label="Kembali ke atas"
-            className={`
-          fixed bottom-24 right-6 z-50
-          w-11 h-11 rounded-full
-          bg-emerald-500 text-white
-          shadow-[0_8px_25px_rgba(16,185,129,0.3)]
-          flex items-center justify-center
-          transition-all duration-500 cubic-bezier(0.34,1.56,0.64,1)
-          hover:bg-emerald-600 hover:scale-110
-          active:scale-90
-          ${showBackToTop
-                ? 'opacity-100 translate-y-0 scale-100'
-                : 'opacity-0 translate-y-10 scale-50 pointer-events-none'
-              }
-        `}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 15l-6-6-6 6" />
-            </svg>
+          <button onClick={scrollToTop} aria-label="Kembali ke atas" className={`fixed bottom-24 right-6 z-50 w-11 h-11 rounded-full bg-emerald-500 text-white shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center transition-all duration-500 cubic-bezier(0.34,1.56,0.64,1) hover:bg-emerald-600 hover:scale-110 active:scale-90 ${showBackToTop ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-50 pointer-events-none'}`}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6" /></svg>
           </button>
 
-          <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-
-
+          <style jsx>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
         </>
       ) : null}
     </div>

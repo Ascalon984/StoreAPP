@@ -1,3 +1,9 @@
+export interface ProductVariant {
+  id: string;
+  name: string;
+  stock: number;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -12,6 +18,7 @@ export interface Product {
   stock: number;
   description: string;
   images?: string[];    // Max 3 — controlled by admin
+  variants?: ProductVariant[];
 }
 
 export interface Category {

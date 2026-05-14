@@ -37,6 +37,11 @@ export const products: Product[] = [
     price: 15000, originalPrice: 18000, category: 'snack',
     rating: 4.8, reviewCount: 234, sold: 1250, stock: 99,
     description: 'Chitato rasa Beef Barbeque kemasan 68g. Keripik kentang premium dengan rasa yang lezat.',
+    variants: [
+      { id: 'v1', name: 'Original', stock: 50 },
+      { id: 'v2', name: 'Beef Barbeque', stock: 0 },
+      { id: 'v3', name: 'Spicy', stock: 15 },
+    ]
   },
   {
     id: 's2', slug: 'taro-snack-net-68g', name: 'Taro Snack Net 68g',
@@ -199,8 +204,8 @@ function generateReviewDate(hoursAgo: number): string {
 }
 
 export const defaultReviews: Review[] = [
-  { id: 'r1', productId: 'all', name: 'Ahmad', rating: 5, comment: 'Proses cepat, admin ramah', createdAt: generateReviewDate(1), isVerified: true },
-  { id: 'r2', productId: 'all', name: 'Rizky', rating: 5, comment: 'Langsung masuk, aman banget', createdAt: generateReviewDate(3), isVerified: true },
+  { id: 'r1', productId: 'all', name: 'Ahmad', rating: 5, comment: 'Proses cepat, admin ramah', createdAt: generateReviewDate(1), isVerified: true, likes: 24, dislikes: 1 },
+  { id: 'r2', productId: 'all', name: 'Rizky', rating: 5, comment: 'Langsung masuk, aman banget', createdAt: generateReviewDate(3), isVerified: true, likes: 12, dislikes: 0 },
   { id: 'r3', productId: 'all', name: 'Dewi', rating: 4, comment: 'Harga murah, worth it', createdAt: generateReviewDate(24), isVerified: true },
   { id: 'r4', productId: 'all', name: 'Budi', rating: 5, comment: 'Udah langganan di sini', createdAt: generateReviewDate(48), isVerified: true },
   { id: 'r5', productId: 'all', name: 'Sari', rating: 4, comment: 'Pelayanan oke, respon cepat', createdAt: generateReviewDate(72), isVerified: true },

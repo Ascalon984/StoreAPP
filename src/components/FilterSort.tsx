@@ -11,7 +11,6 @@ import {
   Ticket,
 } from 'lucide-react';
 
-// ✅ SINKRON DENGAN SORT_OPTIONS + DISKON
 const sortIconMap: Record<string, React.ElementType> = {
   popular: Star,
   cheapest: TrendingDown,
@@ -19,7 +18,6 @@ const sortIconMap: Record<string, React.ElementType> = {
   discount: Ticket,
 };
 
-// Filter diskon (tambahan)
 const DISCOUNT_FILTER = {
   id: 'discount',
   label: 'Diskon',
@@ -34,8 +32,6 @@ export default function FilterSort() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Threshold ini menandakan saat sheet sudah naik dan FilterSort mulai sticky.
-      // Dihitung kasar dari tinggi Banner (~200px) + CategoryGrid (~150px).
       setIsScrolled(window.scrollY > 350);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -45,8 +41,10 @@ export default function FilterSort() {
   return (
     <section
       className={`
-        sticky top-[52px] z-30 bg-white backdrop-blur-md border-b border-gray-100 
-        transition-all duration-300 ease-in-out pb-2 pt-1 rounded-t-[26px]
+        sticky top-[52px] z-30 bg-white backdrop-blur-md
+        border-b border-gray-100 
+        transition-all duration-300 ease-in-out
+        pb-2 pt-1
         ${isScrolled ? 'shadow-layer-md' : 'shadow-layer-xs'}
       `}
     >
@@ -67,16 +65,15 @@ export default function FilterSort() {
                   active:scale-95
                   ${isActive
                     ? 'bg-emerald-700 text-white shadow-layer-lg'
-                    : 'bg-white border border-gray-200 text-gray-600 shadow-layer-xs'
+                    : 'bg-white text-gray-600 ring-1 ring-slate-900/[0.04] shadow-layer-xs'
                   }
                 `}
               >
                 <Icon
                   size={12}
-                  strokeWidth={2.5} // Sedikit diturunkan dari 3 agar tetap elegan tanpa animasi
+                  strokeWidth={2.5}
                   className={`
                     transition-colors duration-300
-                    /* Kuning cerah saat aktif, Abu-abu lembut saat tidak aktif */
                     ${isActive ? 'text-yellow-400' : 'text-gray-400'}
                   `}
                 />

@@ -37,8 +37,6 @@ type FilterTab = 'all' | 'processing' | 'completed' | 'cancelled';
 
 // ── Mock data ──
 const MOCK_ORDERS: Order[] = [
-
-  // ── Hari Ini ──
   {
     id: '1',
     orderId: 'ORD-2026-001',
@@ -54,7 +52,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
   {
     id: '2',
     orderId: 'ORD-2026-002',
@@ -70,8 +67,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
-  // ── 7 Hari Terakhir ──
   {
     id: '3',
     orderId: 'ORD-2026-003',
@@ -88,7 +83,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
   {
     id: '4',
     orderId: 'ORD-2026-004',
@@ -104,7 +98,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
   {
     id: '5',
     orderId: 'ORD-2026-005',
@@ -119,8 +112,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
-  // ── April 2026 ──
   {
     id: '6',
     orderId: 'ORD-2026-006',
@@ -135,7 +126,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
   {
     id: '7',
     orderId: 'ORD-2026-007',
@@ -151,8 +141,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
-  // ── Maret 2026 ──
   {
     id: '8',
     orderId: 'ORD-2026-008',
@@ -168,7 +156,6 @@ const MOCK_ORDERS: Order[] = [
     phone: '081234567890',
     address: 'Jl. Melati No. 12, Telang Indah, Kamal',
   },
-
   {
     id: '9',
     orderId: 'ORD-2026-009',
@@ -187,45 +174,39 @@ const MOCK_ORDERS: Order[] = [
 ];
 
 function getOrderGroupLabel(dateStr: string): string {
-  const now = new Date(); // Asumsikan hari ini untuk perbandingan
+  const now = new Date();
   const date = new Date(dateStr);
-
-  // Normalisasi waktu ke jam 00:00 untuk menghitung selisih hari dengan akurat
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const orderDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const diffDays = Math.floor((today.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24));
-
   if (diffDays === 0) return 'Hari Ini';
   if (diffDays > 0 && diffDays <= 7) return '7 Hari Terakhir';
-
-  // Format otomatis menjadi "NamaBulan Tahun" (contoh: Juni 2026)
   return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 }
 
-// ── Helpers ──
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
     + ', ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
 
-// ── Status config ──
+// ── Status config — FIXED: badge style, bukan plain text ──
 const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> = {
   pending: {
     label: 'Menunggu',
-    className: 'text-gray-400',
+    className: 'bg-amber-50 text-amber-600 border-amber-200/70',
   },
   processing: {
     label: 'Diproses',
-    className: 'text-gray-500',
+    className: 'bg-blue-50 text-blue-600 border-blue-200/70',
   },
   completed: {
     label: 'Selesai',
-    className: 'text-gray-800',
+    className: 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
   },
   cancelled: {
     label: 'Dibatalkan',
-    className: 'text-gray-300',
+    className: 'bg-red-50 text-red-500 border-red-200/70',
   },
 };
 
@@ -264,11 +245,8 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
           className="flex transition-transform duration-300 ease-out"
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
-
           {/* ── Slide 0 — Overview ── */}
           <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3">
-
-            {/* Product Stack + Indicator */}
             <div className="flex flex-col items-center flex-shrink-0">
               <div className="flex items-center">
                 {items.slice(0, 3).map((item, i) => (
@@ -289,7 +267,6 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                     />
                   </div>
                 ))}
-
                 {items.length > 3 && (
                   <div
                     className="w-12 h-12 rounded-xl border-2 border-white shadow-sm
@@ -303,10 +280,8 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                   </div>
                 )}
               </div>
-
-              {/* Indicator */}
               {totalSlides > 1 && (
-                <div className="flex items-center gap-1 mt-1">
+                <div className="flex items-center gap-1 mt-1.5">
                   {Array.from({ length: totalSlides }).map((_, i) => (
                     <button
                       key={i}
@@ -325,24 +300,13 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
               )}
             </div>
 
-            {/* Text */}
             <div className="flex-1 min-w-0">
-              <p
-                className="text-[11px] font-semibold text-gray-700
-                leading-[1.25] line-clamp-2 break-words"
-              >
+              <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
                 {items.length === 1
                   ? items[0].name
-                  : `${items[0].name
-                    .split(' ')
-                    .slice(0, 4)
-                    .join(' ')} & ${items.length - 1} lainnya`}
+                  : `${items[0].name.split(' ').slice(0, 4).join(' ')} & ${items.length - 1} lainnya`}
               </p>
-
-              <p
-                className={`text-[10px] text-gray-400 font-medium leading-none ${items[0].name.length > 28 ? 'mt-0.5' : 'mt-1'
-                  }`}
-              >
+              <p className="text-[10px] text-gray-400 font-medium mt-1">
                 {items.length} produk
               </p>
             </div>
@@ -354,10 +318,9 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
               key={item.productId}
               className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3"
             >
-
-              {/* Product Image + Indicator */}
               <div className="flex flex-col items-center flex-shrink-0">
-                <div className="w-12 h-12 rounded-lg border border-gray-100 overflow-hidden bg-gray-50">
+                {/* FIXED: rounded-xl konsisten dengan stack */}
+                <div className="w-12 h-12 rounded-xl border border-gray-100 overflow-hidden bg-gray-50">
                   <ProductImage
                     category={item.category}
                     name={item.name}
@@ -365,10 +328,8 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* Indicator */}
                 {totalSlides > 1 && (
-                  <div className="flex items-center gap-1 mt-1">
+                  <div className="flex items-center gap-1 mt-1.5">
                     {Array.from({ length: totalSlides }).map((_, i) => (
                       <button
                         key={i}
@@ -387,29 +348,20 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                 )}
               </div>
 
-              {/* Product Info */}
               <div className="flex-1 min-w-0">
-                <p
-                  className="text-[12px] font-semibold text-gray-800
-                  leading-[1.25] line-clamp-2 break-words"
-                >
+                <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
                   {item.name}
                 </p>
-
-                <p
-                  className={`text-[10px] text-gray-400 font-medium leading-none ${item.name.length > 28 ? 'mt-0.5' : 'mt-1'
-                    }`}
-                >
+                <p className="text-[10px] text-gray-400 font-medium mt-1">
                   {item.quantity}× · {formatRupiah(item.price)}
                 </p>
               </div>
 
-              {/* Price */}
+              {/* FIXED: harga item gray-700, bukan gray-900 */}
               <div className="text-right flex-shrink-0">
-                <p className="text-[12px] font-black text-gray-900">
+                <p className="text-[12px] font-bold text-gray-700">
                   {formatRupiah(item.price * item.quantity)}
                 </p>
-
                 <p className="text-[9px] text-gray-400 mt-0.5">
                   {idx + 1}/{items.length}
                 </p>
@@ -423,154 +375,131 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
 }
 
 // ── Order Card ──
-function OrderCard({ order, activeFilter }: { order: Order, activeFilter: string }) {
+function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string }) {
   const router = useRouter();
   const { label, className } = STATUS_CONFIG[order.status];
 
   return (
-    <div className="bg-white rounded-lg ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
 
       {/* Header */}
-      <div className="px-4 pt-2.5 pb-2 flex items-center justify-between">
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold text-gray-600 tracking-tight leading-none">
-            #{order.orderId}
-          </p>
-        </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-
+      <div className="px-4 py-2.5 flex items-center justify-between">
+        <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
+          #{order.orderId}
+        </p>
+        <div className="flex items-center gap-2 flex-shrink-0">
           {activeFilter === 'all' && (
-            <>
-              <span
-                className={`text-[10px] font-bold leading-none ${className}`}
-              >
-                {label}
-              </span>
-
-              <span className="w-1 h-1 rounded-full bg-gray-300" />
-            </>
+            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${className}`}>
+              {label}
+            </span>
           )}
-
-          <p className="text-[10px] text-gray-500 font-medium leading-none whitespace-nowrap">
+          <p className="text-[10px] text-gray-400 font-medium whitespace-nowrap">
             {formatDateTime(order.createdAt)}
           </p>
-
         </div>
       </div>
 
-      <div className="border-t border-gray-100/70 mx-4" />
+      <div className="border-t border-gray-100 mx-4" />
 
       {/* Carousel */}
       <ProductCarousel items={order.items} />
 
-      <div className="border-t border-gray-100/70 mx-4" />
+      <div className="border-t border-gray-100 mx-4" />
 
-      {/* Footer */}
-      <div className="px-4 py-2 flex items-center justify-between gap-3">
+      {/* Footer — FIXED: py lebih longgar */}
+      <div className="px-4 py-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-[9px] text-gray-400 font-medium leading-none">
+          {/* FIXED: 10px, bukan 9px */}
+          <p className="text-[10px] text-gray-400 font-medium">
             Total Pembayaran
           </p>
-
-          <p className="text-[13px] font-bold text-gray-700 leading-tight mt-0.5">
+          {/* FIXED: gray-900 font-black — paling gelap di card */}
+          <p className="text-[14px] font-black text-gray-900 leading-tight mt-0.5">
             {formatRupiah(order.total)}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
-
-          {/* ── COMPLETED ── */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {order.status === 'completed' && (
             <>
               <button
-                className="px-3 py-1 rounded-md
-        border border-gray-200
-        bg-white
-        text-[11px] font-semibold text-gray-600
-        hover:border-gray-300 hover:bg-gray-50
-        active:scale-95
-        transition-all"
+                className="px-3 py-1.5 rounded-lg
+                border border-gray-200
+                bg-white
+                text-[11px] font-semibold text-gray-600
+                hover:border-gray-300 hover:bg-gray-50
+                active:scale-95
+                transition-all"
               >
                 Ulasan
               </button>
-
               <button
                 onClick={() => router.push('/')}
-                className="px-3 py-1 rounded-md
-        bg-emerald-700
-        border border-emerald-700
-        text-white text-[11px] font-bold
-        hover:bg-emerald-800
-        active:scale-95
-        transition-all"
+                className="px-3 py-1.5 rounded-lg
+                bg-emerald-700
+                text-white text-[11px] font-bold
+                hover:bg-emerald-800
+                active:scale-95
+                transition-all"
               >
                 Beli Lagi
               </button>
             </>
           )}
 
-          {/* ── PROCESSING ── */}
           {order.status === 'processing' && (
             <button
               onClick={() => router.push('/chat')}
-              className="px-3 py-1 rounded-md
-      border border-amber-600
-      bg-white
-      text-[11px] font-semibold text-amber-600
-      hover:border-amber-500 hover:bg-amber-50
-      active:scale-95
-      transition-all"
+              className="px-3 py-1.5 rounded-lg
+              border border-amber-500
+              text-[11px] font-semibold text-amber-600
+              hover:bg-amber-50
+              active:scale-95
+              transition-all"
             >
               Hubungi Penjual
             </button>
           )}
 
-          {/* ── PENDING ── */}
           {order.status === 'pending' && (
             <>
               <button
-                className="text-[11px] font-semibold text-gray-300
-        hover:text-gray-500
-        transition-colors
-        active:scale-95"
+                className="text-[11px] font-semibold text-gray-400
+                hover:text-gray-600
+                transition-colors
+                active:scale-95"
               >
                 Batalkan
               </button>
-
               <button
                 onClick={() => router.push('/chat')}
-                className="px-3 py-1 rounded-md
-        border border-amber-600
-        bg-white
-        text-[11px] font-semibold text-amber-600
-        hover:border-amber-500 hover:bg-amber-50
-        active:scale-95
-        transition-all"
+                className="px-3 py-1.5 rounded-lg
+                border border-amber-500
+                text-[11px] font-semibold text-amber-600
+                hover:bg-amber-50
+                active:scale-95
+                transition-all"
               >
                 Hubungi Penjual
               </button>
             </>
           )}
 
-          {/* ── CANCELLED ── */}
           {order.status === 'cancelled' && (
             <button
               onClick={() => router.push('/')}
-              className="px-3 py-1 rounded-md
-      bg-emerald-700
-      border border-emerald-700
-      text-white text-[11px] font-bold
-      hover:bg-emerald-800
-      active:scale-95
-      transition-all"
+              className="px-3 py-1.5 rounded-lg
+              bg-emerald-700
+              text-white text-[11px] font-bold
+              hover:bg-emerald-800
+              active:scale-95
+              transition-all"
             >
               Beli Lagi
             </button>
           )}
-
         </div>
       </div>
-
     </div>
   );
 }
@@ -578,19 +507,19 @@ function OrderCard({ order, activeFilter }: { order: Order, activeFilter: string
 // ── Skeleton ──
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-lg ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
-      <div className="px-4 pt-3 pb-2 flex justify-between">
-        <div className="space-y-1.5">
-          <div className="h-3.5 w-28 bg-gray-100 rounded" />
-          <div className="h-2.5 w-40 bg-gray-100 rounded" />
+    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+      <div className="px-4 py-2.5 flex justify-between">
+        <div className="h-3.5 w-28 bg-gray-100 rounded" />
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-14 bg-gray-100 rounded-full" />
+          <div className="h-3 w-20 bg-gray-100 rounded" />
         </div>
-        <div className="h-3 w-14 bg-gray-100 rounded" />
       </div>
-      <div className="border-t border-gray-100/70 mx-4" />
-      <div className="px-4 py-2.5 flex items-center gap-3">
+      <div className="border-t border-gray-100 mx-4" />
+      <div className="px-4 py-3 flex items-center gap-3">
         <div className="flex">
           {[0, 1].map(i => (
-            <div key={i} className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0"
+            <div key={i} className="w-12 h-12 rounded-xl bg-gray-100 flex-shrink-0"
               style={{ marginLeft: i === 0 ? 0 : -10 }} />
           ))}
         </div>
@@ -599,13 +528,13 @@ function SkeletonCard() {
           <div className="h-2.5 bg-gray-100 rounded w-2/5" />
         </div>
       </div>
-      <div className="border-t border-gray-100/70 mx-4" />
-      <div className="px-4 py-2 flex justify-between items-center">
+      <div className="border-t border-gray-100 mx-4" />
+      <div className="px-4 py-3 flex justify-between items-center">
         <div className="space-y-1">
-          <div className="h-2 w-16 bg-gray-100 rounded" />
-          <div className="h-3.5 w-20 bg-gray-100 rounded" />
+          <div className="h-2.5 w-16 bg-gray-100 rounded" />
+          <div className="h-4 w-24 bg-gray-100 rounded" />
         </div>
-        <div className="h-6 w-20 bg-gray-100 rounded-lg" />
+        <div className="h-7 w-20 bg-gray-100 rounded-lg" />
       </div>
     </div>
   );
@@ -647,14 +576,11 @@ type OrderGroup = {
 };
 
 function groupOrders(orders: Order[]): OrderGroup[] {
-  // Pastikan data terurut dari yang paling baru
   const sorted = [...orders].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
-
   const groups: OrderGroup[] = [];
   let lastLabel = '';
-
   for (const order of sorted) {
     const label = getOrderGroupLabel(order.createdAt);
     if (label !== lastLabel) {
@@ -664,24 +590,17 @@ function groupOrders(orders: Order[]): OrderGroup[] {
       groups[groups.length - 1].orders.push(order);
     }
   }
-
   return groups;
 }
 
 // ── Main Page ──
 export default function OrdersPage() {
   const router = useRouter();
-
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // NEW
-  const [indicatorStyle, setIndicatorStyle] = useState({
-    width: 0,
-    left: 0,
-  });
-
+  const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, left: 0 });
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const loadOrders = useCallback(async () => {
@@ -695,10 +614,8 @@ export default function OrdersPage() {
     loadOrders();
   }, [loadOrders]);
 
-  // NEW
   useEffect(() => {
     const currentTab = tabRefs.current[activeFilter];
-
     if (currentTab) {
       setIndicatorStyle({
         width: currentTab.offsetWidth,
@@ -711,7 +628,6 @@ export default function OrdersPage() {
     if (activeFilter === 'all') return true;
     if (activeFilter === 'processing')
       return o.status === 'pending' || o.status === 'processing';
-
     return o.status === activeFilter;
   });
 
@@ -725,28 +641,25 @@ export default function OrdersPage() {
 
       {/* Header */}
       <div
-        className="sticky top-0 z-50 bg-[#0B6B52]
-  border-b border-white/10 shadow-md"
+        className="sticky top-0 z-50 bg-[#0B6B52] shadow-md"
         style={{ height: HEADER_H }}
       >
         <div className="flex items-center h-full px-4">
-        <div className="text-[14px] font-bold text-white tracking-tight leading-none">
-          Riwayat Pesanan
+          <div className="text-[14px] font-bold text-white tracking-tight">
+            Riwayat Pesanan
+          </div>
         </div>
       </div>
-      </div>
 
-      {/* Filter tabs */}
+      {/* Filter tabs — FIXED: gap-6 bukan gap-8 */}
       <div
-        className="sticky z-30 bg-white border-b border-gray-100"
+        className="sticky z-30 bg-white"
         style={{ top: HEADER_H }}
       >
         <div
-          className="relative flex gap-8 px-6 overflow-x-auto hide-scrollbar"
+          className="relative flex gap-6 px-6 overflow-x-auto hide-scrollbar border-b border-gray-100"
           style={{ height: FILTER_H }}
         >
-
-          {/* Sliding Line */}
           <span
             className="absolute bottom-0 left-0 h-0.5 rounded-full bg-emerald-700
             transition-all duration-300 ease-out"
@@ -755,13 +668,10 @@ export default function OrdersPage() {
               transform: `translateX(${indicatorStyle.left}px)`,
             }}
           />
-
           {FILTER_TABS.map(tab => (
             <button
               key={tab.key}
-              ref={(el) => {
-                tabRefs.current[tab.key] = el;
-              }}
+              ref={(el) => { tabRefs.current[tab.key] = el; }}
               onClick={() => setActiveFilter(tab.key)}
               className={`relative flex-shrink-0 h-full px-1 text-[13px] font-bold
               transition-colors duration-200 active:scale-95
@@ -779,7 +689,7 @@ export default function OrdersPage() {
       {/* List */}
       <div className="pt-3">
         {isLoading ? (
-          <div className="px-4 space-y-1">
+          <div className="px-4 space-y-2">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
@@ -790,15 +700,13 @@ export default function OrdersPage() {
           <div className="space-y-5">
             {groups.map(group => (
               <div key={group.label}>
-                {/* Group label */}
-                <div className="pl-5 pr-4 pb-1.5">
-                  <h2 className="text-[12px] font-semibold text-gray-600 tracking-tight">
+                <div className="px-5 pb-2">
+                  <h2 className="text-[12px] font-semibold text-gray-500 tracking-tight">
                     {group.label}
                   </h2>
                 </div>
-
-                {/* Cards — tight gap within group */}
-                <div className="px-4 space-y-1">
+                {/* FIXED: space-y-2, bukan space-y-1 */}
+                <div className="px-4 space-y-2">
                   {group.orders.map(order => (
                     <OrderCard key={order.id} order={order} activeFilter={activeFilter} />
                   ))}
@@ -808,7 +716,6 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
-
     </div>
   );
 }

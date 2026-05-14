@@ -29,12 +29,12 @@ const CATEGORY_COLORS: Record<string, { bg: string; accent: string; light: strin
 };
 
 // ─────────────────────────────────────────
-//  MINI TOAST
+//  MINI TOAST — FIXED: posisi di atas bottom nav
 // ─────────────────────────────────────────
 function MiniToast({ message, visible }: { message: string; visible: boolean }) {
   return (
-    <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-      }`}>
+    <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] transition-all duration-300
+      ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
       <div className="flex items-center gap-2 bg-gray-900 text-white text-[12px] font-semibold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
         <Check size={12} strokeWidth={3} className="text-emerald-400 flex-shrink-0" />
         {message}
@@ -79,7 +79,7 @@ function EmptyState({ onExplore }: { onExplore: () => void }) {
 }
 
 // ─────────────────────────────────────────
-//  HORIZONTAL PRODUCT CARD — Improved spacing
+//  HORIZONTAL PRODUCT CARD
 // ─────────────────────────────────────────
 function HorizontalCard({
   product,
@@ -107,31 +107,31 @@ function HorizontalCard({
     <div
       onClick={() => isEditMode && onToggleSelect(product.id)}
       className={`
-        relative flex items-center gap-3.5 w-full 
-        py-3 px-1                          // ← TAMBAH padding vertikal
+        relative flex items-center gap-3.5 w-full
+        py-3 px-1
         transition-all duration-200
         ${isSelected
-          ? 'rounded-xl bg-emerald-50/60 ring-1 ring-emerald-500/30 -mx-1 px-2' // ← Extend saat selected
+          ? 'rounded-xl bg-emerald-50/60 ring-1 ring-emerald-500/30 -mx-1 px-2'
           : ''
         }
         ${isEditMode ? 'cursor-pointer' : 'active:scale-[0.99]'}
       `}
     >
-      {/* Divider — full width */}
-      {index !== 0 && !isSelected && (
+      {/* Divider — selalu tampilkan, biar bg selected yang handle visual */}
+      {index !== 0 && (
         <div className="absolute -top-[1px] left-0 right-0 h-px bg-gray-100/80" />
       )}
 
-      {/* Checkbox */}
+      {/* Checkbox — FIXED: konsisten w-[18px] border-gray-300 */}
       {isEditMode && (
-        <div className={`flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-200 
-          ${isSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-400 bg-white'}`}>
+        <div className={`flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-200
+          ${isSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300 bg-white'}`}>
           {isSelected && <Check size={9} strokeWidth={2.5} className="text-white" />}
         </div>
       )}
 
-      {/* Image — LEBIH BESAR */}
-      <div className="relative flex-shrink-0 w-14 h-14 rounded-xl bg-white overflow-hidden flex items-center justify-center shadow-sm border border-gray-100/80">
+      {/* Image — FIXED: border saja, tanpa shadow */}
+      <div className="relative flex-shrink-0 w-14 h-14 rounded-xl bg-white overflow-hidden flex items-center justify-center border border-gray-100/80">
         {!isEditMode ? (
           <Link href={`/product/${product.slug}`} className="w-full h-full flex items-center justify-center p-1.5">
             <ProductImage
@@ -158,7 +158,7 @@ function HorizontalCard({
         )}
       </div>
 
-      {/* Info — MORE BREATHING ROOM */}
+      {/* Info */}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
         {!isEditMode ? (
           <Link href={`/product/${product.slug}`}>
@@ -183,7 +183,7 @@ function HorizontalCard({
         </div>
       </div>
 
-      {/* Button — MORE SPACED */}
+      {/* Button */}
       {!isEditMode && (
         <div className="flex-shrink-0 ml-1">
           <button
@@ -202,7 +202,7 @@ function HorizontalCard({
 }
 
 // ─────────────────────────────────────────
-//  CATEGORY FOLDER — Arsip 3D Animation
+//  CATEGORY FOLDER
 // ─────────────────────────────────────────
 function CategoryFolder({
   category,
@@ -244,10 +244,6 @@ function CategoryFolder({
     };
   };
 
-  // ═══════════════════════════════════════
-  //  3D ANIMATION STYLES
-  // ═══════════════════════════════════════
-
   const imageStackStyle: React.CSSProperties = {
     maxHeight: isOpen ? '0px' : '72px',
     opacity: isOpen ? 0 : 1,
@@ -282,7 +278,7 @@ function CategoryFolder({
       : '0 1px 4px rgba(0,0,0,0.04)',
     transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDelay: isOpen ? '150ms' : '0ms',
-    position: 'relative', // ← DITAMBAHKAN
+    position: 'relative',
   };
 
   const contentStyle: React.CSSProperties = {
@@ -313,44 +309,30 @@ function CategoryFolder({
     };
   };
 
-  // Style untuk tab jumlah produk
+  // FIXED: tab warna emerald, bukan orange alien
   const tabStyle: React.CSSProperties = {
     position: 'absolute',
     top: '-17.5px',
     right: '-1px',
     zIndex: 30,
-
-    backgroundColor: '#ff8c34ff',
-
+    backgroundColor: '#059669',
     borderRadius: '14px 0 0 0',
     borderBottom: 'none',
-
     padding: '2px 12px 3px',
-
     opacity: isOpen ? 0 : 1,
-
     transform: isOpen
       ? 'translateY(6px) scale(0.92)'
       : 'translateY(0px) scale(1)',
-
     pointerEvents: isOpen ? 'none' : 'auto',
-
-    transition: `
-    opacity 260ms ease,
-    transform 380ms cubic-bezier(0.22, 1, 0.36, 1)
-  `,
+    transition: 'opacity 260ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1)',
   };
 
   return (
     <div className="relative" style={{ perspective: '1200px' }}>
 
-      {/* ═══════════════════════════════════════
-          IMAGE STACK — 3D Fold Into Folder
-          ═══════════════════════════════════════ */}
+      {/* IMAGE STACK */}
       <div style={imageStackStyle}>
         <div className="relative h-[62px]">
-
-          {/* Backing — SAMPAI EDGE, radius cocok dengan body */}
           <div
             className="absolute z-0 top-3 bottom-[-1px]"
             style={{
@@ -362,8 +344,6 @@ function CategoryFolder({
               borderRadius: '14px 14px 0 0',
             }}
           />
-
-          {/* Preview images dengan stagger animation */}
           <div className="relative z-10 pl-6 pt-1">
             {products.slice(0, 3).map((product, i) => {
               const style = getImageStyle(i, Math.min(products.length, 3));
@@ -381,7 +361,7 @@ function CategoryFolder({
                       ? `${style.transform} translateY(18px) scale(0.82)`
                       : style.transform,
                     opacity: isOpen ? 0 : 1,
-                    transition: `all 450ms cubic-bezier(0.4, 0, 0.2, 1)`,
+                    transition: 'all 450ms cubic-bezier(0.4, 0, 0.2, 1)',
                     transitionDelay: isOpen ? `${i * 40}ms` : `${(2 - i) * 30}ms`,
                   }}
                 >
@@ -399,16 +379,11 @@ function CategoryFolder({
         </div>
       </div>
 
-
-      {/* ═══════════════════════════════════════
-          FOLDER CONTAINER — Naik & Buka
-          ═══════════════════════════════════════ */}
+      {/* FOLDER CONTAINER */}
       <div className="relative z-10" style={folderContainerStyle}>
         <div style={folderBodyStyle}>
 
-          {/* ═══════════════════════════════════
-              TAB JUMLAH PRODUK — Atas Kanan
-              ═══════════════════════════════════ */}
+          {/* TAB JUMLAH PRODUK — FIXED: emerald */}
           <div style={tabStyle}>
             <div className="flex items-center gap-1">
               <span className="text-[11px] font-black text-white leading-none">
@@ -420,64 +395,48 @@ function CategoryFolder({
             </div>
           </div>
 
-          {/* ── FOLDER BODY (clickable header) ── */}
+          {/* FOLDER HEADER — FIXED: nama kategori lebih gelap */}
           <button
             onClick={onToggle}
             className="w-full text-left transition-all duration-200 active:bg-gray-50 bg-white relative"
             style={{
-              borderRadius: isOpen
-                ? '16px 16px 0 0'
-                : '16px',
+              borderRadius: isOpen ? '16px 16px 0 0' : '16px',
             }}
           >
             <div className="flex items-center gap-3 px-4 py-4 relative z-[1]">
-              {/* Edit mode checkbox */}
+              {/* Edit mode checkbox — FIXED: konsisten w-[18px] border-gray-300 */}
               {isEditMode && (
                 <div
                   onClick={(e) => { e.stopPropagation(); onSelectAll(products.map(p => p.id)); }}
-                  className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 
+                  className={`flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-200
                     ${allInFolderSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300'}`}
                 >
-                  {allInFolderSelected && <Check size={10} strokeWidth={3} className="text-white" />}
+                  {allInFolderSelected && <Check size={9} strokeWidth={2.5} className="text-white" />}
                 </div>
               )}
 
-              {/* Folder icon */}
-              <div
-                className="w-8 h-8 flex items-center justify-center flex-shrink-0"
-              >
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
                 {isOpen ? (
-                  <FolderOpen
-                    size={21}
-                    className="text-gray-700"
-                    strokeWidth={1.9}
-                  />
+                  <FolderOpen size={21} className="text-gray-700" strokeWidth={1.9} />
                 ) : (
-                  <Folder
-                    size={21}
-                    className="text-gray-500"
-                    strokeWidth={1.9}
-                  />
+                  <Folder size={21} className="text-gray-500" strokeWidth={1.9} />
                 )}
               </div>
 
-              {/* Category info */}
+              {/* FIXED: text-gray-800 font-bold — sebagai header */}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-gray-600 tracking-tight leading-none">
+                <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none">
                   {category}
                 </p>
               </div>
 
-              {/* Chevron dengan rotasi 3D */}
               <div style={{ perspective: '200px' }}>
                 <ChevronDown
                   size={20}
                   strokeWidth={2.7}
-                  className="text-gray-500 flex-shrink-0"
+                  className="text-gray-400 flex-shrink-0"
                   style={{
-                    transform: isOpen
-                      ? 'rotateX(180deg)'
-                      : 'rotateX(0deg)',
+                    transform: isOpen ? 'rotateX(180deg)' : 'rotateX(0deg)',
                     transformOrigin: 'center center',
                     transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
                     display: 'block',
@@ -487,10 +446,10 @@ function CategoryFolder({
             </div>
           </button>
 
-          {/* ── CONTENT — 3D Reveal dari atas ── */}
+          {/* CONTENT */}
           <div style={contentStyle}>
             <div className="mx-4 h-px bg-gray-100" />
-            <div className="px-3 py-2 space-y-0.5">  {/* ← Kurangi px dari 4→3, py dari 3→2 */}
+            <div className="px-3 py-2 space-y-0.5">
               {products.map((product, i) => (
                 <div key={product.id} style={getItemStyle(i)}>
                   <HorizontalCard
@@ -548,11 +507,11 @@ function DeleteSheet({ count, onConfirm, onCancel }: { count: number; onConfirm:
 }
 
 // ─────────────────────────────────────────
-//  SKELETON
+//  SKELETON — FIXED: design tokens
 // ─────────────────────────────────────────
 function SkeletonFolder() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
       <div className="h-[52px]" />
       <div className="flex items-center gap-3 px-4 py-3.5">
         <div className="w-11 h-11 rounded-xl skeleton" />
@@ -585,7 +544,6 @@ export default function WishlistPage() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // ── Group items by category ──
   const grouped = CATEGORIES.reduce<Record<string, Product[]>>((acc, cat) => {
     const inCat = items.filter(p => p.category === cat);
     if (inCat.length > 0) acc[cat] = inCat;
@@ -598,14 +556,12 @@ export default function WishlistPage() {
 
   const activeCategories = Object.keys(grouped);
 
-  // Auto-open if only 1 category
   useEffect(() => {
     if (activeCategories.length === 1) {
       setOpenFolders(new Set([activeCategories[0]]));
     }
   }, [activeCategories.length]);
 
-  // ── Toast ──
   const showToast = useCallback((msg: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastMsg(msg);
@@ -613,7 +569,6 @@ export default function WishlistPage() {
     toastTimer.current = setTimeout(() => setToastVisible(false), 2500);
   }, []);
 
-  // ── Handlers ──
   const handleToggleFolder = (cat: string) => {
     setOpenFolders(prev => {
       const next = new Set(prev);
@@ -655,21 +610,15 @@ export default function WishlistPage() {
     showToast(`${count} produk dihapus dari favorit`);
   };
 
-  // ─────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#F5F7F5] pb-10">
 
-      {/* ── STICKY HEADER ── */}
-      <div className="sticky top-0 z-50 bg-[#0B6B52] border-b border-white/10 shadow-md">
+      {/* STICKY HEADER */}
+      <div className="sticky top-0 z-50 bg-[#0B6B52] shadow-md">
         <div className="flex items-center justify-between px-4 h-12">
-
-          {/* Left */}
           {isEditMode ? (
             <button
-              onClick={() => {
-                setIsEditMode(false);
-                setSelectedIds([]);
-              }}
+              onClick={() => { setIsEditMode(false); setSelectedIds([]); }}
               className="text-[13px] font-bold text-white/85 active:opacity-60"
             >
               Batal
@@ -680,13 +629,9 @@ export default function WishlistPage() {
             </div>
           )}
 
-          {/* Right */}
           {!isEditMode ? (
             <button
-              onClick={() => {
-                setIsEditMode(true);
-                setSelectedIds([]);
-              }}
+              onClick={() => { setIsEditMode(true); setSelectedIds([]); }}
               disabled={items.length === 0}
               className={`text-[13px] font-bold ${items.length > 0
                 ? 'text-white/90 active:opacity-60'
@@ -696,30 +641,29 @@ export default function WishlistPage() {
               Edit
             </button>
           ) : (
+            /* FIXED: pill merah untuk visibility, bukan plain icon */
             <button
-              onClick={() =>
-                selectedIds.length > 0 && setShowDeleteSheet(true)
-              }
+              onClick={() => selectedIds.length > 0 && setShowDeleteSheet(true)}
               disabled={selectedIds.length === 0}
               className={`
-    flex items-center justify-center
-    transition-opacity
-    ${selectedIds.length > 0
-                  ? 'text-red-400'
-                  : 'text-white/80 cursor-not-allowed'
+                flex items-center gap-1.5 px-2.5 py-1 rounded-lg
+                transition-all
+                ${selectedIds.length > 0
+                  ? 'bg-red-500/20 text-red-300 active:scale-95'
+                  : 'text-white/30 cursor-not-allowed'
                 }
-  `}
+              `}
             >
-              <Trash2
-                size={18}
-                strokeWidth={1.9}
-              />
+              <Trash2 size={16} strokeWidth={1.9} />
+              {selectedIds.length > 0 && (
+                <span className="text-[11px] font-bold">{selectedIds.length}</span>
+              )}
             </button>
           )}
         </div>
       </div>
 
-      {/* ── CONTENT ── */}
+      {/* CONTENT */}
       <div className="px-3 pt-4 space-y-3">
         {!mounted ? (
           <>
@@ -747,21 +691,20 @@ export default function WishlistPage() {
           ))
         )}
 
-        {/* Footer */}
+        {/* Footer — FIXED: divider lebih halus */}
         {!isEditMode && items.length > 0 && (
           <div className="flex items-center justify-center gap-2 mt-4 mb-2">
-            <div className="flex-1 h-px bg-gray-300" />
+            <div className="flex-1 h-px bg-gray-200" />
             <div className="flex items-center gap-1.5">
-              <Bookmark size={10} strokeWidth={2} className="text-gray-700" />
-              <span className="text-[10px] font-semibold text-gray-700 tracking-wide">{items.length} produk tersimpan</span>
-              <Bookmark size={10} strokeWidth={2} className="text-gray-700" />
+              <Bookmark size={10} strokeWidth={2} className="text-gray-500" />
+              <span className="text-[10px] font-semibold text-gray-500 tracking-wide">{items.length} produk tersimpan</span>
+              <Bookmark size={10} strokeWidth={2} className="text-gray-500" />
             </div>
-            <div className="flex-1 h-px bg-gray-300" />
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
         )}
       </div>
 
-      {/* ── DELETE SHEET ── */}
       {showDeleteSheet && (
         <DeleteSheet
           count={selectedIds.length}
@@ -770,7 +713,6 @@ export default function WishlistPage() {
         />
       )}
 
-      {/* ── TOAST ── */}
       <MiniToast message={toastMsg} visible={toastVisible} />
 
       <style jsx>{`
