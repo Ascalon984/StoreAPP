@@ -23,7 +23,8 @@
 
 html {
   scroll-behavior: smooth;
-  scrollbar-gutter: stable; /* Reserve space untuk scrollbar - mencegah layout shift */
+  scrollbar-gutter: stable;
+  /* Reserve space untuk scrollbar - mencegah layout shift */
 }
 
 /* ============================================================
@@ -327,4 +328,24 @@ body {
 /* Efek gradien untuk memicu rasa penasaran pada teks panjang */
 .read-more-fade {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 40%, #ffffff 100%);
+}
+
+/* ============================================================
+   CLEAN AUTOFILL OVERRIDE
+   ============================================================ */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+
+  -webkit-text-fill-color: #1f2937 !important;
+  caret-color: #1f2937;
+
+  border-color: #d1d5db !important;
+
+  transition: background-color 9999s ease-in-out 0s;
 }

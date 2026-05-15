@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import BottomNav from '@/components/BottomNav';
+import RootShell from '@/components/RootShell';
 import { SITE_NAME } from '@/lib/constants';
 
 // Load heavy client components dynamically
@@ -33,16 +32,12 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${inter.className} bg-[#F8F9FA] text-gray-900 min-h-screen relative`}>
-        <Navbar />
-        <main className="w-full bg-[#F8F9FA] min-h-[calc(100vh-64px)] shadow-layer-sm antialiased">
-          {children}
-        </main>
+        <RootShell>{children}</RootShell>
 
         <SearchOverlay />
         <MiniCart />
         <Toast />
         <ReviewModal />
-        <BottomNav />
       </body>
     </html>
   );

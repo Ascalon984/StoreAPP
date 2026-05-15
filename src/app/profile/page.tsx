@@ -4,9 +4,9 @@ import { useState, useRef } from 'react';
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import {
   ChevronRight, ChevronDown,
-  Pencil, Check, X, Bell, HelpCircle, Info,
+  Pencil, Check, X, Bell, MessageCircleMore, Info,
   LogOut, Trash2,
-  MapPinHouse, MapPinPlus, Phone, Mail, User, ArrowRight
+  MapPinHouse, MapPinPlus, Phone, Mail, User, ArrowRight, ShieldCheck
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -368,6 +368,15 @@ export default function ProfilePage() {
           </svg>
         </div>
 
+        {/* Live Chat di pojok kanan atas hero header */}
+        <div className="absolute top-4 right-4 z-20">
+          <button className="relative w-10 h-10 flex items-center justify-center text-white active:scale-90 transition-transform">
+            <MessageCircleMore size={25} strokeWidth={2} className="drop-shadow-sm" />
+            {/* Dot notif menempel rapi sebaris */}
+            <span className="absolute top-2.5 right-2 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+          </button>
+        </div>
+
         <div className="relative z-10 flex flex-col items-center pt-10 pb-0">
           <div className="relative">
             <AvatarCircle name={user.name} src={avatarPreview} />
@@ -555,14 +564,14 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* ── SECTION: Bantuan ── */}
-        <SectionLabel label="Bantuan & Aplikasi" />
+        {/* ── SECTION: Informasi ── */}
+        <SectionLabel label="Informasi" />
         <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
           <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
             <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
-              <HelpCircle size={16} className="text-gray-500" strokeWidth={2.5} />
+              <ShieldCheck size={16} className="text-gray-500" strokeWidth={2.5} />
             </div>
-            <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">Pusat Bantuan</span>
+            <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">Kebijakan & Privasi</span>
             <ArrowRight size={15} className="text-gray-300" />
           </button>
           <div className="border-t border-gray-100" />
