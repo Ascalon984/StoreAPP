@@ -363,8 +363,30 @@ export default function ProfilePage() {
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-[230px] z-0">
           <svg className="w-full h-full antialiased" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <pattern id="dotsLarge" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.7" fill="white" fillOpacity="0.12" />
+              </pattern>
+
+              <pattern id="dotsSmall" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.35" fill="white" fillOpacity="0.06" />
+              </pattern>
+
+              <linearGradient id="fadeTop" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="white" stopOpacity="2" />
+                <stop offset="65%" stopColor="white" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="white" stopOpacity="0" />
+              </linearGradient>
+
+              <mask id="maskFade">
+                <rect x="0" y="0" width="100" height="100" fill="url(#fadeTop)" />
+              </mask>
+            </defs>
+
             <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#065F46" />
-            <path d="M0 70 Q50 95 100 70 V78 Q50 103 0 78 Z" fill="#B45309" />
+            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="url(#dotsLarge)" mask="url(#maskFade)" />
+            <path d="M0 35 H100 V70 Q50 95 0 70 Z" fill="url(#dotsSmall)" mask="url(#maskFade)" />
+            <path d="M0 70 Q50 95 100 70 V78 Q50 103 0 78 Z" fill="#D89B2B" />
           </svg>
         </div>
 

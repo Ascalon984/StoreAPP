@@ -143,7 +143,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     <section className="px-4 pt-1 pb-2">
       <div className="mb-1.5 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
+          <div className="w-[3px] h-4 bg-[#D89B2B] rounded-full shadow-sm" />
           <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
             Rekomendasi Hari Ini
           </h2>
