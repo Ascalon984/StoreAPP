@@ -13,7 +13,7 @@ export default function WelcomeScreen({ onStartShopping, onLogin }: WelcomeScree
 
       {/* AREA ATAS: Konten Utama */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-        
+
         {/* 1. Animasi Logo: Turun dari atas (0s) */}
         <div className="animate-[slideDown_0.5s_ease-out_forwards]">
           <Handbag size={72} strokeWidth={1.5} className="text-white/90" />
@@ -48,7 +48,7 @@ export default function WelcomeScreen({ onStartShopping, onLogin }: WelcomeScree
       <div className="bg-white px-8 pb-12 flex flex-col items-center">
         <button
           onClick={onStartShopping}
-          className="w-full max-w-[320px] py-4 rounded-full bg-[#B45309] text-white font-bold text-base tracking-wide shadow-lg active:scale-[0.97] transition-all flex items-center justify-center gap-2"
+          className="w-full max-w-[320px] py-4 rounded-full bg-[#D89B2B] text-white font-bold text-base tracking-wide shadow-lg active:scale-[0.97] transition-all flex items-center justify-center gap-2"
         >
           Mulai Belanja
         </button>

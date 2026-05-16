@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Handbag, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Handbag, Eye, EyeOff, Mail, Lock, User, Check, X } from 'lucide-react';
 import AuthForgotPassword from './AuthForgotPassword';
+import AuthSetUsername from './AuthSetUsername';
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<'masuk' | 'daftar'>('masuk');
@@ -11,6 +12,46 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+  const usernameTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showSetUsername, setShowSetUsername] = useState(false);
+  const [oauthSuggestedName, setOauthSuggestedName] = useState('');
+
+  const handleUsernameChange = (val: string) => {
+    // Hanya huruf kecil, angka, underscore
+    const cleaned = val.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    setUsername(cleaned);
+
+    if (usernameTimerRef.current) clearTimeout(usernameTimerRef.current);
+
+    if (cleaned.length < 4) {
+      setUsernameStatus('idle');
+      return;
+    }
+
+    setUsernameStatus('checking');
+    usernameTimerRef.current = setTimeout(() => {
+      // Simulasi cek ke API — ganti dengan fetch real
+      const takenUsernames = ['ahmadfauzi', 'admin', 'palugada'];
+      setUsernameStatus(takenUsernames.includes(cleaned) ? 'taken' : 'available');
+    }, 600);
+  };
+
+  // Handler tombol Google/FB
+  const handleOAuthLogin = (provider: 'google' | 'facebook') => {
+    // Simulasi — ganti dengan OAuth SDK sesungguhnya
+    // Setelah autentikasi berhasil, cek apakah user sudah punya username di DB
+    const isNewUser = true; // dari response API
+    const nameFromOAuth = 'Ahmad Fauzi'; // dari profile OAuth
+
+    if (isNewUser) {
+      setOauthSuggestedName(nameFromOAuth);
+      setShowSetUsername(true);
+    } else {
+      // langsung masuk ke Home
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +60,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-primary-dark overflow-hidden select-none">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#065F46] overflow-hidden select-none">
 
       {/* AREA ATAS */}
       <div className="flex-1 flex flex-col items-center justify-center pt-4 pb-2 text-center">
@@ -33,14 +74,26 @@ export default function AuthPage() {
       </div>
 
       {/* AREA BAWAH */}
-      {/* ✅ Menggunakan shadow-elevation-3 dari config */}
-      <div className="bg-white rounded-t-[32px] px-6 pt-8 pb-8 flex flex-col min-h-[58vh] w-full shadow-elevation-3 animate-slide-up">
+      <div className="bg-white rounded-t-[32px] px-6 pt-8 pb-8 flex flex-col min-h-[58vh] w-full shadow-elevation-3 animate-slide-up relative z-10">
 
+        {/* Overlay Set Username - Dipindahkan ke luar alur tab untuk konsistensi */}
+        {showSetUsername && (
+          <AuthSetUsername
+            suggestedName={oauthSuggestedName}
+            onComplete={(username) => {
+              setShowSetUsername(false);
+              console.log('Username dipilih:', username);
+            }}
+            onBack={() => setShowSetUsername(false)}
+          />
+        )}
+
+        {/* Konten Utama: Login/Daftar atau Lupa Password */}
         {isForgotPassword ? (
           <AuthForgotPassword onBackToLogin={() => setIsForgotPassword(false)} />
         ) : (
           <>
-            {/* Tab Switcher */}
+            {/* Tab Switcher (Masuk / Daftar) */}
             <div className="flex border-b border-gray-100 relative mb-5 flex-shrink-0">
               <button
                 type="button"
@@ -78,6 +131,81 @@ export default function AuthPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
 
+                  {/* ── Username (hanya daftar) ── */}
+                  {activeTab === 'daftar' && (
+                    <div className="relative animate-fade-in">
+                      <div className="relative h-11 group">
+                        {/* Prefix @ */}
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-dark transition-colors duration-200 pointer-events-none">
+                          <span className="text-[15px] font-bold leading-none">@</span>
+                        </div>
+
+                        <input
+                          type="text"
+                          placeholder=" "
+                          value={username}
+                          onChange={(e) => handleUsernameChange(e.target.value)}
+                          maxLength={20}
+                          className={`peer w-full h-full pl-8 pr-8 py-2.5 bg-white border rounded-2xl text-sm text-gray-800 placeholder-transparent focus:outline-none transition-all duration-200 font-medium
+          ${usernameStatus === 'taken'
+                              ? 'border-rose-400 focus:border-rose-500'
+                              : usernameStatus === 'available'
+                                ? 'border-emerald-500 focus:border-emerald-600'
+                                : 'border-gray-300 focus:border-primary-dark'
+                            }`}
+                          required
+                        />
+
+                        <label className="
+        absolute left-3 top-0 -translate-y-1/2
+        text-xs text-gray-500 font-medium
+        pointer-events-none bg-white px-1.5 rounded-sm
+        transition-[top,left,transform,font-size,color] duration-300 ease-out
+        peer-placeholder-shown:left-8
+        peer-placeholder-shown:top-1/2
+        peer-placeholder-shown:-translate-y-1/2
+        peer-placeholder-shown:text-sm
+        peer-placeholder-shown:text-gray-400
+        peer-focus:left-3 peer-focus:top-0
+        peer-focus:-translate-y-1/2 peer-focus:text-xs
+        peer-focus:text-primary-dark peer-focus:font-semibold
+        [:not(:placeholder-shown)]:left-3
+        [:not(:placeholder-shown)]:top-0
+        [:not(:placeholder-shown)]:-translate-y-1/2
+        [:not(:placeholder-shown)]:text-xs
+        [:not(:placeholder-shown)]:text-gray-500
+      ">
+                          Username
+                        </label>
+
+                        {/* Status icon kanan */}
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          {usernameStatus === 'checking' && (
+                            <div className="w-4 h-4 rounded-full border-2 border-gray-300 border-t-primary-dark animate-spin" />
+                          )}
+                          {usernameStatus === 'available' && (
+                            <Check size={15} strokeWidth={2.5} className="text-emerald-500" />
+                          )}
+                          {usernameStatus === 'taken' && (
+                            <X size={15} strokeWidth={2.5} className="text-rose-400" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Floating status badge */}
+                      <div className="absolute -top-2 right-3 z-10">
+                        {usernameStatus === 'taken' && <div className="px-2 py-[3px] rounded-full bg-rose-50 border border-rose-200 text-[10px] font-bold tracking-wide text-rose-500 shadow-sm animate-fade-in">Sudah dipakai</div>}
+
+                        {usernameStatus === 'available' && <div className="px-2 py-[3px] rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold tracking-wide text-emerald-600 shadow-sm animate-fade-in">Tersedia</div>}
+
+                        {usernameStatus === 'idle' && username.length > 0 && username.length < 4 && (
+                          <div className="px-2 py-[3px] rounded-full bg-gray-50 border border-gray-200 text-[10px] font-medium text-gray-500 shadow-sm animate-fade-in">
+                            Min. 4 karakter
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   {/* ── Nama Lengkap (hanya daftar) ── */}
                   {activeTab === 'daftar' && (
                     <div className="relative h-11 group animate-fade-in">
@@ -296,7 +424,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-3.5 bg-[#B45309] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 mt-2 flex-shrink-0 hover:bg-primary-dark"
+                    className="w-full py-3.5 bg-[#D89B2B] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 mt-2 flex-shrink-0 hover:bg-primary-dark"
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center gap-2">
@@ -326,6 +454,7 @@ export default function AuthPage() {
                     {/* Google */}
                     <button
                       type="button"
+                      onClick={() => handleOAuthLogin('google')}
                       aria-label="Masuk dengan Google"
                       className="w-11 h-11 flex items-center justify-center rounded-2xl hover:bg-black/[0.03] active:scale-[0.92] transition-all duration-200"
                     >
@@ -340,6 +469,7 @@ export default function AuthPage() {
                     {/* Facebook */}
                     <button
                       type="button"
+                      onClick={() => handleOAuthLogin('facebook')}
                       aria-label="Masuk dengan Facebook"
                       className="w-11 h-11 flex items-center justify-center rounded-2xl hover:bg-black/[0.03] active:scale-[0.92] transition-all duration-200"
                     >

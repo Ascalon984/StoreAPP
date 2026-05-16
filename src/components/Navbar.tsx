@@ -7,6 +7,7 @@ import { useSettingsStore } from '@/store/useSettingsStore';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useUserStore, mockUser, getGreeting } from '@/store/useUserStore';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -79,35 +80,48 @@ export default function Navbar() {
         {/* Container Utama - Gunakan h-full agar semua elemen terpusat secara vertikal */}
         <div className="max-w-container mx-auto px-4 w-full flex items-center justify-between gap-3 h-full">
 
-          {/* BAGIAN KIRI: LOGO & BRAND (Beradaptasi saat Search Memanjang) */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 flex-shrink-0 active:scale-[0.98] transition-all duration-300"
-          >
-            {/* Logo: Mengecil saat scroll */}
-            <div className={`relative flex-shrink-0 transition-[width,height] duration-500 ${scrolled ? 'w-8 h-8' : 'w-9 h-9'}`}>
-              <Image src="/icons/logo toko.png" alt="Logo" fill className="object-contain" priority />
+          {/* BAGIAN KIRI: USER AVATAR & GREETING */}
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+
+            {/* Avatar — mengecil saat scroll */}
+            <div className={`relative flex-shrink-0 rounded-full overflow-hidden border-2 border-white/30
+    transition-[width,height] duration-500 ${scrolled ? 'w-8 h-8' : 'w-10 h-10'}`}
+            >
+              {mockUser.avatar ? (
+                <Image
+                  src={mockUser.avatar}
+                  alt={mockUser.name}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                // Fallback inisial
+                <div className="w-full h-full bg-emerald-100 flex items-center justify-center">
+                  <span className={`font-black text-emerald-700 leading-none transition-all duration-500
+          ${scrolled ? 'text-[11px]' : 'text-[13px]'}`}
+                  >
+                    {mockUser.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+                  </span>
+                </div>
+              )}
             </div>
 
-            {/* Group Teks: Menggunakan max-width agar transisi lebih smooth daripada CSS Grid */}
-            <div className={`flex flex-col justify-center transition-[max-width,opacity]
-duration-500
-ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity-0' : 'max-w-[200px] transition-opacity duration-300 delay-100'
-              }`}>
+            {/* Greeting + Nama — hilang saat scroll */}
+            <div className={`flex flex-col justify-center transition-[max-width,opacity] duration-500
+    ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden
+    ${scrolled ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100 delay-100'}`}
+            >
               <div className="min-w-max">
-                <h1 className="font-black select-none leading-none tracking-tighter text-[19px] whitespace-nowrap">
-                  <span className="text-white drop-shadow-md">{storeNameFirst}</span>
-                  {storeNameLast && <span className="text-orange-400 drop-shadow-md ml-1">{storeNameLast}</span>}
-                </h1>
-
-                {/* Alamat tepat di bawah Brand */}
-                <div className="flex items-center gap-1 text-white/90 font-medium text-[8.5px] leading-none pt-1">
-                  <MapPin size={9} fill="currentColor" strokeWidth={0} className="flex-shrink-0" />
-                  <span className="whitespace-nowrap">Telang Indah, Kamal</span>
-                </div>
+                <p className="text-white/70 font-medium leading-none whitespace-nowrap text-[12px]">
+                  {getGreeting()} 👋
+                </p>
+                <p className="text-white font-black leading-none tracking-tight whitespace-nowrap mt-1
+  text-[16px] drop-shadow-sm">
+                  {mockUser.name.split(' ')[0]}
+                </p>
               </div>
             </div>
-          </Link>
+          </div>
 
           {/* BAGIAN TENGAH & KANAN: Search Area & Actions */}
           <div className="flex-1 flex justify-end items-center gap-1 min-w-0">
@@ -161,7 +175,7 @@ ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${scrolled ? 'max-w-0 opacity
           </div>
 
         </div>
-      </header>
-    </div>
+      </header >
+    </div >
   );
 }

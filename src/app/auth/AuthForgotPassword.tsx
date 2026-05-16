@@ -182,7 +182,7 @@ export default function AuthForgotPassword({ onBackToLogin }: Props) {
                                     placeholder=" "
                                     value={contact}
                                     onChange={(e) => setContact(e.target.value)}
-                                    className="peer w-full h-full pl-10 pr-3 py-2.5 bg-white border border-gray-300 rounded-2xl text-sm text-gray-800 placeholder-transparent focus:outline-none focus:border-primary-dark transition-all duration-200 font-medium"
+                                    className="peer w-full h-full pl-10 pr-3 py-2.5 bg-white border border-gray-300 rounded-2xl text-sm text-gray-800 placeholder-transparent focus:outline-none focus:border-[#065F46] transition-all duration-200 font-medium"
                                     required
                                 />
                                 <label
@@ -223,7 +223,7 @@ export default function AuthForgotPassword({ onBackToLogin }: Props) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 bg-[#B45309] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 hover:bg-[#B45309]-dark"
+                            className="w-full py-4 bg-[#D89B2B] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 hover:bg-[#D89B2B]-dark"
                         >
                             {isLoading ? (
                                 <div className="flex items-center justify-center gap-2">
@@ -453,7 +453,7 @@ export default function AuthForgotPassword({ onBackToLogin }: Props) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 bg-[#B45309] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 hover:bg-primary-dark"
+                            className="w-full py-4 bg-[#D89B2B] text-white font-bold text-sm rounded-full shadow-layer-md active:scale-[0.98] transition-all tracking-wider disabled:opacity-70 hover:bg-primary-dark"
                         >
                             {isLoading ? (
                                 <div className="flex items-center justify-center gap-2">

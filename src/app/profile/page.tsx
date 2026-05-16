@@ -13,6 +13,7 @@ import Image from 'next/image';
 // ── Mock data ──
 const mockUser = {
   name: 'Ahmad Fauzi',
+  username: 'ahmadfauzi',
   email: 'ahmad@email.com',
   phone: '081-234-5678',
   avatar: null,
@@ -136,7 +137,7 @@ function ProfileCompletion({
   avatarPreview,
   onLengkapi,
 }: {
-  user: { name: string; email: string; phone: string };
+  user: { name: string; username: string; email: string; phone: string };
   addresses: { isMain: boolean }[];
   avatarPreview: string | null;
   onLengkapi: () => void;
@@ -410,6 +411,10 @@ export default function ProfilePage() {
           <h1 className="text-[17px] font-black text-white tracking-tight leading-none mt-3 min-h-[17px]">
             {user.name || 'Pengguna'}
           </h1>
+          {/* Username permanen — diambil dari user.username, tidak bisa diedit */}
+          <p className="text-[12px] text-white/60 font-medium mt-0.5 tracking-wide">
+            @{user.username}
+          </p>
         </div>
         <div className="h-[100px]" />
       </div>
@@ -457,6 +462,10 @@ export default function ProfilePage() {
 
           <div className="overflow-hidden transition-all duration-300 ease-in-out" style={{ maxHeight: dataPribadiOpen ? '500px' : '0px', opacity: dataPribadiOpen ? 1 : 0 }}>
             <div className="border-t border-gray-100 divide-y divide-gray-100/60">
+              {/* ── Data Pribadi fields ──
+                  Catatan: username TIDAK dimasukkan di sini karena bersifat permanen.
+                  Yang bisa diubah hanya: nama, email, dan nomor telepon.
+              ── */}
               <FieldRow label="Nama Lengkap" fieldKey="name" value={user.name} icon={<User size={14} />} editingField={editingField} editValue={editValue} setEditValue={setEditValue} onEditStart={handleEditStart} onEditCancel={handleEditCancel} onEditSave={handleEditSave} />
               <FieldRow label="Email" fieldKey="email" value={user.email} icon={<Mail size={14} />} inputType="email" editingField={editingField} editValue={editValue} setEditValue={setEditValue} onEditStart={handleEditStart} onEditCancel={handleEditCancel} onEditSave={handleEditSave} />
               <FieldRow label="Nomor Telepon" fieldKey="phone" value={user.phone} icon={<Phone size={14} />} inputType="tel" editingField={editingField} editValue={editValue} setEditValue={setEditValue} onEditStart={handleEditStart} onEditCancel={handleEditCancel} onEditSave={handleEditSave} />
