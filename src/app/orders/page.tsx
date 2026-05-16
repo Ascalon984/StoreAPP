@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  RefreshCw, ShoppingBag, ArrowRight, Package, CheckCircle, XCircle,
+  RefreshCw, Clock3, ClockFading, CheckCircle2, XCircleIcon, Package, CheckCircle, XCircle,
 } from 'lucide-react';
 import { formatRupiah } from '@/lib/utils';
 import ProductImage from '@/components/ProductImage';
@@ -191,22 +191,41 @@ function formatDateTime(iso: string): string {
 }
 
 // ── Status config — FIXED: badge style, bukan plain text ──
-const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> = {
+const STATUS_CONFIG: Record<
+  OrderStatus,
+  {
+    label: string;
+    icon: any;
+    iconClass: string;
+    textClass: string;
+  }
+> = {
   pending: {
     label: 'Menunggu',
-    className: 'bg-amber-50 text-amber-600 border-amber-200/70',
+    icon: Clock3,
+    iconClass: 'text-amber-500',
+    textClass: 'text-gray-500',
   },
+
   processing: {
     label: 'Diproses',
-    className: 'bg-blue-50 text-blue-600 border-blue-200/70',
+    icon: ClockFading,
+    iconClass: 'text-yellow-500',
+    textClass: 'text-gray-500',
   },
+
   completed: {
     label: 'Selesai',
-    className: 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
+    icon: CheckCircle2,
+    iconClass: 'text-emerald-600',
+    textClass: 'text-gray-500',
   },
+
   cancelled: {
     label: 'Dibatalkan',
-    className: 'bg-red-50 text-red-500 border-red-200/70',
+    icon: XCircle,
+    iconClass: 'text-rose-500',
+    textClass: 'text-gray-500',
   },
 };
 
@@ -377,7 +396,12 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
 // ── Order Card ──
 function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string }) {
   const router = useRouter();
-  const { label, className } = STATUS_CONFIG[order.status];
+  const {
+    label,
+    icon: StatusIcon,
+    iconClass,
+    textClass,
+  } = STATUS_CONFIG[order.status];
 
   return (
     <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
@@ -389,9 +413,17 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
           {activeFilter === 'all' && (
-            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${className}`}>
-              {label}
-            </span>
+            <div className="flex items-center gap-1">
+              <StatusIcon
+                size={13}
+                strokeWidth={2.4}
+                className={iconClass}
+              />
+
+              <span className={`text-[10px] font-semibold ${textClass}`}>
+                {label}
+              </span>
+            </div>
           )}
           <p className="text-[10px] text-gray-400 font-medium whitespace-nowrap">
             {formatDateTime(order.createdAt)}
