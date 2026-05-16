@@ -1,36 +1,56 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useFilterStore } from '@/store/useFilterStore';
-import { Category } from '@/lib/types';
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useFilterStore } from "@/store/useFilterStore";
+import { Category } from "@/lib/types";
 
 const iconPathMap: Record<string, string> = {
-  all: '/icons/all icon.png',
-  snack: '/icons/snack.png',
-  minuman: '/icons/minuman.png',
-  'kebutuhan-pokok': '/icons/kebutuhan pokok.png',
-  'alat-tulis': '/icons/alat tulis.png',
-  kebersihan: '/icons/kebersihan.png',
-  gas: '/icons/gas.png',
-  listrik: '/icons/listrik.png',
-  pakaian: '/icons/pakaian.png',
-  elektronik: '/icons/elektronik.png',
-  peralatan: '/icons/peralatan.png',
+  all: "/icons/all icon.png",
+  snack: "/icons/snack.png",
+  minuman: "/icons/minuman.png",
+  "kebutuhan-pokok": "/icons/kebutuhan pokok.png",
+  "alat-tulis": "/icons/alat tulis.png",
+  kebersihan: "/icons/kebersihan.png",
+  gas: "/icons/gas.png",
+  listrik: "/icons/listrik.png",
+  pakaian: "/icons/pakaian.png",
+  elektronik: "/icons/elektronik.png",
+  peralatan: "/icons/peralatan.png",
 };
 
 const colorMap: Record<string, { active: string; bg: string; glow: string }> = {
-  all: { active: 'text-gray-700', bg: 'bg-gray-100', glow: 'bg-gray-400' },
-  snack: { active: 'text-amber-600', bg: 'bg-amber-50', glow: 'bg-amber-400' },
-  minuman: { active: 'text-sky-600', bg: 'bg-sky-50', glow: 'bg-sky-400' },
-  'kebutuhan-pokok': { active: 'text-emerald-600', bg: 'bg-emerald-50', glow: 'bg-emerald-400' },
-  'alat-tulis': { active: 'text-blue-600', bg: 'bg-blue-50', glow: 'bg-blue-400' },
-  kebersihan: { active: 'text-purple-600', bg: 'bg-purple-50', glow: 'bg-purple-400' },
-  gas: { active: 'text-orange-600', bg: 'bg-orange-50', glow: 'bg-orange-400' },
-  listrik: { active: 'text-yellow-600', bg: 'bg-yellow-50', glow: 'bg-yellow-400' },
-  pakaian: { active: 'text-pink-600', bg: 'bg-pink-50', glow: 'bg-pink-400' },
-  elektronik: { active: 'text-indigo-600', bg: 'bg-indigo-50', glow: 'bg-indigo-400' },
-  peralatan: { active: 'text-teal-600', bg: 'bg-teal-50', glow: 'bg-teal-400' },
+  all: { active: "text-gray-700", bg: "bg-gray-100", glow: "bg-gray-400" },
+  snack: { active: "text-amber-600", bg: "bg-amber-50", glow: "bg-amber-400" },
+  minuman: { active: "text-sky-600", bg: "bg-sky-50", glow: "bg-sky-400" },
+  "kebutuhan-pokok": {
+    active: "text-emerald-600",
+    bg: "bg-emerald-50",
+    glow: "bg-emerald-400",
+  },
+  "alat-tulis": {
+    active: "text-blue-600",
+    bg: "bg-blue-50",
+    glow: "bg-blue-400",
+  },
+  kebersihan: {
+    active: "text-purple-600",
+    bg: "bg-purple-50",
+    glow: "bg-purple-400",
+  },
+  gas: { active: "text-orange-600", bg: "bg-orange-50", glow: "bg-orange-400" },
+  listrik: {
+    active: "text-yellow-600",
+    bg: "bg-yellow-50",
+    glow: "bg-yellow-400",
+  },
+  pakaian: { active: "text-pink-600", bg: "bg-pink-50", glow: "bg-pink-400" },
+  elektronik: {
+    active: "text-indigo-600",
+    bg: "bg-indigo-50",
+    glow: "bg-indigo-400",
+  },
+  peralatan: { active: "text-teal-600", bg: "bg-teal-50", glow: "bg-teal-400" },
 };
 
 interface CategoryGridProps {
@@ -63,15 +83,17 @@ function CategorySkeleton() {
   );
 }
 
-export default function CategoryGrid({ initialCategories = [] }: CategoryGridProps) {
+export default function CategoryGrid({
+  initialCategories = [],
+}: CategoryGridProps) {
   const { category, setCategory } = useFilterStore();
   const [isLoading, setIsLoading] = useState(initialCategories.length === 0);
 
   const buildCategoryList = (raw: Category[]) => {
     // Filter out 'all' if it exists in DB to prevent duplication, limit to max 5
-    const activeFromDb = raw.filter(c => c.id !== 'all').slice(0, 5);
+    const activeFromDb = raw.filter((c) => c.id !== "all").slice(0, 5);
     const list = [
-      { id: 'all', name: 'Semua', icon: 'LayoutGrid' },
+      { id: "all", name: "Semua", icon: "LayoutGrid" },
       ...activeFromDb,
     ];
 
@@ -80,8 +102,8 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
     while (list.length < targetLength) {
       list.push({
         id: `empty-slot-${list.length}`,
-        name: 'Segera Hadir',
-        icon: 'empty',
+        name: "Segera Hadir",
+        icon: "empty",
       });
     }
 
@@ -91,29 +113,31 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   const [categories, setCategories] = useState<Category[]>(
     initialCategories.length > 0
       ? buildCategoryList(initialCategories)
-      : [{ id: 'all', name: 'Semua', icon: 'LayoutGrid' }]
+      : [{ id: "all", name: "Semua", icon: "LayoutGrid" }],
   );
 
   // Hanya fetch dari client jika tidak ada data SSR
   useEffect(() => {
     if (initialCategories.length > 0) return;
 
-    fetch('/api/public/categories')
+    fetch("/api/public/categories")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           // Sort by priority before building the list
-          const sorted = [...data].sort((a, b) => (a.priority || 0) - (b.priority || 0));
+          const sorted = [...data].sort(
+            (a, b) => (a.priority || 0) - (b.priority || 0),
+          );
           setCategories(buildCategoryList(sorted));
         }
       })
-      .catch((err) => console.error('Failed to fetch categories:', err))
+      .catch((err) => console.error("Failed to fetch categories:", err))
       .finally(() => setIsLoading(false));
   }, [initialCategories.length]);
 
   const handleClick = (catId: string) => {
     setCategory(catId);
-    const bottomSheetElement = document.getElementById('bottom-sheet');
+    const bottomSheetElement = document.getElementById("bottom-sheet");
     if (bottomSheetElement) {
       const rect = bottomSheetElement.getBoundingClientRect();
       const scrollY = window.scrollY;
@@ -121,7 +145,7 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
       const targetScroll = Math.max(bottomSheetTop - 60, 0);
       window.scrollTo({
         top: targetScroll,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
@@ -131,18 +155,18 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   return (
     <section className="px-4 pt-1 pb-3.5">
       {/* Hapus dekorasi vertikal, perbesar label */}
-<div className="mb-0.5 px-0.5">
-  <h2 className="text-[15px] font-extrabold text-gray-800 tracking-tight">
-    Kategori Favorit
-  </h2>
-</div>
+      <div className="mb-0.5 px-0.5">
+        <h2 className="text-[15px] font-bold text-gray-800 tracking-tight">
+          Kategori
+        </h2>
+      </div>
 
       <div
         className="flex gap-2 overflow-x-auto"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {categories.map((cat) => {
-          if (cat.id.startsWith('empty-slot-')) return null;
+          if (cat.id.startsWith("empty-slot-")) return null;
 
           const iconPath = iconPathMap[cat.icon] || iconPathMap.all;
           const isActive = category === cat.id;
@@ -153,7 +177,7 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
               onClick={() => handleClick(cat.id)}
               className={`
     group relative flex flex-col items-center flex-shrink-0
-    w-[68px]        // ← 64 → 68
+    w-[68px]      
     pt-3.5 pb-2.5   // ← pt-3 → pt-3.5
     px-1
     transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
@@ -161,45 +185,50 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
   `}
             >
               {/* Icon + Ellipse Container */}
-              <div className="relative flex items-center justify-center 
+              <div
+                className="relative flex items-center justify-center 
     w-9 h-9        // ← w-8 h-8 → w-9 h-9 (32→36px)
-  ">
+  "
+              >
                 {/* Ellipse — lebih proporsional */}
-<div
-  className={`
+                <div
+                  className={`
     absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
     w-[40px] h-[20px]
     rounded-[100%] transition-all duration-300 z-0
-    ${isActive
-      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]'
-      : 'bg-emerald-500 opacity-75 blur-[0.5px]'
+    ${
+      isActive
+        ? "bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]"
+        : "bg-emerald-500 opacity-75 blur-[0.5px]"
     }
   `}
-/>
+                />
 
                 {/* Icon */}
                 <Image
                   src={iconPath}
                   alt={cat.name}
-                  width={32}              // ← 28 → 32
-                  height={32}             // ← 28 → 32
+                  width={36}
+                  height={36}
                   className={`
-        w-8 h-8               // ← w-7 h-7 → w-8 h-8
-        object-contain relative z-10
-        transition-transform duration-300
-        ${isActive ? 'scale-110 -translate-y-[1px]' : 'group-hover:scale-105'}
-      `}
-                  style={{ mixBlendMode: 'multiply' }}
+      w-9 h-9
+      object-contain relative z-10
+      transition-transform duration-300
+      ${isActive ? "scale-110 -translate-y-[1px]" : "group-hover:scale-105"}
+    `}
+                  style={{ mixBlendMode: "multiply" }}
                 />
               </div>
 
               {/* Label */}
-              <span className={`
+              <span
+                className={`
     mt-2 text-[10.5px]       // ← 10px → 10.5px
     font-semibold tracking-tight text-center
     leading-tight w-full truncate relative z-10
-    ${isActive ? 'text-amber-600' : 'text-gray-500'}
-  `}>
+    ${isActive ? "text-amber-600" : "text-gray-500"}
+  `}
+              >
                 {cat.name}
               </span>
             </button>

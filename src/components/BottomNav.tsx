@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { NotebookText, ShoppingCart, Bookmark, User } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { NotebookText, ShoppingCart, Bookmark, User } from "lucide-react";
+import { useCartStore } from "@/store/useCartStore";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
@@ -17,7 +17,7 @@ function HomeIcon({ active }: { active: boolean }) {
       {/* Body rumah - filled hijau saat active */}
       <path
         d="M3 10.5L12 3L21 10.5V21H15V15H9V21H3V10.5Z"
-        fill={active ? 'currentColor' : 'none'}
+        fill={active ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth={active ? 1.8 : 1.5}
         strokeLinejoin="round"
@@ -26,7 +26,7 @@ function HomeIcon({ active }: { active: boolean }) {
       <path
         d="M9.5 21V15.5H14.5V21"
         fill="none"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
@@ -35,8 +35,8 @@ function HomeIcon({ active }: { active: boolean }) {
 }
 
 function NotebookTextIcon({ active }: { active: boolean }) {
-  const strokeColor = active ? 'white' : 'currentColor';
-  const fillColor = active ? 'currentColor' : 'none';
+  const strokeColor = active ? "white" : "currentColor";
+  const fillColor = active ? "currentColor" : "none";
 
   return (
     <svg
@@ -66,19 +66,19 @@ function NotebookTextIcon({ active }: { active: boolean }) {
       {/* Spiral binding - selalu kontras dengan body */}
       <path
         d="M2 7H4"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.8 : 1.5}
         strokeLinecap="round"
       />
       <path
         d="M2 12H4"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.8 : 1.5}
         strokeLinecap="round"
       />
       <path
         d="M2 17H4"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.8 : 1.5}
         strokeLinecap="round"
       />
@@ -86,19 +86,19 @@ function NotebookTextIcon({ active }: { active: boolean }) {
       {/* Garis teks internal - putih saat active */}
       <path
         d="M8 8H17"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.6 : 1.3}
         strokeLinecap="round"
       />
       <path
         d="M8 12H17"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.6 : 1.3}
         strokeLinecap="round"
       />
       <path
         d="M8 16H13"
-        stroke={active ? 'white' : 'currentColor'}
+        stroke={active ? "white" : "currentColor"}
         strokeWidth={active ? 1.6 : 1.3}
         strokeLinecap="round"
       />
@@ -110,11 +110,11 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   // Sembunyikan navbar di halaman detail produk dan checkout
-  const isProductDetail = pathname?.startsWith('/product/');
-  const isCheckout = pathname === '/checkout';
+  const isProductDetail = pathname?.startsWith("/product/");
+  const isCheckout = pathname === "/checkout";
 
   const totalItems = useCartStore((s) =>
-    s.items.reduce((sum, item) => sum + item.quantity, 0)
+    s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
   if (isProductDetail || isCheckout) return null;
@@ -123,9 +123,7 @@ export default function BottomNav() {
     <>
       {/* FIXED WRAPPER - Transparan agar konten di balik cekungan terlihat */}
       <div className="fixed bottom-0 left-0 right-0 z-40">
-
         <div className="relative w-full max-w-container mx-auto h-[58px]">
-
           {/* BACKGROUND SVG LAYER - Satu-satunya sumber warna putih */}
           <div className="absolute inset-0 pointer-events-none">
             <svg
@@ -175,27 +173,37 @@ export default function BottomNav() {
 
           {/* NAVIGATION CONTENT */}
           <div className="relative z-10 flex justify-between items-center h-full px-4">
-
             {/* Sisi Kiri: Home & Pesanan */}
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/' ? 'text-emerald-700 scale-105' : 'text-gray-500'
-                  }`}
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/"
+                    ? "text-emerald-700 scale-105"
+                    : "text-gray-500"
+                }`}
               >
-                <HomeIcon active={pathname === '/'} />
-                <span className={`text-[10px] tracking-tight transition-colors ${pathname === '/' ? 'font-bold' : 'font-semibold'}`}>Home</span>
+                <HomeIcon active={pathname === "/"} />
+                <span
+                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/" ? "font-bold" : "font-semibold"}`}
+                >
+                  Home
+                </span>
               </Link>
 
               <Link
                 href="/orders"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/orders' ? 'text-emerald-700 scale-105' : 'text-gray-500'
-                  }`}
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/orders"
+                    ? "text-emerald-700 scale-105"
+                    : "text-gray-500"
+                }`}
               >
-                <NotebookTextIcon active={pathname === '/orders'} />
+                <NotebookTextIcon active={pathname === "/orders"} />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${pathname === '/orders' ? 'font-bold' : 'font-semibold'
-                    }`}
+                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${
+                    pathname === "/orders" ? "font-bold" : "font-semibold"
+                  }`}
                 >
                   Pesanan
                 </span>
@@ -207,34 +215,37 @@ export default function BottomNav() {
               <Link
                 href="/checkout"
                 className="group relative w-[52px] h-[52px] rounded-full 
-      bg-[#065F46] text-white flex items-center justify-center 
-      shadow-[0_6px_16px_rgba(6,95,70,0.35)]
+      bg-emerald-600 text-white flex items-center justify-center 
+      shadow-[0_4px_10px_rgba(6,95,70,0.25)]
       active:scale-90 transition-all duration-300"
                 aria-label="Keranjang"
               >
                 {/* === CONVEX GLOSSY EFFECT === */}
                 <div className="absolute inset-[1.5px] rounded-full pointer-events-none z-0 overflow-hidden translate-y-[0.5px]">
-
                   {/* 1. Inner shadow bawah - kedalaman cekung */}
-                  <div className="absolute inset-0 rounded-full 
-    shadow-[inset_0_-4px_10px_rgba(0,0,0,0.12),inset_0_2px_4px_rgba(255,255,255,0.1)]"
+                  <div
+                    className="absolute inset-0 rounded-full 
+    shadow-[inset_0_-3px_6px_rgba(0,0,0,0.08),inset_0_1px_3px_rgba(255,255,255,0.08)]"
                   />
 
                   {/* 2. Main highlight atas — menembus overflow untuk menyatu di tepi */}
-                  <div className="absolute -top-[3px] left-[4px] right-[4px] h-[48%] 
+                  <div
+                    className="absolute -top-[3px] left-[4px] right-[4px] h-[48%] 
     bg-gradient-to-b from-white/45 via-white/15 to-transparent 
     rounded-[55%_55%_40%_40%]"
                   />
 
                   {/* 3. Bright spot — titik terang melebar di garis atas */}
-                  <div className="absolute -top-[2px] left-1/2 -translate-x-1/2 
+                  <div
+                    className="absolute -top-[2px] left-1/2 -translate-x-1/2 
     w-[62%] h-[28%] 
     bg-gradient-to-b from-white/70 via-white/20 to-transparent 
     rounded-full blur-[1.5px]"
                   />
 
                   {/* 4. Edge darkening — tepi menggelap untuk volume */}
-                  <div className="absolute inset-0 rounded-full 
+                  <div
+                    className="absolute inset-0 rounded-full 
   bg-radial-[circle_at_50%_45%] from-transparent 55% to-black/8"
                   />
                 </div>
@@ -243,12 +254,16 @@ export default function BottomNav() {
                 <div className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-active:opacity-100 transition-opacity duration-200 z-10" />
 
                 {/* Icon */}
-                <ShoppingCart size={22} strokeWidth={1.8} className="relative z-10 transition-transform group-hover:scale-110 duration-300" />
+                <ShoppingCart
+                  size={22}
+                  strokeWidth={1.8}
+                  className="relative z-10 transition-transform group-hover:scale-110 duration-300"
+                />
 
                 {/* Badge */}
                 {totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[9px] font-black min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white leading-none shadow-md z-20">
-                    {totalItems > 99 ? '99+' : totalItems}
+                    {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
               </Link>
@@ -258,33 +273,46 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/wishlist"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/wishlist' ? 'text-emerald-700 scale-105' : 'text-gray-500'
-                  }`}
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/wishlist"
+                    ? "text-emerald-700 scale-105"
+                    : "text-gray-500"
+                }`}
               >
                 <Bookmark
                   size={21}
-                  strokeWidth={pathname === '/wishlist' ? 1.8 : 1.5}
-                  fill={pathname === '/wishlist' ? 'currentColor' : 'none'}
+                  strokeWidth={pathname === "/wishlist" ? 1.8 : 1.5}
+                  fill={pathname === "/wishlist" ? "currentColor" : "none"}
                   className="transition-transform duration-200 group-hover:scale-105"
                 />
-                <span className={`text-[10px] tracking-tight transition-colors ${pathname === '/wishlist' ? 'font-bold' : 'font-semibold'}`}>Favorit</span>
+                <span
+                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/wishlist" ? "font-bold" : "font-semibold"}`}
+                >
+                  Favorit
+                </span>
               </Link>
 
               <Link
                 href="/profile"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === '/profile' ? 'text-emerald-700 scale-105' : 'text-gray-500'
-                  }`}
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/profile"
+                    ? "text-emerald-700 scale-105"
+                    : "text-gray-500"
+                }`}
               >
                 <User
                   size={21}
-                  strokeWidth={pathname === '/profile' ? 1.8 : 1.5}
-                  fill={pathname === '/profile' ? 'currentColor' : 'none'}
+                  strokeWidth={pathname === "/profile" ? 1.8 : 1.5}
+                  fill={pathname === "/profile" ? "currentColor" : "none"}
                   className="transition-transform duration-200 group-hover:scale-105"
                 />
-                <span className={`text-[10px] tracking-tight transition-colors ${pathname === '/profile' ? 'font-bold' : 'font-semibold'}`}>Profil</span>
+                <span
+                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/profile" ? "font-bold" : "font-semibold"}`}
+                >
+                  Profil
+                </span>
               </Link>
             </div>
-
           </div>
         </div>
       </div>

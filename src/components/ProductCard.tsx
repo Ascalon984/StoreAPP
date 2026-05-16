@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import { Star, Flame } from 'lucide-react';
-import { Product } from '@/lib/types';
-import { formatRupiah } from '@/lib/utils';
-import ProductImage from './ProductImage';
-import { useReviewStore } from '@/store/useReviewStore';
+import Link from "next/link";
+import { Star, Flame } from "lucide-react";
+import { Product } from "@/lib/types";
+import { formatRupiah } from "@/lib/utils";
+import ProductImage from "./ProductImage";
+import { useReviewStore } from "@/store/useReviewStore";
 
 interface ProductCardProps {
   product: Product;
@@ -19,54 +19,77 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   let productImages: string[] = [];
 
   if (Array.isArray(rawImages)) {
-    productImages = rawImages.flatMap(img => {
-      if (!img || typeof img !== 'string') return [];
-      if (img.startsWith('data:image') || img.startsWith('http')) {
+    productImages = rawImages.flatMap((img) => {
+      if (!img || typeof img !== "string") return [];
+      if (img.startsWith("data:image") || img.startsWith("http")) {
         return [img];
       }
-      return img.split('|').filter(i => i?.trim()?.startsWith('data:image') || i?.trim()?.startsWith('http'));
+      return img
+        .split("|")
+        .filter(
+          (i) =>
+            i?.trim()?.startsWith("data:image") ||
+            i?.trim()?.startsWith("http"),
+        );
     });
-  } else if (typeof rawImages === 'string') {
+  } else if (typeof rawImages === "string") {
     productImages = rawImages
-      .split('|')
-      .map(img => img?.trim())
-      .filter(img => img && (img.startsWith('data:image') || img.startsWith('http')));
+      .split("|")
+      .map((img) => img?.trim())
+      .filter(
+        (img) =>
+          img && (img.startsWith("data:image") || img.startsWith("http")),
+      );
   }
 
   const mainImage = productImages[0];
 
-  const specificReviews = localReviews.filter(r => r.productId === product.id);
+  const specificReviews = localReviews.filter(
+    (r) => r.productId === product.id,
+  );
   const serverCount = product.reviewCount || 0;
   const serverRating = product.rating || 0;
 
   const displayReviewCount = Math.max(serverCount, specificReviews.length);
-  const displayRating = specificReviews.length > 0
-    ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
-    : serverRating;
+  const displayRating =
+    specificReviews.length > 0
+      ? Number(
+          (
+            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+            specificReviews.length
+          ).toFixed(1),
+        )
+      : serverRating;
 
-  const isHot = product.sold >= 500;
-  const discount = product.originalPrice && product.originalPrice > product.price
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
+  const discount =
+    product.originalPrice && product.originalPrice > product.price
+      ? Math.round(
+          ((product.originalPrice - product.price) / product.originalPrice) *
+            100,
+        )
+      : 0;
 
-  const titleSize = product.name.length > 50
-    ? 'text-[9.5px] leading-[1.15]'
-    : product.name.length > 35
-      ? 'text-[10.5px] leading-[1.2]'
-      : product.name.length > 25
-        ? 'text-[11px] leading-snug'
-        : 'text-[12.5px] leading-snug';
+  const titleSize =
+    product.name.length > 50
+      ? "text-[9.5px] leading-[1.15]"
+      : product.name.length > 35
+        ? "text-[10.5px] leading-[1.2]"
+        : product.name.length > 25
+          ? "text-[11px] leading-snug"
+          : "text-[12.5px] leading-snug";
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <article className="
+      <article
+        className="
         bg-white rounded-xl 
         shadow-layer-xs 
         hover:shadow-layer-lg 
         transition-all duration-500 overflow-hidden 
         active:scale-[0.96] 
         flex flex-col h-full relative backdrop-blur-sm
-      ">
+      "
+      >
         <div className="absolute inset-0 bg-gradient-premium pointer-events-none z-0" />
 
         {discount > 0 && (
@@ -75,28 +98,21 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
         )}
 
-        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center p-3 z-10">
+        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 z-10">
           <ProductImage
             category={product.category}
             name={product.name}
             variant={index}
             src={mainImage}
-            className="w-full h-full transition-transform duration-700 group-hover:scale-110"
-            style={{ objectFit: 'contain' } as React.CSSProperties}
+            className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-110 object-contain scale-[0.82]"
+            style={{} as React.CSSProperties}
           />
-
-          <div className="absolute top-2 left-2">
-            {isHot && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-white/85 backdrop-blur-md border border-orange-200 text-orange-600 text-[8px] font-bold uppercase tracking-wider shadow-layer-sm">
-                <Flame size={9} className="fill-orange-500 text-orange-500" />
-                Hot
-              </span>
-            )}
-          </div>
         </div>
 
         <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5 z-10 relative bg-white/50 backdrop-blur-sm">
-          <h3 className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-700 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}>
+          <h3
+            className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-700 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}
+          >
             {product.name}
           </h3>
 
@@ -114,8 +130,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           <div className="flex items-center justify-between mt-auto pt-2 border-t border-gradient-to-r from-transparent via-gray-200 to-transparent">
             <div className="flex items-center gap-1">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
-              <span className="text-[11px] font-extrabold text-gray-700">{displayRating}</span>
-              <span className="text-[10px] text-gray-600">({displayReviewCount})</span>
+              <span className="text-[11px] font-extrabold text-gray-700">
+                {displayRating}
+              </span>
+              <span className="text-[10px] text-gray-600">
+                ({displayReviewCount})
+              </span>
             </div>
             <div className="text-[10px] text-gray-600 font-bold">
               {product.sold}+ Terjual
