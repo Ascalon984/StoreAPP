@@ -12,15 +12,6 @@ interface BannerProps {
 function BannerSkeleton() {
   return (
     <section className="px-4 pt-1 pb-2">
-      {/* mb-1.5 diselaraskan dengan container utama */}
-      <div className="mb-1.5 px-0.5">
-        <div className="flex items-center gap-2">
-          {/* Batang dekorator disesuaikan memakai warna oranye */}
-          <div className="w-[3px] h-4 bg-orange-500 rounded-full shadow-sm" />
-          <div className="h-4 w-32 skeleton rounded-md" />
-        </div>
-        {/* Sub-label skeleton <div className="h-3 w-48 ... mt-1.5" /> telah dihapus dari sini */}
-      </div>
       <div className="w-full aspect-[2.15/1] skeleton rounded-2xl" />
     </section>
   );
@@ -140,16 +131,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-4 pt-1 pb-2">
-      <div className="mb-1.5 px-0.5">
-        <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-[#D89B2B] rounded-full shadow-sm" />
-          <h2 className="text-sm font-bold text-white tracking-tight drop-shadow-sm">
-            Rekomendasi Hari Ini
-          </h2>
-        </div>
-      </div>
-
+    <section className="px-4 pt-1 pb-3">
       <div className="relative group bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-inner">
         <div
           ref={scrollRef}

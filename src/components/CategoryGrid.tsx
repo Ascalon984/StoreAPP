@@ -42,7 +42,6 @@ function CategorySkeleton() {
     <section className="px-4 pt-1 pb-3.5">
       <div className="mb-0.5 px-0.5">
         <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full" />
           <div className="h-4 w-28 skeleton rounded-md" />
         </div>
       </div>
@@ -51,8 +50,7 @@ function CategorySkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="flex flex-col items-center flex-shrink-0 
-              w-[68px] pt-3.5 pb-2.5 px-1"
+            className="flex flex-col items-center flex-shrink-0 w-[68px] pt-3.5 pb-2.5 px-1"
           >
             {/* Circle skeleton */}
             <div className="w-12 h-12 skeleton rounded-full" />
@@ -132,14 +130,12 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
 
   return (
     <section className="px-4 pt-1 pb-3.5">
-      <div className="mb-0.5 px-0.5">
-        <div className="flex items-center gap-2">
-          <div className="w-[3px] h-4 bg-emerald-500 rounded-full shadow-sm" />
-          <h2 className="text-sm font-bold text-gray-800 tracking-tight drop-shadow-sm">
-            Kategori Favorit
-          </h2>
-        </div>
-      </div>
+      {/* Hapus dekorasi vertikal, perbesar label */}
+<div className="mb-0.5 px-0.5">
+  <h2 className="text-[15px] font-extrabold text-gray-800 tracking-tight">
+    Kategori Favorit
+  </h2>
+</div>
 
       <div
         className="flex gap-2 overflow-x-auto"
@@ -168,18 +164,18 @@ export default function CategoryGrid({ initialCategories = [] }: CategoryGridPro
               <div className="relative flex items-center justify-center 
     w-9 h-9        // ← w-8 h-8 → w-9 h-9 (32→36px)
   ">
-                {/* Ellipse */}
-                <div
-                  className={`
-        absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
-        w-[46px] h-[23px]     // ← 38×19 → 46×23
-        rounded-[100%] transition-all duration-300 z-0
-        ${isActive
-                      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]'
-                      : 'bg-emerald-500 opacity-75 blur-[0.5px]'
-                    }
-      `}
-                />
+                {/* Ellipse — lebih proporsional */}
+<div
+  className={`
+    absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
+    w-[40px] h-[20px]
+    rounded-[100%] transition-all duration-300 z-0
+    ${isActive
+      ? 'bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]'
+      : 'bg-emerald-500 opacity-75 blur-[0.5px]'
+    }
+  `}
+/>
 
                 {/* Icon */}
                 <Image

@@ -55,7 +55,7 @@ export default async function Home() {
 
       {/* LAYER BAWAH: Sticky Canvas */}
       <div className="sticky top-[72px] z-0">
-        <div className="absolute top-[-18px] left-0 w-full h-[210px] z-[-1]">
+        <div className="absolute top-[-38px] left-0 w-full h-[210px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
