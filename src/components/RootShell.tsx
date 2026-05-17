@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import BottomNav from '@/components/BottomNav';
 
-const excludedRoutes = ['/welcome', '/auth', '/splash'];
+const excludedRoutes = ['/welcome', '/auth', '/splash', '/chat'];
 
 export default function RootShell({ children }: PropsWithChildren<{}>) {
   const pathname = usePathname() ?? '';

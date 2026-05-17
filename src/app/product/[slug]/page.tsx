@@ -711,7 +711,9 @@ export default function ProductDetailPage({
               Masih ada pertanyaan?
             </p>
             <button
-              onClick={() => router.push(`/chat?productSlug=${product.slug}`)}
+              onClick={() =>
+                router.push(`/chat?source=product&productSlug=${product.slug}`)
+              }
               className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-700 hover:text-emerald-800 active:scale-95 transition-all"
             >
               <MessageCircle size={13} strokeWidth={2.2} />

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
-import { Banner as BannerType } from '@/lib/types';
+import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
+import { Banner as BannerType } from "@/lib/types";
 
 interface BannerProps {
   initialBanners?: BannerType[];
@@ -11,7 +11,7 @@ interface BannerProps {
 // Skeleton dioptimalkan: sub-label dihapus agar konsisten dengan UI utama
 function BannerSkeleton() {
   return (
-    <section className="px-4 pt-1 pb-2">
+    <section className="px-3 pt-1 pb-2">
       <div className="w-full aspect-[2.15/1] skeleton rounded-2xl" />
     </section>
   );
@@ -26,18 +26,15 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isResettingRef = useRef(false);
 
-  // GAP_SIZE diatur ke 16 karena menggunakan kelas tailwind `gap-4` (16px)
-  const GAP_SIZE = 16;
-
   useEffect(() => {
     if (initialBanners.length > 0) return;
 
-    fetch('/api/public/banners')
+    fetch("/api/public/banners")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setBanners(data);
       })
-      .catch((err) => console.error('Failed to fetch banners:', err))
+      .catch((err) => console.error("Failed to fetch banners:", err))
       .finally(() => setIsLoading(false));
   }, [initialBanners.length]);
 
@@ -50,7 +47,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   useEffect(() => {
     if (!isLoading && hasMultipleBanners && scrollRef.current) {
       const el = scrollRef.current;
-      el.scrollLeft = el.offsetWidth + GAP_SIZE;
+      el.scrollLeft = el.offsetWidth;
     }
   }, [isLoading, hasMultipleBanners]);
 
@@ -58,7 +55,10 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     const el = scrollRef.current;
     if (el) {
       // Perhitungan melompat melibatkan perkalian ukuran elemen ditambah celah gap
-      el.scrollTo({ left: (index + 1) * (el.offsetWidth + GAP_SIZE), behavior: 'smooth' });
+      el.scrollTo({
+        left: (index + 1) * el.offsetWidth,
+        behavior: "smooth",
+      });
     }
   }, []);
 
@@ -69,9 +69,12 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     timerRef.current = setInterval(() => {
       const el = scrollRef.current;
       if (el && !isResettingRef.current) {
-        const stepWidth = el.offsetWidth + GAP_SIZE;
+        const stepWidth = el.offsetWidth;
         const currentVisualIndex = Math.round(el.scrollLeft / stepWidth);
-        el.scrollTo({ left: (currentVisualIndex + 1) * stepWidth, behavior: 'smooth' });
+        el.scrollTo({
+          left: (currentVisualIndex + 1) * stepWidth,
+          behavior: "smooth",
+        });
       }
     }, 5000);
   }, [hasMultipleBanners]);
@@ -79,7 +82,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   useEffect(() => {
     if (banners.length === 0) return;
     startAutoPlay();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [banners.length, startAutoPlay]);
 
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,7 +98,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
     const currentScrollLeft = el.scrollLeft;
     const width = el.offsetWidth;
-    const stepWidth = width + GAP_SIZE;
+    const stepWidth = width;
 
     const visualIndex = Math.round(currentScrollLeft / stepWidth);
 
@@ -105,22 +110,29 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     }
 
     // Pindah instan ke slide asli pertama jika mentok kanan (Kloning Slide Pertama)
-    if (visualIndex >= displayBanners.length - 1 && currentScrollLeft >= (displayBanners.length - 1) * stepWidth - 5) {
+    if (
+      visualIndex >= displayBanners.length - 1 &&
+      currentScrollLeft >= (displayBanners.length - 1) * stepWidth - 5
+    ) {
       isResettingRef.current = true;
-      el.style.scrollSnapType = 'none';
+      el.style.scrollSnapType = "none";
       el.scrollLeft = stepWidth;
-      el.style.scrollSnapType = 'x mandatory';
+      el.style.scrollSnapType = "x mandatory";
       setCurrent(0);
-      setTimeout(() => { isResettingRef.current = false; }, 50);
+      setTimeout(() => {
+        isResettingRef.current = false;
+      }, 50);
     }
     // Pindah instan ke slide asli terakhir jika mentok kiri (Kloning Slide Terakhir)
     else if (visualIndex <= 0 && currentScrollLeft <= 5) {
       isResettingRef.current = true;
-      el.style.scrollSnapType = 'none';
+      el.style.scrollSnapType = "none";
       el.scrollLeft = banners.length * stepWidth;
-      el.style.scrollSnapType = 'x mandatory';
+      el.style.scrollSnapType = "x mandatory";
       setCurrent(banners.length - 1);
-      setTimeout(() => { isResettingRef.current = false; }, 50);
+      setTimeout(() => {
+        isResettingRef.current = false;
+      }, 50);
     }
 
     scrollTimeout.current = setTimeout(() => {
@@ -131,20 +143,23 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-4 pt-1 pb-3">
+    <section className="px-3 pt-1 pb-3">
       <div className="relative group bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-inner">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-4 snap-x snap-mandatory"
+          className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory"
           style={{
-            msOverflowStyle: 'none',
-            scrollbarWidth: 'none',
-            WebkitOverflowScrolling: 'touch',
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
           }}
         >
           {displayBanners.map((banner, index) => (
-            <div key={`${banner.id}-clone-${index}`} className="flex-shrink-0 w-full snap-start">
+            <div
+              key={`${banner.id}-clone-${index}`}
+              className="flex-shrink-0 w-full snap-start"
+            >
               <div className="relative rounded-2xl overflow-hidden aspect-[2.15/1] layer-card shadow-soft transition-transform duration-500 active:scale-[0.98]">
                 <Image
                   src={banner.image}
@@ -166,8 +181,12 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             {banners.map((_, i) => (
               <button
                 key={i}
-                onClick={() => { scrollTo(i); setCurrent(i); startAutoPlay(); }}
-                className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+                onClick={() => {
+                  scrollTo(i);
+                  setCurrent(i);
+                  startAutoPlay();
+                }}
+                className={`h-1 rounded-full transition-all duration-300 ${i === current ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}

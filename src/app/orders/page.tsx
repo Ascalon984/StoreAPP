@@ -1,15 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
-  RefreshCw, Clock3, ClockFading, CheckCircle2, XCircleIcon, Package, CheckCircle, XCircle,
-} from 'lucide-react';
-import { formatRupiah } from '@/lib/utils';
-import ProductImage from '@/components/ProductImage';
+  RefreshCw,
+  Clock3,
+  ClockFading,
+  CheckCircle2,
+  XCircleIcon,
+  Package,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
+import { formatRupiah } from "@/lib/utils";
+import ProductImage from "@/components/ProductImage";
+import { products } from "@/lib/data";
 
 // ── Types ──
-type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled';
+type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
 
 type OrderItem = {
   productId: string;
@@ -33,143 +41,262 @@ type Order = {
   address: string;
 };
 
-type FilterTab = 'all' | 'processing' | 'completed' | 'cancelled';
+type FilterTab = "all" | "processing" | "completed" | "cancelled";
 
 // ── Mock data ──
 const MOCK_ORDERS: Order[] = [
   {
-    id: '1',
-    orderId: 'ORD-2026-001',
-    createdAt: '2026-05-11T10:30:00Z',
-    status: 'completed',
+    id: "1",
+    orderId: "ORD-2026-001",
+    createdAt: "2026-05-11T10:30:00Z",
+    status: "completed",
     items: [
-      { productId: 'p1', name: 'Chitato Beef Barbeque 68g', category: 'snack', image: null, price: 12000, quantity: 2 },
-      { productId: 'p2', name: 'Aqua 600ml', category: 'minuman', image: null, price: 4000, quantity: 1 },
+      {
+        productId: "p1",
+        name: "Chitato Beef Barbeque 68g",
+        category: "snack",
+        image: null,
+        price: 12000,
+        quantity: 2,
+      },
+      {
+        productId: "p2",
+        name: "Aqua 600ml",
+        category: "minuman",
+        image: null,
+        price: 4000,
+        quantity: 1,
+      },
     ],
     total: 28000,
-    paymentMethod: 'COD',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "COD",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '2',
-    orderId: 'ORD-2026-002',
-    createdAt: '2026-05-11T08:10:00Z',
-    status: 'processing',
+    id: "2",
+    orderId: "ORD-2026-002",
+    createdAt: "2026-05-11T08:10:00Z",
+    status: "processing",
     items: [
-      { productId: 'p3', name: 'Mie Sedaap Korean Spicy', category: 'makanan', image: null, price: 4000, quantity: 3 },
-      { productId: 'p4', name: 'Teh Pucuk Harum 350ml', category: 'minuman', image: null, price: 5000, quantity: 2 },
+      {
+        productId: "p3",
+        name: "Mie Sedaap Korean Spicy",
+        category: "makanan",
+        image: null,
+        price: 4000,
+        quantity: 3,
+      },
+      {
+        productId: "p4",
+        name: "Teh Pucuk Harum 350ml",
+        category: "minuman",
+        image: null,
+        price: 5000,
+        quantity: 2,
+      },
     ],
     total: 22000,
-    paymentMethod: 'GoPay',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "GoPay",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '3',
-    orderId: 'ORD-2026-003',
-    createdAt: '2026-05-08T14:15:00Z',
-    status: 'processing',
+    id: "3",
+    orderId: "ORD-2026-003",
+    createdAt: "2026-05-08T14:15:00Z",
+    status: "processing",
     items: [
-      { productId: 'p5', name: 'Indomie Goreng Original', category: 'makanan', image: null, price: 3500, quantity: 5 },
-      { productId: 'p6', name: 'Teh Botol Sosro 450ml', category: 'minuman', image: null, price: 6000, quantity: 2 },
-      { productId: 'p7', name: 'Permen Kopiko Brown Coffee', category: 'snack', image: null, price: 2000, quantity: 4 },
+      {
+        productId: "p5",
+        name: "Indomie Goreng Original",
+        category: "makanan",
+        image: null,
+        price: 3500,
+        quantity: 5,
+      },
+      {
+        productId: "p6",
+        name: "Teh Botol Sosro 450ml",
+        category: "minuman",
+        image: null,
+        price: 6000,
+        quantity: 2,
+      },
+      {
+        productId: "p7",
+        name: "Permen Kopiko Brown Coffee",
+        category: "snack",
+        image: null,
+        price: 2000,
+        quantity: 4,
+      },
     ],
     total: 41500,
-    paymentMethod: 'OVO',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "OVO",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '4',
-    orderId: 'ORD-2026-004',
-    createdAt: '2026-05-05T19:40:00Z',
-    status: 'completed',
+    id: "4",
+    orderId: "ORD-2026-004",
+    createdAt: "2026-05-05T19:40:00Z",
+    status: "completed",
     items: [
-      { productId: 'p8', name: 'SilverQueen Almond 65g', category: 'snack', image: null, price: 18000, quantity: 1 },
-      { productId: 'p9', name: 'Coca Cola 390ml', category: 'minuman', image: null, price: 7000, quantity: 2 },
+      {
+        productId: "p8",
+        name: "SilverQueen Almond 65g",
+        category: "snack",
+        image: null,
+        price: 18000,
+        quantity: 1,
+      },
+      {
+        productId: "p9",
+        name: "Coca Cola 390ml",
+        category: "minuman",
+        image: null,
+        price: 7000,
+        quantity: 2,
+      },
     ],
     total: 32000,
-    paymentMethod: 'DANA',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "DANA",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '5',
-    orderId: 'ORD-2026-005',
-    createdAt: '2026-05-03T11:00:00Z',
-    status: 'cancelled',
+    id: "5",
+    orderId: "ORD-2026-005",
+    createdAt: "2026-05-03T11:00:00Z",
+    status: "cancelled",
     items: [
-      { productId: 'p10', name: 'Roti Bakar Coklat Keju', category: 'makanan', image: null, price: 15000, quantity: 1 },
+      {
+        productId: "p10",
+        name: "Roti Bakar Coklat Keju",
+        category: "makanan",
+        image: null,
+        price: 15000,
+        quantity: 1,
+      },
     ],
     total: 15000,
-    paymentMethod: 'COD',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "COD",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '6',
-    orderId: 'ORD-2026-006',
-    createdAt: '2026-04-20T16:00:00Z',
-    status: 'cancelled',
+    id: "6",
+    orderId: "ORD-2026-006",
+    createdAt: "2026-04-20T16:00:00Z",
+    status: "cancelled",
     items: [
-      { productId: 'p11', name: 'Roti Tawar Sari Roti', category: 'makanan', image: null, price: 15000, quantity: 1 },
+      {
+        productId: "p11",
+        name: "Roti Tawar Sari Roti",
+        category: "makanan",
+        image: null,
+        price: 15000,
+        quantity: 1,
+      },
     ],
     total: 15000,
-    paymentMethod: 'DANA',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "DANA",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '7',
-    orderId: 'ORD-2026-007',
-    createdAt: '2026-04-11T09:25:00Z',
-    status: 'completed',
+    id: "7",
+    orderId: "ORD-2026-007",
+    createdAt: "2026-04-11T09:25:00Z",
+    status: "completed",
     items: [
-      { productId: 'p12', name: 'Good Day Cappuccino', category: 'minuman', image: null, price: 2500, quantity: 6 },
-      { productId: 'p13', name: 'Roma Kelapa', category: 'snack', image: null, price: 9000, quantity: 1 },
+      {
+        productId: "p12",
+        name: "Good Day Cappuccino",
+        category: "minuman",
+        image: null,
+        price: 2500,
+        quantity: 6,
+      },
+      {
+        productId: "p13",
+        name: "Roma Kelapa",
+        category: "snack",
+        image: null,
+        price: 9000,
+        quantity: 1,
+      },
     ],
     total: 24000,
-    paymentMethod: 'ShopeePay',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "ShopeePay",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '8',
-    orderId: 'ORD-2026-008',
-    createdAt: '2026-03-15T11:20:00Z',
-    status: 'pending',
+    id: "8",
+    orderId: "ORD-2026-008",
+    createdAt: "2026-03-15T11:20:00Z",
+    status: "pending",
     items: [
-      { productId: 'p14', name: 'Oreo Original 137g', category: 'snack', image: null, price: 14000, quantity: 1 },
-      { productId: 'p15', name: 'Susu Ultra Milk 250ml', category: 'minuman', image: null, price: 5500, quantity: 2 },
+      {
+        productId: "p14",
+        name: "Oreo Original 137g",
+        category: "snack",
+        image: null,
+        price: 14000,
+        quantity: 1,
+      },
+      {
+        productId: "p15",
+        name: "Susu Ultra Milk 250ml",
+        category: "minuman",
+        image: null,
+        price: 5500,
+        quantity: 2,
+      },
     ],
     total: 25000,
-    paymentMethod: 'BCA VA',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "BCA VA",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
   {
-    id: '9',
-    orderId: 'ORD-2026-009',
-    createdAt: '2026-03-02T13:50:00Z',
-    status: 'completed',
+    id: "9",
+    orderId: "ORD-2026-009",
+    createdAt: "2026-03-02T13:50:00Z",
+    status: "completed",
     items: [
-      { productId: 'p16', name: 'Qtela Singkong Balado', category: 'snack', image: null, price: 11000, quantity: 2 },
-      { productId: 'p17', name: 'Le Minerale 600ml', category: 'minuman', image: null, price: 4000, quantity: 2 },
+      {
+        productId: "p16",
+        name: "Qtela Singkong Balado",
+        category: "snack",
+        image: null,
+        price: 11000,
+        quantity: 2,
+      },
+      {
+        productId: "p17",
+        name: "Le Minerale 600ml",
+        category: "minuman",
+        image: null,
+        price: 4000,
+        quantity: 2,
+      },
     ],
     total: 30000,
-    paymentMethod: 'COD',
-    customerName: 'Ahmad Fauzi',
-    phone: '081234567890',
-    address: 'Jl. Melati No. 12, Telang Indah, Kamal',
+    paymentMethod: "COD",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "Jl. Melati No. 12, Telang Indah, Kamal",
   },
 ];
 
@@ -177,17 +304,26 @@ function getOrderGroupLabel(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const orderDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diffDays = Math.floor((today.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'Hari Ini';
-  if (diffDays > 0 && diffDays <= 7) return '7 Hari Terakhir';
-  return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+  const orderDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  const diffDays = Math.floor(
+    (today.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
+  if (diffDays === 0) return "Hari Ini";
+  if (diffDays > 0 && diffDays <= 7) return "7 Hari Terakhir";
+  return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
 }
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-    + ', ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  return (
+    d.toLocaleDateString("id-ID", { day: "numeric", month: "short" }) +
+    ", " +
+    d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
+  );
 }
 
 // ── Status config — FIXED: badge style, bukan plain text ──
@@ -201,39 +337,39 @@ const STATUS_CONFIG: Record<
   }
 > = {
   pending: {
-    label: 'Menunggu',
+    label: "Menunggu",
     icon: Clock3,
-    iconClass: 'text-amber-500',
-    textClass: 'text-gray-500',
+    iconClass: "text-amber-500",
+    textClass: "text-gray-500",
   },
 
   processing: {
-    label: 'Diproses',
+    label: "Diproses",
     icon: ClockFading,
-    iconClass: 'text-yellow-500',
-    textClass: 'text-gray-500',
+    iconClass: "text-yellow-500",
+    textClass: "text-gray-500",
   },
 
   completed: {
-    label: 'Selesai',
+    label: "Selesai",
     icon: CheckCircle2,
-    iconClass: 'text-emerald-600',
-    textClass: 'text-gray-500',
+    iconClass: "text-emerald-600",
+    textClass: "text-gray-500",
   },
 
   cancelled: {
-    label: 'Dibatalkan',
+    label: "Dibatalkan",
     icon: XCircle,
-    iconClass: 'text-rose-500',
-    textClass: 'text-gray-500',
+    iconClass: "text-rose-500",
+    textClass: "text-gray-500",
   },
 };
 
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
-  { key: 'all', label: 'Semua' },
-  { key: 'processing', label: 'Diproses' },
-  { key: 'completed', label: 'Selesai' },
-  { key: 'cancelled', label: 'Dibatalkan' },
+  { key: "all", label: "Semua" },
+  { key: "processing", label: "Diproses" },
+  { key: "completed", label: "Selesai" },
+  { key: "cancelled", label: "Dibatalkan" },
 ];
 
 // ── Carousel Product Preview ──
@@ -248,8 +384,8 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
   const onTouchEnd = (e: React.TouchEvent) => {
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 40) {
-      if (diff > 0) setActive(p => Math.min(p + 1, totalSlides - 1));
-      else setActive(p => Math.max(p - 1, 0));
+      if (diff > 0) setActive((p) => Math.min(p + 1, totalSlides - 1));
+      else setActive((p) => Math.max(p - 1, 0));
     }
   };
 
@@ -309,10 +445,11 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                         setActive(i);
                       }}
                       className={`rounded-full transition-all duration-200
-                      ${i === active
-                          ? 'w-3 h-1 bg-gray-400'
-                          : 'w-1 h-1 bg-gray-200'
-                        }`}
+                      ${
+                        i === active
+                          ? "w-3 h-1 bg-gray-400"
+                          : "w-1 h-1 bg-gray-200"
+                      }`}
                     />
                   ))}
                 </div>
@@ -323,7 +460,7 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
               <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
                 {items.length === 1
                   ? items[0].name
-                  : `${items[0].name.split(' ').slice(0, 4).join(' ')} & ${items.length - 1} lainnya`}
+                  : `${items[0].name.split(" ").slice(0, 4).join(" ")} & ${items.length - 1} lainnya`}
               </p>
               <p className="text-[10px] text-gray-400 font-medium mt-1">
                 {items.length} produk
@@ -357,10 +494,11 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                           setActive(i);
                         }}
                         className={`rounded-full transition-all duration-200
-                        ${i === active
-                            ? 'w-3 h-1 bg-gray-400'
-                            : 'w-1 h-1 bg-gray-200'
-                          }`}
+                        ${
+                          i === active
+                            ? "w-3 h-1 bg-gray-400"
+                            : "w-1 h-1 bg-gray-200"
+                        }`}
                       />
                     ))}
                   </div>
@@ -394,7 +532,13 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
 }
 
 // ── Order Card ──
-function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string }) {
+function OrderCard({
+  order,
+  activeFilter,
+}: {
+  order: Order;
+  activeFilter: string;
+}) {
   const router = useRouter();
   const {
     label,
@@ -405,20 +549,15 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
 
   return (
     <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
-
       {/* Header */}
       <div className="px-4 py-2.5 flex items-center justify-between">
         <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
           #{order.orderId}
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {activeFilter === 'all' && (
+          {activeFilter === "all" && (
             <div className="flex items-center gap-1">
-              <StatusIcon
-                size={13}
-                strokeWidth={2.4}
-                className={iconClass}
-              />
+              <StatusIcon size={13} strokeWidth={2.4} className={iconClass} />
 
               <span className={`text-[10px] font-semibold ${textClass}`}>
                 {label}
@@ -452,7 +591,7 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          {order.status === 'completed' && (
+          {order.status === "completed" && (
             <>
               <button
                 className="px-3 py-1.5 rounded-lg
@@ -466,7 +605,7 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
                 Ulasan
               </button>
               <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push("/")}
                 className="px-3 py-1.5 rounded-lg
                 bg-emerald-700
                 text-white text-[11px] font-bold
@@ -479,9 +618,23 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
             </>
           )}
 
-          {order.status === 'processing' && (
+          {order.status === "processing" && (
             <button
-              onClick={() => router.push('/chat')}
+              onClick={() => {
+                const imgs = order.items
+                  .map((it, i) => {
+                    const p = products.find((pp) => pp.id === it.productId);
+                    return p
+                      ? `/products/${p.id}.jpg`
+                      : `/products/${products[i % products.length].id}.jpg`;
+                  })
+                  .slice(0, 3)
+                  .join(",");
+
+                router.push(
+                  `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
+                );
+              }}
               className="px-3 py-1.5 rounded-lg
               border border-amber-500
               text-[11px] font-semibold text-amber-600
@@ -493,7 +646,7 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
             </button>
           )}
 
-          {order.status === 'pending' && (
+          {order.status === "pending" && (
             <>
               <button
                 className="text-[11px] font-semibold text-gray-400
@@ -504,7 +657,21 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
                 Batalkan
               </button>
               <button
-                onClick={() => router.push('/chat')}
+                onClick={() => {
+                  const imgs = order.items
+                    .map((it, i) => {
+                      const p = products.find((pp) => pp.id === it.productId);
+                      return p
+                        ? `/products/${p.id}.jpg`
+                        : `/products/${products[i % products.length].id}.jpg`;
+                    })
+                    .slice(0, 3)
+                    .join(",");
+
+                  router.push(
+                    `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
+                  );
+                }}
                 className="px-3 py-1.5 rounded-lg
                 border border-amber-500
                 text-[11px] font-semibold text-amber-600
@@ -517,9 +684,9 @@ function OrderCard({ order, activeFilter }: { order: Order; activeFilter: string
             </>
           )}
 
-          {order.status === 'cancelled' && (
+          {order.status === "cancelled" && (
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
               className="px-3 py-1.5 rounded-lg
               bg-emerald-700
               text-white text-[11px] font-bold
@@ -550,9 +717,12 @@ function SkeletonCard() {
       <div className="border-t border-gray-100 mx-4" />
       <div className="px-4 py-3 flex items-center gap-3">
         <div className="flex">
-          {[0, 1].map(i => (
-            <div key={i} className="w-12 h-12 rounded-xl bg-gray-100 flex-shrink-0"
-              style={{ marginLeft: i === 0 ? 0 : -10 }} />
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="w-12 h-12 rounded-xl bg-gray-100 flex-shrink-0"
+              style={{ marginLeft: i === 0 ? 0 : -10 }}
+            />
           ))}
         </div>
         <div className="flex-1 space-y-1.5">
@@ -576,10 +746,26 @@ function SkeletonCard() {
 function EmptyState({ filter }: { filter: FilterTab }) {
   const router = useRouter();
   const map: Record<FilterTab, { Icon: any; title: string; sub: string }> = {
-    all: { Icon: Package, title: 'Belum ada pesanan', sub: 'Yuk mulai belanja produk favoritmu!' },
-    processing: { Icon: RefreshCw, title: 'Tidak ada pesanan diproses', sub: 'Pesanan aktif akan tampil di sini.' },
-    completed: { Icon: CheckCircle, title: 'Belum ada pesanan selesai', sub: 'Pesanan selesai akan tampil di sini.' },
-    cancelled: { Icon: XCircle, title: 'Tidak ada pesanan dibatalkan', sub: 'Pesanan dibatalkan akan tampil di sini.' },
+    all: {
+      Icon: Package,
+      title: "Belum ada pesanan",
+      sub: "Yuk mulai belanja produk favoritmu!",
+    },
+    processing: {
+      Icon: RefreshCw,
+      title: "Tidak ada pesanan diproses",
+      sub: "Pesanan aktif akan tampil di sini.",
+    },
+    completed: {
+      Icon: CheckCircle,
+      title: "Belum ada pesanan selesai",
+      sub: "Pesanan selesai akan tampil di sini.",
+    },
+    cancelled: {
+      Icon: XCircle,
+      title: "Tidak ada pesanan dibatalkan",
+      sub: "Pesanan dibatalkan akan tampil di sini.",
+    },
   };
   const { Icon, title, sub } = map[filter];
   return (
@@ -587,13 +773,19 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4 text-gray-400">
         <Icon size={32} strokeWidth={1.5} />
       </div>
-      <h3 className="text-[15px] font-bold text-gray-800 text-center">{title}</h3>
-      <p className="text-[12px] text-gray-400 font-medium text-center mt-1.5 leading-relaxed">{sub}</p>
-      {filter === 'all' && (
-        <button onClick={() => router.push('/')}
+      <h3 className="text-[15px] font-bold text-gray-800 text-center">
+        {title}
+      </h3>
+      <p className="text-[12px] text-gray-400 font-medium text-center mt-1.5 leading-relaxed">
+        {sub}
+      </p>
+      {filter === "all" && (
+        <button
+          onClick={() => router.push("/")}
           className="mt-5 px-5 py-2.5 rounded-xl bg-emerald-700 text-white
             text-[13px] font-bold hover:bg-emerald-800 active:scale-95
-            transition-all shadow-md shadow-emerald-700/20">
+            transition-all shadow-md shadow-emerald-700/20"
+        >
           Mulai Belanja
         </button>
       )}
@@ -609,10 +801,10 @@ type OrderGroup = {
 
 function groupOrders(orders: Order[]): OrderGroup[] {
   const sorted = [...orders].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
   const groups: OrderGroup[] = [];
-  let lastLabel = '';
+  let lastLabel = "";
   for (const order of sorted) {
     const label = getOrderGroupLabel(order.createdAt);
     if (label !== lastLabel) {
@@ -628,7 +820,7 @@ function groupOrders(orders: Order[]): OrderGroup[] {
 // ── Main Page ──
 export default function OrdersPage() {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
+  const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -637,7 +829,7 @@ export default function OrdersPage() {
 
   const loadOrders = useCallback(async () => {
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 700));
+    await new Promise((r) => setTimeout(r, 700));
     setOrders(MOCK_ORDERS);
     setIsLoading(false);
   }, []);
@@ -656,10 +848,10 @@ export default function OrdersPage() {
     }
   }, [activeFilter]);
 
-  const filtered = orders.filter(o => {
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'processing')
-      return o.status === 'pending' || o.status === 'processing';
+  const filtered = orders.filter((o) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "processing")
+      return o.status === "pending" || o.status === "processing";
     return o.status === activeFilter;
   });
 
@@ -670,7 +862,6 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
-
       {/* Header */}
       <div
         className="sticky top-0 z-50 bg-[#0B6B52] shadow-md"
@@ -684,10 +875,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Filter tabs — FIXED: gap-6 bukan gap-8 */}
-      <div
-        className="sticky z-30 bg-white"
-        style={{ top: HEADER_H }}
-      >
+      <div className="sticky z-30 bg-white" style={{ top: HEADER_H }}>
         <div
           className="relative flex gap-6 px-6 overflow-x-auto hide-scrollbar border-b border-gray-100"
           style={{ height: FILTER_H }}
@@ -700,17 +888,18 @@ export default function OrdersPage() {
               transform: `translateX(${indicatorStyle.left}px)`,
             }}
           />
-          {FILTER_TABS.map(tab => (
+          {FILTER_TABS.map((tab) => (
             <button
               key={tab.key}
-              ref={(el) => { tabRefs.current[tab.key] = el; }}
+              ref={(el) => {
+                tabRefs.current[tab.key] = el;
+              }}
               onClick={() => setActiveFilter(tab.key)}
               className={`relative flex-shrink-0 h-full px-1 text-[13px] font-bold
               transition-colors duration-200 active:scale-95
-              ${activeFilter === tab.key
-                  ? 'text-emerald-700'
-                  : 'text-gray-400'
-                }`}
+              ${
+                activeFilter === tab.key ? "text-emerald-700" : "text-gray-400"
+              }`}
             >
               {tab.label}
             </button>
@@ -730,7 +919,7 @@ export default function OrdersPage() {
           <EmptyState filter={activeFilter} />
         ) : (
           <div className="space-y-5">
-            {groups.map(group => (
+            {groups.map((group) => (
               <div key={group.label}>
                 <div className="px-5 pb-2">
                   <h2 className="text-[12px] font-semibold text-gray-500 tracking-tight">
@@ -739,8 +928,12 @@ export default function OrdersPage() {
                 </div>
                 {/* FIXED: space-y-2, bukan space-y-1 */}
                 <div className="px-4 space-y-2">
-                  {group.orders.map(order => (
-                    <OrderCard key={order.id} order={order} activeFilter={activeFilter} />
+                  {group.orders.map((order) => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      activeFilter={activeFilter}
+                    />
                   ))}
                 </div>
               </div>
