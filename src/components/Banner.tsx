@@ -26,6 +26,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isResettingRef = useRef(false);
 
+  // GAP_SIZE diatur ke 16 karena menggunakan kelas tailwind `gap-4` (16px)
+  const GAP_SIZE = 4;
+
   useEffect(() => {
     if (initialBanners.length > 0) return;
 
@@ -44,10 +47,18 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     : banners;
 
   // Set posisi awal tepat di slide asli pertama dengan memperhitungkan jarak gap-4
+  // Tambah visibility hidden sampai posisi awal sudah di-set
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     if (!isLoading && hasMultipleBanners && scrollRef.current) {
       const el = scrollRef.current;
-      el.scrollLeft = el.offsetWidth;
+      el.scrollLeft = el.offsetWidth + GAP_SIZE;
+      setReady(true);  // ← baru tampil setelah posisi benar
+    }
+    // Kalau hanya 1 banner, langsung ready
+    if (!isLoading && !hasMultipleBanners) {
+      setReady(true);
     }
   }, [isLoading, hasMultipleBanners]);
 
@@ -56,7 +67,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     if (el) {
       // Perhitungan melompat melibatkan perkalian ukuran elemen ditambah celah gap
       el.scrollTo({
-        left: (index + 1) * el.offsetWidth,
+        left: (index + 1) * (el.offsetWidth + GAP_SIZE),
         behavior: "smooth",
       });
     }
@@ -69,7 +80,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     timerRef.current = setInterval(() => {
       const el = scrollRef.current;
       if (el && !isResettingRef.current) {
-        const stepWidth = el.offsetWidth;
+        const stepWidth = el.offsetWidth + GAP_SIZE;
         const currentVisualIndex = Math.round(el.scrollLeft / stepWidth);
         el.scrollTo({
           left: (currentVisualIndex + 1) * stepWidth,
@@ -98,7 +109,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
     const currentScrollLeft = el.scrollLeft;
     const width = el.offsetWidth;
-    const stepWidth = width;
+    const stepWidth = width + GAP_SIZE;
 
     const visualIndex = Math.round(currentScrollLeft / stepWidth);
 
@@ -148,11 +159,12 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+          className="flex overflow-x-auto hide-scrollbar gap-1 snap-x snap-mandatory"
           style={{
             msOverflowStyle: "none",
             scrollbarWidth: "none",
             WebkitOverflowScrolling: "touch",
+            visibility: ready ? "visible" : "hidden",
           }}
         >
           {displayBanners.map((banner, index) => (

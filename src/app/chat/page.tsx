@@ -102,7 +102,7 @@ function ChatPageInner() {
       scrollContainerRef.current;
     const isNearBottom = scrollHeight - scrollTop - clientHeight < 120;
     if (isNearBottom || force) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current?.scrollIntoView();
     }
   }, []);
 
@@ -244,13 +244,7 @@ function ChatPageInner() {
       <ChatHeader onBack={handleBack} isOnline />
 
       {/* ── MESSAGE LIST ── */}
-      <div
-        ref={scrollContainerRef}
-        role="log"
-        aria-live="polite"
-        aria-label="Riwayat percakapan"
-        className="flex-1 overflow-y-auto"
-      >
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
           <ChatEmptyState />
         ) : (

@@ -19,38 +19,75 @@ const iconPathMap: Record<string, string> = {
   peralatan: "/icons/peralatan.png",
 };
 
-const colorMap: Record<string, { active: string; bg: string; glow: string }> = {
-  all: { active: "text-gray-700", bg: "bg-gray-100", glow: "bg-gray-400" },
-  snack: { active: "text-amber-600", bg: "bg-amber-50", glow: "bg-amber-400" },
-  minuman: { active: "text-sky-600", bg: "bg-sky-50", glow: "bg-sky-400" },
+const colorMap: Record<
+  string,
+  { active: string; bg: string; glow: string }
+> = {
+  all: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
+
+  snack: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
+
+  minuman: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
+
   "kebutuhan-pokok": {
-    active: "text-emerald-600",
-    bg: "bg-emerald-50",
-    glow: "bg-emerald-400",
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
   },
+
   "alat-tulis": {
-    active: "text-blue-600",
-    bg: "bg-blue-50",
-    glow: "bg-blue-400",
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
   },
+
   kebersihan: {
-    active: "text-purple-600",
-    bg: "bg-purple-50",
-    glow: "bg-purple-400",
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
   },
-  gas: { active: "text-orange-600", bg: "bg-orange-50", glow: "bg-orange-400" },
+
+  gas: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
+
   listrik: {
-    active: "text-yellow-600",
-    bg: "bg-yellow-50",
-    glow: "bg-yellow-400",
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
   },
-  pakaian: { active: "text-pink-600", bg: "bg-pink-50", glow: "bg-pink-400" },
+
+  pakaian: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
+
   elektronik: {
-    active: "text-indigo-600",
-    bg: "bg-indigo-50",
-    glow: "bg-indigo-400",
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
   },
-  peralatan: { active: "text-teal-600", bg: "bg-teal-50", glow: "bg-teal-400" },
+
+  peralatan: {
+    active: "text-amber-600",
+    bg: "bg-amber-50",
+    glow: "bg-amber-400",
+  },
 };
 
 interface CategoryGridProps {
@@ -194,13 +231,12 @@ export default function CategoryGrid({
                 <div
                   className={`
     absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
-    w-[40px] h-[20px]
+    w-[42px] h-[22px]
     rounded-[100%] transition-all duration-300 z-0
-    ${
-      isActive
-        ? "bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]"
-        : "bg-emerald-500 opacity-75 blur-[0.5px]"
-    }
+    ${isActive
+                      ? "bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]"
+                      : "bg-emerald-500 opacity-75 blur-[0.5px]"
+                    }
   `}
                 />
 

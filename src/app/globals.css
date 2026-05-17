@@ -39,25 +39,7 @@ body {
   background-attachment: fixed;
 }
 
-/* Smooth scrolling enhancement */
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
 
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: rgba(13, 148, 136, 0.3);
-  border-radius: 4px;
-  transition: background 200ms ease;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: rgba(13, 148, 136, 0.5);
-}
 
 /* ============================================================
    LIGHTHOUSE PERF OPTIMIZATIONS

@@ -2,40 +2,22 @@ import { Product, Category, Review, Banner } from "./types";
 
 export const banners: Banner[] = [
   {
-    id: "AD21-02",
-    title: "Banner AD21-02",
-    subtitle: "Promo banner sementara dari sumber Figma AD21-02.",
-    image: "/banners/AD21-02.png",
+    id: "banner-aqua",
+    title: "Promo Aqua",
+    subtitle: "Promo Aqua Spesial",
+    image: "/banners/baner aqua.png",
   },
   {
-    id: "AD21-05",
-    title: "Banner AD21-05",
-    subtitle: "Promo banner sementara dari sumber Figma AD21-05.",
-    image: "/banners/AD21-05.png",
+    id: "banner-kapal-api",
+    title: "Promo Kapal Api",
+    subtitle: "Promo Kapal Api Spesial",
+    image: "/banners/baner kapal api.png",
   },
   {
-    id: "AD21-10",
-    title: "Banner AD21-10",
-    subtitle: "Promo banner sementara dari sumber Figma AD21-10.",
-    image: "/banners/AD21-10.png",
-  },
-  {
-    id: "AD21-14",
-    title: "Banner AD21-14",
-    subtitle: "Promo banner sementara dari sumber Figma AD21-14.",
-    image: "/banners/AD21-14.png",
-  },
-  {
-    id: "AD22-11",
-    title: "Banner AD22-11",
-    subtitle: "Promo banner sementara dari sumber Figma AD22-11.",
-    image: "/banners/AD22-11.png",
-  },
-  {
-    id: "AD22-15",
-    title: "Banner AD22-15",
-    subtitle: "Promo banner sementara dari sumber Figma AD22-15.",
-    image: "/banners/AD22-15.png",
+    id: "banner-mie",
+    title: "Promo Mie",
+    subtitle: "Promo Mie Spesial",
+    image: "/banners/baner mie.png",
   },
 ];
 

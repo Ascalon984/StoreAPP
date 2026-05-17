@@ -131,9 +131,12 @@ export default function ProductDetailPage({
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [isVariantOpen, setIsVariantOpen] = useState<boolean>(true);
 
+  // Scroll to top hanya saat slug berubah (pindah produk), bukan saat refresh
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [slug]);
 
+  useEffect(() => {
     fetchReviews();
     loaderStartTimeRef.current = Date.now();
     const MIN_DISPLAY_TIME = 300;

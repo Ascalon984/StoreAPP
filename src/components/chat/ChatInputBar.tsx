@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { Paperclip, Send } from 'lucide-react';
+import { Paperclip, SendHorizontal } from "lucide-react";
 
 interface ChatInputBarProps {
   inputText: string;
@@ -26,20 +25,35 @@ export default function ChatInputBar({
 
   return (
     <div className="flex-shrink-0 bg-white border-t border-gray-100">
-      {/* Attachment preview */}
+      {/* ── Attachment Preview ── */}
       {attachmentPreview && (
-        <div className="px-3 pt-2">
+        <div className="px-3 pt-2 pl-[44px]">
           <div className="relative inline-block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={attachmentPreview}
               alt="Preview"
-              className="w-14 h-14 rounded-lg object-cover border border-gray-200"
+              className="
+                w-12 h-12
+                rounded-lg
+                object-cover
+                border border-gray-200
+              "
             />
+
             <button
               onClick={onClearAttachment}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] shadow-sm"
               aria-label="Hapus lampiran"
+              className="
+                absolute -top-1.5 -right-1.5
+                w-4.5 h-4.5
+                rounded-full
+                bg-red-500
+                text-white
+                text-[9px]
+                flex items-center justify-center
+                shadow-sm
+              "
             >
               ✕
             </button>
@@ -47,41 +61,90 @@ export default function ChatInputBar({
         </div>
       )}
 
-      {/* Input row */}
-      <div className="flex items-end gap-2 px-3 pt-2 pb-[calc(env(safe-area-inset-bottom)+12px)]">
-        {/* Attachment button */}
+      {/* ── Input Row ── */}
+      <div className="flex items-end gap-1.5 px-3 pt-1.5 pb-[calc(env(safe-area-inset-bottom)+10px)]">
+        {/* Attachment Button */}
         <button
           onClick={onPickAttachment}
-          className="p-2.5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 mb-0.5"
           aria-label="Lampirkan gambar"
+          className="
+            p-2
+            text-gray-500
+            hover:text-gray-700
+            transition-colors
+            flex-shrink-0
+            mb-[2px]
+          "
         >
           <Paperclip size={20} strokeWidth={2} />
         </button>
 
-        {/* Textarea */}
-        <textarea
-          ref={inputRef}
-          value={inputText}
-          onChange={onInputChange}
-          placeholder="Ketik pesan..."
-          rows={1}
-          className="flex-1 resize-none bg-gray-50 rounded-2xl px-4 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-emerald-200 transition-shadow leading-relaxed max-h-[96px] overflow-y-auto"
-          style={{ minHeight: '42px' }}
-        />
-
-        {/* Send button — amber */}
-        <button
-          onClick={onSend}
-          disabled={!canSend}
-          aria-label="Kirim pesan"
-          className={`p-2.5 rounded-full flex-shrink-0 mb-0.5 transition-all duration-200 ${
-            canSend
-              ? 'bg-[#D89B2B] text-white hover:bg-[#C48A20] active:scale-90 shadow-sm'
-              : 'bg-gray-100 text-gray-300 cursor-not-allowed'
-          }`}
+        {/* ── Composer ── */}
+        <div
+          className="
+            flex-1
+            flex items-end
+            bg-gray-50
+            rounded-2xl
+            border border-gray-200
+            overflow-hidden
+            transition-colors
+            focus-within:border-gray-300
+          "
         >
-          <Send size={18} strokeWidth={2.5} className="-rotate-12" />
-        </button>
+          {/* Textarea Area */}
+          <div className="flex-1 px-3 py-1.5">
+            <textarea
+              ref={inputRef}
+              value={inputText}
+              onChange={onInputChange}
+              placeholder="Ketik pesan..."
+              rows={1}
+              className="
+  w-full
+  resize-none
+  bg-transparent
+  text-[14px]
+  text-gray-800
+  placeholder:text-gray-400
+  outline-none
+  leading-relaxed
+  max-h-[96px]
+"
+              style={{
+                minHeight: "26px",
+              }}
+            />
+          </div>
+
+          {/* Send Area */}
+          <div className="flex items-end px-2 pb-1">
+            <button
+              onClick={onSend}
+              disabled={!canSend}
+              aria-label="Kirim pesan"
+              className={`
+      w-8 h-8
+      rounded-full
+      flex items-center justify-center
+      flex-shrink-0
+      mb-[2px]
+      transition-all duration-200
+      ${
+        canSend
+          ? "bg-[#D89B2B] text-white active:scale-90"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+      }
+    `}
+            >
+              <SendHorizontal
+                size={18}
+                strokeWidth={1.8}
+                className="-rotate-12"
+              />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

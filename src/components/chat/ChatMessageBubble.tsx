@@ -107,9 +107,8 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
       >
         {isUser ? (
           <div
-            className={`bg-[#065F46] text-white px-3.5 py-2.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed ${
-              msg.status === "sending" ? "opacity-70" : "opacity-100"
-            }`}
+            className={`bg-[#065F46] text-white px-3.5 py-2.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed break-words [overflow-wrap:anywhere] ${msg.status === "sending" ? "opacity-70" : "opacity-100"
+              }`}
           >
             {msg.status === "sending" && (
               <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5 align-middle" />
@@ -117,7 +116,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
             {msg.text}
           </div>
         ) : (
-          <div className="bg-white border border-gray-100 shadow-sm px-3.5 py-2.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800">
+          <div className="bg-white border border-gray-100 shadow-xs px-3.5 py-2.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere]">
             {msg.text}
           </div>
         )}
