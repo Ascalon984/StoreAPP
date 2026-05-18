@@ -122,14 +122,6 @@ export default function CheckoutPage() {
   );
 
   const handleOpenDropdown = () => {
-    if (dropdownTriggerRef.current) {
-      const rect = dropdownTriggerRef.current.getBoundingClientRect();
-      setDropdownPos({
-        top: rect.bottom + 4,
-        left: rect.left,
-        width: rect.width,
-      });
-    }
     setShowAddressDropdown((p) => !p);
   };
 
@@ -354,7 +346,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-white flex flex-col">
         {/* ── HEADER ── */}
         <div
-          className="sticky top-0 z-50 bg-[#0B6B52] shadow-md"
+          className="sticky top-0 z-50 bg-[#048750] shadow-md"
           style={{ height: 48 }}
         >
           <div className="flex items-center h-full px-4">
@@ -386,7 +378,6 @@ export default function CheckoutPage() {
                 {/* ── Dropdown pilih alamat (RELATIVE container) ── */}
                 <div className="relative z-10">
                   <button
-                    ref={dropdownTriggerRef}
                     onClick={handleOpenDropdown}
                     className="w-full flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200/70 rounded-xl hover:border-emerald-300 transition-colors"
                   >
@@ -434,11 +425,10 @@ export default function CheckoutPage() {
                   border-b border-gray-50 last:border-0`}
                           >
                             <div
-                              className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                                selectedAddressId === addr.id
-                                  ? "border-emerald-500"
-                                  : "border-gray-300"
-                              }`}
+                              className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedAddressId === addr.id
+                                ? "border-emerald-500"
+                                : "border-gray-300"
+                                }`}
                             >
                               {selectedAddressId === addr.id && (
                                 <div className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -734,11 +724,10 @@ export default function CheckoutPage() {
                                   onClick={() =>
                                     handleSubPaymentSelect(method.id, opt.id)
                                   }
-                                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
-                                    isSubSelected
-                                      ? "bg-emerald-50 border border-emerald-400 shadow-sm"
-                                      : "border border-transparent hover:border-emerald-100 hover:bg-emerald-50/30"
-                                  }`}
+                                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${isSubSelected
+                                    ? "bg-emerald-50 border border-emerald-400 shadow-sm"
+                                    : "border border-transparent hover:border-emerald-100 hover:bg-emerald-50/30"
+                                    }`}
                                 >
                                   <div
                                     className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0"
@@ -798,11 +787,10 @@ export default function CheckoutPage() {
             <button
               onClick={handleSubmitOrder}
               disabled={!canSubmit || isSubmitting}
-              className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${
-                canSubmit && !isSubmitting
-                  ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg shadow-emerald-700/20"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
+              className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${canSubmit && !isSubmitting
+                ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg shadow-emerald-700/20"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
             >
               {isSubmitting ? (
                 <>
@@ -854,7 +842,7 @@ export default function CheckoutPage() {
                 </button>
                 <button
                   onClick={confirmCancel}
-                  className="flex-1 h-11 bg-emerald-800 text-white rounded-xl text-xs font-bold hover:bg-emerald-900 shadow-md shadow-emerald-800/25 active:scale-95 transition-all"
+                  className="flex-1 h-11 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-900 shadow-sm shadow-emerald-800/25 active:scale-95 transition-all"
                 >
                   Ya, Keluar
                 </button>

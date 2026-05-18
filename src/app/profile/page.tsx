@@ -14,7 +14,6 @@ import {
   Check,
   X,
   Bell,
-  MessageCircleMore,
   Info,
   LogOut,
   Trash2,
@@ -575,7 +574,7 @@ export default function ProfilePage() {
               </mask>
             </defs>
 
-            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#065F46" />
+            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#048750 " />
             <path
               d="M0 0 H100 V70 Q50 95 0 70 Z"
               fill="url(#dotsLarge)"
@@ -597,13 +596,23 @@ export default function ProfilePage() {
             aria-label="Buka Live Chat"
             className="relative w-10 h-10 flex items-center justify-center text-white active:scale-90 transition-transform"
           >
-            <MessageCircleMore
-              size={25}
-              strokeWidth={2}
-              className="drop-shadow-sm"
-            />
-            {/* Dot notif menempel rapi sebaris */}
-            <span className="absolute top-2.5 right-2 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" className="drop-shadow-sm">
+              {/* Body bubble — stroke putih */}
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                fill="white"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Dot-dot — stroke/fill hitam */}
+              <circle cx="9" cy="12" r="1" fill="#111" />
+              <circle cx="12" cy="12" r="1" fill="#111" />
+              <circle cx="15" cy="12" r="1" fill="#111" />
+            </svg>
+            {/* Dot rose di luar, dot hitam di dalam icon */}
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 border border-white" />
           </button>
         </div>
 

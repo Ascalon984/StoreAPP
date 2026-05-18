@@ -4,45 +4,21 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  Heart, ShoppingCart, Trash2,
-  Check, ArrowRight, Bookmark,
-  ChevronDown, FolderOpen, Folder,
-  SquarePen,
+  ShoppingCart,
+  Check,
+  ArrowRight,
+  Bookmark,
+  Heart,
+  Package,
 } from 'lucide-react';
 import ProductImage from '@/components/ProductImage';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import { useCartStore } from '@/store/useCartStore';
 import { formatRupiah } from '@/lib/utils';
 import { Product } from '@/lib/types';
+import { useToastStore } from '@/store/useToastStore';
 
-// ─────────────────────────────────────────
-//  CONSTANTS
-// ─────────────────────────────────────────
-const CATEGORIES = ['Snack', 'Minuman', 'Kebutuhan', 'Alat Tulis'] as const;
-type Category = typeof CATEGORIES[number];
-
-const CATEGORY_COLORS: Record<string, { bg: string; accent: string; light: string; dot: string; front: string }> = {
-  'Snack': { bg: 'bg-amber-50', accent: 'text-amber-700', light: 'bg-amber-100', dot: 'bg-amber-400', front: 'from-amber-50/80' },
-  'Minuman': { bg: 'bg-sky-50', accent: 'text-sky-700', light: 'bg-sky-100', dot: 'bg-sky-400', front: 'from-sky-50/80' },
-  'Kebutuhan': { bg: 'bg-violet-50', accent: 'text-violet-700', light: 'bg-violet-100', dot: 'bg-violet-400', front: 'from-violet-50/80' },
-  'Alat Tulis': { bg: 'bg-rose-50', accent: 'text-rose-700', light: 'bg-rose-100', dot: 'bg-rose-400', front: 'from-rose-50/80' },
-};
-
-// ─────────────────────────────────────────
-//  MINI TOAST — FIXED: posisi di atas bottom nav
-// ─────────────────────────────────────────
-function MiniToast({ message, visible }: { message: string; visible: boolean }) {
-  return (
-    <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] transition-all duration-300
-      ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
-      <div className="flex items-center gap-2 bg-gray-900 text-white text-[12px] font-semibold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
-        <Check size={12} strokeWidth={3} className="text-emerald-400 flex-shrink-0" />
-        {message}
-      </div>
-    </div>
-  );
-}
-
+const ALL_CHIP = 'Semua';
 // ─────────────────────────────────────────
 //  EMPTY STATE
 // ─────────────────────────────────────────
@@ -79,24 +55,103 @@ function EmptyState({ onExplore }: { onExplore: () => void }) {
 }
 
 // ─────────────────────────────────────────
-//  HORIZONTAL PRODUCT CARD
+//  EMPTY FILTER STATE
 // ─────────────────────────────────────────
-function HorizontalCard({
+function EmptyFilter({ category }: { category: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-3">
+        <Bookmark size={20} strokeWidth={1.8} className="text-gray-400" />
+      </div>
+      <p className="text-[13px] font-bold text-gray-700 mb-1">
+        Tidak ada produk di "{category}"
+      </p>
+      <p className="text-[12px] text-gray-400 font-medium">
+        Coba pilih kategori lain
+      </p>
+    </div>
+  );
+}
+
+
+
+
+
+// ─────────────────────────────────────────
+//  CHIP FILTER
+// ─────────────────────────────────────────
+function ChipFilter({
+  chips,
+  active,
+  onSelect,
+  tabRefs,
+  indicatorStyle,
+}: {
+  chips: string[];
+  active: string;
+  onSelect: (chip: string) => void;
+  tabRefs: React.MutableRefObject<Record<string, HTMLButtonElement | null>>;
+  indicatorStyle: { width: number; left: number };
+}) {
+  return (
+    <div className="sticky top-12 z-40 bg-white">
+      <div className="relative flex gap-6 px-6 overflow-x-auto hide-scrollbar border-b border-gray-100" style={{ height: 40 }}>
+        <span
+          className="absolute bottom-0 left-0 h-[3.5px] rounded-full bg-[#D89B2B] transition-all duration-300 ease-out"
+          style={{
+            width: indicatorStyle.width,
+            transform: `translateX(${indicatorStyle.left}px)`,
+          }}
+        />
+        {chips.map((chip) => (
+          <button
+            key={chip}
+            ref={(el) => { tabRefs.current[chip] = el; }}
+            onClick={() => onSelect(chip)}
+            className={`
+              relative flex-shrink-0 flex items-center h-full px-1
+              text-[13px] font-bold transition-colors duration-200 active:scale-95
+              ${chip === active ? 'text-[#D89B2B]' : 'text-gray-500 hover:text-gray-600'}
+            `}
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+//  SECTION HEADER
+// ─────────────────────────────────────────
+function SectionHeader({ title, count }: { title: string; count: number }) {
+  return (
+    <div className="flex items-center gap-2 px-4 pt-5 pb-2">
+      <span className="text-[12px] font-bold text-gray-500 tracking-widest leading-none">
+        {title}
+      </span>
+      <div className="flex-1 h-px bg-gray-200" />
+      <span className="text-[11px] font-bold text-gray-400">{count}</span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+//  PRODUCT ROW — dengan tombol Hapus Favorit individual
+// ─────────────────────────────────────────
+function ProductRow({
   product,
   index,
-  isEditMode,
-  isSelected,
-  onToggleSelect,
-  onUnfavorite,
+  isFirst,
   onAddToCart,
+  onRemoveFromWishlist,
 }: {
   product: Product;
   index: number;
-  isEditMode: boolean;
-  isSelected: boolean;
-  onToggleSelect: (id: string) => void;
-  onUnfavorite: (product: Product) => void;
+  isFirst: boolean;
   onAddToCart: (product: Product) => void;
+  onRemoveFromWishlist: (id: string) => void;
 }) {
   const discount =
     product.originalPrice && product.originalPrice > product.price
@@ -104,35 +159,10 @@ function HorizontalCard({
       : 0;
 
   return (
-    <div
-      onClick={() => isEditMode && onToggleSelect(product.id)}
-      className={`
-        relative flex items-center gap-3.5 w-full
-        py-3 px-1
-        transition-all duration-200
-        ${isSelected
-          ? 'rounded-xl bg-emerald-50/60 ring-1 ring-emerald-500/30 -mx-1 px-2'
-          : ''
-        }
-        ${isEditMode ? 'cursor-pointer' : 'active:scale-[0.99]'}
-      `}
-    >
-      {/* Divider — selalu tampilkan, biar bg selected yang handle visual */}
-      {index !== 0 && (
-        <div className="absolute -top-[1px] left-0 right-0 h-px bg-gray-100/80" />
-      )}
-
-      {/* Checkbox — FIXED: konsisten w-[18px] border-gray-300 */}
-      {isEditMode && (
-        <div className={`flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-200
-          ${isSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300 bg-white'}`}>
-          {isSelected && <Check size={9} strokeWidth={2.5} className="text-white" />}
-        </div>
-      )}
-
-      {/* Image — FIXED: border saja, tanpa shadow */}
-      <div className="relative flex-shrink-0 w-14 h-14 rounded-xl bg-white overflow-hidden flex items-center justify-center border border-gray-100/80">
-        {!isEditMode ? (
+    <>
+      {!isFirst && <div className="h-px bg-gray-100 mx-4" />}
+      <div className="flex items-center gap-3 px-4 py-3.5 bg-white active:bg-gray-50/80 transition-colors duration-150">
+        <div className="relative flex-shrink-0 w-[52px] h-[52px] rounded-xl bg-gray-50 overflow-hidden flex items-center justify-center border border-gray-100">
           <Link href={`/product/${product.slug}`} className="w-full h-full flex items-center justify-center p-1.5">
             <ProductImage
               category={product.category}
@@ -142,384 +172,140 @@ function HorizontalCard({
               className="w-full h-full object-contain"
             />
           </Link>
-        ) : (
-          <ProductImage
-            category={product.category}
-            name={product.name}
-            variant={index}
-            src={product.images?.[0]}
-            className="w-full h-full object-contain p-1.5"
-          />
-        )}
-        {discount > 0 && (
-          <div className="absolute top-0 left-0 px-1.5 py-0.5 bg-rose-500 text-white text-[8px] font-black rounded-br-lg z-10">
-            -{discount}%
-          </div>
-        )}
-      </div>
+          {discount > 0 && (
+            <div className="absolute top-0 left-0 px-1 py-0.5 bg-rose-500 text-white text-[8px] font-black rounded-br-lg z-10">
+              -{discount}%
+            </div>
+          )}
+        </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0 flex flex-col justify-center">
-        {!isEditMode ? (
+        <div className="flex-1 min-w-0">
           <Link href={`/product/${product.slug}`}>
             <p className="text-[13px] font-bold text-gray-800 truncate leading-tight tracking-tight hover:text-emerald-700 transition-colors">
               {product.name}
             </p>
           </Link>
-        ) : (
-          <p className="text-[13px] font-bold text-gray-800 truncate leading-tight tracking-tight">
-            {product.name}
-          </p>
-        )}
-        <div className="flex items-baseline gap-2 mt-1.5">
-          <span className="text-[14px] font-black text-emerald-700 tracking-tight leading-none">
-            {formatRupiah(product.price)}
-          </span>
-          {product.originalPrice && (
-            <span className="text-[11px] text-gray-400 line-through font-medium leading-none">
-              {formatRupiah(product.originalPrice)}
+          <div className="flex items-baseline gap-1.5 mt-1.5">
+            <span className="text-[14px] font-black text-emerald-700 tracking-tight leading-none">
+              {formatRupiah(product.price)}
             </span>
-          )}
+            {product.originalPrice && (
+              <span className="text-[11px] text-gray-400 line-through font-medium leading-none">
+                {formatRupiah(product.originalPrice)}
+              </span>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Button */}
-      {!isEditMode && (
-        <div className="flex-shrink-0 ml-1">
+        <div className="flex flex-col items-end gap-1.5">
+
           <button
-            onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-            className="flex items-center gap-2 px-3.5 py-2.5 bg-emerald-600 text-white rounded-xl
-              text-[11px] font-bold active:scale-[0.96] transition-all hover:bg-emerald-700
-              shadow-[0_2px_8px_rgba(6,95,70,0.2)] whitespace-nowrap"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFromWishlist(product.id);
+            }}
+            className="
+      w-8 h-8
+      flex items-center justify-center
+      text-red-400
+      active:scale-90
+      transition-all
+    "
+            aria-label="Hapus dari favorit"
           >
-            <ShoppingCart size={12} strokeWidth={2.5} />
+            <Heart size={17} strokeWidth={2} fill="currentColor" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart(product);
+            }}
+            className="
+      h-7 px-3
+      flex items-center gap-1.5
+      bg-emerald-600
+      text-white
+      rounded-xl
+      text-[10px]
+      font-bold
+      active:scale-95
+      transition-all
+      shadow-sm
+    "
+            aria-label="Tambah ke keranjang"
+          >
+            <ShoppingCart size={12} strokeWidth={2.4} />
             Keranjang
           </button>
+
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
 // ─────────────────────────────────────────
-//  CATEGORY FOLDER
+//  PRODUCT GROUP
 // ─────────────────────────────────────────
-function CategoryFolder({
-  category,
+function ProductGroup({
+  title,
   products,
-  isOpen,
-  onToggle,
-  isEditMode,
-  selectedIds,
-  onToggleSelect,
-  onUnfavorite,
+  showHeader,
   onAddToCart,
-  onSelectAll,
+  onRemoveFromWishlist,
 }: {
-  category: string;
+  title: string;
   products: Product[];
-  isOpen: boolean;
-  onToggle: () => void;
-  isEditMode: boolean;
-  selectedIds: string[];
-  onToggleSelect: (id: string) => void;
-  onUnfavorite: (product: Product) => void;
+  showHeader: boolean;
   onAddToCart: (product: Product) => void;
-  onSelectAll: (ids: string[]) => void;
+  onRemoveFromWishlist: (id: string) => void;
 }) {
-  const selectedInFolder = products.filter(p => selectedIds.includes(p.id)).length;
-  const allInFolderSelected = products.length > 0 && selectedInFolder === products.length;
-
-  const getImageStyle = (i: number, total: number) => {
-    const spread = 22;
-    const baseLeft = 22;
-    const yOffset = 3;
-    const rotationBase = -5;
-    const rotationStep = 5;
-    return {
-      left: `${baseLeft + i * spread}px`,
-      top: `${i * yOffset}px`,
-      transform: `rotate(${rotationBase + i * rotationStep}deg)`,
-      zIndex: total - i,
-    };
-  };
-
-  const imageStackStyle: React.CSSProperties = {
-    maxHeight: isOpen ? '0px' : '72px',
-    opacity: isOpen ? 0 : 1,
-    transformOrigin: 'bottom center',
-    transform: isOpen
-      ? 'perspective(800px) rotateX(-65deg) translateY(-6px)'
-      : 'perspective(800px) rotateX(0deg) translateY(0)',
-    transition: 'all 550ms cubic-bezier(0.4, 0, 0.2, 1)',
-    overflow: 'hidden',
-    filter: isOpen ? 'brightness(0.7)' : 'brightness(1)',
-  };
-
-  const folderContainerStyle: React.CSSProperties = {
-    marginTop: isOpen ? '0px' : '-20px',
-    transformOrigin: 'top center',
-    transform: isOpen
-      ? 'perspective(1000px) rotateX(0deg)'
-      : 'perspective(1000px) rotateX(-1.5deg)',
-    transition: 'all 550ms cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDelay: isOpen ? '80ms' : '0ms',
-  };
-
-  const folderBodyStyle: React.CSSProperties = {
-    borderRadius: isOpen
-      ? '12px 0 12px 12px'
-      : '12px 0 12px 12px',
-    border: '1px solid #f3f4f6',
-    backgroundColor: 'white',
-    overflow: 'visible',
-    boxShadow: isOpen
-      ? '0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)'
-      : '0 1px 4px rgba(0,0,0,0.04)',
-    transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDelay: isOpen ? '150ms' : '0ms',
-    position: 'relative',
-  };
-
-  const contentStyle: React.CSSProperties = {
-    maxHeight: isOpen ? '2000px' : '0px',
-    opacity: isOpen ? 1 : 0,
-    transformOrigin: 'top center',
-    transform: isOpen
-      ? 'perspective(600px) rotateX(0deg) translateY(0)'
-      : 'perspective(600px) rotateX(-25deg) translateY(-12px)',
-    transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-    transitionDelay: isOpen ? '200ms' : '0ms',
-    overflow: 'hidden',
-  };
-
-  const getItemStyle = (index: number): React.CSSProperties => {
-    const isFirst = index === 0;
-    return {
-      opacity: isOpen ? 1 : 0,
-      transform: isOpen
-        ? 'translateY(0) scale(1) rotateX(0deg)'
-        : 'translateY(-28px) scale(0.94) rotateX(-12deg)',
-      filter: isOpen
-        ? 'blur(0px) brightness(1)'
-        : 'blur(2px) brightness(0.85)',
-      transformOrigin: 'top center',
-      transition: `all ${isFirst ? 520 : 440}ms cubic-bezier(${isFirst ? '0.22, 1.2, 0.36, 1' : '0.22, 1, 0.36, 1'})`,
-      transitionDelay: isOpen ? `${300 + index * 75}ms` : '0ms',
-    };
-  };
-
-  // FIXED: tab warna emerald, bukan orange alien
-  const tabStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '-17.5px',
-    right: '-1px',
-    zIndex: 30,
-    backgroundColor: '#059669',
-    borderRadius: '14px 0 0 0',
-    borderBottom: 'none',
-    padding: '2px 12px 3px',
-    opacity: isOpen ? 0 : 1,
-    transform: isOpen
-      ? 'translateY(6px) scale(0.92)'
-      : 'translateY(0px) scale(1)',
-    pointerEvents: isOpen ? 'none' : 'auto',
-    transition: 'opacity 260ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1)',
-  };
-
   return (
-    <div className="relative" style={{ perspective: '1200px' }}>
-
-      {/* IMAGE STACK */}
-      <div style={imageStackStyle}>
-        <div className="relative h-[62px]">
-          <div
-            className="absolute z-0 top-3 bottom-[-1px]"
-            style={{
-              left: '0px',
-              right: '0px',
-              backgroundColor: '#f8f9fa',
-              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.02), 0 -2px 6px rgba(0, 0, 0, 0.02)',
-              borderTop: '1px solid #e5e7eb',
-              borderRadius: '14px 14px 0 0',
-            }}
+    <div className="mb-5">
+      {showHeader && <SectionHeader title={title} count={products.length} />}
+      <div className="mx-3 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+        {products.map((product, i) => (
+          <ProductRow
+            key={product.id}
+            product={product}
+            index={i}
+            isFirst={i === 0}
+            onAddToCart={onAddToCart}
+            onRemoveFromWishlist={onRemoveFromWishlist}
           />
-          <div className="relative z-10 pl-6 pt-1">
-            {products.slice(0, 3).map((product, i) => {
-              const style = getImageStyle(i, Math.min(products.length, 3));
-              return (
-                <div
-                  key={product.id}
-                  className="absolute rounded-[8px] overflow-hidden bg-white"
-                  style={{
-                    width: '56px',
-                    height: '70px',
-                    ...style,
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.04)',
-                    border: '1.5px solid white',
-                    transform: isOpen
-                      ? `${style.transform} translateY(18px) scale(0.82)`
-                      : style.transform,
-                    opacity: isOpen ? 0 : 1,
-                    transition: 'all 450ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    transitionDelay: isOpen ? `${i * 40}ms` : `${(2 - i) * 30}ms`,
-                  }}
-                >
-                  <ProductImage
-                    category={product.category}
-                    name={product.name}
-                    variant={i}
-                    src={product.images?.[0]}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* FOLDER CONTAINER */}
-      <div className="relative z-10" style={folderContainerStyle}>
-        <div style={folderBodyStyle}>
-
-          {/* TAB JUMLAH PRODUK — FIXED: emerald */}
-          <div style={tabStyle}>
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-black text-white leading-none">
-                {products.length}
-              </span>
-              <span className="text-[11px] font-black text-white leading-none">
-                produk
-              </span>
-            </div>
-          </div>
-
-          {/* FOLDER HEADER — FIXED: nama kategori lebih gelap */}
-          <button
-            onClick={onToggle}
-            className="w-full text-left transition-all duration-200 active:bg-gray-50 bg-white relative"
-            style={{
-              borderRadius: isOpen ? '16px 16px 0 0' : '16px',
-            }}
-          >
-            <div className="flex items-center gap-3 px-4 py-4 relative z-[1]">
-              {/* Edit mode checkbox — FIXED: konsisten w-[18px] border-gray-300 */}
-              {isEditMode && (
-                <div
-                  onClick={(e) => { e.stopPropagation(); onSelectAll(products.map(p => p.id)); }}
-                  className={`flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-200
-                    ${allInFolderSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300'}`}
-                >
-                  {allInFolderSelected && <Check size={9} strokeWidth={2.5} className="text-white" />}
-                </div>
-              )}
-
-              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
-                {isOpen ? (
-                  <FolderOpen size={21} className="text-gray-700" strokeWidth={1.9} />
-                ) : (
-                  <Folder size={21} className="text-gray-500" strokeWidth={1.9} />
-                )}
-              </div>
-
-              {/* FIXED: text-gray-800 font-bold — sebagai header */}
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none">
-                  {category}
-                </p>
-              </div>
-
-              <div style={{ perspective: '200px' }}>
-                <ChevronDown
-                  size={20}
-                  strokeWidth={2.7}
-                  className="text-gray-400 flex-shrink-0"
-                  style={{
-                    transform: isOpen ? 'rotateX(180deg)' : 'rotateX(0deg)',
-                    transformOrigin: 'center center',
-                    transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'block',
-                  }}
-                />
-              </div>
-            </div>
-          </button>
-
-          {/* CONTENT */}
-          <div style={contentStyle}>
-            <div className="mx-4 h-px bg-gray-100" />
-            <div className="px-3 py-2 space-y-0.5">
-              {products.map((product, i) => (
-                <div key={product.id} style={getItemStyle(i)}>
-                  <HorizontalCard
-                    product={product}
-                    index={i}
-                    isEditMode={isEditMode}
-                    isSelected={selectedIds.includes(product.id)}
-                    onToggleSelect={onToggleSelect}
-                    onUnfavorite={onUnfavorite}
-                    onAddToCart={onAddToCart}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 }
 
 // ─────────────────────────────────────────
-//  DELETE BOTTOM SHEET
+//  SKELETON — disesuaikan dengan 2 tombol aksi
 // ─────────────────────────────────────────
-function DeleteSheet({ count, onConfirm, onCancel }: { count: number; onConfirm: () => void; onCancel: () => void }) {
+function SkeletonList() {
   return (
-    <div className="fixed inset-0 z-[70] flex items-end">
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative w-full bg-white rounded-t-3xl shadow-2xl p-5 pb-10">
-        <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
-        <div className="flex flex-col items-center text-center gap-3 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
-            <Trash2 size={22} className="text-red-500" strokeWidth={2} />
-          </div>
-          <div>
-            <h3 className="text-[17px] font-black text-gray-900 tracking-tight">Hapus {count} Produk?</h3>
-            <p className="text-[12px] text-gray-500 font-medium mt-1.5 leading-relaxed">
-              Produk akan dihapus permanen dari daftar favorit kamu
-            </p>
-          </div>
+    <div className="space-y-6 pt-4">
+      {[0, 1].map((group) => (
+        <div key={group} className="mx-3 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+          {[0, 1, 2].map((i) => (
+            <div key={i}>
+              {i !== 0 && <div className="h-px bg-gray-100 mx-4" />}
+              <div className="flex items-center gap-3 px-4 py-3.5">
+                <div className="w-[52px] h-[52px] rounded-xl skeleton flex-shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 rounded skeleton w-36" />
+                  <div className="h-3.5 rounded skeleton w-24" />
+                </div>
+                <div className="flex gap-1.5">
+                  <div className="w-9 h-9 rounded-xl skeleton flex-shrink-0" />
+                  <div className="w-9 h-9 rounded-xl skeleton flex-shrink-0" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex gap-3">
-          <button onClick={onCancel}
-            className="flex-1 py-3.5 rounded-xl border border-gray-200 bg-gray-50 text-[13px] font-bold text-gray-700 active:scale-[0.97] transition-all">
-            Batal
-          </button>
-          <button onClick={onConfirm}
-            className="flex-1 py-3.5 rounded-xl bg-red-500 text-white text-[13px] font-bold active:scale-[0.97] transition-all shadow-[0_4px_12px_rgba(239,68,68,0.25)] hover:bg-red-600">
-            Ya, Hapus
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────
-//  SKELETON — FIXED: design tokens
-// ─────────────────────────────────────────
-function SkeletonFolder() {
-  return (
-    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
-      <div className="h-[52px]" />
-      <div className="flex items-center gap-3 px-4 py-3.5">
-        <div className="w-11 h-11 rounded-xl skeleton" />
-        <div className="flex-1 space-y-1.5">
-          <div className="h-3.5 rounded skeleton w-24" />
-          <div className="h-2.5 rounded skeleton w-16" />
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -529,191 +315,144 @@ function SkeletonFolder() {
 // ─────────────────────────────────────────
 export default function WishlistPage() {
   const router = useRouter();
-  const { items, removeItem, removeItems } = useWishlistStore();
-  const { addItem } = useCartStore();
-
-  const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [showDeleteSheet, setShowDeleteSheet] = useState(false);
-  const [toastMsg, setToastMsg] = useState('');
-  const [toastVisible, setToastVisible] = useState(false);
+  const { items, removeItems } = useWishlistStore();
+  const { addItem: addCartItem } = useCartStore();
+  const { showToast } = useToastStore();
+  const [activeChip, setActiveChip] = useState<string>(ALL_CHIP);
   const [mounted, setMounted] = useState(false);
 
+  const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, left: 0 });
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
-  const grouped = CATEGORIES.reduce<Record<string, Product[]>>((acc, cat) => {
+  const dynamicCategories = Array.from(new Set(items.map(p => p.category))).sort();
+  const chips = [ALL_CHIP, ...dynamicCategories];
+
+  const grouped = dynamicCategories.reduce<Record<string, Product[]>>((acc, cat) => {
     const inCat = items.filter(p => p.category === cat);
     if (inCat.length > 0) acc[cat] = inCat;
     return acc;
   }, {});
 
-  const knownCategories = new Set(CATEGORIES as readonly string[]);
-  const others = items.filter(p => !knownCategories.has(p.category));
-  if (others.length > 0) grouped['Lainnya'] = others;
+  const filteredItems = activeChip === ALL_CHIP
+    ? items
+    : items.filter(p => p.category === activeChip);
 
-  const activeCategories = Object.keys(grouped);
-
+  // Otomatis kembali ke tab "Semua" jika kategori yang aktif kosong (habis dihapus)
   useEffect(() => {
-    if (activeCategories.length === 1) {
-      setOpenFolders(new Set([activeCategories[0]]));
+    if (activeChip !== ALL_CHIP && !dynamicCategories.includes(activeChip)) {
+      setActiveChip(ALL_CHIP);
     }
-  }, [activeCategories.length]);
+  }, [items, dynamicCategories, activeChip]);
 
-  const showToast = useCallback((msg: string) => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    setToastMsg(msg);
-    setToastVisible(true);
-    toastTimer.current = setTimeout(() => setToastVisible(false), 2500);
-  }, []);
-
-  const handleToggleFolder = (cat: string) => {
-    setOpenFolders(prev => {
-      const next = new Set(prev);
-      next.has(cat) ? next.delete(cat) : next.add(cat);
-      return next;
-    });
-  };
-
-  const handleUnfavorite = (product: Product) => {
-    removeItem(product.id);
-    const short = product.name.length > 22 ? product.name.slice(0, 22) + '…' : product.name;
-    showToast(`${short} dihapus dari favorit`);
-  };
+  // Update underline indicator
+  useEffect(() => {
+    if (!mounted) return;
+    const el = tabRefs.current[activeChip];
+    if (el) setIndicatorStyle({ width: el.offsetWidth, left: el.offsetLeft });
+  }, [activeChip, mounted, chips.length]);
 
   const handleAddToCart = (product: Product) => {
-    addItem(product);
-    showToast('Ditambahkan ke keranjang 🛒');
+    addCartItem(product);
+    showToast('Ditambahkan ke keranjang 🛒', 'success');
   };
 
-  const handleToggleSelect = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-  };
-
-  const handleFolderSelectAll = (ids: string[]) => {
-    const allSelected = ids.every(id => selectedIds.includes(id));
-    if (allSelected) {
-      setSelectedIds(prev => prev.filter(id => !ids.includes(id)));
-    } else {
-      setSelectedIds(prev => Array.from(new Set([...prev, ...ids])));
+  // TODO: Implement individual item removal from wishlist
+  const handleRemoveFromWishlist = useCallback((id: string) => {
+    const product = items.find(p => p.id === id);
+    removeItems([id]);
+    if (product) {
+      showToast(`"${product.name}" dihapus`);
     }
+  }, [items, removeItems, showToast]);
+
+  const handleChipSelect = (chip: string) => {
+    setActiveChip(chip);
   };
 
-  const handleConfirmDelete = () => {
-    const count = selectedIds.length;
-    removeItems(selectedIds);
-    setShowDeleteSheet(false);
-    setSelectedIds([]);
-    setIsEditMode(false);
-    showToast(`${count} produk dihapus dari favorit`);
+  const renderContent = () => {
+    if (items.length === 0) return <EmptyState onExplore={() => router.push('/')} />; // Global empty state
+
+    if (activeChip !== ALL_CHIP) {
+      return filteredItems.length === 0 ? null : (
+        <ProductGroup
+          title={activeChip}
+          products={filteredItems}
+          showHeader={false}
+          onAddToCart={handleAddToCart}
+          onRemoveFromWishlist={handleRemoveFromWishlist}
+        />
+        // TODO: Add EmptyFilter for specific category if filteredItems.length === 0
+      );
+    }
+
+    return (
+      <div>
+        {Object.entries(grouped).map(([cat, products]) => (
+          <ProductGroup
+            key={cat}
+            title={cat}
+            products={products}
+            showHeader={true}
+            onAddToCart={handleAddToCart}
+            onRemoveFromWishlist={handleRemoveFromWishlist}
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
     <div className="min-h-screen bg-[#F5F7F5] pb-10">
 
-      {/* STICKY HEADER */}
-      <div className="sticky top-0 z-50 bg-[#0B6B52] shadow-md">
-        <div className="flex items-center justify-between px-4 h-12">
-          {isEditMode ? (
-            <button
-              onClick={() => { setIsEditMode(false); setSelectedIds([]); }}
-              className="text-[13px] font-bold text-white/85 active:opacity-60"
-            >
-              Batal
-            </button>
-          ) : (
-            <div className="text-[15px] font-black text-white tracking-[-0.02em] leading-none">
-              Favorit Saya
-            </div>
-          )}
-
-          {!isEditMode ? (
-            <button
-              onClick={() => { setIsEditMode(true); setSelectedIds([]); }}
-              disabled={items.length === 0}
-              className={`text-[13px] font-bold ${items.length > 0
-                ? 'text-white/90 active:opacity-60'
-                : 'text-white/30 cursor-not-allowed'
-                }`}
-            >
-              Edit
-            </button>
-          ) : (
-            /* FIXED: pill merah untuk visibility, bukan plain icon */
-            <button
-              onClick={() => selectedIds.length > 0 && setShowDeleteSheet(true)}
-              disabled={selectedIds.length === 0}
-              className={`
-                flex items-center gap-1.5 px-2.5 py-1 rounded-lg
-                transition-all
-                ${selectedIds.length > 0
-                  ? 'bg-red-500/20 text-red-300 active:scale-95'
-                  : 'text-white/30 cursor-not-allowed'
-                }
-              `}
-            >
-              <Trash2 size={16} strokeWidth={1.9} />
-              {selectedIds.length > 0 && (
-                <span className="text-[11px] font-bold">{selectedIds.length}</span>
-              )}
-            </button>
-          )}
+      {/* STICKY HEADER — Sekarang lebih bersih tanpa tombol Edit */}
+      <div className="sticky top-0 z-50 bg-[#048750] shadow-md">
+        {/* Menggunakan justify-center agar teks berada tepat di tengah horizontal */}
+        <div className="flex items-center justify-center px-4 h-12">
+          <span
+            style={{ wordSpacing: '4px' }}
+            className="text-[15px] font-black text-white tracking-normal"
+          >
+            Favorit Saya
+          </span>
         </div>
       </div>
 
-      {/* CONTENT */}
-      <div className="px-3 pt-4 space-y-3">
-        {!mounted ? (
-          <>
-            <SkeletonFolder />
-            <SkeletonFolder />
-            <SkeletonFolder />
-          </>
-        ) : items.length === 0 ? (
-          <EmptyState onExplore={() => router.push('/')} />
-        ) : (
-          activeCategories.map(cat => (
-            <CategoryFolder
-              key={cat}
-              category={cat}
-              products={grouped[cat]}
-              isOpen={openFolders.has(cat)}
-              onToggle={() => handleToggleFolder(cat)}
-              isEditMode={isEditMode}
-              selectedIds={selectedIds}
-              onToggleSelect={handleToggleSelect}
-              onUnfavorite={handleUnfavorite}
-              onAddToCart={handleAddToCart}
-              onSelectAll={handleFolderSelectAll}
-            />
-          ))
-        )}
+      {/* CHIP FILTER */}
+      {mounted && items.length > 0 && (
+        <ChipFilter
+          chips={chips}
+          active={activeChip}
+          onSelect={handleChipSelect}
+          tabRefs={tabRefs}
+          indicatorStyle={indicatorStyle}
+        />
+      )}
 
-        {/* Footer — FIXED: divider lebih halus */}
-        {!isEditMode && items.length > 0 && (
-          <div className="flex items-center justify-center gap-2 mt-4 mb-2">
+      {/* CONTENT */}
+      <div className="pt-2 pb-6">
+        {!mounted ? (
+          <SkeletonList />
+        ) : filteredItems.length === 0 && activeChip !== ALL_CHIP ? (
+          <EmptyFilter category={activeChip} />
+        ) : renderContent()}
+
+        {mounted && items.length > 0 && (
+          <div className="flex items-center justify-center gap-2 mt-6 px-4">
             <div className="flex-1 h-px bg-gray-200" />
             <div className="flex items-center gap-1.5">
-              <Bookmark size={10} strokeWidth={2} className="text-gray-500" />
-              <span className="text-[10px] font-semibold text-gray-500 tracking-wide">{items.length} produk tersimpan</span>
-              <Bookmark size={10} strokeWidth={2} className="text-gray-500" />
+              <Bookmark size={10} strokeWidth={2} className="text-gray-400" />
+              <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
+                {items.length} produk tersimpan
+              </span>
+              <Bookmark size={10} strokeWidth={2} className="text-gray-400" />
             </div>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
         )}
       </div>
-
-      {showDeleteSheet && (
-        <DeleteSheet
-          count={selectedIds.length}
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setShowDeleteSheet(false)}
-        />
-      )}
-
-      <MiniToast message={toastMsg} visible={toastVisible} />
 
       <style jsx>{`
         .skeleton {
@@ -725,6 +464,8 @@ export default function WishlistPage() {
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

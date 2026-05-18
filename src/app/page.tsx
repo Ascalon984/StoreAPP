@@ -55,7 +55,7 @@ export default async function Home() {
 
       {/* LAYER BAWAH: Sticky Canvas */}
       <div className="sticky top-[72px] z-0">
-        <div className="absolute top-[-38px] left-0 w-full h-[210px] z-[-1]">
+        <div className="absolute top-[-24px] left-0 w-full h-[210px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
@@ -77,7 +77,7 @@ export default async function Home() {
               </mask>
             </defs>
 
-            <path d="M0 0 H100 V84 Q50 64 0 84 Z" fill="#065F46" />
+            <path d="M0 0 H100 V84 Q50 64 0 84 Z" fill="#048750" />
             {/* ✅ Menerapkan pola titik-titik dengan mask fading */}
             <path d="M0 0 H100 V84 Q50 64 0 84 Z" fill="url(#dotsLargeHome)" mask="url(#maskFadeHome)" />
             <path d="M0 25 H100 V84 Q50 64 0 84 Z" fill="url(#dotsSmallHome)" mask="url(#maskFadeHome)" />

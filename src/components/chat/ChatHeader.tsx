@@ -9,7 +9,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ onBack, isOnline = true }: ChatHeaderProps) {
   return (
-    <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 bg-[#065F46] shadow-sm">
+    <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 bg-[#048750] shadow-sm">
       {/* Back button */}
       <button
         onClick={onBack}
@@ -25,14 +25,14 @@ export default function ChatHeader({ onBack, isOnline = true }: ChatHeaderProps)
           <span className="text-emerald-700 font-black text-sm leading-none">CS</span>
         </div>
         {isOnline && (
-          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#065F46]" />
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#048750]" />
         )}
       </div>
 
       {/* Name & status */}
       <div className="flex-1 min-w-0">
         <p className="text-[14px] font-bold text-white leading-none">Customer Service</p>
-        <p className="text-[11px] text-white/60 font-medium mt-0.5 leading-none">
+        <p className="text-[11px] text-white/60 font-medium mt-2 leading-none">
           {isOnline ? 'Online sekarang' : 'Terakhir kali online baru saja'}
         </p>
       </div>

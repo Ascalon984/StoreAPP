@@ -244,8 +244,8 @@ export default function CategoryGrid({
                 <Image
                   src={iconPath}
                   alt={cat.name}
-                  width={36}
-                  height={36}
+                  width={34}
+                  height={34}
                   className={`
       w-9 h-9
       object-contain relative z-10

@@ -177,11 +177,10 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
-                  pathname === "/"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 <HomeIcon active={pathname === "/"} />
                 <span
@@ -193,17 +192,15 @@ export default function BottomNav() {
 
               <Link
                 href="/orders"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
-                  pathname === "/orders"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/orders"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 <NotebookTextIcon active={pathname === "/orders"} />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${
-                    pathname === "/orders" ? "font-bold" : "font-semibold"
-                  }`}
+                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${pathname === "/orders" ? "font-bold" : "font-semibold"
+                    }`}
                 >
                   Pesanan
                 </span>
@@ -215,7 +212,7 @@ export default function BottomNav() {
               <Link
                 href="/checkout"
                 className="group relative w-[52px] h-[52px] rounded-full 
-      bg-emerald-600 text-white flex items-center justify-center 
+      bg-[#048750] text-white flex items-center justify-center 
       shadow-[0_4px_10px_rgba(6,95,70,0.25)]
       active:scale-90 transition-all duration-300"
                 aria-label="Keranjang"
@@ -273,11 +270,10 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-evenly">
               <Link
                 href="/wishlist"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
-                  pathname === "/wishlist"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/wishlist"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 <Bookmark
                   size={21}
@@ -294,11 +290,10 @@ export default function BottomNav() {
 
               <Link
                 href="/profile"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
-                  pathname === "/profile"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/profile"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 <User
                   size={21}

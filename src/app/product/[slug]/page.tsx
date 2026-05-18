@@ -350,11 +350,11 @@ export default function ProductDetailPage({
   const liveRating =
     liveReviewCount > 0
       ? Number(
-          (
-            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
-            specificReviews.length
-          ).toFixed(1),
-        )
+        (
+          specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+          specificReviews.length
+        ).toFixed(1),
+      )
       : serverRating;
 
   const distribution = getRatingDistribution(allReviews);
@@ -640,15 +640,13 @@ export default function ProductDetailPage({
                         disabled={isOutOfStock}
                         className={`
                           px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all duration-200
-                          ${
-                            isSelected
-                              ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
-                              : "border-gray-300 text-gray-700 bg-white hover:border-gray-300"
+                          ${isSelected
+                            ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
+                            : "border-gray-300 text-gray-700 bg-white hover:border-gray-300"
                           }
-                          ${
-                            isOutOfStock
-                              ? "opacity-40 cursor-not-allowed line-through border-gray-100 bg-gray-50 text-gray-400"
-                              : "active:scale-95"
+                          ${isOutOfStock
+                            ? "opacity-40 cursor-not-allowed line-through border-gray-100 bg-gray-50 text-gray-400"
+                            : "active:scale-95"
                           }
                         `}
                       >
@@ -711,7 +709,7 @@ export default function ProductDetailPage({
 
           <div className="bg-white px-4 py-2.5 mt-1 flex items-center justify-between">
             <p className="text-[12px] text-gray-500 font-medium">
-              Masih ada pertanyaan?
+              Ada pertanyaan?
             </p>
             <button
               onClick={() =>
@@ -750,7 +748,7 @@ export default function ProductDetailPage({
                   {[5, 4, 3, 2, 1].map((star) => {
                     const pct =
                       distribution.percent[
-                        star as keyof typeof distribution.percent
+                      star as keyof typeof distribution.percent
                       ];
                     const count =
                       distribution.raw[star as keyof typeof distribution.raw];
@@ -896,7 +894,7 @@ export default function ProductDetailPage({
               </button>
               <button
                 onClick={handleBuyNow}
-                className="flex-[2] py-3.5 px-4 rounded-xl bg-emerald-700 text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
+                className="flex-[2] py-3.5 px-4 rounded-xl bg-[#048750] text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
               >
                 <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
                 Pesan Sekarang

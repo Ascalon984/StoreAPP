@@ -445,11 +445,10 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                         setActive(i);
                       }}
                       className={`rounded-full transition-all duration-200
-                      ${
-                        i === active
+                      ${i === active
                           ? "w-3 h-1 bg-gray-400"
                           : "w-1 h-1 bg-gray-200"
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -494,11 +493,10 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                           setActive(i);
                         }}
                         className={`rounded-full transition-all duration-200
-                        ${
-                          i === active
+                        ${i === active
                             ? "w-3 h-1 bg-gray-400"
                             : "w-1 h-1 bg-gray-200"
-                        }`}
+                          }`}
                       />
                     ))}
                   </div>
@@ -607,9 +605,9 @@ function OrderCard({
               <button
                 onClick={() => router.push("/")}
                 className="px-3 py-1.5 rounded-lg
-                bg-emerald-700
+                bg-emerald-600
                 text-white text-[11px] font-bold
-                hover:bg-emerald-800
+                hover:bg-emerald-600
                 active:scale-95
                 transition-all"
               >
@@ -688,9 +686,9 @@ function OrderCard({
             <button
               onClick={() => router.push("/")}
               className="px-3 py-1.5 rounded-lg
-              bg-emerald-700
+              bg-emerald-600
               text-white text-[11px] font-bold
-              hover:bg-emerald-800
+              hover:bg-emerald-600
               active:scale-95
               transition-all"
             >
@@ -863,52 +861,84 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
       {/* Header */}
-      <div
-        className="sticky top-0 z-50 bg-[#0B6B52] shadow-md"
-        style={{ height: HEADER_H }}
-      >
-        <div className="flex items-center h-full px-4">
-          <div className="text-[14px] font-bold text-white tracking-tight">
-            Riwayat Pesanan
+      {/* STICKY HEADER + TABS — jadi satu kesatuan */}
+      {/* HEADER + FLOATING TAB */}
+      <div className="sticky top-0 z-50">
+        <div className="bg-[#048750] rounded-b-[14px] shadow-xs">
+
+          {/* Title — Menggunakan items-end h-9 untuk memosisikan teks di area bawah header */}
+          <div className="flex items-end justify-center px-4 h-9 pb-0.5">
+            <span
+              style={{ wordSpacing: '4px' }}
+              className="text-[15px] font-black text-white tracking-normal"
+            >
+              Riwayat Pesanan
+            </span>
+          </div>
+
+          {/* Container tab — Menggunakan pb-[3px] dengan translate-y-[9px] agar melayang pas */}
+          <div className="px-4 pb-[3px]">
+            <div
+              className="
+      relative
+      bg-white
+      rounded-lg
+      p-[2px]
+      flex
+      translate-y-[9px]
+      ring-1 ring-slate-900/[0.04]
+      shadow-layer-sm
+    "
+            >
+
+              {/* Sliding Active Background — Diperbaiki rumusnya */}
+              <div
+                className="
+        absolute top-[2px] bottom-[2px]
+        rounded-[6px]
+        bg-[#D89B2B]
+        shadow-[0_1px_4px_rgba(216,155,43,0.35)]
+        transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) {/* Menggunakan bezier premium */}
+      "
+                style={{
+                  width: `${100 / FILTER_TABS.length}%`,
+                  // Mengurangi padding 4px dari total ruang agar transisi stabil
+                  transform: `translateX(${FILTER_TABS.findIndex(t => t.key === activeFilter) * 100}%) scale(${activeFilter ? 1 : 0.95})`,
+                  left: '2px', // Mengunci posisi awal sejajar p-[2px] kontainer
+                  width: `calc((100% - 4px) / ${FILTER_TABS.length})`,
+                }}
+              />
+
+              {FILTER_TABS.map((tab) => {
+                const active = activeFilter === tab.key;
+
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveFilter(tab.key)}
+                    className={`
+            relative z-10
+            flex-1 h-7
+            rounded-[6px]
+            text-[12px]
+            font-bold
+            transition-colors duration-300 {/* Disamakan dengan durasi background */}
+            active:scale-[0.97]
+            border-none outline-none
+            ${active ? 'text-white' : 'text-gray-400'}
+          `}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Filter tabs — FIXED: gap-6 bukan gap-8 */}
-      <div className="sticky z-30 bg-white" style={{ top: HEADER_H }}>
-        <div
-          className="relative flex gap-6 px-6 overflow-x-auto hide-scrollbar border-b border-gray-100"
-          style={{ height: FILTER_H }}
-        >
-          <span
-            className="absolute bottom-0 left-0 h-0.5 rounded-full bg-emerald-700
-            transition-all duration-300 ease-out"
-            style={{
-              width: indicatorStyle.width,
-              transform: `translateX(${indicatorStyle.left}px)`,
-            }}
-          />
-          {FILTER_TABS.map((tab) => (
-            <button
-              key={tab.key}
-              ref={(el) => {
-                tabRefs.current[tab.key] = el;
-              }}
-              onClick={() => setActiveFilter(tab.key)}
-              className={`relative flex-shrink-0 h-full px-1 text-[13px] font-bold
-              transition-colors duration-200 active:scale-95
-              ${
-                activeFilter === tab.key ? "text-emerald-700" : "text-gray-400"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* List */}
-      <div className="pt-3">
+      <div className="pt-[22px]">
         {isLoading ? (
           <div className="px-4 space-y-2">
             <SkeletonCard />

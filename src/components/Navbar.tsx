@@ -75,11 +75,10 @@ export default function Navbar() {
       className={`sticky top-0 z-50 w-full ${isProductDetail ? "h-[48px]" : "h-[58px]"}`}
     >
       <header
-        className={`absolute top-0 w-full h-full flex items-center transition-colors duration-500 ease-in-out ${
-          scrolled
-            ? "bg-[#0B6B52] border-b-[1px] border-black/10 shadow-md"
-            : "bg-[#0B6B52] border-b-[1px] border-white/10"
-        }`}
+        className={`absolute top-0 w-full h-full flex items-center transition-colors duration-500 ease-in-out ${scrolled
+          ? "bg-[#0B6B52] border-b-[1px] border-black/10 shadow-md"
+          : "bg-[#048750] border-b-[1px] border-white/10"
+          }`}
       >
         {/* Container Utama - Gunakan h-full agar semua elemen terpusat secara vertikal */}
         <div className="max-w-container mx-auto px-4 w-full flex items-center justify-between gap-3 h-full">
@@ -136,7 +135,7 @@ export default function Navbar() {
           </div>
 
           {/* BAGIAN TENGAH & KANAN: Search Area & Actions */}
-          <div className="flex-1 flex justify-end items-center gap-1 min-w-0">
+          <div className="flex-1 flex justify-end items-center gap-2 min-w-0">
             {/* Search Box Area - Diperhalus dengan Liquid Expansion */}
             <div className="relative flex items-center justify-end flex-1 h-9 min-w-0">
               <button
@@ -144,11 +143,10 @@ export default function Navbar() {
                 className={`
     relative flex items-center transition-all duration-700
     rounded-full overflow-hidden origin-right /* KUNCI: Animasi dimulai dari sisi kanan */
-    ${
-      scrolled
-        ? "w-full bg-white/95 h-8 px-3 shadow-md opacity-100 scale-x-100 blur-0"
-        : "w-10 h-8 bg-white/0 opacity-0 scale-x-0 blur-sm justify-center pointer-events-none"
-    }
+    ${scrolled
+                    ? "w-full bg-white/95 h-8 px-3 shadow-md opacity-100 scale-x-100 blur-0"
+                    : "w-10 h-8 bg-white/0 opacity-0 scale-x-0 blur-sm justify-center pointer-events-none"
+                  }
   `}
                 style={{
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -158,24 +156,22 @@ export default function Navbar() {
               >
                 {/* Teks Search: Muncul belakangan agar tidak terlihat 'terjepit' saat ekspansi */}
                 <span
-                  className={`text-left font-medium text-[11px] text-emerald-900/60 transition-all duration-500 whitespace-nowrap ${
-                    scrolled
-                      ? "opacity-100 translate-x-0 delay-300"
-                      : "opacity-0 -translate-x-10"
-                  }`}
+                  className={`text-left font-medium text-[11px] text-emerald-900/60 transition-all duration-500 whitespace-nowrap ${scrolled
+                    ? "opacity-100 translate-x-0 delay-300"
+                    : "opacity-0 -translate-x-10"
+                    }`}
                 >
                   Cari di {storeNameFirst}...
                 </span>
 
                 {/* Icon Search di dalam Box: Mengikuti gerakan ujung kanan box */}
                 <div
-                  className={`absolute right-0 w-10 h-full flex items-center justify-center transition-all duration-500 ${
-                    scrolled
-                      ? "text-emerald-700 opacity-100"
-                      : "text-white opacity-0"
-                  }`}
+                  className={`absolute right-0 w-10 h-full flex items-center justify-center transition-all duration-500 ${scrolled
+                    ? "text-emerald-700 opacity-100"
+                    : "text-white opacity-0"
+                    }`}
                 >
-                  <Search size={18} strokeWidth={2.5} />
+                  <Search size={20} strokeWidth={2.5} />
                 </div>
               </button>
 
