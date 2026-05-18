@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Search, MapPin, Bell } from "lucide-react";
+import { Search, Bell } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const isProfile = pathname === "/profile";
   const isOrders = pathname === "/orders";
   const isWishlist = pathname === "/wishlist";
+  const isNotifications = pathname === "/notifications";
 
   const [scrolledState, setScrolledState] = useState(false);
   // Jika di halaman product detail, navbar selalu dalam mode hide (compact)
@@ -66,7 +67,7 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  if (isCheckout || isProfile || isOrders || isWishlist || isProductDetail) {
+  if (isCheckout || isProfile || isOrders || isWishlist || isProductDetail || isNotifications) {
     return null;
   }
 
@@ -195,12 +196,12 @@ export default function Navbar() {
 
             {/* Actions: Bell */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              <button className="relative p-2 text-white transition-all">
+              <Link href="/notifications" className="relative p-2 text-white transition-all active:scale-90 flex items-center justify-center">
                 <Bell size={22} strokeWidth={0} fill="white" />
                 <span
                   className={`absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 ${scrolled ? "border-[#064E3B]" : "border-[#0B6B52]"}`}
                 />
-              </button>
+              </Link>
             </div>
           </div>
         </div>

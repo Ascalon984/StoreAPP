@@ -112,12 +112,13 @@ export default function BottomNav() {
   // Sembunyikan navbar di halaman detail produk dan checkout
   const isProductDetail = pathname?.startsWith("/product/");
   const isCheckout = pathname === "/checkout";
+  const isNotifications = pathname === "/notifications";
 
   const totalItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
-  if (isProductDetail || isCheckout) return null;
+  if (isProductDetail || isCheckout || isNotifications) return null;
 
   return (
     <>
