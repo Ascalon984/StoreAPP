@@ -127,7 +127,7 @@ function ChipFilter({
 // ─────────────────────────────────────────
 function SectionHeader({ title, count }: { title: string; count: number }) {
   return (
-    <div className="flex items-center gap-2 px-4 pt-5 pb-2">
+    <div className="flex items-center gap-2 px-4 pb-2">
       <span className="text-[12px] font-bold text-gray-500 tracking-widest leading-none">
         {title}
       </span>
@@ -432,7 +432,7 @@ export default function WishlistPage() {
       )}
 
       {/* CONTENT */}
-      <div className="pt-2 pb-6">
+      <div className="pt-[22px] pb-6">
         {!mounted ? (
           <SkeletonList />
         ) : filteredItems.length === 0 && activeChip !== ALL_CHIP ? (
