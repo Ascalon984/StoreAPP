@@ -1,10 +1,10 @@
-import Banner from '@/components/Banner';
-import CategoryGrid from '@/components/CategoryGrid';
-import FilterSort from '@/components/FilterSort';
-import ProductGrid from '@/components/ProductGrid';
-import SettingsHydrator from '@/components/SettingsHydrator';
-import ScrollToBottomSheet from '@/components/ScrollToBottomSheet';
-import { Banner as BannerType, Category } from '@/lib/types';
+import Banner from "@/components/Banner";
+import CategoryGrid from "@/components/CategoryGrid";
+import FilterSort from "@/components/FilterSort";
+import ProductGrid from "@/components/ProductGrid";
+import SettingsHydrator from "@/components/SettingsHydrator";
+import ScrollToBottomSheet from "@/components/ScrollToBottomSheet";
+import { Banner as BannerType, Category } from "@/lib/types";
 
 interface Settings {
   waNumber: string;
@@ -24,9 +24,9 @@ async function getInitData(): Promise<InitData> {
 
   try {
     const [bannersRes, categoriesRes, settingsRes] = await Promise.all([
-      fetch(`${adminApiUrl}/api/public/banners`, { cache: 'no-store' }),
-      fetch(`${adminApiUrl}/api/public/categories`, { cache: 'no-store' }),
-      fetch(`${adminApiUrl}/api/public/settings`, { cache: 'no-store' }),
+      fetch(`${adminApiUrl}/api/public/banners`, { cache: "no-store" }),
+      fetch(`${adminApiUrl}/api/public/categories`, { cache: "no-store" }),
+      fetch(`${adminApiUrl}/api/public/settings`, { cache: "no-store" }),
     ]);
 
     const [banners, categories, settings] = await Promise.all([
@@ -62,26 +62,47 @@ export default async function Home() {
             preserveAspectRatio="none"
           >
             <defs>
-              <pattern id="dotsLargeHome" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="0.7" fill="white" fillOpacity="0.12" />
-              </pattern>
-              <pattern id="dotsSmallHome" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="0.35" fill="white" fillOpacity="0.06" />
+              <pattern
+                id="dotsHome"
+                x="0"
+                y="0"
+                width="3"
+                height="3"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle
+                  cx="0.8"
+                  cy="0.8"
+                  r="0.5"
+                  fill="white"
+                  fillOpacity="0.15"
+                />
               </pattern>
               <linearGradient id="fadeBottomHome" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="white" stopOpacity="1" />
                 <stop offset="85%" stopColor="white" stopOpacity="0" />
               </linearGradient>
               <mask id="maskFadeHome">
-                <rect x="0" y="0" width="100" height="100" fill="url(#fadeBottomHome)" />
+                <rect
+                  x="0"
+                  y="0"
+                  width="100"
+                  height="100"
+                  fill="url(#fadeBottomHome)"
+                />
               </mask>
             </defs>
 
             <path d="M0 0 H100 V84 Q50 64 0 84 Z" fill="#048750" />
-            {/* ✅ Menerapkan pola titik-titik dengan mask fading */}
-            <path d="M0 0 H100 V84 Q50 64 0 84 Z" fill="url(#dotsLargeHome)" mask="url(#maskFadeHome)" />
-            <path d="M0 25 H100 V84 Q50 64 0 84 Z" fill="url(#dotsSmallHome)" mask="url(#maskFadeHome)" />
-            <path d="M0 83.5 Q50 63 100 83.5 V93.5 Q50 75.5 0 93.5 Z" fill="#D89B2B" />
+            <path
+              d="M0 0 H100 V84 Q50 64 0 84 Z"
+              fill="url(#dotsHome)"
+              mask="url(#maskFadeHome)"
+            />
+            <path
+              d="M0 83.5 Q50 63 100 83.5 V93.5 Q50 75.5 0 93.5 Z"
+              fill="#D89B2B"
+            />
           </svg>
         </div>
 

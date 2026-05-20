@@ -2,12 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ChevronLeft,
-  Bell,
-  TicketPercent,
-  CheckCheck,
-} from "lucide-react";
+import { ChevronLeft, Bell, TicketPercent, CheckCheck } from "lucide-react";
 
 // ── Types ──
 type NotifType = "activity" | "promo";
@@ -46,6 +41,7 @@ function timeAgo(iso: string): string {
 }
 
 // ── Mock Data ──
+/* COMMENTED OUT FOR TESTING - UNCOMMENT BELOW TO USE MOCK DATA
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: "n1",
@@ -111,6 +107,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     orderId: "ORD-2026-004",
   },
 ];
+*/
 
 // ── Tab Config ──
 const TABS: { key: NotifTab; label: string }[] = [
@@ -143,9 +140,10 @@ function NotifRow({
       <div
         className={`
           relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-0.5
-          ${isActivity
-            ? "bg-emerald-100 text-emerald-700"
-            : "bg-amber-100 text-amber-600"
+          ${
+            isActivity
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-amber-100 text-amber-600"
           }
         `}
       >
@@ -165,10 +163,11 @@ function NotifRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <p
-            className={`text-[13px] leading-snug ${notif.isRead
-              ? "font-medium text-gray-600"
-              : "font-bold text-gray-800"
-              }`}
+            className={`text-[13px] leading-snug ${
+              notif.isRead
+                ? "font-medium text-gray-600"
+                : "font-bold text-gray-800"
+            }`}
           >
             {isActivity ? notif.activityTitle : "Promo Spesial!"}
           </p>
@@ -207,38 +206,38 @@ function NotifRow({
 
 // ── Divider ──
 function RowDivider() {
-  return (
-    <div className="ml-[68px] mr-4 h-px bg-black/[0.05]" />
-  );
+  return <div className="ml-[68px] mr-4 h-px bg-black/[0.05]" />;
 }
 
 // ── Empty State ──
 function EmptyState({ tab }: { tab: NotifTab }) {
-  const map: Record<NotifTab, { emoji: string; title: string; sub: string }> = {
-    all: {
-      emoji: "🔔",
-      title: "Belum ada notifikasi",
-      sub: "Aktivitas dan promo akan muncul di sini.",
-    },
-    activity: {
-      emoji: "📦",
-      title: "Belum ada aktivitas",
-      sub: "Update pesanan kamu akan tampil di sini.",
-    },
-    promo: {
-      emoji: "🎫",
-      title: "Belum ada promo",
-      sub: "Penawaran spesial akan muncul di sini.",
-    },
-  };
-  const { emoji, title, sub } = map[tab];
   return (
-    <div className="flex flex-col items-center py-16 px-6">
-      <span className="text-4xl mb-4">{emoji}</span>
-      <h3 className="text-[15px] font-bold text-gray-800 text-center">{title}</h3>
-      <p className="text-[12px] text-gray-400 font-medium text-center mt-1.5 leading-relaxed">
-        {sub}
-      </p>
+    <div
+      className="
+        flex flex-col items-center justify-center
+        min-h-[72vh]
+        px-6
+        -mt-6
+      "
+    >
+      <img
+        src="/illustrations/Notification.svg"
+        alt="Notifikasi kosong"
+        className="
+    w-56 h-56 object-contain
+    -translate-x-3
+  "
+      />
+
+      <div className="-mt-1 flex flex-col items-center">
+        <h3 className="text-[17px] font-extrabold text-gray-800 text-center leading-none">
+          Belum ada notifikasi
+        </h3>
+
+        <p className="text-[13px] text-gray-400 font-medium text-center mt-2 leading-snug max-w-[230px]">
+          Diskon menarik dan update pesanan akan muncul di sini.
+        </p>
+      </div>
     </div>
   );
 }
@@ -247,8 +246,7 @@ function EmptyState({ tab }: { tab: NotifTab }) {
 export default function NotificationsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<NotifTab>("all");
-  const [notifications, setNotifications] =
-    useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<Notification[]>([]); // MOCK_NOTIFICATIONS commented out for testing
 
   // Sort: unread di atas, read di bawah; dalam grup, terbaru di atas
   const sorted = [...notifications].sort((a, b) => {
@@ -266,7 +264,7 @@ export default function NotificationsPage() {
 
   const handleRead = useCallback((id: string) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
     );
   }, []);
 
@@ -281,7 +279,6 @@ export default function NotificationsPage() {
         <div className="bg-[#048750] rounded-b-[14px] shadow-xs">
           {/* Title bar */}
           <div className="flex items-end justify-between px-3 h-11 pb-1">
-
             <div className="flex items-center gap-1">
               <button
                 onClick={() => router.back()}
@@ -306,10 +303,7 @@ export default function NotificationsPage() {
               className={`
       w-9 h-9 flex items-center justify-center
       transition-all active:scale-90
-      ${unreadCount > 0
-                  ? "text-white/90"
-                  : "text-white/30 pointer-events-none"
-                }
+      ${unreadCount > 0 ? "text-white/90" : "text-white/30 pointer-events-none"}
     `}
             >
               <CheckCheck size={20} strokeWidth={2.5} />
@@ -337,8 +331,9 @@ export default function NotificationsPage() {
                 style={{
                   left: "2px",
                   width: `calc((100% - 4px) / ${TABS.length})`,
-                  transform: `translateX(${TABS.findIndex((t) => t.key === activeTab) * 100
-                    }%)`,
+                  transform: `translateX(${
+                    TABS.findIndex((t) => t.key === activeTab) * 100
+                  }%)`,
                 }}
               />
 

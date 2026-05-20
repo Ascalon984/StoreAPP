@@ -1,31 +1,41 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { Search, X, Clock, ArrowRight } from 'lucide-react';
-import { useSearchStore } from '@/store/useSearchStore';
-import Link from 'next/link';
+import { useEffect, useRef, useState } from "react";
+import { Search, X, Clock, ArrowRight } from "lucide-react";
+import { useSearchStore } from "@/store/useSearchStore";
+import Link from "next/link";
 
 export default function SearchOverlay() {
   const {
-    query, isOpen, recentSearches,
-    setQuery, closeSearch, setRecentSearches, addRecentSearch, clearRecentSearches,
+    query,
+    isOpen,
+    recentSearches,
+    setQuery,
+    closeSearch,
+    setRecentSearches,
+    addRecentSearch,
+    clearRecentSearches,
   } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen && products.length === 0) {
-      fetch(`/api/public/products?t=${Date.now()}`, { cache: 'no-store' })
+      fetch(`/api/public/products?t=${Date.now()}`, { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => setProducts(data));
     }
   }, [isOpen, products.length]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('recentSearches');
+    const saved = localStorage.getItem("recentSearches");
     if (saved) {
-      try { setRecentSearches(JSON.parse(saved)); } catch { /* ignore */ }
+      try {
+        setRecentSearches(JSON.parse(saved));
+      } catch {
+        /* ignore */
+      }
     }
   }, [setRecentSearches]);
 
@@ -41,9 +51,11 @@ export default function SearchOverlay() {
   }, [query]);
 
   const suggestions = debouncedQuery.trim()
-    ? products.filter((p) =>
-      p.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-    ).slice(0, 6)
+    ? products
+        .filter((p) =>
+          p.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
+        )
+        .slice(0, 6)
     : [];
 
   const handleSelect = (productName: string) => {
@@ -61,14 +73,19 @@ export default function SearchOverlay() {
 
   const highlightMatch = (text: string, q: string) => {
     if (!q.trim()) return text;
-    const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const regex = new RegExp(
+      `(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi",
+    );
     const parts = text.split(regex);
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <span key={i} className="text-emerald-700 font-semibold">{part}</span>
+        <span key={i} className="text-emerald-700 font-semibold">
+          {part}
+        </span>
       ) : (
         <span key={i}>{part}</span>
-      )
+      ),
     );
   };
 
@@ -77,8 +94,15 @@ export default function SearchOverlay() {
   return (
     <div className="fixed inset-0 z-[60] bg-white/95 backdrop-blur-md animate-fade-in border-b border-gray-100 shadow-layer-md">
       <div className="max-w-container mx-auto px-4">
-        <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 py-3 border-b border-gray-100">
-          <Search size={20} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
+        <form
+          onSubmit={handleSearchSubmit}
+          className="flex items-center gap-3 py-3 border-b border-gray-100"
+        >
+          <Search
+            size={20}
+            strokeWidth={1.5}
+            className="text-gray-500 flex-shrink-0"
+          />
           <input
             ref={inputRef}
             type="text"
@@ -107,9 +131,19 @@ export default function SearchOverlay() {
                   onClick={() => handleSelect(product.name)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 hover:shadow-layer-xs transition-all duration-200"
                 >
-                  <Search size={16} strokeWidth={1.5} className="text-gray-500 flex-shrink-0" />
-                  <span className="text-sm flex-1">{highlightMatch(product.name, debouncedQuery)}</span>
-                  <ArrowRight size={14} strokeWidth={1.5} className="text-gray-500" />
+                  <Search
+                    size={16}
+                    strokeWidth={1.5}
+                    className="text-gray-500 flex-shrink-0"
+                  />
+                  <span className="text-sm flex-1">
+                    {highlightMatch(product.name, debouncedQuery)}
+                  </span>
+                  <ArrowRight
+                    size={14}
+                    strokeWidth={1.5}
+                    className="text-gray-500"
+                  />
                 </Link>
               ))}
             </div>
@@ -118,8 +152,15 @@ export default function SearchOverlay() {
           {!debouncedQuery.trim() && recentSearches.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Pencarian Terakhir</span>
-                <button onClick={clearRecentSearches} className="text-xs text-primary hover:text-primary-dark">Hapus</button>
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Pencarian Terakhir
+                </span>
+                <button
+                  onClick={clearRecentSearches}
+                  className="text-xs text-primary hover:text-primary-dark"
+                >
+                  Hapus
+                </button>
               </div>
               <div className="space-y-1">
                 {recentSearches.map((term, i) => (
@@ -128,7 +169,11 @@ export default function SearchOverlay() {
                     onClick={() => setQuery(term)}
                     className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-gray-50 hover:shadow-layer-xs transition-all duration-200 text-left"
                   >
-                    <Clock size={16} strokeWidth={1.5} className="text-gray-400 flex-shrink-0" />
+                    <Clock
+                      size={16}
+                      strokeWidth={1.5}
+                      className="text-gray-400 flex-shrink-0"
+                    />
                     <span className="text-sm text-gray-700">{term}</span>
                   </button>
                 ))}
@@ -137,11 +182,37 @@ export default function SearchOverlay() {
           )}
 
           {debouncedQuery.trim() && suggestions.length === 0 && (
-            <div className="text-center py-12">
-              <Search size={48} strokeWidth={1} className="text-gray-300 mx-auto mb-4" />
-              <p className="text-sm text-gray-600">
-                Tidak ditemukan produk untuk &quot;{debouncedQuery}&quot;
-              </p>
+            <div
+              className="
+      flex flex-col items-center justify-center
+      px-5
+      py-14
+      text-center
+    "
+            >
+              <img
+                src="/illustrations/Search Not Found.svg"
+                alt="Produk tidak ditemukan"
+                className="
+        w-56 h-56
+        object-contain
+        -translate-x-1
+      "
+              />
+
+              <div className="-mt-2">
+                <h3 className="text-[16px] font-extrabold text-gray-800 leading-tight">
+                  Produk tidak ditemukan
+                </h3>
+
+                <p className="mt-2 text-[13px] leading-snug text-gray-400 font-medium max-w-[250px]">
+                  Kami belum menemukan hasil untuk
+                  <span className="font-bold text-gray-500">
+                    {" "}
+                    "{debouncedQuery}"
+                  </span>
+                </p>
+              </div>
             </div>
           )}
         </div>
