@@ -123,3 +123,254 @@ Mengingat beberapa tindakan bersifat menghentikan alur atau merubah data, diperl
 
 ### 6. Animasi Transisi & Loading Data
 Mengingat ada banyak data dari *Control Panel* (Banner, List Produk, Kategori Dinamis), penting untuk menyertakan UI transisi seperti *Skeleton Loading* (efek *shimmer* kotak/garis saat memuat data) agar layar tidak *blank* putih saat loading jaringan lambat.
+
+
+update bottom sheet product card
+produk populer tampil grid card 2 colomn / jika belum ada pakai all product, tapi produk populer tak boleh terlalu banyak (top sekian agar row produk diskon tidak tenggelam jauh)
+produk diskon & promo tampil horizontal grid card
+all product tampil 2 colomn
+horizontal sticker rasio 2.5/1 agar tidak menyamai hero banner (2.35/1)
+
+
+
+
+Popular Right Now
+Produk paling sering dibeli hari ini
+
+(max 6 items only)
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+produk populer tampil grid card 2 colomn / jika belum ada pakai all product agar tidak melompat ke sticker jika belum ada penjualan sama sekali
+╭────────────────────────────╮
+│ 🔥 Lebih Hemat Hari Ini    │
+│ promo pilihan untukmu      │
+│ ratio 2.2 : 1  sbg papan info          │
+╰────────────────────────────╯
+
+
+(horizontal promo products)
+
+← scroll horizontal →
+
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│ PROMO   │ │ PROMO   │ │ PROMO   │
+│ CARD    │ │ CARD    │ │ CARD    │
+└─────────┘ └─────────┘ └─────────┘
+
+
+All Products
+Temukan kebutuhan lainnya
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+
+
+
+(after ±10 products)
+
+
+╭────────────────────────────╮
+│ 💡 Lagi banyak dibeli      │
+│ stok favorit minggu ini    │
+│ ratio 2.5 : 1              │
+╰────────────────────────────╯
+
+
+continue infinite product grid...
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+
+
+
+
+Paling dicari (label)
+(max 6 items only)
+
+(if no sales/popular yet → fallback to all products)
+
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+
+╭────────────────────────────╮
+│ 🔥 Lebih Hemat Hari Ini    │
+│ promo pilihan untukmu      │
+│ ratio 2.2 : 1              │
+│ inline info sticker        │
+╰────────────────────────────╯
+
+
+(horizontal promo products)
+
+← scroll horizontal →
+peek 10% sehingga tak perlu scroll indikator
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│ PROMO   │ │ PROMO   │ │ PROMO   │
+│ CARD    │ │ CARD    │ │ CARD    │
+└─────────┘ └─────────┘ └─────────┘
+
+
+All Products
+Temukan kebutuhan lainnya
+
+
+124 produk          Urutkan ▼ (filter urutkan hanya tersedia saat fokus/tab kategori spesifik)
+
+
+                       • (icon A-Z arrow down- A-Z arrow up)
+                       • Termurah
+                       • Termahal
+                       • Terpopuler
+ 
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+(after ±10 products)
+
+inline sticker full width
+╭────────────────────────────╮
+│ 💡 Lagi banyak dibeli      │
+│ stok favorit minggu ini    │
+│ ratio 2.55 : 1              │
+╰────────────────────────────╯
+
+continue infinite product grid...
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+
+┌────────────┐ ┌────────────┐
+│            │ │            │
+│  PRODUCT   │ │  PRODUCT   │
+│    CARD    │ │    CARD    │
+│            │ │            │
+└────────────┘ └────────────┘
+ 
+untuk product card populer dan all produk pakai referensi layout/format product card.tsx saat ini
