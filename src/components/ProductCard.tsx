@@ -127,18 +127,17 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             )}
           </div>
 
-          <div className="flex items-center justify-between mt-auto pt-2 border-t border-gradient-to-r from-transparent via-gray-200 to-transparent">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between mt-auto pt-1">
+  <div className="absolute left-0 right-0 bottom-[28px] h-6 bg-gradient-to-b from-transparent to-black/[0.02] pointer-events-none" />
+            <div className="flex items-center gap-0.5">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-extrabold text-gray-700">
                 {displayRating}
               </span>
-              <span className="text-[10px] text-gray-600">
-                ({displayReviewCount})
-              </span>
+             
             </div>
             <div className="text-[10px] text-gray-600 font-bold">
-              {product.sold}+ Terjual
+              {product.sold} Terjual
             </div>
           </div>
         </div>

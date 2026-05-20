@@ -39,12 +39,22 @@ export default function Navbar() {
     if (isProductDetail) return; // Tidak perlu listener di product detail karena selalu hide
 
     const handleScroll = () => {
-      const offset = window.scrollY;
-      // Animasi hide (compact) terpicu saat bottom sheet mencapai label 'Spesial Buat Kamu'
-      if (offset > 380) {
-        setScrolledState(true);
-      } else if (offset < 330) {
-        setScrolledState(false);
+      const bottomSheet = document.getElementById('bottom-sheet');
+      if (bottomSheet) {
+        const rect = bottomSheet.getBoundingClientRect();
+        // Animasi hide (compact) terpicu saat bottom sheet menyentuh header (58px)
+        if (rect.top <= 75) {
+          setScrolledState(true);
+        } else {
+          setScrolledState(false);
+        }
+      } else {
+        const offset = window.scrollY;
+        if (offset > 380) {
+          setScrolledState(true);
+        } else if (offset < 330) {
+          setScrolledState(false);
+        }
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });

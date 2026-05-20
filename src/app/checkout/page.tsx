@@ -18,6 +18,7 @@ import {
   Tag,
   Truck,
   Receipt,
+  Trash2,
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { useDeliveryStore } from "@/store/useDeliveryStore";
@@ -90,7 +91,7 @@ const ONGKIR = 0; // Gratis ongkir untuk MVP
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart, updateQuantity } = useCartStore();
+  const { items, clearCart, updateQuantity, removeItem } = useCartStore();
   const {
     deliveryInfo,
     isLoadingLocation,
@@ -578,6 +579,13 @@ export default function CheckoutPage() {
                           <Plus size={10} strokeWidth={2.5} />
                         </button>
                       </div>
+                      <button
+                        onClick={() => removeItem(product.id)}
+                        className="p-1.5 text-gray-300 hover:text-red-500 transition-colors active:scale-90 flex-shrink-0"
+                        aria-label="Hapus produk"
+                      >
+                        <Trash2 size={15} strokeWidth={2.2} />
+                      </button>
                     </div>
                   );
                 })}

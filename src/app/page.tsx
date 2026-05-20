@@ -1,6 +1,5 @@
 import Banner from "@/components/Banner";
 import CategoryGrid from "@/components/CategoryGrid";
-import FilterSort from "@/components/FilterSort";
 import ProductGrid from "@/components/ProductGrid";
 import SettingsHydrator from "@/components/SettingsHydrator";
 import ScrollToBottomSheet from "@/components/ScrollToBottomSheet";
@@ -116,23 +115,26 @@ export default async function Home() {
       <div
         id="bottom-sheet"
         className="
-          relative z-10
-          bg-white rounded-t-[28px]
-          mt-6 shadow-layer-xl
-          min-h-screen pb-24
-          overflow-clip
-        "
+    relative z-10
+    bg-white rounded-t-[25px]
+    mt-6 shadow-layer-xl
+    min-h-screen
+    flex flex-col
+    overflow-hidden
+  "
       >
-        {/* Handle */}
-        <div className="flex justify-center pt-3 pb-1">
+        {/* soft top border fade */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent z-30" />
+
+        {/* handle */}
+        <div className="flex justify-center pt-3 pb-2 bg-white rounded-t-[25px] z-20 flex-shrink-0">
           <div className="w-14 h-1 bg-gray-300 rounded-full" />
         </div>
 
-        {/* FilterSort — sticky bekerja karena overflow-clip */}
-        <FilterSort />
-
-        {/* ProductGrid */}
-        <ProductGrid initialCategories={categories} />
+        {/* Scrollable container for products */}
+        <div className="pb-24">
+          <ProductGrid initialCategories={categories} />
+        </div>
       </div>
     </div>
   );
