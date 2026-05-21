@@ -53,7 +53,7 @@ export default async function Home() {
       <ScrollToBottomSheet />
       {/* LAYER BAWAH: Sticky Canvas */}
       <div className="sticky top-[70px] z-0">
-        <div className="absolute top-[-24px] left-0 w-full h-[208px] z-[-1]">
+        <div className="absolute top-[-24px] left-0 w-full h-[206px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"

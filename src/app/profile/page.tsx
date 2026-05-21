@@ -29,9 +29,9 @@ import Image from "next/image";
 
 // ── Mock data ──
 const mockUser = {
-  name: "Ahmad Fauzi",
-  username: "ahmadfauzi",
-  email: "ahmad@email.com",
+  name: "Pengguna",
+  username: "pengguna1",
+  email: "user_1@email.com",
   phone: "081-234-5678",
   avatar: null,
 };
@@ -42,12 +42,6 @@ const initialAddresses = [
     label: "Rumah",
     address: "Jl. Melati No. 12, Telang Indah, Kamal",
     isMain: true,
-  },
-  {
-    id: "2",
-    label: "Kantor",
-    address: "Gedung Rektorat Lt. 2, Universitas Trunojoyo Madura, Kamal",
-    isMain: false,
   },
 ];
 
@@ -239,15 +233,15 @@ function ProfileCompletion({
 
   const copy = getCopy(completed);
 
-  const S = 52;
+  const S = 58;
   const SW = 6;
   const R = (S - SW) / 2;
   const C = 2 * Math.PI * R;
   const offset = C * (1 - pct / 100);
 
   return (
-    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs px-3.5 py-3.5">
-      <div className="grid grid-cols-[52px_1fr_auto] gap-x-3 items-center">
+    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs px-3.5 py-4 min-h-[88px]">
+      <div className="grid grid-cols-[58px_1fr_auto] gap-x-3 items-start">
         <div
           className="row-span-2 row-start-1 col-start-1 self-center relative flex-shrink-0"
           style={{ width: S, height: S }}
@@ -300,13 +294,15 @@ function ProfileCompletion({
           )}
         </div>
 
-        <p
-          className={`row-start-2 col-start-2 text-[11px] font-medium leading-snug ${isComplete ? "text-emerald-700" : "text-gray-500"}`}
-        >
-          {copy}
-        </p>
+        <div className="row-start-2 col-start-2 col-span-2 flex items-center justify-between gap-3">
+          <p
+            className={`text-[11px] font-medium leading-snug ${
+              isComplete ? "text-emerald-700" : "text-gray-500"
+            }`}
+          >
+            {copy}
+          </p>
 
-        <div className="row-start-2 col-start-3 justify-self-end self-end">
           {isComplete ? (
             <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 whitespace-nowrap">
               <Check size={10} strokeWidth={3} /> Selesai
@@ -333,7 +329,7 @@ function StatsCard({
   stats: { orders: number; favorites: number; reviews: number };
 }) {
   return (
-    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs flex items-center py-3.5">
+    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs px-3.5 py-4 min-h-[88px]">
       <div className="flex-1 flex flex-col items-center gap-0.5">
         <span className="text-[17px] font-black text-gray-900 leading-none tabular-nums">
           {formatStat(stats.orders)}
@@ -524,67 +520,54 @@ export default function ProfilePage() {
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-[230px] z-0">
           <svg
-            className="w-full h-full antialiased"
+            className="w-full h-full"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
           >
             <defs>
               <pattern
-                id="dotsLarge"
+                id="dots"
                 x="0"
                 y="0"
                 width="4"
                 height="4"
                 patternUnits="userSpaceOnUse"
               >
-                <circle cx="1" cy="1" r="0.7" fill="white" fillOpacity="0.12" />
+                <circle cx="1" cy="1" r="0.7" fill="white" fillOpacity="0.18" />
               </pattern>
 
-              <pattern
-                id="dotsSmall"
-                x="0"
-                y="0"
-                width="4"
-                height="4"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle
-                  cx="1"
-                  cy="1"
-                  r="0.35"
-                  fill="white"
-                  fillOpacity="0.06"
-                />
-              </pattern>
-
-              <linearGradient id="fadeTop" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="white" stopOpacity="2" />
-                <stop offset="65%" stopColor="white" stopOpacity="0.25" />
+              <linearGradient id="fadeDown" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="white" stopOpacity="1" />{" "}
+                {/* ← max 1 */}
+                <stop offset="60%" stopColor="white" stopOpacity="0.3" />
                 <stop offset="100%" stopColor="white" stopOpacity="0" />
               </linearGradient>
 
-              <mask id="maskFade">
+              <mask id="dotMask">
                 <rect
                   x="0"
                   y="0"
                   width="100"
                   height="100"
-                  fill="url(#fadeTop)"
+                  fill="url(#fadeDown)"
                 />
               </mask>
             </defs>
 
-            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#048750 " />
-            <path
-              d="M0 0 H100 V70 Q50 95 0 70 Z"
-              fill="url(#dotsLarge)"
-              mask="url(#maskFade)"
+            {/* Background hijau */}
+            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#048750" />
+
+            {/* Dots dengan fade ke bawah via mask */}
+            <rect
+              x="0"
+              y="0"
+              width="100"
+              height="100"
+              fill="url(#dots)"
+              mask="url(#dotMask)"
             />
-            <path
-              d="M0 35 H100 V70 Q50 95 0 70 Z"
-              fill="url(#dotsSmall)"
-              mask="url(#maskFade)"
-            />
+
+            {/* Strip amber */}
             <path d="M0 70 Q50 95 100 70 V78 Q50 103 0 78 Z" fill="#D89B2B" />
           </svg>
         </div>
@@ -596,7 +579,13 @@ export default function ProfilePage() {
             aria-label="Buka Live Chat"
             className="relative w-10 h-10 flex items-center justify-center text-white active:scale-90 transition-transform"
           >
-            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" className="drop-shadow-sm">
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="drop-shadow-sm"
+            >
               {/* Body bubble — stroke putih */}
               <path
                 d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
@@ -637,7 +626,7 @@ export default function ProfilePage() {
             @{user.username}
           </p>
         </div>
-        <div className="h-[100px]" />
+        <div className="h-[80px]" />
       </div>
 
       {/* ── SCROLLABLE BODY ── */}

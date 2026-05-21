@@ -135,7 +135,7 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
       href={`/product/${product.slug}`}
       className="block flex-shrink-0 w-[136px] group"
     >
-      <article className="bg-white rounded-xl shadow-layer-xs hover:shadow-layer-lg transition-all duration-500 active:scale-[0.96] overflow-hidden relative h-full flex flex-col">
+      <article className="bg-white rounded-xl shadow-layer-xs transition-all duration-200 active:scale-[0.96] overflow-hidden relative h-full flex flex-col">
         {discount > 0 && (
           <div className="absolute top-0 right-0 z-30 px-2 py-[3px] bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[9px] font-black rounded-bl-xl">
             -{discount}%
@@ -147,7 +147,7 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
             name={product.name}
             variant={index}
             src={productImages[0]}
-            className="w-full h-full object-contain scale-[0.82] transition-transform duration-700 group-hover:scale-95"
+            className="w-full h-full object-contain"
             style={{} as React.CSSProperties}
           />
         </div>

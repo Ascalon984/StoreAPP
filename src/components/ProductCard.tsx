@@ -82,18 +82,23 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     <Link href={`/product/${product.slug}`} className="block group">
       <article
         className="
-        bg-white rounded-xl 
-        shadow-layer-xs 
-        hover:shadow-layer-lg 
-        transition-all duration-500 overflow-hidden 
-        active:scale-[0.96] 
-        flex flex-col h-full relative backdrop-blur-sm
-      "
+    bg-white rounded-xl 
+    shadow-layer-xs 
+    transition-all duration-200 overflow-hidden 
+    active:scale-[0.96] 
+    flex flex-col h-full relative
+  "
       >
         <div className="absolute inset-0 bg-gradient-premium pointer-events-none z-0" />
 
         {discount > 0 && (
-          <div className="absolute top-0 right-0 z-30 px-2.5 py-1 bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[10px] font-black rounded-bl-2xl shadow-layer-md backdrop-blur-sm tracking-tighter">
+          <div
+            className="absolute top-0 right-0 z-30 px-2.5 py-1 
+  bg-gradient-to-l from-rose-600 to-rose-500 
+  text-white text-[10px] font-black 
+  rounded-tr-xl rounded-bl-2xl   {/* ← tambah rounded-tr-xl */}
+  shadow-layer-md tracking-tighter"
+          >
             -{discount}%
           </div>
         )}
@@ -104,14 +109,14 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             name={product.name}
             variant={index}
             src={mainImage}
-            className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-110 object-contain scale-[0.82]"
+            className="absolute inset-0 w-full h-full object-contain"
             style={{} as React.CSSProperties}
           />
         </div>
 
         <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
-            className={`text-gray-800 line-clamp-2 font-bold group-hover:text-emerald-700 transition-colors duration-300 min-h-[2.4rem] tracking-tight ${titleSize}`}
+            className={`text-gray-800 line-clamp-2 font-bold transition-colors duration-200 min-h-[2.4rem] tracking-tight ${titleSize}`}
           >
             {product.name}
           </h3>
@@ -128,13 +133,12 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
 
           <div className="flex items-center justify-between mt-auto pt-1">
-  <div className="absolute left-0 right-0 bottom-[28px] h-6 bg-gradient-to-b from-transparent to-black/[0.02] pointer-events-none" />
+            <div className="absolute left-0 right-0 bottom-[28px] h-6 bg-gradient-to-b from-transparent to-black/[0.02] pointer-events-none" />
             <div className="flex items-center gap-0.5">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
               <span className="text-[11px] font-extrabold text-gray-700">
                 {displayRating}
               </span>
-             
             </div>
             <div className="text-[10px] text-gray-600 font-bold">
               {product.sold} Terjual

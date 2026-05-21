@@ -124,45 +124,44 @@ export default function BottomNav() {
     <>
       {/* FIXED WRAPPER - Transparan agar konten di balik cekungan terlihat */}
       <div className="fixed bottom-0 left-0 right-0 z-40">
-        <div className="relative w-full max-w-container mx-auto h-[58px]">
+        <div className="relative w-full max-w-container mx-auto h-[52px]">
           {/* BACKGROUND SVG LAYER - Satu-satunya sumber warna putih */}
           <div className="absolute inset-0 pointer-events-none">
             <svg
-              viewBox="0 0 400 58"
-              className="w-full h-full filter drop-shadow-[0_-2px_6px_rgba(0,0,0,0.03)] drop-shadow-[0_-6px_20px_rgba(0,0,0,0.08)]"
+              viewBox="0 0 400 52"
+              className="w-full h-full"
               preserveAspectRatio="none"
             >
               <defs>
                 <mask id="navCutout">
-                  <rect width="400" height="58" fill="white" />
-                  <circle cx="200" cy="6" r="32" fill="black" />
+                  <rect width="400" height="52" fill="white" />
+                  <circle cx="200" cy="2" r="30" fill="black" />
                 </mask>
               </defs>
-              {/* Fill putih dengan cutout lingkaran di tengah atas */}
+
               <path
                 d="
-                  M0 0
-                  L148 0
-                  C160 0, 166 40, 200 40
-                  C234 40, 240 0, 252 0
-                  L400 0
-                  L400 58
-                  L0 58
-                  Z
-                "
+    M0 0
+    L148 0
+    C167 0, 173 33.5, 200 33.5
+    C227 33.5, 233 0, 252 0
+    L400 0
+    L400 58
+    L0 58
+    Z
+  "
                 fill="white"
                 mask="url(#navCutout)"
               />
 
-              {/* Stroke mengikuti lekukan kurva saja */}
               <path
                 d="
-                  M0 0
-                  L148 0
-                  C160 0, 166 40, 200 40
-                  C234 40, 240 0, 252 0
-                  L400 0
-                "
+    M0 0
+    L148 0
+    C167 0, 173 33.5, 200 33.5
+    C227 33.5, 233 0, 252 0
+    L400 0
+  "
                 fill="none"
                 stroke="rgba(0,0,0,0.1)"
                 strokeWidth="1.2"
@@ -175,13 +174,14 @@ export default function BottomNav() {
           {/* NAVIGATION CONTENT */}
           <div className="relative z-10 flex justify-between items-center h-full px-4">
             {/* Sisi Kiri: Home & Pesanan */}
-            <div className="flex-1 flex justify-evenly">
+            <div className="flex-1 flex justify-end pr-3 gap-6">
               <Link
                 href="/"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                  }`}
+                }`}
               >
                 <HomeIcon active={pathname === "/"} />
                 <span
@@ -193,15 +193,17 @@ export default function BottomNav() {
 
               <Link
                 href="/orders"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/orders"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/orders"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                  }`}
+                }`}
               >
                 <NotebookTextIcon active={pathname === "/orders"} />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${pathname === "/orders" ? "font-bold" : "font-semibold"
-                    }`}
+                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${
+                    pathname === "/orders" ? "font-bold" : "font-semibold"
+                  }`}
                 >
                   Pesanan
                 </span>
@@ -209,7 +211,7 @@ export default function BottomNav() {
             </div>
 
             {/* Tombol Tengah: Keranjang Floating */}
-            <div className="w-[60px] flex justify-center relative -top-5">
+            <div className="w-[60px] flex justify-center relative -top-[24px]">
               <Link
                 href="/checkout"
                 className="group relative w-[52px] h-[52px] rounded-full 
@@ -268,13 +270,14 @@ export default function BottomNav() {
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}
-            <div className="flex-1 flex justify-evenly">
+            <div className="flex-1 flex justify-end pr-3 gap-6">
               <Link
                 href="/wishlist"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/wishlist"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/wishlist"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                  }`}
+                }`}
               >
                 <Bookmark
                   size={21}
@@ -291,10 +294,11 @@ export default function BottomNav() {
 
               <Link
                 href="/profile"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${pathname === "/profile"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
+                  pathname === "/profile"
                     ? "text-emerald-700 scale-105"
                     : "text-gray-500"
-                  }`}
+                }`}
               >
                 <User
                   size={21}
