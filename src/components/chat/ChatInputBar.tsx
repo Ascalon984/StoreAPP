@@ -9,7 +9,7 @@ interface ChatInputBarProps {
   onPickAttachment: () => void;
   attachmentPreview: string | null;
   onClearAttachment: () => void;
-  inputRef: React.RefObject<HTMLTextAreaElement | null>;
+  inputRef: React.RefObject<HTMLTextAreaElement>;
 }
 
 export default function ChatInputBar({
