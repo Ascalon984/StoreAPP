@@ -51,10 +51,9 @@ export default async function Home() {
     <div className="min-h-screen bg-gray-50/80 pb-24">
       {settings && <SettingsHydrator settings={settings} />}
       <ScrollToBottomSheet />
-
       {/* LAYER BAWAH: Sticky Canvas */}
       <div className="sticky top-[70px] z-0">
-        <div className="absolute top-[-24px] left-0 w-full h-[212.5px] z-[-1]">
+        <div className="absolute top-[-24px] left-0 w-full h-[212px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
@@ -116,16 +115,38 @@ export default async function Home() {
         id="bottom-sheet"
         className="
     relative z-10
-    bg-white rounded-t-[25px]
-    mt-6 shadow-layer-xl
+    bg-white rounded-t-[28px]
+    mt-5
+    shadow-elevation-2
     min-h-screen
     flex flex-col
     overflow-hidden
   "
       >
-        {/* soft top border fade */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent z-30" />
-
+        {/* premium top separator */}
+        <div
+          className="
+      absolute top-0 left-4 right-4
+      h-px
+      bg-gradient-to-r
+      from-transparent
+      via-black/10
+      to-transparent
+      z-30
+    "
+        />
+        {/* subtle top glow */}
+        <div
+          className="
+      absolute top-0 left-0 right-0
+      h-6
+      bg-gradient-to-b
+      from-black/[0.03]
+      to-transparent
+      pointer-events-none
+      z-20
+    "
+        />
         {/* handle */}
         <div className="flex justify-center pt-3 pb-2 bg-white rounded-t-[25px] z-20 flex-shrink-0">
           <div className="w-14 h-1 bg-gray-300 rounded-full" />

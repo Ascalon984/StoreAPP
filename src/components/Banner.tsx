@@ -150,11 +150,11 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   return (
     <section className="px-3 pt-1 pb-3 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative">
+      <div className="relative rounded-2xl overflow-hidden">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto hide-scrollbar gap-1 snap-x snap-mandatory"
+          className="flex overflow-x-auto hide-scrollbar gap-1 snap-x snap-mandatory rounded-2xl" // ← tambah rounded-2xl
           style={{
             msOverflowStyle: "none",
             scrollbarWidth: "none",

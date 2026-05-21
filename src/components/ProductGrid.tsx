@@ -381,7 +381,7 @@ export default function ProductGrid({
           Fallback otomatis ke allProducts jika belum ada penjualan
           ══════════════════════════════════════════ */}
       {!isSpecificCategory && (
-        <section id="product-grid" className="px-4 pt-5 pb-4">
+        <section id="product-grid" className="px-4 pt-2 pb-4">
           {isLoadingPopular ? (
             <div className="grid grid-cols-2 gap-x-2 gap-y-3">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -421,9 +421,7 @@ export default function ProductGrid({
           {showPromoSection && (
             <div className="pb-1">
               {isLoadingPromo ? (
-                <div
-                  className="flex gap-3 overflow-hidden"
-                >
+                <div className="flex gap-3 overflow-hidden">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <PromoCardSkeleton key={i} />
                   ))}

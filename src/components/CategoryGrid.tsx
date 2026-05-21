@@ -4,25 +4,18 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFilterStore } from "@/store/useFilterStore";
 import { Category } from "@/lib/types";
+import { GridColorIcon } from "./GridColorIcon";
 
 const iconPathMap: Record<string, string> = {
-  all: "/icons/all icon.png",
+  // Mapping category IDs to icon PNG files
+  // 'all' uses custom SVG component, no path needed
   snack: "/icons/snack.png",
   minuman: "/icons/minuman.png",
-  "kebutuhan-pokok": "/icons/kebutuhan pokok.png",
-  "alat-tulis": "/icons/alat tulis.png",
-  kebersihan: "/icons/kebersihan.png",
-  gas: "/icons/gas.png",
+  pulsa: "/icons/pulsa.png",
   listrik: "/icons/listrik.png",
-  pakaian: "/icons/pakaian.png",
-  elektronik: "/icons/elektronik.png",
-  peralatan: "/icons/peralatan.png",
 };
 
-const colorMap: Record<
-  string,
-  { active: string; bg: string; glow: string }
-> = {
+const colorMap: Record<string, { active: string; bg: string; glow: string }> = {
   all: {
     active: "text-amber-600",
     bg: "bg-amber-50",
@@ -41,49 +34,13 @@ const colorMap: Record<
     glow: "bg-amber-400",
   },
 
-  "kebutuhan-pokok": {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  "alat-tulis": {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  kebersihan: {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  gas: {
+  pulsa: {
     active: "text-amber-600",
     bg: "bg-amber-50",
     glow: "bg-amber-400",
   },
 
   listrik: {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  pakaian: {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  elektronik: {
-    active: "text-amber-600",
-    bg: "bg-amber-50",
-    glow: "bg-amber-400",
-  },
-
-  peralatan: {
     active: "text-amber-600",
     bg: "bg-amber-50",
     glow: "bg-amber-400",
@@ -205,7 +162,8 @@ export default function CategoryGrid({
         {categories.map((cat) => {
           if (cat.id.startsWith("empty-slot-")) return null;
 
-          const iconPath = iconPathMap[cat.icon] || iconPathMap.all;
+          const isAllCategory = cat.id === "all";
+          const iconPath = isAllCategory ? "" : iconPathMap[cat.id] || ""; // Use cat.id as key, not cat.icon
           const isActive = category === cat.id;
 
           return (
@@ -213,47 +171,49 @@ export default function CategoryGrid({
               key={cat.id}
               onClick={() => handleClick(cat.id)}
               className={`
-    group relative flex flex-col items-center flex-shrink-0
-    w-[68px]      
-    pt-3.5 pb-2.5   // ← pt-3 → pt-3.5
-    px-1
-    transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-    active:scale-95
-  `}
+                group relative flex flex-col items-center flex-shrink-0
+                w-[68px]      
+                pt-3.5 pb-2.5   // ← pt-3 → pt-3.5
+                px-1
+                transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+                active:scale-95
+              `}
             >
-              {/* Icon + Ellipse Container */}
-              <div
-                className="relative flex items-center justify-center 
-    w-9 h-9        // ← w-8 h-8 → w-9 h-9 (32→36px)
-  "
-              >
-                {/* Ellipse — lebih proporsional */}
+              {/* Icon + Ellipse Container — samakan ukuran */}
+              <div className="relative flex items-center justify-center w-11 h-11">
+                {/* Ellipse */}
                 <div
                   className={`
-    absolute top-[53%] left-1/2 -translate-x-1/2 -translate-y-[10%]
+    absolute left-1/2 top-[54%] -translate-x-1/2
     w-[42px] h-[22px]
     rounded-[100%] transition-all duration-300 z-0
-    ${isActive
-                      ? "bg-amber-500 opacity-90 blur-[0.5px] scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]"
-                      : "bg-emerald-500 opacity-75 blur-[0.5px]"
-                    }
+    ${
+      isActive
+        ? "bg-amber-500 opacity-90 scale-110 shadow-[0_2px_8px_rgba(251,191,36,0.45)]"
+        : "bg-emerald-600 opacity-75"
+    }
   `}
                 />
 
                 {/* Icon */}
-                <Image
-                  src={iconPath}
-                  alt={cat.name}
-                  width={34}
-                  height={34}
-                  className={`
-      w-9 h-9
-      object-contain relative z-10
-      transition-transform duration-300
-      ${isActive ? "scale-110 -translate-y-[1px]" : "group-hover:scale-105"}
-    `}
-                  style={{ mixBlendMode: "multiply" }}
-                />
+                {isAllCategory ? (
+                  <div className="relative z-10">
+                    <GridColorIcon size={40} />
+                  </div>
+                ) : (
+                  <Image
+                    src={iconPath}
+                    alt={cat.name}
+                    width={44}
+                    height={44}
+                    className={`
+        w-11 h-11
+        object-contain relative z-10
+        transition-transform duration-300
+        ${isActive ? "scale-110 -translate-y-[1px]" : "group-hover:scale-105"}
+      `}
+                  />
+                )}
               </div>
 
               {/* Label */}

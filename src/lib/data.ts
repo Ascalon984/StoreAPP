@@ -25,9 +25,8 @@ export const categories: Category[] = [
   { id: "all", name: "Semua", icon: "LayoutGrid" },
   { id: "snack", name: "Snack", icon: "Cookie" },
   { id: "minuman", name: "Minuman", icon: "Coffee" },
-  { id: "kebutuhan", name: "Kebutuhan Pokok", icon: "ShoppingBasket" },
-  { id: "atk", name: "Alat Tulis", icon: "Pencil" },
-  { id: "kebersihan", name: "Kebersihan", icon: "Sparkles" },
+  { id: "pulsa", name: "Pulsa", icon: "Phone" },
+  { id: "listrik", name: "Listrik", icon: "Zap" },
 ];
 
 export const products: Product[] = [
@@ -395,7 +394,7 @@ export const defaultReviews: Review[] = [
   {
     id: "r1",
     productId: "all",
-    name: "Ahmad",
+    name: "Pengguna",
     rating: 5,
     comment: "Proses cepat, admin ramah",
     createdAt: generateReviewDate(1),

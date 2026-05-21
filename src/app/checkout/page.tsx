@@ -822,12 +822,13 @@ export default function CheckoutPage() {
           />
           <div className="relative bg-white rounded-3xl shadow-2xl max-w-[320px] w-full p-6 text-center border border-gray-50">
             <div className="flex flex-col items-center">
-              <div className="w-[118px] h-[118px] mb-2 relative">
+              <div className="w-[140px] h-[140px] mb-2 relative">
                 <Image
-                  src="/icons/cancel order.png"
+                  src="/illustrations/Checkout confirmation.svg"
                   alt="Batalkan pesanan"
                   fill
-                  sizes="96px"
+                  sizes="118px"
+                  unoptimized
                   priority
                   className="object-contain"
                 />
