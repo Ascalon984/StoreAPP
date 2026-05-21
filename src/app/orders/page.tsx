@@ -445,10 +445,11 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                         setActive(i);
                       }}
                       className={`rounded-full transition-all duration-200
-                      ${i === active
+                      ${
+                        i === active
                           ? "w-3 h-1 bg-gray-400"
                           : "w-1 h-1 bg-gray-200"
-                        }`}
+                      }`}
                     />
                   ))}
                 </div>
@@ -493,10 +494,11 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                           setActive(i);
                         }}
                         className={`rounded-full transition-all duration-200
-                        ${i === active
+                        ${
+                          i === active
                             ? "w-3 h-1 bg-gray-400"
                             : "w-1 h-1 bg-gray-200"
-                          }`}
+                        }`}
                       />
                     ))}
                   </div>
@@ -865,11 +867,10 @@ export default function OrdersPage() {
       {/* HEADER + FLOATING TAB */}
       <div className="sticky top-0 z-50">
         <div className="bg-[#048750] rounded-b-[14px] shadow-xs">
-
           {/* Title — Menggunakan items-end h-9 untuk memosisikan teks di area bawah header */}
           <div className="flex items-end justify-center px-4 h-9 pb-0.5">
             <span
-              style={{ wordSpacing: '4px' }}
+              style={{ wordSpacing: "4px" }}
               className="text-[15px] font-black text-white tracking-normal"
             >
               Riwayat Pesanan
@@ -890,7 +891,6 @@ export default function OrdersPage() {
       shadow-layer-sm
     "
             >
-
               {/* Sliding Active Background — Diperbaiki rumusnya */}
               <div
                 className="
@@ -901,10 +901,9 @@ export default function OrdersPage() {
         transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) {/* Menggunakan bezier premium */}
       "
                 style={{
-                  width: `${100 / FILTER_TABS.length}%`,
                   // Mengurangi padding 4px dari total ruang agar transisi stabil
-                  transform: `translateX(${FILTER_TABS.findIndex(t => t.key === activeFilter) * 100}%) scale(${activeFilter ? 1 : 0.95})`,
-                  left: '2px', // Mengunci posisi awal sejajar p-[2px] kontainer
+                  transform: `translateX(${FILTER_TABS.findIndex((t) => t.key === activeFilter) * 100}%) scale(${activeFilter ? 1 : 0.95})`,
+                  left: "2px", // Mengunci posisi awal sejajar p-[2px] kontainer
                   width: `calc((100% - 4px) / ${FILTER_TABS.length})`,
                 }}
               />
@@ -925,7 +924,7 @@ export default function OrdersPage() {
             transition-colors duration-300 {/* Disamakan dengan durasi background */}
             active:scale-[0.97]
             border-none outline-none
-            ${active ? 'text-white' : 'text-gray-400'}
+            ${active ? "text-white" : "text-gray-400"}
           `}
                   >
                     {tab.label}
