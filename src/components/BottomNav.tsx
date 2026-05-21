@@ -146,8 +146,8 @@ export default function BottomNav() {
     C167 0, 173 33.5, 200 33.5
     C227 33.5, 233 0, 252 0
     L400 0
-    L400 58
-    L0 58
+    L400 52
+    L0 52
     Z
   "
                 fill="white"
@@ -174,7 +174,7 @@ export default function BottomNav() {
           {/* NAVIGATION CONTENT */}
           <div className="relative z-10 flex justify-between items-center h-full">
             {/* Sisi Kiri: Home & Pesanan */}
-            <div className="flex-1 flex justify-end pr-4 gap-6">
+            <div className="flex-1 flex justify-end pr-4 gap-5">
               <Link
                 href="/"
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
@@ -201,7 +201,7 @@ export default function BottomNav() {
               >
                 <NotebookTextIcon active={pathname === "/orders"} />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors translate-y-[0.5px] ${
+                  className={`text-[10px] tracking-tight transition-colors ${
                     pathname === "/orders" ? "font-bold" : "font-semibold"
                   }`}
                 >
@@ -270,7 +270,7 @@ export default function BottomNav() {
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}
-            <div className="flex-1 flex justify-start pl-4 gap-6">
+            <div className="flex-1 flex justify-start pl-4 gap-5">
               <Link
                 href="/wishlist"
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
@@ -283,7 +283,6 @@ export default function BottomNav() {
                   size={21}
                   strokeWidth={pathname === "/wishlist" ? 1.8 : 1.5}
                   fill={pathname === "/wishlist" ? "currentColor" : "none"}
-                  className="transition-transform duration-200 group-hover:scale-105"
                 />
                 <span
                   className={`text-[10px] tracking-tight transition-colors ${pathname === "/wishlist" ? "font-bold" : "font-semibold"}`}
@@ -304,7 +303,6 @@ export default function BottomNav() {
                   size={21}
                   strokeWidth={pathname === "/profile" ? 1.8 : 1.5}
                   fill={pathname === "/profile" ? "currentColor" : "none"}
-                  className="transition-transform duration-200 group-hover:scale-105"
                 />
                 <span
                   className={`text-[10px] tracking-tight transition-colors ${pathname === "/profile" ? "font-bold" : "font-semibold"}`}
