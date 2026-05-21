@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Handbag } from 'lucide-react';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Handbag } from "lucide-react";
 
-interface SplashScreenProps {
-  onFinish: () => void;
-}
+export default function SplashScreen() {
+  const router = useRouter();
 
-export default function SplashScreen({ onFinish }: SplashScreenProps) {
   useEffect(() => {
-    const timer = setTimeout(onFinish, 800);
+    const timer = setTimeout(() => {
+      router.push("/");
+    }, 800);
     return () => clearTimeout(timer);
-  }, [onFinish]);
+  }, [router]);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#065F46] overflow-hidden select-none">
@@ -33,9 +34,18 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
 
       <style jsx>{`
         @keyframes splash-fade {
-          0% { opacity: 0; transform: scale(0.9); }
-          60% { opacity: 1; transform: scale(1.02); }
-          100% { opacity: 1; transform: scale(1); }
+          0% {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          60% {
+            opacity: 1;
+            transform: scale(1.02);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
         }
         .animate-splash-fade {
           animation: splash-fade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
