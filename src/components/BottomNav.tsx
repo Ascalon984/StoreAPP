@@ -172,9 +172,9 @@ export default function BottomNav() {
           </div>
 
           {/* NAVIGATION CONTENT */}
-          <div className="relative z-10 flex justify-between items-center h-full px-4">
+          <div className="relative z-10 flex justify-between items-center h-full">
             {/* Sisi Kiri: Home & Pesanan */}
-            <div className="flex-1 flex justify-end pr-3 gap-6">
+            <div className="flex-1 flex justify-end pr-4 gap-6">
               <Link
                 href="/"
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
@@ -211,7 +211,7 @@ export default function BottomNav() {
             </div>
 
             {/* Tombol Tengah: Keranjang Floating */}
-            <div className="w-[60px] flex justify-center relative -top-[24px]">
+            <div className="w-[60px] flex-shrink-0 flex justify-center relative -top-[24px]">
               <Link
                 href="/checkout"
                 className="group relative w-[52px] h-[52px] rounded-full 
@@ -270,7 +270,7 @@ export default function BottomNav() {
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}
-            <div className="flex-1 flex justify-start pl-3 gap-6">
+            <div className="flex-1 flex justify-start pl-4 gap-6">
               <Link
                 href="/wishlist"
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
