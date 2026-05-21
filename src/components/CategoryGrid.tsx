@@ -149,14 +149,17 @@ export default function CategoryGrid({
   return (
     <section className="px-4 pt-1 pb-3.5">
       {/* Hapus dekorasi vertikal, perbesar label */}
-      <div className="mb-0.5 px-0.5">
+      {/* Header */}
+      <div className="mb-0 px-0.5">
+        {" "}
+        {/* ← mb-0.5 → mb-0 */}
         <h2 className="text-[15px] font-bold text-gray-800 tracking-tight">
           Kategori
         </h2>
       </div>
 
       <div
-        className="flex gap-2 overflow-x-auto"
+        className="flex gap-2 overflow-x-auto -mt-1"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {categories.map((cat) => {
@@ -173,7 +176,7 @@ export default function CategoryGrid({
               className={`
                 group relative flex flex-col items-center flex-shrink-0
                 w-[68px]      
-                pt-3.5 pb-2.5   // ← pt-3 → pt-3.5
+                pt-1 pb-2.5   // ← pt-3 → pt-3.5
                 px-1
                 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
                 active:scale-95

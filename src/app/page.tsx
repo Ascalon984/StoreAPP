@@ -53,7 +53,7 @@ export default async function Home() {
       <ScrollToBottomSheet />
       {/* LAYER BAWAH: Sticky Canvas */}
       <div className="sticky top-[70px] z-0">
-        <div className="absolute top-[-24px] left-0 w-full h-[212px] z-[-1]">
+        <div className="absolute top-[-24px] left-0 w-full h-[208px] z-[-1]">
           <svg
             className="w-full h-full antialiased"
             viewBox="0 0 100 100"
@@ -115,13 +115,17 @@ export default async function Home() {
         id="bottom-sheet"
         className="
     relative z-10
-    bg-white rounded-t-[28px]
+    bg-white rounded-t-[26px]
     mt-5
     shadow-elevation-2
     min-h-screen
     flex flex-col
-    overflow-hidden
+    overflow-y-auto
+    will-change-transform
   "
+        style={{
+          WebkitOverflowScrolling: "touch",
+        }}
       >
         {/* premium top separator */}
         <div

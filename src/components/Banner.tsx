@@ -150,7 +150,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   return (
     <section className="px-3 pt-1 pb-3 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative rounded-2xl overflow-hidden">
+      <div className="relative rounded-2xl overflow-hidden aspect-[2.3/1]">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -167,7 +167,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={`${banner.id}-${index}`}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2.32/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2.3/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}
