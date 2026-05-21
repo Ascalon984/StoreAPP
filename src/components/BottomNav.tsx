@@ -270,7 +270,7 @@ export default function BottomNav() {
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}
-            <div className="flex-1 flex justify-end pr-3 gap-6">
+            <div className="flex-1 flex justify-start pl-3 gap-6">
               <Link
                 href="/wishlist"
                 className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
