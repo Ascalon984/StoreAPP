@@ -1,19 +1,14 @@
-'use client';
+"use client";
 
-import { Handbag } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { Handbag } from "lucide-react";
 
-interface WelcomeScreenProps {
-  onStartShopping: () => void;
-  onLogin: () => void;
-}
-
-export default function WelcomeScreen({ onStartShopping, onLogin }: WelcomeScreenProps) {
+export default function WelcomeScreen() {
+  const router = useRouter();
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#065F46] overflow-hidden select-none">
-
       {/* AREA ATAS: Konten Utama */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-
         {/* 1. Animasi Logo: Turun dari atas (0s) */}
         <div className="animate-[slideDown_0.5s_ease-out_forwards]">
           <Handbag size={72} strokeWidth={1.5} className="text-white/90" />
@@ -37,27 +32,27 @@ export default function WelcomeScreen({ onStartShopping, onLogin }: WelcomeScree
           viewBox="0 0 1440 100"
           preserveAspectRatio="none"
         >
-          <path
-            fill="#ffffff"
-            d="M0,70 Q720,10 1440,70 L1440,100 L0,100 Z"
-          />
+          <path fill="#ffffff" d="M0,70 Q720,10 1440,70 L1440,100 L0,100 Z" />
         </svg>
       </div>
 
       {/* AREA BAWAH: Kotak Putih Tempat Tombol */}
       <div className="bg-white px-8 pb-12 flex flex-col items-center">
         <button
-          onClick={onStartShopping}
+          onClick={() => router.push("/")}
           className="w-full max-w-[320px] py-4 rounded-full bg-[#D89B2B] text-white font-bold text-base tracking-wide shadow-lg active:scale-[0.97] transition-all flex items-center justify-center gap-2"
         >
           Mulai Belanja
         </button>
 
         <button
-          onClick={onLogin}
+          onClick={() => router.push("/auth")}
           className="mt-5 text-gray-500 text-sm font-medium"
         >
-          Sudah punya akun? <span className="text-[#065F46] font-bold underline underline-offset-2">Masuk</span>
+          Sudah punya akun?{" "}
+          <span className="text-[#065F46] font-bold underline underline-offset-2">
+            Masuk
+          </span>
         </button>
       </div>
 
@@ -73,7 +68,7 @@ export default function WelcomeScreen({ onStartShopping, onLogin }: WelcomeScree
             transform: translateY(0);
           }
         }
-        
+
         @keyframes fadeIn {
           from {
             opacity: 0;
