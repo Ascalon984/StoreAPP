@@ -10,8 +10,8 @@ interface BannerProps {
 
 function BannerSkeleton() {
   return (
-    <section className="px-3 pt-1 pb-3 -mt-px">
-      <div className="w-full aspect-[2.32/1] skeleton rounded-2xl" />
+    <section className="px-3 pt-4 pb-1 -mt-px">
+      <div className="w-full aspect-[2.7/1] skeleton rounded-lg" />
     </section>
   );
 }
@@ -148,9 +148,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-3 pt-1 pb-3 -mt-px">
+    <section className="px-3 pt-4 pb-1 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative rounded-2xl overflow-hidden aspect-[2.3/1]">
+      <div className="relative rounded-lg overflow-hidden aspect-[2.7/1]">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -167,7 +167,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={`${banner.id}-${index}`}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2.3/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2.7/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}
@@ -185,7 +185,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
       {/* Dot indicators — moved outside, below banner */}
       {banners.length > 1 && (
-        <div className="flex justify-center gap-1.5 mt-2">
+        <div className="flex justify-center gap-1.5 mt-1.5">
           {banners.map((_, i) => (
             <button
               key={i}

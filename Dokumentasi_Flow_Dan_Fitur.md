@@ -3,9 +3,10 @@
 Berikut adalah hasil kerapian dari flow aplikasi yang Anda jabarkan. Dokumen ini dibagi per bagian agar mudah dibaca oleh tim UI/UX maupun developer.
 
 ## 1. Splash Screen & Authentication
-- **Splash Screen**: Layar pembuka aplikasi (biasanya memiliki logika untuk *auto-redirect* ke Auth atau Home jika sudah *login*).
+
+- **Splash Screen**: Layar pembuka aplikasi (biasanya memiliki logika untuk _auto-redirect_ ke Auth atau Home jika sudah _login_).
 - **Auth Page (Masuk & Daftar)**:
-  - Terdapat *tab* **Masuk** dan **Daftar**.
+  - Terdapat _tab_ **Masuk** dan **Daftar**.
   - Terdapat shortcut login via **Google / Facebook**.
   - **Flow Shortcut**: Jika klik shortcut tapi belum terdaftar -> user akan diarahkan untuk input `username`.
   - **Primary ID**: Menggunakan `username`.
@@ -15,57 +16,98 @@ Berikut adalah hasil kerapian dari flow aplikasi yang Anda jabarkan. Dokumen ini
   - **Validasi**: Jika user meminta ulang kode (resend) untuk email/no hp yang sama sebelum 1 menit habis, durasi timer OTP **tidak akan tereset** (melanjutkan timer yang sedang berjalan).
 
 ## 2. Home Screen Page
+
 - **Header**: Menampilkan avatar pengguna dan Nama Lengkap (bukan username) yang diambil dari halaman profil.
+- **Search Bar**: Ditempatkan di header untuk memudahkan user mencari produk spesifik secara real-time. Mendukung filter dan suggestion.
 - **Notifikasi (Bell Icon)**:
   - **Aktivitas**: Notifikasi status checkout (pesanan berhasil/gagal).
-  - **Promo**: Notifikasi diskon untuk produk yang ada di *wishlist/favorit* user.
-- **Banner Slider**: Autoplay *banner slide* setiap 5 detik (diatur melalui *Control Panel/Admin*).
-- **Kategori (Row Button)**: Button kategori yang dapat digeser (*scroll horizontal*). Kategori "Semua" bersifat *hardcoded* di posisi awal, sisanya diatur melalui CP.
-- **Katalog Produk (Card)**: Menampilkan Harga, Coretan Harga (Diskon), Unit Terjual, dan Summary Rating. (Data produk dari CP, sementara personalisasi/rekomendasi didapat dari aktivitas belanja user).
+  - **Promo**: Notifikasi diskon untuk produk yang ada di _wishlist/favorit_ user.
+- **Banner Slider**: Autoplay _banner slide_ setiap 5 detik (diatur melalui _Control Panel/Admin_). Mendukung swipe manual untuk navigasi manual.
+- **Kategori (Row Button)**: Button kategori yang dapat digeser (_scroll horizontal_). Kategori "Semua" bersifat _hardcoded_ di posisi awal, sisanya diatur melalui CP.
+- **8 Produk Populer (Popular Products Section)**:
+  - Menampilkan 8 produk paling populer dalam bentuk **grid 2 kolom** atau **carousel** sesuai design.
+  - Setiap produk card menampilkan: Gambar, Nama, Harga, Coretan Harga (Diskon %), Unit Terjual, Summary Rating (bintang).
+  - Dapat dilengkapi dengan **Mini Sticker/Badge** di sudut kartu untuk highlight status:
+    - "Trending" (Trending badge)
+    - "Flash Sale" (Sale badge)
+    - "Best Seller" (Best seller badge)
+    - Atau custom badge lainnya sesuai kebijakan promo
+  - Data produk populer diambil dari CP berdasarkan algoritma terjual/rating/engagement.
+- **Row Card Produk Diskon/Promo**:
+  - Baris khusus yang menampilkan produk-produk yang sedang dalam periode **diskon atau promo aktif**.
+  - Format tampilan: **Horizontal scrollable carousel** dengan card yang sama seperti katalog biasa.
+  - Setiap card dapat menampilkan **badge countdown timer** untuk menunjukkan sisa waktu promo.
+  - Data produk ini diambil dari CP berdasarkan periode promo yang aktif.
+  - CTA: Tombol **"Lihat Semua"** untuk mengarahkan ke halaman kategori/filter promo.
+- **Katalog Produk (Card) - Semua Produk**:
+  - Menampilkan daftar lengkap produk dalam bentuk grid atau infinite scroll (sesuai design).
+  - Setiap produk card menampilkan: Gambar, Nama, Harga, Coretan Harga (Diskon), Unit Terjual, Summary Rating.
+  - Komponen **Infinite Scroll** atau **Load More** untuk menangani produk berjumlah banyak tanpa lag performa.
+  - (Data produk dari CP, sementara personalisasi/rekomendasi didapat dari aktivitas belanja user).
 
 ## 3. Product Detail Page
-- **Header / Action**: Fitur button *Share* dan *Add to Favorite* (Love).
+
+- **Header / Action**: Fitur button _Share_ dan _Add to Favorite_ (Love).
+- **Product Image Gallery**:
+  - Swipeable carousel di bagian paling atas halaman untuk melihat foto produk dari berbagai sudut.
+  - Mendukung fitur _zoom_ dan buka _fullscreen_.
+  - Menampilkan thumbnail images di bawah untuk navigasi cepat.
 - **Informasi Utama Produk**: Menampilkan harga utama, coretan diskon, unit terjual, dan sisa stok.
-- **Variasi Produk**: Hanya berupa label tulisan (*no image*) agar hemat tempat, dan bisa disembunyikan (*collapse*) menggunakan *dropdown*.
+- **Variasi Produk**: Hanya berupa label tulisan (_no image_) agar hemat tempat, dan bisa disembunyikan (_collapse_) menggunakan _dropdown_.
 - **Deskripsi Produk**: Penjelasan rincian barang.
 - **Shortcut Hubungi Penjual**:
   - Tombol untuk langsung bertanya spesifikasi produk yang diarahkan ke halaman CS Chat.
   - **Fitur Snap**: Melampirkan kartu produk secara otomatis di dalam chat.
   - **Quick Chat Chips**: "Ketersediaan stok", "Tanggal kadaluarsa", "Pengiriman same day".
 - **Ulasan Produk**:
-  - Jumlah ulasan dan *Summary Rating* (1-5).
-  - *Bar chart* distribusi untuk melihat jumlah penilai per kategori rating (bintang 1-5).
-  - List Komentar: Sensor sebagian karakter username (misal: a***b), isi komentar, timestamp, dan tombol *thumbs up / down*.
+  - Jumlah ulasan dan _Summary Rating_ (1-5).
+  - _Bar chart_ distribusi untuk melihat jumlah penilai per kategori rating (bintang 1-5).
+  - List Komentar: Sensor sebagian karakter username (misal: a*\*\*b), isi komentar, timestamp, dan tombol *thumbs up / down\*.
 - **Bottom Action (CTA)**: Tombol **"Add to Cart"** dan **"Pesan Sekarang"**.
 
 ## 4. Halaman Favorit (Wishlist)
-- **Dynamic Row Filter**: Filter baris dinamis berdasarkan kategori produk yang telah disimpan user. (Tidak *hardcoded* agar tidak terjadi *error/inkonsistensi* jika admin menghapus suatu kategori di CP).
+
+- **Dynamic Row Filter**: Filter baris dinamis berdasarkan kategori produk yang telah disimpan user. (Tidak _hardcoded_ agar tidak terjadi _error/inkonsistensi_ jika admin menghapus suatu kategori di CP).
 - **Produk Item Row**:
-  - Button *Love*: Jika di-klik menjadi *inactive*, produk otomatis terhapus dari favorit.
-  - Button *Cart*: Untuk langsung memasukkan barang ke keranjang.
+  - Button _Love_: Jika di-klik menjadi _inactive_, produk otomatis terhapus dari favorit.
+  - Button _Cart_: Untuk langsung memasukkan barang ke keranjang.
 
 ## 5. Halaman Profil (Profile Page)
+
 - **Header Profil**:
-  - Foto Avatar: Bisa diklik/ditap untuk membuka *modal* area crop gambar dan konfirmasi.
+  - Foto Avatar: Bisa diklik/ditap untuk membuka _modal_ area crop gambar dan konfirmasi.
   - Nama Lengkap: Diambil dari bagian data pribadi.
   - Username: Diambil dari data registrasi awal.
 - **Shortcut Pusat Bantuan (CS)**:
-  - Tombol *Message Circle More* di pojok kanan atas menuju CS umum.
+  - Tombol _Message Circle More_ di pojok kanan atas menuju CS umum.
   - **Quick Chat Chips**: "Jam operasional", "Metode pembayaran", "Cara membatalkan pesanan", "Hubungi admin".
 - **Dynamic Metrik Pengguna**:
   - Jika profil belum lengkap (< 5/5): Menampilkan chart kelengkapan profil (berdasarkan Nama, Email, No. Telp, Foto Profil).
-  - Jika profil lengkap (5/5): Otomatis terganti (*swap*) menjadi **Metrik Aktivitas Belanja** (Jumlah pesanan, Jumlah produk favorit, Jumlah ulasan).
+  - Jika profil lengkap (5/5): Otomatis terganti (_swap_) menjadi **Metrik Aktivitas Belanja** (Jumlah pesanan, Jumlah produk favorit, Jumlah ulasan).
 - **Pengaturan Akun**:
   - Row Dropdown **Data Pribadi**: Nama, Email, No Telp.
-  - Row Dropdown **Alamat**: Maksimal 3 alamat dengan *radio button*. (Alamat tidak bisa dihapus jika hanya tersisa 1).
-  - Row Dropdown **Preferensi Notifikasi**: Toggle on/off untuk *Update Pesanan* dan *Promo & Penawaran*.
+  - Row Dropdown **Alamat**: Maksimal 3 alamat dengan _radio button_. (Alamat tidak bisa dihapus jika hanya tersisa 1).
+  - Row Dropdown **Preferensi Notifikasi**: Toggle on/off untuk _Update Pesanan_ dan _Promo & Penawaran_.
 - **Informasi Lainnya**:
   - Modal / Hyperlink: **Kebijakan & Privasi**
   - Modal / Hyperlink: **Tentang Aplikasi**
 - **Action Button**: Log Out Akun.
 
-## 6. Halaman Keranjang & Checkout (Checkout Page)
-*(Lihat bagian analisis di bawah mengenai Halaman Keranjang)*
+## 6. Halaman Keranjang Belanja (Cart Page)
+
+- **Daftar Produk Keranjang**:
+  - Menampilkan semua produk yang telah ditambahkan ke keranjang.
+  - Setiap item dilengkapi dengan **Checkbox** untuk memilih produk yang ingin di-checkout.
+  - Fitur untuk mengubah kuantitas produk menggunakan stepper (`-` dan `+`).
+  - Tombol **Hapus** untuk menghapus produk dari keranjang.
+- **Ringkasan Harga (Bottom Bar)**:
+  - Menampilkan kalkulasi **Subtotal Sementara** berdasarkan produk yang dipilih (checked).
+  - Breakdown: subtotal produk, diskon, biaya potensial.
+- **Action Button**: Tombol **"Lanjut ke Checkout"** (aktif hanya jika minimal 1 produk dipilih).
+- **Empty State**: Jika keranjang kosong, tampilkan ilustrasi dan teks "Keranjang Anda kosong. Mulai belanja sekarang!"
+
+## 7. Halaman Checkout (Checkout Page)
+
 - **Alamat Pengiriman**:
   - Dropdown daftar alamat yang diambil dari data profil, disertai tombol sinkronisasi alamat.
   - Terdapat info nama user dan nomor telepon penerima.
@@ -77,300 +119,162 @@ Berikut adalah hasil kerapian dari flow aplikasi yang Anda jabarkan. Dokumen ini
   - COD (Bayar di Tempat)
   - E-Wallet
   - Virtual Account / Bank Elektronik
-- **Action Button**: Tombol **"Bayar Sekarang"** (Hanya menjadi *aktif/clickable* setelah semua form wajib di atas terisi).
+- **Action Button**: Tombol **"Bayar Sekarang"** (Hanya menjadi _aktif/clickable_ setelah semua form wajib di atas terisi).
 
-## 7. Riwayat Pembelian Page (Order History)
+## 8. Riwayat Pembelian Page (Order History)
+
 - **Filter Tab**: Semua, Diproses, Selesai, Dibatalkan.
-- **Grouping Pesanan**: Tampilan list dibagi berdasarkan *Dynamic Date* (Bulan dan Tahun pemesanan).
-- **Multiple Items Card**: Jika pemesanan (Order ID) dilakukan di waktu yang sama namun berisi >1 jenis produk, item-item tersebut digabung ke dalam 1 card dengan fitur *carousel scroll*. Diwakili 1 Order ID dan Timestamp.
+- **Grouping Pesanan**: Tampilan list dibagi berdasarkan _Dynamic Date_ (Bulan dan Tahun pemesanan).
+- **Multiple Items Card**: Jika pemesanan (Order ID) dilakukan di waktu yang sama namun berisi >1 jenis produk, item-item tersebut digabung ke dalam 1 card dengan fitur _carousel scroll_. Diwakili 1 Order ID dan Timestamp.
 - **Status & Actions**:
   - **Selesai**: Memiliki button **"Beri Ulasan"** (rating akan diterapkan ke semua produk dalam pesanan tersebut sekaligus) dan **"Beli Lagi"**.
-  - **Diproses**: Hanya memiliki 1 button **"Hubungi Penjual"** yang diarahkan ke CS Chat. Memiliki fitur *snap product* pesanan, dengan **Quick Chat Chips**: "Keberadaan pesanan", "Proses pesanan", "Pengajuan perubahan alamat".
+  - **Diproses**: Hanya memiliki 1 button **"Hubungi Penjual"** yang diarahkan ke CS Chat. Memiliki fitur _snap product_ pesanan, dengan **Quick Chat Chips**: "Keberadaan pesanan", "Proses pesanan", "Pengajuan perubahan alamat".
   - **Dibatalkan**: Hanya memiliki 1 button **"Beli Lagi"**.
 
 ---
 
-# 💡 Koreksi & Fitur UI/UX yang Mungkin Terlewat
-
-Setelah menganalisis flow di atas, alur aplikasi yang Anda rancang sudah sangat komprehensif, logis, dan detail. Namun, berdasarkan standar *best practice* UI/UX aplikasi e-commerce, ada beberapa poin fungsional maupun visual yang sepertinya terlewat dari penjabaran Anda:
-
-### 1. Halaman Keranjang Belanja (Cart Page)
-Anda menyebutkan adanya tombol _"Add Cart"_ (di halaman produk) dan _"Button Cart"_ (di halaman favorit). Anda juga menjelaskan _"Checkout Page"_. Namun, Anda **melewatkan penjelasan Halaman Keranjang (Cart) itu sendiri**. 
-- Sebelum benar-benar masuk ke halaman Checkout, user biasanya akan diarahkan ke *Cart Page* untuk:
-  - Memilih produk mana saja yang ingin di-checkout hari ini (biasanya menggunakan **Checkbox** di samping tiap produk).
-  - Mengubah kuantitas atau menghapus produk.
-  - Melihat kalkulasi **Subtotal Sementara** di bagian *Bottom bar* sebelum menekan tombol "Beli" atau "Checkout".
-
-### 2. Fitur Pencarian Produk (Search Bar)
-Di **Home Screen**, Anda belum menyebutkan adanya komponen **Pencarian (Search Bar)**. Di sebagian besar aplikasi e-commerce, _Search Bar_ ditempatkan secara statis di atas (Header) agar user dapat menemukan barang spesifik secara instan.
-
-### 3. Galeri Gambar (Image Slider) di Detail Produk
-Di bagian **Product Detail**, Anda sangat mendetail terkait komponen harga, variasi yang collapse, deskripsi, hingga rating. Namun, fitur visual utamanya yaitu **Product Image Gallery (Galeri Gambar Produk)** tidak disebutkan. Idealnya di bagian paling atas halaman *Product Detail* ada *swipeable carousel* yang memungkinkan user melihat foto produk dari berbagai sudut (serta mendukung fitur *zoom* atau buka *fullscreen*).
-
-### 4. Penanganan State Kosong (Empty States)
-Dari perspektif pengembangan aplikasi (UI/UX), Anda harus menyediakan tampilan **Empty State** (biasanya berupa ilustrasi + teks penjelas singkat) untuk:
-- Halaman Favorit apabila belum ada produk yang disukai.
-- Riwayat Pemesanan apabila user sama sekali belum pernah berbelanja.
-- Notifikasi yang masih belum ada aktivitas.
-- Keranjang belanja yang kosong.
-
-### 5. Dialog Konfirmasi Destruktif / Warning
-Mengingat beberapa tindakan bersifat menghentikan alur atau merubah data, diperlukan *Confirmation Dialog* (Modal / Bottom Sheet) untuk:
-- Ketika user menekan tombol **Log Out Akun**.
-- Ketika menghapus alamat di profil.
-- Ketika menghapus produk dari keranjang belanja.
-- Ketika user menekan _Back_ saat sudah setengah jalan mengisi form Checkout.
+# � Spesifikasi Control Panel Admin untuk Home Screen
+
+Bagian ini menjelaskan fitur dan konfigurasi yang diperlukan di Control Panel Admin untuk mengelola komponen-komponen Home Screen.
+
+## 1. Manajemen Banner Slider
+
+- **Input**: Upload gambar banner atau link gambar eksternal.
+- **Konfigurasi**:
+  - Interval autoplay (default: 5 detik).
+  - Mendukung swipe/gesture manual.
+  - Urutan tampilan banner (drag-and-drop atau input nomor urut).
+- **Fitur Tambahan**:
+  - Preview tampilan banner di berbagai ukuran layar.
+  - Soft delete / publish/unpublish banner tanpa menghapus data.
+
+## 2. Manajemen Kategori Produk
+
+- **Input**: Nama kategori, icon/gambar kategori.
+- **Konfigurasi**:
+  - Kategori "Semua" bersifat _hardcoded_ di posisi pertama (tidak dapat diubah).
+  - Urutan kategori sisanya dapat diatur (drag-and-drop atau numbering).
+  - Soft delete / aktif-nonaktifkan kategori.
+- **Fitur Tambahan**:
+  - Preview urutan kategori seperti yang akan tampil di aplikasi.
+
+## 3. Manajemen 8 Produk Populer
+
+- **Algoritma Pengambilan Data**:
+  - Otomatis berdasarkan metrik: Jumlah terjual, rating, engagement (views/favorites).
+  - Opsi manual: Admin dapat memilih produk spesifik untuk ditampilkan.
+- **Konfigurasi**:
+  - Set minimum/maximum metrics untuk penentuan "populer".
+  - Jadwal refresh data (real-time, hourly, daily).
+  - Urutan tampilan produk (jika manual selection).
+- **Mini Sticker/Badge Management**:
+  - Tentukan label badge: "Trending", "Flash Sale", "Best Seller", atau custom.
+  - Set kriteria otomatis untuk setiap badge (misalnya: >100 terjual = "Best Seller").
+  - Opsi manual: Admin menambahkan badge secara manual per produk.
+  - Warna dan desain badge dapat dikonfigurasi.
+
+## 4. Manajemen Row Card Produk Diskon/Promo
+
+- **Input Promo**:
+  - Pilih produk yang ikut dalam promo.
+  - Set persentase diskon atau harga khusus.
+  - Tentukan periode promo (tanggal dan jam mulai/berakhir).
+  - Label promo (misal: "Flash Sale 50%", "Limited Offer", dll).
+- **Konfigurasi Tampilan**:
+  - Tampilan carousel horizontal dengan scroll.
+  - Jumlah produk yang ditampilkan per halaman carousel.
+  - Menampilkan badge countdown timer untuk sisa waktu promo.
+  - CTA button "Lihat Semua" untuk mengarahkan ke halaman filter promo.
+- **Fitur Tambahan**:
+  - Filter promo berdasarkan kategori atau jenis diskon.
+  - Jadwal publikasi otomatis (schedule publish/unpublish promo).
+  - Analitik: tracking jumlah klik, views, dan conversion per promo.
+
+## 5. Manajemen Katalog Semua Produk
+
+- **Data yang Ditampilkan**:
+  - Gambar produk, nama, harga asli, harga diskon, persentase diskon.
+  - Unit terjual, summary rating (bintang).
+  - Stock availability status.
+- **Konfigurasi Pagination**:
+  - Tentukan jumlah produk per halaman (default: 20-30 produk).
+  - Implementasi infinite scroll atau load more button.
+  - Preload data untuk optimasi performa.
+- **Filter & Sort Options** (untuk admin):
+  - Filter berdasarkan kategori, status stok, range harga.
+  - Sort: terbaru, terpopuler, harga (asc/desc), rating tertinggi.
+
+## 6. Manajemen Data Produk Umum
+
+- **Data Dasar Produk**:
+  - SKU/ID Produk (unique identifier).
+  - Nama produk, deskripsi singkat, deskripsi lengkap.
+  - Harga asli (base price) dan harga jual (selling price).
+  - Kategori (single/multiple).
+  - Stock/inventory management.
+- **Gambar Produk**:
+  - Upload multiple images (gallery).
+  - Set primary/thumbnail image.
+  - Optimasi ukuran dan format gambar otomatis.
+- **Metadata Produk** (untuk perhitungan badge & rekomendasi):
+  - Unit terjual (tracking dari transaksi).
+  - Jumlah review & average rating.
+  - Jumlah favorit/wishlist.
+  - Engagement metrics (views, clicks).
+
+---
+
+# 🎨 Standar UI/UX Components & Patterns
+
+Bagian ini menjelaskan komponen-komponen UI dan pattern yang harus diterapkan di seluruh aplikasi untuk konsistensi dan user experience yang baik.
+
+## 1. Empty States
+
+Tampilan kosong harus ditampilkan pada halaman-halaman berikut dengan ilustrasi + teks penjelas singkat:
+
+- **Halaman Favorit**: "Belum ada produk favorit. Mulai tambahkan produk favorit sekarang!"
+- **Halaman Riwayat Pemesanan**: "Belum ada riwayat pembelian. Mulai berbelanja sekarang!"
+- **Halaman Notifikasi**: "Tidak ada notifikasi baru saat ini."
+- **Halaman Keranjang**: "Keranjang Anda kosong. Mulai belanja sekarang!"
 
-### 6. Animasi Transisi & Loading Data
-Mengingat ada banyak data dari *Control Panel* (Banner, List Produk, Kategori Dinamis), penting untuk menyertakan UI transisi seperti *Skeleton Loading* (efek *shimmer* kotak/garis saat memuat data) agar layar tidak *blank* putih saat loading jaringan lambat.
+## 2. Confirmation Dialog / Warning Modal
 
+Tampilkan **Confirmation Dialog** (Modal / Bottom Sheet) untuk tindakan-tindakan destruktif:
 
-update bottom sheet product card
-produk populer tampil grid card 2 colomn / jika belum ada pakai all product, tapi produk populer tak boleh terlalu banyak (top sekian agar row produk diskon tidak tenggelam jauh)
-produk diskon & promo tampil horizontal grid card
-all product tampil 2 colomn
-horizontal sticker rasio 2.5/1 agar tidak menyamai hero banner (2.35/1)
+- **Log Out Akun**: Konfirmasi "Anda yakin ingin keluar?"
+- **Hapus Alamat di Profil**: Konfirmasi "Hapus alamat ini secara permanen?"
+- **Hapus Produk dari Keranjang**: Konfirmasi "Hapus produk dari keranjang?"
+- **Back saat Checkout**: Konfirmasi "Pesanan belum selesai. Batalkan checkout?" (jika ada data yang belum tersimpan).
 
+## 3. Loading States & Skeleton Loading
 
+Gunakan **Skeleton Loading** (efek shimmer) untuk menampilkan placeholder saat memuat data:
 
+- **Home Screen**: Loading untuk banner, kategori, popular products, promo section, dan katalog produk.
+- **Product Detail Page**: Loading untuk image gallery, info produk, reviews, dan ratings.
+- **Cart Page**: Loading untuk list produk dan kalkulasi harga.
+- **Checkout Page**: Loading untuk data alamat, pilihan kurir, dan metode pembayaran.
 
-Popular Right Now
-Produk paling sering dibeli hari ini
+Benefits:
 
-(max 6 items only)
+- Memberikan feedback visual saat jaringan lambat.
+- Mencegah layar blank putih yang membuat user bingung.
+- Meningkatkan perceived performance.
 
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
+## 4. Search Bar Implementation
 
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
+**Lokasi**: Header di Home Screen (sticky/tetap terlihat saat scroll).
 
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-produk populer tampil grid card 2 colomn / jika belum ada pakai all product agar tidak melompat ke sticker jika belum ada penjualan sama sekali
-╭────────────────────────────╮
-│ 🔥 Lebih Hemat Hari Ini    │
-│ promo pilihan untukmu      │
-│ ratio 2.2 : 1  sbg papan info          │
-╰────────────────────────────╯
+**Fitur**:
 
+- Real-time search suggestions berdasarkan input user.
+- Hasil pencarian difilter berdasarkan kategori (opsional).
+- History pencarian user (jika disimpan di local storage).
+- Kemampuan clear input dengan 1 klik.
 
-(horizontal promo products)
+**Behavior**:
 
-← scroll horizontal →
+- Klik pada suggestion otomatis navigate ke product detail atau hasil pencarian.
+- Tekan Enter untuk menampilkan hasil pencarian lengkap.
 
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│ PROMO   │ │ PROMO   │ │ PROMO   │
-│ CARD    │ │ CARD    │ │ CARD    │
-└─────────┘ └─────────┘ └─────────┘
-
-
-All Products
-Temukan kebutuhan lainnya
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-
-
-
-(after ±10 products)
-
-
-╭────────────────────────────╮
-│ 💡 Lagi banyak dibeli      │
-│ stok favorit minggu ini    │
-│ ratio 2.5 : 1              │
-╰────────────────────────────╯
-
-
-continue infinite product grid...
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-
-
-
-
-Paling dicari (label)
-(max 6 items only)
-
-(if no sales/popular yet → fallback to all products)
-
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-
-╭────────────────────────────╮
-│ 🔥 Lebih Hemat Hari Ini    │
-│ promo pilihan untukmu      │
-│ ratio 2.2 : 1              │
-│ inline info sticker        │
-╰────────────────────────────╯
-
-
-(horizontal promo products)
-
-← scroll horizontal →
-peek 10% sehingga tak perlu scroll indikator
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│ PROMO   │ │ PROMO   │ │ PROMO   │
-│ CARD    │ │ CARD    │ │ CARD    │
-└─────────┘ └─────────┘ └─────────┘
-
-
-All Products
-Temukan kebutuhan lainnya
-
-
-124 produk          Urutkan ▼ (filter urutkan hanya tersedia saat fokus/tab kategori spesifik)
-
-
-                       • (icon A-Z arrow down- A-Z arrow up)
-                       • Termurah
-                       • Termahal
-                       • Terpopuler
- 
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-(after ±10 products)
-
-inline sticker full width
-╭────────────────────────────╮
-│ 💡 Lagi banyak dibeli      │
-│ stok favorit minggu ini    │
-│ ratio 2.55 : 1              │
-╰────────────────────────────╯
-
-continue infinite product grid...
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
-
-┌────────────┐ ┌────────────┐
-│            │ │            │
-│  PRODUCT   │ │  PRODUCT   │
-│    CARD    │ │    CARD    │
-│            │ │            │
-└────────────┘ └────────────┘
- 
-untuk product card populer dan all produk pakai referensi layout/format product card.tsx saat ini
+---

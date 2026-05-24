@@ -10,12 +10,14 @@ import ProductCard from "./ProductCard";
 import ProductImage from "./ProductImage";
 import { formatRupiah } from "@/lib/utils";
 import {
-  ArrowUpDown,
-  ArrowDownAZ,
-  ArrowUpAZ,
+  SlidersHorizontal,
   TrendingDown,
   TrendingUp,
   Star,
+  Tag,
+  ChevronRight,
+  Flame,
+  Sparkles,
 } from "lucide-react";
 
 interface ProductGridProps {
@@ -27,8 +29,6 @@ const SORT_OPTIONS = [
   { id: "popular", label: "Terpopuler", Icon: Star },
   { id: "cheapest", label: "Termurah", Icon: TrendingDown },
   { id: "expensive", label: "Termahal", Icon: TrendingUp },
-  { id: "az-asc", label: "A–Z", Icon: ArrowDownAZ },
-  { id: "az-desc", label: "Z–A", Icon: ArrowUpAZ },
 ];
 
 function applySort(products: Product[], sort: string): Product[] {
@@ -47,10 +47,127 @@ function applySort(products: Product[], sort: string): Product[] {
   }
 }
 
+/* ── Mock Highlight Data ──────────────────────────── */
+// TODO: Ganti dengan fetch API saat endpoint sudah siap
+const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
+  {
+    id: "hl-1",
+    name: "Indomie Goreng Spesial 85g",
+    slug: "indomie-goreng-85g",
+    price: 2900,
+    originalPrice: 3600,
+    category: "kebutuhan",
+    images: [],
+    rating: 4.8,
+    reviewCount: 125,
+    sold: 1250,
+    description: "",
+    stock: 100,
+  } as Product,
+  {
+    id: "hl-2",
+    name: "Nu Green Tea 500ml",
+    slug: "nu-green-tea-500ml",
+    price: 6500,
+    originalPrice: 8500,
+    category: "minuman",
+    images: [],
+    rating: 4.5,
+    reviewCount: 98,
+    sold: 890,
+    description: "",
+    stock: 50,
+  } as Product,
+  {
+    id: "hl-3",
+    name: "Chitato Sapi Panggang 68g",
+    slug: "chitato-sapi-68g",
+    price: 15500,
+    originalPrice: 18000,
+    category: "snack",
+    images: [],
+    rating: 4.6,
+    reviewCount: 210,
+    sold: 670,
+    description: "",
+    stock: 80,
+  } as Product,
+  {
+    id: "hl-4",
+    name: "Aqua 600ml",
+    slug: "aqua-600ml",
+    price: 3200,
+    originalPrice: 4000,
+    category: "minuman",
+    images: [],
+    rating: 4.7,
+    reviewCount: 450,
+    sold: 2100,
+    description: "",
+    stock: 200,
+  } as Product,
+  {
+    id: "hl-5",
+    name: "Teh Pucuk Harum 500ml",
+    slug: "teh-pucuk-harum-500ml",
+    price: 3500,
+    originalPrice: 4500,
+    category: "minuman",
+    images: [],
+    rating: 4.4,
+    reviewCount: 320,
+    sold: 1800,
+    description: "",
+    stock: 150,
+  } as Product,
+  {
+    id: "hl-6",
+    name: "Chitato Original 68g",
+    slug: "chitato-original-68g",
+    price: 8500,
+    originalPrice: 10000,
+    category: "snack",
+    images: [],
+    rating: 4.5,
+    reviewCount: 156,
+    sold: 560,
+    description: "",
+    stock: 75,
+  } as Product,
+  {
+    id: "hl-7",
+    name: "Pocari Sweat 500ml",
+    slug: "pocari-sweat-500ml",
+    price: 7200,
+    originalPrice: 8500,
+    category: "minuman",
+    images: [],
+    rating: 4.6,
+    reviewCount: 275,
+    sold: 920,
+    description: "",
+    stock: 60,
+  } as Product,
+  {
+    id: "hl-8",
+    name: "Mie Sedaap Goreng 85g",
+    slug: "mie-sedaap-goreng-85g",
+    price: 2800,
+    originalPrice: 3500,
+    category: "kebutuhan",
+    images: [],
+    rating: 4.7,
+    reviewCount: 180,
+    sold: 1100,
+    description: "",
+    stock: 120,
+  } as Product,
+];
+
 /* ── Skeletons ────────────────────────────────────── */
 function CardSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-layer-xs overflow-hidden flex flex-col h-full">
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col h-full">
       <div className="w-full aspect-[3/2] bg-gray-100 skeleton animate-pulse" />
       <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
         <div className="mt-2.5 min-h-[2.4rem] flex flex-col justify-center gap-1.5">
@@ -72,12 +189,30 @@ function CardSkeleton() {
 
 function PromoCardSkeleton() {
   return (
-    <div className="flex-shrink-0 w-[136px] bg-white rounded-xl shadow-layer-xs overflow-hidden">
-      <div className="w-full aspect-square bg-gray-100 skeleton animate-pulse" />
-      <div className="px-2.5 pb-2.5 pt-1.5 flex flex-col gap-1">
-        <div className="h-2.5 w-full bg-gray-100 skeleton rounded animate-pulse" />
-        <div className="h-2.5 w-3/4 bg-gray-100 skeleton rounded animate-pulse" />
-        <div className="h-3.5 w-16 bg-gray-100 skeleton rounded animate-pulse mt-0.5" />
+    <div className="flex-shrink-0 w-[200px] bg-white rounded-xl shadow-sm overflow-hidden p-2 flex flex-row items-center gap-3">
+      <div className="w-16 h-16 bg-gray-100 skeleton rounded-lg animate-pulse flex-shrink-0" />
+      <div className="flex-1 flex flex-col gap-2">
+        <div className="h-2 w-full bg-gray-100 skeleton rounded animate-pulse" />
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-16 bg-gray-100 skeleton rounded animate-pulse" />
+          <div className="h-2.5 w-8 bg-gray-100 skeleton rounded animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Highlight Card Skeleton ──────────────────────── */
+function HighlightCardSkeleton() {
+  return (
+    <div className="flex-shrink-0 w-[200px] bg-white rounded-xl shadow-sm overflow-hidden p-2 flex flex-row items-center gap-3">
+      <div className="w-16 h-16 bg-gray-100 skeleton rounded-lg animate-pulse flex-shrink-0" />
+      <div className="flex-1 flex flex-col gap-2">
+        <div className="h-2 w-full bg-gray-100 skeleton rounded animate-pulse" />
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-16 bg-gray-100 skeleton rounded animate-pulse" />
+          <div className="h-2.5 w-8 bg-gray-100 skeleton rounded animate-pulse" />
+        </div>
       </div>
     </div>
   );
@@ -94,85 +229,171 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
     productImages = rawImages.flatMap((img) => {
       if (!img || typeof img !== "string") return [];
       if (img.startsWith("data:image") || img.startsWith("http")) return [img];
-      return img
-        .split("|")
-        .filter(
-          (i) =>
-            i?.trim()?.startsWith("data:image") ||
-            i?.trim()?.startsWith("http"),
-        );
+      return img.split("|").filter(
+        (i) => i?.trim()?.startsWith("data:image") || i?.trim()?.startsWith("http"),
+      );
     });
   } else if (typeof rawImages === "string") {
-    productImages = rawImages
-      .split("|")
-      .map((i) => i?.trim())
-      .filter((i) => i && (i.startsWith("data:image") || i.startsWith("http")));
+    productImages = rawImages.split("|").map((i) => i?.trim()).filter(
+      (i) => i && (i.startsWith("data:image") || i.startsWith("http")),
+    );
   }
 
-  const discount =
-    product.originalPrice && product.originalPrice > product.price
-      ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) *
-            100,
-        )
-      : 0;
-
-  const specificReviews = localReviews.filter(
-    (r) => r.productId === product.id,
-  );
+  const specificReviews = localReviews.filter((r) => r.productId === product.id);
   const displayRating =
     specificReviews.length > 0
-      ? Number(
-          (
-            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
-            specificReviews.length
-          ).toFixed(1),
-        )
+      ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
       : product.rating || 0;
 
+  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+
   return (
-    <Link
-      href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[136px] group"
-    >
-      <article className="bg-white rounded-xl shadow-layer-xs transition-all duration-200 active:scale-[0.96] overflow-hidden relative h-full flex flex-col">
-        {discount > 0 && (
-          <div className="absolute top-0 right-0 z-30 px-2 py-[3px] bg-gradient-to-l from-rose-600 to-rose-500 text-white text-[9px] font-black rounded-bl-xl">
-            -{discount}%
-          </div>
-        )}
-        <div className="w-full aspect-[1.1/1] bg-white overflow-hidden flex items-center justify-center">
+    <Link href={`/product/${product.slug}`} className="block flex-shrink-0 w-[200px] group">
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[80px]">
+        {/* Gambar full-bleed kiri */}
+        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
             category={product.category}
             name={product.name}
             variant={index}
             src={productImages[0]}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
             style={{} as React.CSSProperties}
           />
         </div>
-        <div className="px-2 pb-2 pt-1 flex flex-col flex-1">
-          <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight min-h-[1.8rem]">
-            {product.name}
-          </p>
 
-          <div className="mt-auto">
-            {product.originalPrice && (
-              <p className="text-[9px] text-gray-500 line-through leading-none mb-px">
-                {formatRupiah(product.originalPrice)}
+        {/* Konten kanan */}
+        <div className="flex-1 min-w-0 flex flex-col px-2.5 py-2">
+
+  {/* Nama */}
+  <div className="min-h-[28px] mb-1">
+    <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
+      {product.name}
+    </p>
+  </div>
+
+  {/* Harga & progress */}
+  <div className="flex flex-col gap-0.5 mt-auto">
+    {hasDiscount && (
+      <p className="text-[9px] text-gray-400 line-through leading-none">
+        {formatRupiah(product.originalPrice!)}
+      </p>
+    )}
+
+    <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
+      {formatRupiah(product.price)}
+    </p>
+
+    {/* Progress */}
+    <div className="mt-1.5">
+      <span className="text-[8px] font-semibold text-orange-500 leading-none">
+        Tersisa 12
+      </span>
+
+      <div className="mt-1 h-1.5 bg-orange-100 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"
+          style={{ width: "78%" }}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+      </article>
+    </Link>
+  );
+}
+
+/* ── Highlight Card ───────────────────────────────── */
+function HighlightCard({ product, index }: { product: Product; index: number }) {
+  const { getReviewsForProduct } = useReviewStore();
+  const localReviews = getReviewsForProduct(product.id);
+
+  const rawImages = product.images || (product as any).image;
+  let productImages: string[] = [];
+  if (Array.isArray(rawImages)) {
+    productImages = rawImages.flatMap((img) => {
+      if (!img || typeof img !== "string") return [];
+      if (img.startsWith("data:image") || img.startsWith("http")) return [img];
+      return img.split("|").filter(
+        (i) => i?.trim()?.startsWith("data:image") || i?.trim()?.startsWith("http"),
+      );
+    });
+  } else if (typeof rawImages === "string") {
+    productImages = rawImages.split("|").map((i) => i?.trim()).filter(
+      (i) => i && (i.startsWith("data:image") || i.startsWith("http")),
+    );
+  }
+
+  const specificReviews = localReviews.filter((r) => r.productId === product.id);
+  const displayRating =
+    specificReviews.length > 0
+      ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
+      : product.rating || 0;
+
+  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+
+  return (
+    <Link href={`/product/${product.slug}`} className="block flex-shrink-0 w-[200px] group">
+      {/* Remaining time */}
+<div className="absolute top-3 right-2 z-10">
+  {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
+  <span className="bg-orange-500/90 text-white text-[9px] font-black px-1.5 py-[4px] rounded-bl-xl rounded-tr-md leading-none shadow-sm block">
+    3 Hari Lagi
+  </span>
+</div>
+
+      {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[88px]">
+      
+        {/* Gambar full-bleed kiri */}
+        <div className="w-[80px] flex-shrink-0 self-stretch bg-gray-50">
+          <ProductImage
+            category={product.category}
+            name={product.name}
+            variant={index}
+            src={productImages[0]}
+            className="w-full h-full object-cover"
+            style={{} as React.CSSProperties}
+          />
+        </div>
+
+        {/* Konten kanan */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between px-2.5 py-2">
+          {/* Nama — min-h agar konsisten 1 atau 2 baris */}
+          <div className="min-h-[28px]">
+            <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
+              {product.name}
+            </p>
+          </div>
+
+          {/* Harga & progress */}
+          <div className="flex flex-col gap-0.5">
+            {hasDiscount && (
+              <p className="text-[9px] text-gray-400 line-through leading-none">
+                {formatRupiah(product.originalPrice!)}
               </p>
             )}
-            <div className="flex items-center justify-between">
-              <p className="text-[13px] font-black text-emerald-700 tracking-tighter">
-                {formatRupiah(product.price)}
-              </p>
-              <div className="flex items-center gap-0.5">
-                <Star size={9} strokeWidth={0} fill="#FBBF24" />
-                <span className="text-[9px] text-gray-500 font-semibold">
-                  {displayRating}
-                </span>
-              </div>
-            </div>
+
+            <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
+              {formatRupiah(product.price)}
+            </p>
+
+            {/* Progress bar stok */}
+            <div className="mt-1">
+  <div className="flex items-center gap-1">
+    <div className="flex-1 h-1 bg-orange-100 rounded-full overflow-hidden">
+      <div
+        className="h-full bg-orange-400 rounded-full"
+        style={{ width: "78%" }}
+      />
+    </div>
+
+    <span className="text-[7px] font-bold text-orange-500 leading-none shrink-0">
+      12
+    </span>
+  </div>
+</div>
           </div>
         </div>
       </article>
@@ -180,12 +401,67 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
   );
 }
 
-/* ── Inline Sticker: Promo (ratio 2.55:1) ─────────── */
-// Style: pastel background + blob dekorasi, tidak ada gradient penuh
+
+/* ── Highlight Section ────────────────────────────── */
+function HighlightSection({
+  products,
+  isLoading,
+}: {
+  products: Product[];
+  isLoading: boolean;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const maxItems = 12;
+  const displayProducts = products.slice(0, maxItems);
+
+  return (
+    <section className="mb-2">
+
+      {/* ── Header emerald: judul + countdown saja ── */}
+      <div className="mx-2 rounded-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-3 relative overflow-hidden">
+        {/* decorative blobs */}
+        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.04]" />
+        <div className="absolute bottom-0 right-8 w-16 h-16 rounded-full bg-emerald-300/10" />
+
+        <div className="relative flex items-center justify-between">
+          <div>
+            <h3 className="text-[14px] font-black text-white tracking-tight leading-none">
+              Penawaran Terbatas
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Cards: scroll bebas, background transparan ── */}
+      <div className="mt-2.5 px-2">
+        {isLoading ? (
+          <div className="flex gap-2.5 overflow-hidden">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <HighlightCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : displayProducts.length > 0 ? (
+          <div
+            ref={scrollRef}
+            className="flex gap-2.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+          >
+            {displayProducts.map((product, i) => (
+              <div key={product.id} className="flex-shrink-0 snap-start w-[200px]">
+                <HighlightCard product={product} index={i} />
+              </div>
+            ))}
+            <div className="shrink-0 w-1" />
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/* ── Inline Sticker: Promo (ratio 2.55:1 → slim) ─── */
 function PromoInlineBanner() {
   return (
-    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#FEF3E2] shadow-layer-sm">
-      {/* Blob dekorasi kanan */}
+    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#FEF3E2]">
       <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-[#F5A623]/20" />
       <div className="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-[#D89B2B]/15" />
       <div className="absolute right-10 -bottom-4 w-10 h-10 rounded-full bg-[#F5A623]/10" />
@@ -197,7 +473,7 @@ function PromoInlineBanner() {
         <p className="text-[10px] text-[#9E6300]/80 font-medium mt-0.5 leading-snug">
           Promo pilihan untukmu · Jangan sampai kehabisan!
         </p>
-        <div className="mt-2">
+        <div className="mt-1.5">
           <span className="inline-block bg-[#D89B2B] text-white text-[9px] font-bold px-2.5 py-1 rounded-full leading-none">
             Lihat semua promo →
           </span>
@@ -207,12 +483,10 @@ function PromoInlineBanner() {
   );
 }
 
-/* ── Inline Sticker: Info jeda (ratio 2.55:1) ──────── */
-// Style: pastel hijau + blob dekorasi, konsisten dengan PromoInlineBanner
+/* ── Inline Sticker: Popular (ratio 2.55:1 → slim) ── */
 function PopularInlineBanner() {
   return (
-    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#E8F5F0] shadow-layer-sm">
-      {/* Blob dekorasi kanan */}
+    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#E8F5F0]">
       <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-[#048750]/15" />
       <div className="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-[#048750]/10" />
       <div className="absolute right-10 -bottom-4 w-10 h-10 rounded-full bg-[#048750]/08" />
@@ -224,7 +498,7 @@ function PopularInlineBanner() {
         <p className="text-[10px] text-[#085041]/70 font-medium mt-0.5 leading-snug">
           Stok favorit minggu ini · Buruan sebelum habis!
         </p>
-        <div className="mt-2">
+        <div className="mt-1.5">
           <span className="inline-block bg-[#048750] text-white text-[9px] font-bold px-2.5 py-1 rounded-full leading-none">
             Cek selengkapnya →
           </span>
@@ -238,7 +512,7 @@ function PopularInlineBanner() {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-      <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
         <svg
           className="w-7 h-7 text-gray-300"
           fill="none"
@@ -269,6 +543,7 @@ export default function ProductGrid({
 }: ProductGridProps) {
   const { category } = useFilterStore();
   const { query } = useSearchStore();
+  const { sort: allSort } = useFilterStore();
   const { fetchReviews, refreshVersion } = useReviewStore();
 
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
@@ -279,23 +554,42 @@ export default function ProductGrid({
   const [isLoadingPromo, setIsLoadingPromo] = useState(true);
   const [isLoadingAll, setIsLoadingAll] = useState(true);
 
-  const [allSort, setAllSort] = useState("popular");
-  const [showSortMenu, setShowSortMenu] = useState(false);
-  const sortMenuRef = useRef<HTMLDivElement>(null);
+  /* ── Highlight state ── */
+  const [highlightProducts, setHighlightProducts] = useState<Product[]>([]);
+  const [isLoadingHighlight, setIsLoadingHighlight] = useState(true);
 
-  const isSpecificCategory = category && category !== "all";
+  const isSpecificCategory = category !== null && category !== "all";
 
-  const categories: Category[] = [
-    { id: "all", name: "Semua", icon: "LayoutGrid" },
-    ...initialCategories,
-  ];
+  const categories: Category[] = initialCategories;
   const categoryName =
-    categories.find((c) => c.id === category)?.name || "Semua";
+    categories.find((c) => c.id === category)?.name ?? "Semua Produk";
 
   /* Fetch reviews once */
   useEffect(() => {
     fetchReviews().catch(console.error);
   }, []);
+
+  /* Fetch highlight products — mock for now */
+  useEffect(() => {
+    setIsLoadingHighlight(true);
+    // Simulate network delay; replace with real API call later
+    const timer = setTimeout(() => {
+      // Filter hanya produk yang punya diskon
+      const discounted = MOCK_HIGHLIGHT_PRODUCTS.filter(
+        (p) => p.originalPrice && p.originalPrice > p.price,
+      );
+      setHighlightProducts(discounted);
+      setIsLoadingHighlight(false);
+    }, 900);
+    return () => clearTimeout(timer);
+
+    // TODO: Replace with real API:
+    // fetch("/api/public/products?filter=highlight")
+    //   .then((r) => r.json())
+    //   .then((d) => setHighlightProducts(Array.isArray(d) ? d : []))
+    //   .catch(() => setHighlightProducts([]))
+    //   .finally(() => setIsLoadingHighlight(false));
+  }, [refreshVersion]);
 
   /* Fetch popular products */
   useEffect(() => {
@@ -321,7 +615,7 @@ export default function ProductGrid({
   useEffect(() => {
     setIsLoadingAll(true);
     const params = new URLSearchParams();
-    if (isSpecificCategory) params.append("category", category);
+    if (category !== null) params.append("category", category);
     const url = params.toString()
       ? `/api/public/products?${params}`
       : "/api/public/products";
@@ -332,33 +626,12 @@ export default function ProductGrid({
       .finally(() => setIsLoadingAll(false));
   }, [category, refreshVersion]);
 
-  /* Reset sort on category change */
-  useEffect(() => {
-    setAllSort("popular");
-    setShowSortMenu(false);
-  }, [category]);
-
-  /* Close sort menu on outside click */
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowSortMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
   /* Derived data */
   const filteredQuery = (arr: Product[]) =>
     query
       ? arr.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
       : arr;
 
-  // Popular: gunakan popularProducts jika ada, fallback ke allProducts. Maks 6.
   const popularToShow = filteredQuery(
     (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 6),
   );
@@ -370,26 +643,38 @@ export default function ProductGrid({
   const activeSortOption =
     SORT_OPTIONS.find((o) => o.id === allSort) || SORT_OPTIONS[0];
 
-  // Promo section hanya tampil jika ada produk diskon
   const showPromoSection = !isSpecificCategory && promoProducts.length > 0;
+
+  const isHomeView = !category || category === "all";
 
   /* ── Render ── */
   return (
     <>
       {/* ══════════════════════════════════════════
-          SECTION 1 — Paling Dicari (tab Semua saja)
-          Fallback otomatis ke allProducts jika belum ada penjualan
+          SECTION 0 — HIGHLIGHT / PROMO CARD
+          Tampil tepat setelah category grid (tab Semua)
           ══════════════════════════════════════════ */}
-      {!isSpecificCategory && (
-        <section id="product-grid" className="px-4 pt-2 pb-4">
+      {isHomeView && (
+        <HighlightSection
+          products={highlightProducts}
+          isLoading={isLoadingHighlight}
+        />
+      )}
+
+      
+      {/* ══════════════════════════════════════════
+          SECTION 1 — Paling Dicari (tab Semua saja)
+          ══════════════════════════════════════════ */}
+      {isHomeView && (
+        <section id="product-grid" className="px-2 pt-2 pb-4">
           {isLoadingPopular ? (
-            <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+            <div className="grid grid-cols-2 gap-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <CardSkeleton key={i} />
               ))}
             </div>
           ) : popularToShow.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+            <div className="grid grid-cols-2 gap-3">
               {popularToShow.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
@@ -401,25 +686,26 @@ export default function ProductGrid({
       {/* ══════════════════════════════════════════
           SECTION 2 — Promo Sticker Carousel + Horizontal Scroll
           ══════════════════════════════════════════ */}
-      {!isSpecificCategory && (
-        <section className="px-4 mb-5">
-          {/* Sticker Carousel — constrained ke product grid width */}
+      {isHomeView && (
+        <section className="px-2 mb-4">
           <div className="flex gap-3 overflow-x-auto hide-scrollbar mb-4 snap-x snap-mandatory">
             <div className="flex-shrink-0 w-full snap-center">
               <PromoInlineBanner />
             </div>
-
             <div className="flex-shrink-0 w-full snap-center">
               <PopularInlineBanner />
             </div>
-
-            {/* spacer kanan */}
             <div className="shrink-0 w-1" />
           </div>
 
-          {/* Horizontal Scroll Products (Promo) */}
           {showPromoSection && (
             <div className="pb-1">
+              {/* HEADER */}
+    <div className="flex items-center justify-between mb-3 px-0.5">
+      <h3 className="text-[13px] font-black text-gray-800 tracking-tight">
+        Promo Hari Ini
+      </h3>
+    </div>
               {isLoadingPromo ? (
                 <div className="flex gap-3 overflow-hidden">
                   {Array.from({ length: 4 }).map((_, i) => (
@@ -431,8 +717,6 @@ export default function ProductGrid({
                   {promoProducts.map((product, i) => (
                     <PromoCard key={product.id} product={product} index={i} />
                   ))}
-
-                  {/* spacer kanan */}
                   <div className="shrink-0 w-1" />
                 </div>
               )}
@@ -443,93 +727,19 @@ export default function ProductGrid({
 
       {/* ══════════════════════════════════════════
           SECTION 3 — Semua Produk
-          - Tab Semua: tanpa tombol Urutkan, hanya jumlah produk
-          - Tab kategori: + tombol Urutkan aktif
           ══════════════════════════════════════════ */}
-      <section className="px-4 pt-2 pb-3 min-h-[50vh]">
-        {/* Header */}
+      <section className="px-2 pt-2 pb-3 min-h-[50vh]">
         <div className="mb-1 flex items-start justify-between px-0.5">
           <div>
             <h2 className="text-[13px] font-black text-gray-800 tracking-tight leading-tight">
-              {isSpecificCategory ? categoryName : "Semua Produk"}
+              {categoryName}
             </h2>
             <p className="text-[10px] text-gray-400 font-medium mt-0.5"></p>
           </div>
-
-          {/* Tombol Urutkan — hanya tampil di tab kategori spesifik */}
-          {isSpecificCategory && (
-            <div className="relative mt-0.5" ref={sortMenuRef}>
-              <button
-                onClick={() => setShowSortMenu((v) => !v)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[10px] font-bold
-                  transition-all duration-200 active:scale-95 ${
-                    showSortMenu
-                      ? "bg-emerald-600 text-white shadow-layer-md"
-                      : "bg-gray-100 text-gray-600"
-                  }`}
-              >
-                <ArrowUpDown size={10} strokeWidth={2.5} />
-                <span>Urutkan</span>
-                <activeSortOption.Icon
-                  size={10}
-                  strokeWidth={2}
-                  className="opacity-70"
-                />
-              </button>
-
-              {showSortMenu && (
-                <div className="absolute right-0 top-full mt-1.5 z-40 bg-white rounded-2xl shadow-layer-xl border border-gray-100 overflow-hidden min-w-[130px]">
-                  {SORT_OPTIONS.map((opt) => {
-                    const isActive = allSort === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        onClick={() => {
-                          setAllSort(opt.id);
-                          setShowSortMenu(false);
-                        }}
-                        className={`w-full flex items-center gap-2 px-3 py-2.5 text-[11px] font-bold
-                          transition-colors duration-150 text-left ${
-                            isActive
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "text-gray-600 hover:bg-gray-50"
-                          }`}
-                      >
-                        <opt.Icon
-                          size={11}
-                          strokeWidth={2.5}
-                          className={
-                            isActive ? "text-emerald-600" : "text-gray-400"
-                          }
-                        />
-                        {opt.label}
-                        {isActive && (
-                          <span className="ml-auto text-emerald-500 text-[9px]">
-                            ✓
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* Jumlah produk + sort aktif */}
-        <p className="text-[10px] text-gray-400 font-medium px-0.5 mb-3">
-          {isLoadingAll ? "Memuat..." : `${filteredAll.length} produk`}
-          {!isLoadingAll && isSpecificCategory && allSort !== "popular" && (
-            <span className="text-emerald-600 ml-1">
-              · {activeSortOption.label}
-            </span>
-          )}
-        </p>
-
-        {/* Grid produk */}
         {isLoadingAll ? (
-          <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
@@ -538,16 +748,14 @@ export default function ProductGrid({
           <EmptyState message="Coba pilih kategori lain atau cek kata kunci pencarianmu." />
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+            <div className="grid grid-cols-2 gap-3">
               {firstChunk.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
             </div>
 
-            {/* Sticker jeda sudah dipindah ke carousel atas */}
-
             {restChunk.length > 0 && (
-              <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 {restChunk.map((product, i) => (
                   <ProductCard
                     key={product.id}

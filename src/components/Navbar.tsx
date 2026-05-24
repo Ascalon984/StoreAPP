@@ -1,13 +1,68 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { Search, Bell } from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Search,
+  Bell,
+  SlidersHorizontal,
+  Star,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 import { useSearchStore } from "@/store/useSearchStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import { useFilterStore } from "@/store/useFilterStore";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useUserStore, mockUser, getGreeting } from "@/store/useUserStore";
+import { mockUser, getGreeting } from "@/store/useUserStore";
+
+const SORT_OPTIONS = [
+  { id: "popular", label: "Terpopuler", Icon: Star },
+  { id: "cheapest", label: "Termurah", Icon: TrendingDown },
+  { id: "expensive", label: "Termahal", Icon: TrendingUp },
+];
+
+const SEARCH_PLACEHOLDERS = [
+  "Cari produk favoritmu...",
+  "Cari kategori...",
+  "Cari merek terkenal...",
+  "Cari promo hari ini...",
+];
+
+function AnimatedPlaceholder() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = SEARCH_PLACEHOLDERS[phraseIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && displayed.length < current.length) {
+      timeout = setTimeout(() => {
+        setDisplayed(current.slice(0, displayed.length + 1));
+      }, 60);
+    } else if (!isDeleting && displayed.length === current.length) {
+      timeout = setTimeout(() => setIsDeleting(true), 1800);
+    } else if (isDeleting && displayed.length > 0) {
+      timeout = setTimeout(() => {
+        setDisplayed(current.slice(0, displayed.length - 1));
+      }, 35);
+    } else if (isDeleting && displayed.length === 0) {
+      setIsDeleting(false);
+      setPhraseIndex((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, isDeleting, phraseIndex]);
+
+  return (
+    <span className="text-gray-400 text-xs font-medium">
+      {displayed}
+      <span className="inline-block w-[1.5px] h-3 bg-gray-300 ml-[1px] align-middle animate-[blink_1s_step-end_infinite]" />
+    </span>
+  );
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -18,50 +73,60 @@ export default function Navbar() {
   const isWishlist = pathname === "/wishlist";
   const isNotifications = pathname === "/notifications";
 
-  const [scrolledState, setScrolledState] = useState(false);
-  // Jika di halaman product detail, navbar selalu dalam mode hide (compact)
-  const scrolled = isProductDetail || scrolledState;
   const openSearch = useSearchStore((s) => s.openSearch);
-  const { storeNameFirst, storeNameLast, waNumber, fetchSettings } =
-    useSettingsStore();
+  const { fetchSettings } = useSettingsStore();
+  const { sort, setSort } = useFilterStore();
+
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const sortMenuRef = useRef<HTMLDivElement>(null);
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // ─── Scroll Handler (SIMPLIFIED & STABLE) ───
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+
+          setIsScrolled((prev) => {
+            // Hysteresis: collapse di >50, expand hanya di <10
+            // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
+            if (!prev && y > 50) return true;
+            if (prev && y < 10) return false;
+            return prev; // zona mati (10–50): pertahankan state
+          });
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // cek posisi awal (misal browser restore scroll)
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     fetchSettings();
   }, [fetchSettings]);
 
-  // ✅ Derived selector — hanya re-render saat angka berubah
-  const totalItems = useCartStore((s) =>
-    s.items.reduce((sum, item) => sum + item.quantity, 0),
-  );
-
-  // Scroll listener
   useEffect(() => {
-    if (isProductDetail) return; // Tidak perlu listener di product detail karena selalu hide
-
-    const handleScroll = () => {
-      const bottomSheet = document.getElementById('bottom-sheet');
-      if (bottomSheet) {
-        const rect = bottomSheet.getBoundingClientRect();
-        // Animasi hide (compact) terpicu saat bottom sheet menyentuh header (58px)
-        if (rect.top <= 75) {
-          setScrolledState(true);
-        } else {
-          setScrolledState(false);
-        }
-      } else {
-        const offset = window.scrollY;
-        if (offset > 380) {
-          setScrolledState(true);
-        } else if (offset < 330) {
-          setScrolledState(false);
-        }
+    const handler = (e: MouseEvent) => {
+      if (
+        sortMenuRef.current &&
+        !sortMenuRef.current.contains(e.target as Node)
+      ) {
+        setShowSortMenu(false);
       }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isProductDetail]);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-  // ⌘K / Ctrl+K shortcut
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -77,145 +142,184 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  if (isCheckout || isProfile || isOrders || isWishlist || isProductDetail || isNotifications) {
+  if (
+    isCheckout ||
+    isProfile ||
+    isOrders ||
+    isWishlist ||
+    isProductDetail ||
+    isNotifications
+  ) {
     return null;
   }
 
   return (
-    <div
-      className={`sticky top-0 z-50 w-full ${isProductDetail ? "h-[48px]" : "h-[58px]"}`}
-    >
-      <header
-        className={`absolute top-0 w-full h-full flex items-center transition-colors duration-500 ease-in-out ${scrolled
-          ? "bg-[#0B6B52] border-b-[1px] border-black/10 shadow-md"
-          : "bg-[#048750] border-b-[1px] border-white/10"
-          }`}
-      >
-        {/* Container Utama - Gunakan h-full agar semua elemen terpusat secara vertikal */}
-        <div className="max-w-container mx-auto px-4 w-full flex items-center justify-between gap-3 h-full">
-          {/* BAGIAN KIRI: USER AVATAR & GREETING */}
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            {/* Avatar — mengecil saat scroll */}
-            <div
-              className={`relative flex-shrink-0 rounded-full overflow-hidden border-2 border-white/30
-    transition-[width,height] duration-500 ${scrolled ? "w-9 h-9" : "w-10 h-10"}`}
-            >
-              {mockUser.avatar ? (
-                <Image
-                  src={mockUser.avatar}
-                  alt={mockUser.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                // Fallback inisial
-                <div className="w-full h-full bg-emerald-100 flex items-center justify-center">
-                  <span
-                    className={`font-black text-emerald-700 leading-none transition-all duration-500
-          ${scrolled ? "text-[11px]" : "text-[13px]"}`}
-                  >
-                    {mockUser.name
-                      .split(" ")
-                      .slice(0, 2)
-                      .map((w) => w[0])
-                      .join("")
-                      .toUpperCase()}
-                  </span>
-                </div>
-              )}
-            </div>
+    <div className="sticky top-0 z-50 w-full rounded-b-2xl bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm">
+      <header className="w-full px-4 overflow-visible">
+        <div className="max-w-container mx-auto">
+          {/* ── Greeting Row ── */}
+          <div
+            className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+              isScrolled
+                ? "grid-rows-[0fr] opacity-0 pointer-events-none"
+                : "grid-rows-[1fr] opacity-100 pointer-events-auto"
+            }`}
+          >
+            {/* Tambahkan min-h-0 di sini agar grid bisa collapse sempurna ke 0 */}
+            <div className="overflow-hidden min-h-0">
+              {/* Ganti mb-2 menjadi pb-2 pada wrapper ini, margin membuat animasi grid patah */}
+              <div className="pb-2">
+                <div className="flex items-center justify-between h-12">
+                  {/* Avatar */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Link
+                      href="/profile"
+                      className="active:scale-95 transition-transform flex-shrink-0"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
+                        {mockUser.avatar ? (
+                          <img
+                            src={mockUser.avatar}
+                            alt={mockUser.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-emerald-700 text-xs font-bold">
+                            {mockUser.name
+                              .split(" ")
+                              .map((n: string) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
 
-            {/* Greeting + Nama — hilang saat scroll */}
-            <div
-              className={`flex flex-col justify-center transition-[max-width,opacity] duration-500
-    ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden
-    ${scrolled ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100 delay-100"}`}
-            >
-              <div className="min-w-max">
-                <p className="text-white/80 font-medium leading-none whitespace-nowrap text-[12px]">
-                  {getGreeting()}
-                </p>
-                <p
-                  className="text-white font-black leading-none tracking-tight whitespace-nowrap mt-1
-  text-[16px] drop-shadow-sm"
-                >
-                  {mockUser.name.split(" ")[0]}
-                </p>
+                    {/* Greeting */}
+                    <div className="flex flex-col min-w-0">
+                      <p className="text-white/60 text-[11px] font-medium leading-none">
+                        {getGreeting()}
+                      </p>
+                      <p className="text-white text-sm font-semibold truncate mt-0.5">
+                        {mockUser.name.split(" ")[0]}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Bell (unscrolled) */}
+                  <Link
+                    href="/notifications"
+                    className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
+                  >
+                    <Bell size={20} className="text-white" strokeWidth={2} />
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* BAGIAN TENGAH & KANAN: Search Area & Actions */}
-          <div className="flex-1 flex justify-end items-center gap-2 min-w-0">
-            {/* Search Box Area - Diperhalus dengan Liquid Expansion */}
-            <div className="relative flex items-center justify-end flex-1 h-9 min-w-0">
+          {/* ── Search Row ── */}
+          <div
+            className={`flex items-center gap-2 pb-2.5 transition-all duration-300 ease-in-out ${
+              isScrolled ? "pt-2.5" : "pt-0"
+            }`}
+          >
+            {/* Search Bar */}
+            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-1 flex items-center gap-2.5 shadow-sm">
               <button
                 onClick={openSearch}
-                className={`
-    relative flex items-center transition-all duration-700
-    rounded-full overflow-hidden origin-right /* KUNCI: Animasi dimulai dari sisi kanan */
-    ${scrolled
-                    ? "w-full bg-white/95 h-8 px-3 shadow-md opacity-100 scale-x-100 blur-0"
-                    : "w-10 h-8 bg-white/0 opacity-0 scale-x-0 blur-sm justify-center pointer-events-none"
-                  }
-  `}
-                style={{
-                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-                  transitionProperty:
-                    "width, opacity, transform, background-color, blur",
-                }}
+                className="flex-1 flex items-center gap-2.5 min-w-0"
               >
-                {/* Teks Search: Muncul belakangan agar tidak terlihat 'terjepit' saat ekspansi */}
-                <span
-                  className={`text-left font-medium text-[11px] text-emerald-900/60 transition-all duration-500 whitespace-nowrap ${scrolled
-                    ? "opacity-100 translate-x-0 delay-300"
-                    : "opacity-0 -translate-x-10"
-                    }`}
-                >
-                  Cari di {storeNameFirst}...
-                </span>
-
-                {/* Icon Search di dalam Box: Mengikuti gerakan ujung kanan box */}
-                <div
-                  className={`absolute right-0 w-10 h-full flex items-center justify-center transition-all duration-500 ${scrolled
-                    ? "text-emerald-700 opacity-100"
-                    : "text-white opacity-0"
-                    }`}
-                >
-                  <Search size={20} strokeWidth={2.5} />
-                </div>
+                <Search
+                  size={18}
+                  className="text-gray-400 flex-shrink-0"
+                  strokeWidth={2.5}
+                />
+                <AnimatedPlaceholder />
               </button>
 
-              {/* Icon Search PENGGANTI: Tetap diam di kanan saat posisi normal (Tidak Scrolled) */}
-              {!scrolled && (
+              {/* Divider */}
+              <div className="w-px h-4 bg-gray-200 flex-shrink-0" />
+
+              {/* Filter button */}
+              <div className="relative flex-shrink-0" ref={sortMenuRef}>
                 <button
-                  onClick={openSearch}
-                  className="
-      absolute right-0
-      w-10 h-10
-      flex items-center justify-center
-      text-white
-      transition-opacity duration-300
-      active:scale-90
-    "
+                  onClick={() => setShowSortMenu((v) => !v)}
+                  className={`p-1 rounded-lg transition-colors duration-200 active:scale-95 ${
+                    showSortMenu
+                      ? "text-emerald-600"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
                 >
-                  <Search size={22} strokeWidth={2} />
+                  <SlidersHorizontal size={17} strokeWidth={2} />
                 </button>
-              )}
+
+                {showSortMenu && (
+                  <div className="absolute -right-3.5 top-full mt-1 z-40 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden min-w-[140px]">
+                    {SORT_OPTIONS.map((opt) => {
+                      const isActive = sort === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          onClick={() => {
+                            setSort(opt.id);
+                            setShowSortMenu(false);
+                          }}
+                          className={`w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold transition-colors duration-150 text-left ${
+                            isActive
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          <opt.Icon
+                            size={14}
+                            strokeWidth={2}
+                            className={
+                              isActive ? "text-emerald-600" : "text-gray-400"
+                            }
+                          />
+                          {opt.label}
+                          {isActive && (
+                            <span className="ml-auto text-emerald-500 text-[10px] font-bold">
+                              ✓
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Actions: Bell */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <Link href="/notifications" className="relative p-2 text-white transition-all active:scale-90 flex items-center justify-center">
-                <Bell size={22} strokeWidth={0} fill="white" />
-                <span
-                  className={`absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 ${scrolled ? "border-[#064E3B]" : "border-[#0B6B52]"}`}
-                />
+            {/* Bell (scrolled) */}
+            <div
+              className={`flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+                isScrolled
+                  ? "w-8 opacity-100 scale-100"
+                  : "w-0 opacity-0 scale-75"
+              }`}
+            >
+              <Link
+                href="/notifications"
+                className="relative p-1.5 flex active:scale-95 transition-transform"
+                tabIndex={isScrolled ? 0 : -1}
+              >
+                <Bell size={20} className="text-white" strokeWidth={2} />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
               </Link>
             </div>
           </div>
         </div>
       </header>
+
+      <style>{`
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }

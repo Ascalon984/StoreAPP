@@ -5,19 +5,19 @@ export const banners: Banner[] = [
     id: "banner-aqua",
     title: "Promo Aqua",
     subtitle: "Promo Aqua Spesial",
-    image: "/banners/baner aqua.png",
+    image: "/banners/baner 1.png",
   },
   {
     id: "banner-kapal-api",
     title: "Promo Kapal Api",
     subtitle: "Promo Kapal Api Spesial",
-    image: "/banners/baner kapal api.png",
+    image: "/banners/baner 2.png",
   },
   {
     id: "banner-mie",
     title: "Promo Mie",
     subtitle: "Promo Mie Spesial",
-    image: "/banners/baner mie.png",
+    image: "/banners/baner 3.png",
   },
 ];
 
