@@ -154,7 +154,14 @@ export default function Navbar() {
   }
 
   return (
-    <div className="sticky top-0 z-50 w-full rounded-b-2xl bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm">
+    <div
+  className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm"
+  style={{
+    borderBottomLeftRadius: isScrolled ? "0px" : "26px",
+    borderBottomRightRadius: isScrolled ? "0px" : "26px",
+    transition: "border-radius 300ms ease-in-out",
+  }}
+>
       <header className="w-full px-4 overflow-visible">
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
@@ -226,14 +233,14 @@ export default function Navbar() {
             }`}
           >
             {/* Search Bar */}
-            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-1 flex items-center gap-2.5 shadow-sm">
+            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-2 py-1 flex items-center gap-2.5 shadow-sm">
               <button
                 onClick={openSearch}
                 className="flex-1 flex items-center gap-2.5 min-w-0"
               >
                 <Search
                   size={18}
-                  className="text-gray-400 flex-shrink-0"
+                  className="text-gray-500 flex-shrink-0"
                   strokeWidth={2.5}
                 />
                 <AnimatedPlaceholder />
@@ -249,7 +256,7 @@ export default function Navbar() {
                   className={`p-1 rounded-lg transition-colors duration-200 active:scale-95 ${
                     showSortMenu
                       ? "text-emerald-600"
-                      : "text-gray-400 hover:text-gray-600"
+                      : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
                   <SlidersHorizontal size={17} strokeWidth={2} />

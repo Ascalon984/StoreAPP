@@ -10,7 +10,7 @@ interface BannerProps {
 
 function BannerSkeleton() {
   return (
-    <section className="px-3 pt-4 pb-1 -mt-px">
+    <section className="px-2.5 pt-4 pb-1 -mt-px">
       <div className="w-full aspect-[2.7/1] skeleton rounded-lg" />
     </section>
   );
@@ -148,7 +148,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-3 pt-4 pb-1 -mt-px">
+    <section className="px-2.5 pt-4 pb-1 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
       <div className="relative rounded-lg overflow-hidden aspect-[2.7/1]">
         <div

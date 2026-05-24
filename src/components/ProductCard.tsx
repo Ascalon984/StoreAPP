@@ -8,9 +8,10 @@ import { useReviewStore } from "@/store/useReviewStore";
 interface ProductCardProps {
   product: Product;
   index: number;
+  isTall?: boolean;
 }
 
-export default function ProductCard({ product, index }: ProductCardProps) {
+export default function ProductCard({ product, index, isTall }: ProductCardProps) {
   const { getReviewsForProduct } = useReviewStore();
 
   const localReviews = getReviewsForProduct(product.id);
@@ -86,7 +87,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     shadow-layer-xs 
     transition-all duration-200 overflow-hidden 
     active:scale-[0.96] 
-    flex flex-col h-full relative
+    flex flex-col relative
   "
       >
         <div className="absolute inset-0 bg-gradient-premium pointer-events-none z-0" />
@@ -103,7 +104,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </div>
         )}
 
-        <div className="relative w-full aspect-[3/2] bg-white overflow-hidden flex-shrink-0 z-10">
+        <div className={`relative w-full ${isTall ? 'aspect-[5/4]' : 'aspect-[3/2]'} bg-white overflow-hidden flex-shrink-0 z-10`}>
           <ProductImage
             category={product.category}
             name={product.name}

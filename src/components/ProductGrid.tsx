@@ -165,10 +165,10 @@ const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
 ];
 
 /* ── Skeletons ────────────────────────────────────── */
-function CardSkeleton() {
+function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col h-full">
-      <div className="w-full aspect-[3/2] bg-gray-100 skeleton animate-pulse" />
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
+      <div className={`w-full ${isTall ? 'aspect-[4/5]' : 'aspect-[3/2]'} bg-gray-100 skeleton animate-pulse`} />
       <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
         <div className="mt-2.5 min-h-[2.4rem] flex flex-col justify-center gap-1.5">
           <div className="h-3 w-full bg-gray-100 skeleton rounded-md animate-pulse" />
@@ -684,48 +684,6 @@ export default function ProductGrid({
       )}
 
       {/* ══════════════════════════════════════════
-          SECTION 2 — Promo Sticker Carousel + Horizontal Scroll
-          ══════════════════════════════════════════ */}
-      {isHomeView && (
-        <section className="px-2 mb-4">
-          <div className="flex gap-3 overflow-x-auto hide-scrollbar mb-4 snap-x snap-mandatory">
-            <div className="flex-shrink-0 w-full snap-center">
-              <PromoInlineBanner />
-            </div>
-            <div className="flex-shrink-0 w-full snap-center">
-              <PopularInlineBanner />
-            </div>
-            <div className="shrink-0 w-1" />
-          </div>
-
-          {showPromoSection && (
-            <div className="pb-1">
-              {/* HEADER */}
-    <div className="flex items-center justify-between mb-3 px-0.5">
-      <h3 className="text-[13px] font-black text-gray-800 tracking-tight">
-        Promo Hari Ini
-      </h3>
-    </div>
-              {isLoadingPromo ? (
-                <div className="flex gap-3 overflow-hidden">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <PromoCardSkeleton key={i} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex gap-3 overflow-x-auto hide-scrollbar">
-                  {promoProducts.map((product, i) => (
-                    <PromoCard key={product.id} product={product} index={i} />
-                  ))}
-                  <div className="shrink-0 w-1" />
-                </div>
-              )}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ══════════════════════════════════════════
           SECTION 3 — Semua Produk
           ══════════════════════════════════════════ */}
       <section className="px-2 pt-2 pb-3 min-h-[50vh]">
@@ -739,32 +697,59 @@ export default function ProductGrid({
         </div>
 
         {isLoadingAll ? (
-          <div className="grid grid-cols-2 gap-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <CardSkeleton key={i} />
-            ))}
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col gap-3 flex-1 min-w-0">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <CardSkeleton key={`left-${i}`} isTall={i === 1} />
+              ))}
+            </div>
+            <div className="flex flex-col gap-3 flex-1 min-w-0">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <CardSkeleton key={`right-${i}`} isTall={false} />
+              ))}
+            </div>
           </div>
         ) : filteredAll.length === 0 ? (
           <EmptyState message="Coba pilih kategori lain atau cek kata kunci pencarianmu." />
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3">
-              {firstChunk.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
-
-            {restChunk.length > 0 && (
-              <div className="grid grid-cols-2 gap-3">
-                {restChunk.map((product, i) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={i + 10}
-                  />
-                ))}
+            <div className="flex items-start gap-3">
+              {/* Kolom Kiri */}
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                {filteredAll
+                  .filter((_, i) => i % 2 === 0)
+                  .map((product, idx) => {
+                    const globalIndex = idx * 2;
+                    // Hanya baris 2 (indeks 2) yang lonjong untuk menciptakan offset genteng permanen
+                    const isTall = globalIndex === 2; 
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        index={globalIndex}
+                        isTall={isTall}
+                      />
+                    );
+                  })}
               </div>
-            )}
+
+              {/* Kolom Kanan */}
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                {filteredAll
+                  .filter((_, i) => i % 2 === 1)
+                  .map((product, idx) => {
+                    const globalIndex = idx * 2 + 1;
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        index={globalIndex}
+                        isTall={false}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
           </>
         )}
       </section>
