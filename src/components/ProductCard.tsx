@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Star, Flame } from "lucide-react";
+import { Star } from "lucide-react";
 import { Product } from "@/lib/types";
-import { formatRupiah } from "@/lib/utils";
+import { formatRupiah, formatSold } from "@/lib/utils";
 import ProductImage from "./ProductImage";
 import { useReviewStore } from "@/store/useReviewStore";
+// import { useCartStore } from "@/store/useCartStore";
+// import { useToastStore } from "@/store/useToastStore";
 
 interface ProductCardProps {
   product: Product;
@@ -11,8 +13,22 @@ interface ProductCardProps {
   isTall?: boolean;
 }
 
-export default function ProductCard({ product, index, isTall }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  index,
+  isTall,
+}: ProductCardProps) {
   const { getReviewsForProduct } = useReviewStore();
+  // Quick cart button dihapus - user harus membuka detail produk untuk melihat variasi
+  // const { addItem } = useCartStore();
+  // const { showToast } = useToastStore();
+
+  // const handleAddToCart = (e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   addItem(product);
+  //   showToast("Berhasil dimasukkan ke keranjang");
+  // };
 
   const localReviews = getReviewsForProduct(product.id);
 
@@ -104,7 +120,9 @@ export default function ProductCard({ product, index, isTall }: ProductCardProps
           </div>
         )}
 
-        <div className={`relative w-full ${isTall ? 'aspect-[5/4]' : 'aspect-[3/2]'} bg-white overflow-hidden flex-shrink-0 z-10`}>
+        <div
+          className={`relative w-full ${isTall ? "aspect-[5/4]" : "aspect-[3/2]"} bg-white overflow-hidden flex-shrink-0 z-10`}
+        >
           <ProductImage
             category={product.category}
             name={product.name}
@@ -133,17 +151,30 @@ export default function ProductCard({ product, index, isTall }: ProductCardProps
             )}
           </div>
 
-          <div className="flex items-center justify-between mt-auto pt-1">
-            <div className="absolute left-0 right-0 bottom-[28px] h-6 bg-gradient-to-b from-transparent to-black/[0.02] pointer-events-none" />
-            <div className="flex items-center gap-0.5">
+          <div className="flex items-end justify-between mt-auto pt-1 relative z-20">
+            {/* LEFT: Rating */}
+            <div className="flex items-center gap-0.5 text-[10.5px] font-bold text-gray-600">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
-              <span className="text-[11px] font-extrabold text-gray-700">
+              <span className="text-gray-700 font-extrabold">
                 {displayRating}
               </span>
             </div>
-            <div className="text-[10px] text-gray-600 font-bold">
-              {product.sold} Terjual
+
+            {/* RIGHT: Sold */}
+            <div className="text-[10px] text-gray-500 font-bold">
+              {formatSold(product.sold)} terjual
             </div>
+
+            {/* Quick cart button dihapus - user membuka product detail untuk lihat variasi */}
+            {/* 
+            <button 
+              onClick={handleAddToCart}
+              className="w-7 h-7 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors active:scale-95 shadow-sm border border-emerald-100/50 relative z-30"
+              aria-label="Add to cart"
+            >
+              <ShoppingCart size={13} strokeWidth={2.5} />
+            </button>
+            */}
           </div>
         </div>
       </article>

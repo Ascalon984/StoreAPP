@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronLeft,
-  ChevronRight,
-  MapPin,
   ChevronDown,
   Loader,
   CheckCircle,
@@ -16,34 +14,16 @@ import {
   Minus,
   Plus,
   Tag,
-  Truck,
   Receipt,
   Trash2,
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
-import { useDeliveryStore } from "@/store/useDeliveryStore";
 import { useToastStore } from "@/store/useToastStore";
 import { useNavigationStore } from "@/store/useNavigationStore";
 import { useReviewModalStore } from "@/store/useReviewModalStore";
 import { useReviewStore } from "@/store/useReviewStore";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
-
-// ── Alamat dari profil (mock — ganti dengan data dari store/session) ──
-const SAVED_ADDRESSES = [
-  {
-    id: "1",
-    label: "Rumah",
-    address: "Jl. Melati No. 12, Telang Indah, Kamal",
-    isMain: true,
-  },
-  {
-    id: "2",
-    label: "Kantor",
-    address: "Gedung Rektorat Lt. 2, Universitas Trunojoyo Madura, Kamal",
-    isMain: false,
-  },
-];
 
 // Mock user dari profil
 const PROFILE_USER = {
@@ -55,9 +35,9 @@ const PROFILE_USER = {
 const PAYMENT_METHODS = {
   cod: {
     id: "cod",
-    label: "Bayar di Tempat (COD)",
+    label: "Bayar Nanti",
     icon: Banknote,
-    description: "Bayar saat barang diterima",
+    description: "Bayar saat pesanan dikonfirmasi",
     options: null,
   },
   ewallet: {
@@ -87,131 +67,24 @@ const PAYMENT_METHODS = {
   },
 };
 
-const ONGKIR = 0; // Gratis ongkir untuk MVP
-
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, clearCart, updateQuantity, removeItem } = useCartStore();
-  const {
-    deliveryInfo,
-    isLoadingLocation,
-    setIsLoadingLocation,
-    getAddressFromCoords,
-    updateDeliveryInfo,
-  } = useDeliveryStore();
   const { showToast } = useToastStore();
   const { openModal } = useReviewModalStore();
   const { triggerRefresh } = useReviewStore();
   const navStore = useNavigationStore();
 
-  const [selectedAddressId, setSelectedAddressId] = useState<string>(
-    SAVED_ADDRESSES.find((a) => a.isMain)?.id ?? SAVED_ADDRESSES[0]?.id ?? "",
-  );
-  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+  const [targetIds, setTargetIds] = useState<Record<string, string>>({});
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
-  const [selectedSubPayment, setSelectedSubPayment] = useState<string | null>(
-    null,
-  );
-  const [expandedAccordion, setExpandedAccordion] = useState<string | null>(
-    null,
-  );
+  const [selectedSubPayment, setSelectedSubPayment] = useState<string | null>(null);
+  const [expandedAccordion, setExpandedAccordion] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
-  const selectedAddress = SAVED_ADDRESSES.find(
-    (a) => a.id === selectedAddressId,
-  );
-
-  const handleOpenDropdown = () => {
-    setShowAddressDropdown((p) => !p);
-  };
-
-  useEffect(() => {
-    if (!showAddressDropdown) return;
-
-    const scrollEl = document.querySelector('.checkout-scroll');
-    const onScroll = () => setShowAddressDropdown(false);
-
-    scrollEl?.addEventListener('scroll', onScroll, { passive: true });
-    return () => scrollEl?.removeEventListener('scroll', onScroll);
-  }, [showAddressDropdown]);
 
   useEffect(() => {
     if (items.length === 0 && !isSubmitting) router.replace("/");
   }, [items.length, router, isSubmitting]);
-
-  // ── Geolocation ──
-  const getBestPosition = (): Promise<GeolocationPosition> => {
-    return new Promise((resolve, reject) => {
-      let resolved = false;
-      let bestPos: GeolocationPosition | null = null;
-      const GOOD_ACCURACY = 30;
-      const MAX_WAIT = 8000;
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          if (resolved) return;
-          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy)
-            bestPos = pos;
-          if (pos.coords.accuracy <= GOOD_ACCURACY) {
-            resolved = true;
-            navigator.geolocation.clearWatch(watchId);
-            resolve(pos);
-          }
-        },
-        (err) => {
-          if (resolved) return;
-          resolved = true;
-          navigator.geolocation.clearWatch(watchId);
-          if (bestPos) resolve(bestPos);
-          else reject(err);
-        },
-        { enableHighAccuracy: true, maximumAge: 0 },
-      );
-      setTimeout(() => {
-        if (resolved) return;
-        resolved = true;
-        navigator.geolocation.clearWatch(watchId);
-        if (bestPos) resolve(bestPos);
-        else reject({ code: 3, message: "Timeout" });
-      }, MAX_WAIT);
-    });
-  };
-
-  const handleSyncLocation = async () => {
-    if (!navigator.geolocation) {
-      showToast("Geolocation tidak tersedia");
-      return;
-    }
-    setIsLoadingLocation(true);
-    try {
-      let position: GeolocationPosition;
-      try {
-        position = await getBestPosition();
-      } catch (err: any) {
-        if (err?.code === 1) throw err;
-        position = await new Promise<GeolocationPosition>(
-          (resolve, rejectFallback) => {
-            navigator.geolocation.getCurrentPosition(resolve, rejectFallback, {
-              enableHighAccuracy: false,
-              timeout: 10000,
-              maximumAge: 120000,
-            });
-          },
-        );
-      }
-      const { latitude, longitude } = position.coords;
-      await getAddressFromCoords(latitude, longitude);
-      updateDeliveryInfo({ lat: latitude, lng: longitude });
-      showToast("Koordinat berhasil diperbarui");
-    } catch (err: any) {
-      const code = err?.code;
-      if (code === 1) showToast("Izin lokasi ditolak.");
-      else if (code === 2) showToast("Lokasi tidak tersedia.");
-      else showToast("Gagal mendeteksi lokasi.");
-    } finally {
-      setIsLoadingLocation(false);
-    }
-  };
 
   const toggleAccordion = (id: string) => {
     if (expandedAccordion === id) setExpandedAccordion(null);
@@ -241,13 +114,18 @@ export default function CheckoutPage() {
     if (orig && price && orig > price) return sum + (orig - price) * qty;
     return sum;
   }, 0);
-  const total = subtotal + ONGKIR;
+  const total = subtotal;
 
   const isPaymentSelected =
     selectedPayment !== null &&
     (selectedPayment === "cod" || selectedSubPayment !== null);
-  const canSubmit =
-    selectedAddress !== undefined && isPaymentSelected && items.length > 0;
+  
+  const allTargetsFilled = items.every((item) => {
+    const val = targetIds[item.product.id];
+    return val && val.trim().length > 0;
+  });
+
+  const canSubmit = allTargetsFilled && isPaymentSelected && items.length > 0;
 
   const handleSubmitOrder = async () => {
     if (!canSubmit || isSubmitting) return;
@@ -264,9 +142,7 @@ export default function CheckoutPage() {
             quantity: item.quantity,
             customerName: PROFILE_USER.name,
             phone: PROFILE_USER.phone,
-            address: selectedAddress?.address,
-            lat: deliveryInfo.lat,
-            lng: deliveryInfo.lng,
+            targetId: targetIds[item.product.id],
             paymentMethod: selectedPayment,
             paymentDetail: selectedSubPayment,
           }),
@@ -332,7 +208,7 @@ export default function CheckoutPage() {
 
   const getPaymentLabel = () => {
     if (!selectedPayment) return "";
-    if (selectedPayment === "cod") return "COD - Bayar di Tempat";
+    if (selectedPayment === "cod") return "COD - Bayar Nanti";
     const method =
       PAYMENT_METHODS[selectedPayment as keyof typeof PAYMENT_METHODS];
     if (!method?.options || !selectedSubPayment) return "";
@@ -367,153 +243,10 @@ export default function CheckoutPage() {
         {/* ── SCROLLABLE CONTENT ── */}
         <div className="flex-1 bg-gray-50/80 overflow-y-auto checkout-scroll">
           <div className="max-w-lg mx-auto pb-10">
-            {/* ═══ BLOK 1: ALAMAT PENGIRIMAN ═══ */}
-            <div className="mx-4 mt-4 mb-2">
-              <h2 className="text-[15px] font-bold text-gray-900 tracking-tight">
-                Alamat Pengiriman
-              </h2>
-            </div>
-
-            <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-visible">
-              <div className="px-4 py-3.5 space-y-3">
-                {/* ── Dropdown pilih alamat (RELATIVE container) ── */}
-                <div className="relative z-10">
-                  <button
-                    onClick={handleOpenDropdown}
-                    className="w-full flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200/70 rounded-xl hover:border-emerald-300 transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <MapPin
-                        size={14}
-                        className="text-emerald-600 flex-shrink-0"
-                        strokeWidth={2.5}
-                      />
-                      <span className="text-[13px] font-bold text-gray-800">
-                        {selectedAddress?.label ?? "Pilih Alamat"}
-                      </span>
-                      {selectedAddress?.isMain && (
-                        <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-bold rounded">
-                          Utama
-                        </span>
-                      )}
-                    </div>
-                    <ChevronDown
-                      size={15}
-                      strokeWidth={2.5}
-                      className={`text-gray-400 transition-transform duration-200 ${showAddressDropdown ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {/* ── DROPDOWN: absolute, menempel, ikut scroll ── */}
-                  {showAddressDropdown && (
-                    <>
-                      {/* Overlay tutup seluruh layar — tetap fixed */}
-                      <div
-                        className="fixed inset-0 z-[59]"
-                        onClick={() => setShowAddressDropdown(false)}
-                      />
-                      {/* Dropdown menempel di bawah trigger */}
-                      <div className="absolute top-full left-0 right-0 mt-1 max-h-[260px] overflow-y-auto bg-white rounded-xl border border-gray-100 shadow-lg z-[60]">
-                        {SAVED_ADDRESSES.map((addr) => (
-                          <button
-                            key={addr.id}
-                            onClick={() => {
-                              setSelectedAddressId(addr.id);
-                              setShowAddressDropdown(false);
-                            }}
-                            className={`w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors
-                  ${selectedAddressId === addr.id ? "bg-emerald-50" : "hover:bg-gray-50"}
-                  border-b border-gray-50 last:border-0`}
-                          >
-                            <div
-                              className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedAddressId === addr.id
-                                ? "border-emerald-500"
-                                : "border-gray-300"
-                                }`}
-                            >
-                              {selectedAddressId === addr.id && (
-                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-0.5">
-                                <span className="text-[12px] font-bold text-gray-800">
-                                  {addr.label}
-                                </span>
-                                {addr.isMain && (
-                                  <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-bold rounded">
-                                    Utama
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[11px] text-gray-500 leading-snug">
-                                {addr.address}
-                              </p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Detail alamat terpilih */}
-                {selectedAddress && (
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] text-gray-600 leading-relaxed">
-                        {selectedAddress.address}
-                      </p>
-                      <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-gray-500 font-medium">
-                        <span className="font-semibold text-gray-700">
-                          {PROFILE_USER.name}
-                        </span>
-                        <span className="text-gray-300">·</span>
-                        <span>{PROFILE_USER.phone}</span>
-                      </div>
-                    </div>
-
-                    {/* Sync GPS */}
-                    <button
-                      onClick={handleSyncLocation}
-                      disabled={isLoadingLocation}
-                      className="w-9 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm active:scale-95 transition-all flex items-center justify-center flex-shrink-0 disabled:opacity-50"
-                      aria-label="Sinkronisasi koordinat GPS"
-                    >
-                      {isLoadingLocation ? (
-                        <Loader
-                          size={14}
-                          className="animate-spin"
-                          strokeWidth={2.5}
-                        />
-                      ) : (
-                        <MapPin size={14} strokeWidth={2.7} />
-                      )}
-                    </button>
-                  </div>
-                )}
-
-                {/* Jika belum ada alamat tersimpan */}
-                {SAVED_ADDRESSES.length === 0 && (
-                  <div className="text-center py-4">
-                    <p className="text-[12px] text-gray-400 font-medium">
-                      Belum ada alamat tersimpan
-                    </p>
-                    <button
-                      onClick={() => router.push("/profile")}
-                      className="text-[12px] font-bold text-emerald-600 underline underline-offset-2 mt-1"
-                    >
-                      Tambah di halaman Profil
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* ═══ BLOK 2: RINGKASAN PESANAN ═══ */}
+            {/* ═══ BLOK 1: RINGKASAN PESANAN & TARGET ID ═══ */}
             <div className="mx-4 mt-5 mb-2">
               <h2 className="text-[15px] font-bold text-gray-900 tracking-tight">
-                Ringkasan Pesanan
+                Detail Pesanan
               </h2>
             </div>
 
@@ -530,62 +263,70 @@ export default function CheckoutPage() {
                   const cartImg = getCartImage(product);
 
                   return (
-                    <div
-                      key={product.id}
-                      className="flex gap-3 py-2.5 items-center"
-                    >
-                      <ProductImage
-                        category={product.category}
-                        name={product.name}
-                        src={cartImg}
-                        className="w-11 h-11 rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-white"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-xs font-semibold text-gray-800 truncate leading-tight">
-                          {product.name}
-                        </h3>
-                        <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                          <span className="text-emerald-600 font-bold text-[11px]">
-                            {formatRupiah(price)}
-                          </span>
-                          {hasDiscount && (
-                            <span className="text-[10px] text-gray-400 line-through">
-                              {formatRupiah(originalPrice)}
+                    <div key={product.id} className="py-2.5">
+                      <div className="flex gap-3 items-center">
+                        <ProductImage
+                          category={product.category}
+                          name={product.name}
+                          src={cartImg}
+                          className="w-11 h-11 rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-white"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xs font-semibold text-gray-800 truncate leading-tight">
+                            {product.name}
+                          </h3>
+                          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                            <span className="text-emerald-600 font-bold text-[11px]">
+                              {formatRupiah(price)}
                             </span>
-                          )}
+                            {hasDiscount && (
+                              <span className="text-[10px] text-gray-400 line-through">
+                                {formatRupiah(originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[9px] text-gray-400 font-medium mt-0.5">
+                            Subtotal:{" "}
+                            <span className="text-gray-600 font-bold">
+                              {formatRupiah(subtotalItem)}
+                            </span>
+                          </p>
                         </div>
-                        <p className="text-[9px] text-gray-400 font-medium mt-0.5">
-                          Subtotal:{" "}
-                          <span className="text-gray-600 font-bold">
-                            {formatRupiah(subtotalItem)}
+                        <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden">
+                          <button
+                            onClick={() => updateQuantity(product.id, qty - 1)}
+                            disabled={qty <= 1}
+                            className={`w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 border-r border-gray-200/60 ${qty <= 1 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-gray-700"}`}
+                          >
+                            <Minus size={10} strokeWidth={2.5} />
+                          </button>
+                          <span className="w-6 text-center font-bold text-[11px] text-gray-800 select-none">
+                            {qty}
                           </span>
-                        </p>
-                      </div>
-                      <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden">
+                          <button
+                            onClick={() => updateQuantity(product.id, qty + 1)}
+                            className="w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 text-gray-500 hover:text-gray-700 border-l border-gray-200/60"
+                          >
+                            <Plus size={10} strokeWidth={2.5} />
+                          </button>
+                        </div>
                         <button
-                          onClick={() => updateQuantity(product.id, qty - 1)}
-                          disabled={qty <= 1}
-                          className={`w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 border-r border-gray-200/60 ${qty <= 1 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-gray-700"}`}
+                          onClick={() => removeItem(product.id)}
+                          className="p-1.5 text-gray-300 hover:text-red-500 transition-colors active:scale-90 flex-shrink-0"
+                          aria-label="Hapus produk"
                         >
-                          <Minus size={10} strokeWidth={2.5} />
-                        </button>
-                        <span className="w-6 text-center font-bold text-[11px] text-gray-800 select-none">
-                          {qty}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(product.id, qty + 1)}
-                          className="w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 text-gray-500 hover:text-gray-700 border-l border-gray-200/60"
-                        >
-                          <Plus size={10} strokeWidth={2.5} />
+                          <Trash2 size={15} strokeWidth={2.2} />
                         </button>
                       </div>
-                      <button
-                        onClick={() => removeItem(product.id)}
-                        className="p-1.5 text-gray-300 hover:text-red-500 transition-colors active:scale-90 flex-shrink-0"
-                        aria-label="Hapus produk"
-                      >
-                        <Trash2 size={15} strokeWidth={2.2} />
-                      </button>
+                      <div className="mt-2.5 mb-1 pl-[56px] pr-2">
+                        <input
+                          type="text"
+                          placeholder="Masukkan Nomor HP / ID Tujuan..."
+                          value={targetIds[product.id] || ""}
+                          onChange={(e) => setTargetIds((prev) => ({ ...prev, [product.id]: e.target.value }))}
+                          className="w-full text-[12px] bg-gray-50 border border-gray-200/80 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"
+                        />
+                      </div>
                     </div>
                   );
                 })}
@@ -620,23 +361,6 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Ongkir */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
-                    <Truck size={12} strokeWidth={2} />
-                    <span>Ongkos Kirim</span>
-                  </div>
-                  {ONGKIR === 0 ? (
-                    <span className="text-[12px] font-bold text-emerald-600">
-                      Gratis
-                    </span>
-                  ) : (
-                    <span className="text-[12px] font-semibold text-gray-700">
-                      {formatRupiah(ONGKIR)}
-                    </span>
-                  )}
-                </div>
-
                 {/* Divider */}
                 <div className="border-t border-dashed border-gray-200 pt-2 mt-1">
                   <div className="flex items-center justify-between">
@@ -651,7 +375,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* ═══ BLOK 3: METODE PEMBAYARAN ═══ */}
+            {/* ═══ BLOK 2: METODE PEMBAYARAN ═══ */}
             <div className="mx-4 mt-5 mb-2">
               <h2 className="text-[15px] font-bold text-gray-900 tracking-tight">
                 Metode Pembayaran
@@ -801,7 +525,7 @@ export default function CheckoutPage() {
                 }`}
             >
               {isSubmitting ? (
-                <>
+               <>
                   <Loader size={17} className="animate-spin" strokeWidth={2} />
                   <span>Memproses...</span>
                 </>

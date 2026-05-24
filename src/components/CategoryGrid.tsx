@@ -7,11 +7,17 @@ import { useCategoryBottomSheetStore } from "@/store/useCategoryBottomSheetStore
 import { Category } from "@/lib/types";
 import { GridColorIcon } from "./GridColorIcon";
 
+// Icon mapping - 2.5D icons library
+// Urutan: Pulsa, Paket Data, Listrik, E-Wallet, Tagihan, Game, Voucher, Subscription
 const iconPathMap: Record<string, string> = {
-  snack: "/icons/snack.png",
-  minuman: "/icons/minuman.png",
   pulsa: "/icons/pulsa.png",
+  "paket data": "/icons/paket-data.png",
   listrik: "/icons/listrik.png",
+  "e-wallet": "/icons/e-wallet.png",
+  tagihan: "/icons/tagihan.png",
+  game: "/icons/game.png",
+  voucher: "/icons/voucher.png",
+  subscription: "/icons/subscription.png",
 };
 
 interface CategoryGridProps {
@@ -21,15 +27,14 @@ interface CategoryGridProps {
 function CategorySkeleton() {
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="h-4 w-20 skeleton rounded-md mb-3" />
-      <div className="flex gap-2">
-        {Array.from({ length: 5 }).map((_, i) => (
+      <div className="grid grid-cols-4 gap-x-3 gap-y-1">
+        {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex flex-col items-center flex-shrink-0 w-[68px] gap-2"
+            className="flex flex-col items-center justify-start pt-1.5 pb-1 gap-1.5"
           >
-            <div className="w-12 h-12 skeleton rounded-full" />
-            <div className="h-2.5 w-11 skeleton rounded-md" />
+            <div className="w-12 h-12 skeleton rounded-lg" />
+            <div className="h-2.5 w-10 skeleton rounded-md" />
           </div>
         ))}
       </div>
@@ -54,10 +59,8 @@ function CategoryItem({
       className="
         flex flex-col items-center
         justify-start
-        flex-1
-        min-w-0
-        pt-1 pb-1
-        gap-1
+        pt-2 pb-2
+        gap-2
         transition-all
         active:scale-95
       "
@@ -73,13 +76,13 @@ function CategoryItem({
 
       <span
         className={`
-          text-[10px]
-          truncate
+          text-[11px]
+          text-center
           transition-colors
           ${
             isActive
               ? "text-emerald-600 font-semibold"
-              : "text-gray-500 font-medium"
+              : "text-gray-600 font-medium"
           }
         `}
       >
@@ -96,7 +99,7 @@ export default function CategoryGrid({
   const { openSheet } = useCategoryBottomSheetStore();
   const [isLoading, setIsLoading] = useState(initialCategories.length === 0);
   const [categories, setCategories] = useState<Category[]>(() =>
-    initialCategories.filter((c) => c.id !== "all").slice(0, 4),
+    initialCategories.filter((c) => c.id !== "all").slice(0, 8),
   );
 
   useEffect(() => {
@@ -108,7 +111,7 @@ export default function CategoryGrid({
           const sorted = [...data].sort(
             (a, b) => (a.priority || 0) - (b.priority || 0),
           );
-          setCategories(sorted.filter((c) => c.id !== "all").slice(0, 4));
+          setCategories(sorted.filter((c) => c.id !== "all").slice(0, 8));
         }
       })
       .catch((err) => console.error("Failed to fetch categories:", err))
@@ -127,14 +130,9 @@ export default function CategoryGrid({
   if (isLoading) return <CategorySkeleton />;
 
   return (
-    <section className="px-4 pt-2 pb-2.5">
-      <div className="flex items-start justify-between"></div>
-
-      <div
-        className="flex gap-1 overflow-x-auto"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {/* 4 categories from DB */}
+    <section className="px-4 pt-3 pb-3.5">
+      <div className="grid grid-cols-4 gap-x-3 gap-y-1">
+        {/* 8 categories: 2 rows x 4 columns */}
         {categories.map((cat) => (
           <CategoryItem
             key={cat.id}
@@ -143,23 +141,34 @@ export default function CategoryGrid({
             onClick={() => handleClick(cat.id)}
             icon={
               <Image
-                src={iconPathMap[cat.id] || "/icons/default.png"}
+                src={
+                  iconPathMap[cat.name.toLowerCase()] || "/icons/default.png"
+                }
                 alt={cat.name}
                 width={32}
                 height={32}
                 className="w-8 h-8 object-contain"
+                priority={false}
               />
             }
           />
         ))}
 
-        {/* "Semua" — always last */}
-        <CategoryItem
-          label="Semua"
-          isActive={category === "all"}
-          onClick={openSheet}
-          icon={<GridColorIcon size={32} />}
-        />
+        {/* "Semua" — always last (row 2, col 1) */}
+        {categories.length < 8 && (
+          <CategoryItem
+            label="Semua"
+            isActive={category === "all"}
+            onClick={openSheet}
+            icon={
+              // TODO: Replace dengan custom icon untuk "Semua"
+              // <GridColorIcon size={32} />
+              <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-[10px] text-gray-500">
+                ※
+              </div>
+            }
+          />
+        )}
       </div>
     </section>
   );

@@ -52,115 +52,122 @@ function applySort(products: Product[], sort: string): Product[] {
 const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
   {
     id: "hl-1",
-    name: "Indomie Goreng Spesial 85g",
-    slug: "indomie-goreng-85g",
-    price: 2900,
-    originalPrice: 3600,
-    category: "kebutuhan",
+    name: "Pulsa Telkomsel 10.000",
+    slug: "pulsa-telkomsel-10k",
+    price: 10500,
+    originalPrice: 11000,
+    category: "pulsa",
     images: [],
     rating: 4.8,
-    reviewCount: 125,
-    sold: 1250,
-    description: "",
-    stock: 100,
+    reviewCount: 320,
+    sold: 5200,
+    description: "Pulsa all operator instan masuk",
+    stock: 9999,
   } as Product,
+
   {
     id: "hl-2",
-    name: "Nu Green Tea 500ml",
-    slug: "nu-green-tea-500ml",
-    price: 6500,
-    originalPrice: 8500,
-    category: "minuman",
+    name: "Paket Data 5GB 7 Hari",
+    slug: "paket-data-5gb-7hari",
+    price: 18500,
+    originalPrice: 22000,
+    category: "paket-data",
     images: [],
-    rating: 4.5,
-    reviewCount: 98,
-    sold: 890,
-    description: "",
-    stock: 50,
+    rating: 4.7,
+    reviewCount: 410,
+    sold: 6100,
+    description: "Kuota internet cepat & stabil",
+    stock: 9999,
   } as Product,
+
   {
     id: "hl-3",
-    name: "Chitato Sapi Panggang 68g",
-    slug: "chitato-sapi-68g",
-    price: 15500,
-    originalPrice: 18000,
-    category: "snack",
+    name: "Token Listrik PLN 20.000",
+    slug: "token-listrik-20k",
+    price: 20500,
+    originalPrice: 22000,
+    category: "token-listrik",
     images: [],
-    rating: 4.6,
-    reviewCount: 210,
-    sold: 670,
-    description: "",
-    stock: 80,
+    rating: 4.9,
+    reviewCount: 890,
+    sold: 9800,
+    description: "Token listrik langsung masuk meteran",
+    stock: 9999,
   } as Product,
+
   {
     id: "hl-4",
-    name: "Aqua 600ml",
-    slug: "aqua-600ml",
-    price: 3200,
-    originalPrice: 4000,
-    category: "minuman",
+    name: "Top Up DANA 50.000",
+    slug: "topup-dana-50k",
+    price: 50000,
+    originalPrice: 52000,
+    category: "e-wallet",
     images: [],
-    rating: 4.7,
-    reviewCount: 450,
-    sold: 2100,
-    description: "",
-    stock: 200,
+    rating: 4.8,
+    reviewCount: 760,
+    sold: 7400,
+    description: "Isi saldo e-wallet instan",
+    stock: 9999,
   } as Product,
+
   {
     id: "hl-5",
-    name: "Teh Pucuk Harum 500ml",
-    slug: "teh-pucuk-harum-500ml",
-    price: 3500,
-    originalPrice: 4500,
-    category: "minuman",
-    images: [],
-    rating: 4.4,
-    reviewCount: 320,
-    sold: 1800,
-    description: "",
-    stock: 150,
-  } as Product,
-  {
-    id: "hl-6",
-    name: "Chitato Original 68g",
-    slug: "chitato-original-68g",
-    price: 8500,
-    originalPrice: 10000,
-    category: "snack",
-    images: [],
-    rating: 4.5,
-    reviewCount: 156,
-    sold: 560,
-    description: "",
-    stock: 75,
-  } as Product,
-  {
-    id: "hl-7",
-    name: "Pocari Sweat 500ml",
-    slug: "pocari-sweat-500ml",
-    price: 7200,
-    originalPrice: 8500,
-    category: "minuman",
-    images: [],
-    rating: 4.6,
-    reviewCount: 275,
-    sold: 920,
-    description: "",
-    stock: 60,
-  } as Product,
-  {
-    id: "hl-8",
-    name: "Mie Sedaap Goreng 85g",
-    slug: "mie-sedaap-goreng-85g",
-    price: 2800,
-    originalPrice: 3500,
-    category: "kebutuhan",
+    name: "Top Up Mobile Legends 86 Diamonds",
+    slug: "ml-86-diamonds",
+    price: 21000,
+    originalPrice: 25000,
+    category: "game",
     images: [],
     rating: 4.7,
-    reviewCount: 180,
-    sold: 1100,
-    description: "",
-    stock: 120,
+    reviewCount: 540,
+    sold: 8800,
+    description: "Diamond ML cepat & resmi",
+    stock: 9999,
+  } as Product,
+
+  {
+    id: "hl-6",
+    name: "Voucher Google Play 50.000",
+    slug: "google-play-voucher-50k",
+    price: 50000,
+    originalPrice: 52000,
+    category: "voucher",
+    images: [],
+    rating: 4.6,
+    reviewCount: 300,
+    sold: 4100,
+    description: "Voucher digital Google Play",
+    stock: 9999,
+  } as Product,
+
+  {
+    id: "hl-7",
+    name: "Tagihan PLN Pascabayar",
+    slug: "tagihan-pln-pascabayar",
+    price: 1500,
+    originalPrice: 2000,
+    category: "tagihan",
+    images: [],
+    rating: 4.8,
+    reviewCount: 1200,
+    sold: 15000,
+    description: "Bayar listrik bulanan tanpa ribet",
+    stock: 9999,
+  } as Product,
+
+  {
+    id: "hl-8",
+    name: "Netflix Subscription 1 Bulan",
+    slug: "netflix-subscription-1-bulan",
+    price: 65000,
+    originalPrice: 75000,
+    category: "subscription",
+    images: [],
+    rating: 4.7,
+    reviewCount: 980,
+    sold: 6200,
+    description: "Langganan Netflix resmi",
+    stock: 9999,
   } as Product,
 ];
 
@@ -168,7 +175,9 @@ const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
 function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
-      <div className={`w-full ${isTall ? 'aspect-[4/5]' : 'aspect-[3/2]'} bg-gray-100 skeleton animate-pulse`} />
+      <div
+        className={`w-full ${isTall ? "aspect-[4/5]" : "aspect-[3/2]"} bg-gray-100 skeleton animate-pulse`}
+      />
       <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5">
         <div className="mt-2.5 min-h-[2.4rem] flex flex-col justify-center gap-1.5">
           <div className="h-3 w-full bg-gray-100 skeleton rounded-md animate-pulse" />
@@ -229,26 +238,42 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
     productImages = rawImages.flatMap((img) => {
       if (!img || typeof img !== "string") return [];
       if (img.startsWith("data:image") || img.startsWith("http")) return [img];
-      return img.split("|").filter(
-        (i) => i?.trim()?.startsWith("data:image") || i?.trim()?.startsWith("http"),
-      );
+      return img
+        .split("|")
+        .filter(
+          (i) =>
+            i?.trim()?.startsWith("data:image") ||
+            i?.trim()?.startsWith("http"),
+        );
     });
   } else if (typeof rawImages === "string") {
-    productImages = rawImages.split("|").map((i) => i?.trim()).filter(
-      (i) => i && (i.startsWith("data:image") || i.startsWith("http")),
-    );
+    productImages = rawImages
+      .split("|")
+      .map((i) => i?.trim())
+      .filter((i) => i && (i.startsWith("data:image") || i.startsWith("http")));
   }
 
-  const specificReviews = localReviews.filter((r) => r.productId === product.id);
+  const specificReviews = localReviews.filter(
+    (r) => r.productId === product.id,
+  );
   const displayRating =
     specificReviews.length > 0
-      ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
+      ? Number(
+          (
+            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+            specificReviews.length
+          ).toFixed(1),
+        )
       : product.rating || 0;
 
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+  const hasDiscount =
+    product.originalPrice && product.originalPrice > product.price;
 
   return (
-    <Link href={`/product/${product.slug}`} className="block flex-shrink-0 w-[200px] group">
+    <Link
+      href={`/product/${product.slug}`}
+      className="block flex-shrink-0 w-[200px] group"
+    >
       <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[80px]">
         {/* Gambar full-bleed kiri */}
         <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
@@ -264,48 +289,53 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
 
         {/* Konten kanan */}
         <div className="flex-1 min-w-0 flex flex-col px-2.5 py-2">
+          {/* Nama */}
+          <div className="min-h-[28px] mb-1">
+            <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
+              {product.name}
+            </p>
+          </div>
 
-  {/* Nama */}
-  <div className="min-h-[28px] mb-1">
-    <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
-      {product.name}
-    </p>
-  </div>
+          {/* Harga & progress */}
+          <div className="flex flex-col gap-0.5 mt-auto">
+            {hasDiscount && (
+              <p className="text-[9px] text-gray-400 line-through leading-none">
+                {formatRupiah(product.originalPrice!)}
+              </p>
+            )}
 
-  {/* Harga & progress */}
-  <div className="flex flex-col gap-0.5 mt-auto">
-    {hasDiscount && (
-      <p className="text-[9px] text-gray-400 line-through leading-none">
-        {formatRupiah(product.originalPrice!)}
-      </p>
-    )}
+            <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
+              {formatRupiah(product.price)}
+            </p>
 
-    <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
-      {formatRupiah(product.price)}
-    </p>
+            {/* Progress */}
+            <div className="mt-1.5">
+              <span className="text-[8px] font-semibold text-orange-500 leading-none">
+                Tersisa 12
+              </span>
 
-    {/* Progress */}
-    <div className="mt-1.5">
-      <span className="text-[8px] font-semibold text-orange-500 leading-none">
-        Tersisa 12
-      </span>
-
-      <div className="mt-1 h-1.5 bg-orange-100 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"
-          style={{ width: "78%" }}
-        />
-      </div>
-    </div>
-  </div>
-</div>
+              <div className="mt-1 h-1.5 bg-orange-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"
+                  style={{ width: "78%" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </article>
     </Link>
   );
 }
 
 /* ── Highlight Card ───────────────────────────────── */
-function HighlightCard({ product, index }: { product: Product; index: number }) {
+function HighlightCard({
+  product,
+  index,
+}: {
+  product: Product;
+  index: number;
+}) {
   const { getReviewsForProduct } = useReviewStore();
   const localReviews = getReviewsForProduct(product.id);
 
@@ -315,37 +345,52 @@ function HighlightCard({ product, index }: { product: Product; index: number }) 
     productImages = rawImages.flatMap((img) => {
       if (!img || typeof img !== "string") return [];
       if (img.startsWith("data:image") || img.startsWith("http")) return [img];
-      return img.split("|").filter(
-        (i) => i?.trim()?.startsWith("data:image") || i?.trim()?.startsWith("http"),
-      );
+      return img
+        .split("|")
+        .filter(
+          (i) =>
+            i?.trim()?.startsWith("data:image") ||
+            i?.trim()?.startsWith("http"),
+        );
     });
   } else if (typeof rawImages === "string") {
-    productImages = rawImages.split("|").map((i) => i?.trim()).filter(
-      (i) => i && (i.startsWith("data:image") || i.startsWith("http")),
-    );
+    productImages = rawImages
+      .split("|")
+      .map((i) => i?.trim())
+      .filter((i) => i && (i.startsWith("data:image") || i.startsWith("http")));
   }
 
-  const specificReviews = localReviews.filter((r) => r.productId === product.id);
+  const specificReviews = localReviews.filter(
+    (r) => r.productId === product.id,
+  );
   const displayRating =
     specificReviews.length > 0
-      ? Number((specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1))
+      ? Number(
+          (
+            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+            specificReviews.length
+          ).toFixed(1),
+        )
       : product.rating || 0;
 
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+  const hasDiscount =
+    product.originalPrice && product.originalPrice > product.price;
 
   return (
-    <Link href={`/product/${product.slug}`} className="block flex-shrink-0 w-[200px] group">
+    <Link
+      href={`/product/${product.slug}`}
+      className="block flex-shrink-0 w-[200px] group"
+    >
       {/* Remaining time */}
-<div className="absolute top-3 right-2 z-10">
-  {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
-  <span className="bg-orange-500/90 text-white text-[9px] font-black px-1.5 py-[4px] rounded-bl-xl rounded-tr-md leading-none shadow-sm block">
-    3 Hari Lagi
-  </span>
-</div>
+      <div className="absolute top-1.5 right-2 z-10">
+        {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
+        <span className="bg-orange-500/90 text-white text-[9px] font-black px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
+          3 Hari Lagi
+        </span>
+      </div>
 
       {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
       <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[88px]">
-      
         {/* Gambar full-bleed kiri */}
         <div className="w-[80px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
@@ -381,26 +426,25 @@ function HighlightCard({ product, index }: { product: Product; index: number }) 
 
             {/* Progress bar stok */}
             <div className="mt-1">
-  <div className="flex items-center gap-1">
-    <div className="flex-1 h-1 bg-orange-100 rounded-full overflow-hidden">
-      <div
-        className="h-full bg-orange-400 rounded-full"
-        style={{ width: "78%" }}
-      />
-    </div>
+              <div className="flex items-center gap-1">
+                <div className="flex-1 h-1 bg-orange-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-orange-400 rounded-full"
+                    style={{ width: "78%" }}
+                  />
+                </div>
 
-    <span className="text-[7px] font-bold text-orange-500 leading-none shrink-0">
-      12
-    </span>
-  </div>
-</div>
+                <span className="text-[7px] font-bold text-orange-500 leading-none shrink-0">
+                  12
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </article>
     </Link>
   );
 }
-
 
 /* ── Highlight Section ────────────────────────────── */
 function HighlightSection({
@@ -416,7 +460,6 @@ function HighlightSection({
 
   return (
     <section className="mb-2">
-
       {/* ── Header emerald: judul + countdown saja ── */}
       <div className="mx-2 rounded-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-3 relative overflow-hidden">
         {/* decorative blobs */}
@@ -446,7 +489,10 @@ function HighlightSection({
             className="flex gap-2.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
           >
             {displayProducts.map((product, i) => (
-              <div key={product.id} className="flex-shrink-0 snap-start w-[200px]">
+              <div
+                key={product.id}
+                className="flex-shrink-0 snap-start w-[200px]"
+              >
                 <HighlightCard product={product} index={i} />
               </div>
             ))}
@@ -661,7 +707,6 @@ export default function ProductGrid({
         />
       )}
 
-      
       {/* ══════════════════════════════════════════
           SECTION 1 — Paling Dicari (tab Semua saja)
           ══════════════════════════════════════════ */}
@@ -721,7 +766,7 @@ export default function ProductGrid({
                   .map((product, idx) => {
                     const globalIndex = idx * 2;
                     // Hanya baris 2 (indeks 2) yang lonjong untuk menciptakan offset genteng permanen
-                    const isTall = globalIndex === 2; 
+                    const isTall = globalIndex === 2;
                     return (
                       <ProductCard
                         key={product.id}

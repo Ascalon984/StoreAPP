@@ -59,16 +59,16 @@ export default async function Home() {
 
       {/* Product Area */}
       <div
-  id="product-area"
-  className="
+        id="product-area"
+        className="
     relative z-10
     flex flex-col
-    pt-3
+    pt-1.5
     bg-gray-50/[0.55]
     rounded-t-[24px]
     -mt-1
   "
->
+      >
         {/* Scrollable container for products */}
         <div className="pb-24">
           <ProductGrid initialCategories={categories} />

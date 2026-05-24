@@ -862,49 +862,33 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
-      {/* Header */}
-      {/* STICKY HEADER + TABS — jadi satu kesatuan */}
-      {/* HEADER + FLOATING TAB */}
       <div className="sticky top-0 z-50">
-        <div className="bg-[#048750] rounded-b-[14px] shadow-xs">
-          {/* Title — Menggunakan items-end h-9 untuk memosisikan teks di area bawah header */}
-          <div className="flex items-end justify-center px-4 h-9 pb-0.5">
-            <span
-              style={{ wordSpacing: "4px" }}
-              className="text-[15px] font-black text-white tracking-normal"
-            >
+        <div className="bg-emerald-700 rounded-b-[22px] shadow-sm pb-2">
+          {/* Title */}
+          <div className="flex items-center justify-center px-4 h-10">
+            <span className="text-[15px] font-black text-white leading-none">
               Riwayat Pesanan
             </span>
           </div>
 
-          {/* Container tab — Menggunakan pb-[3px] dengan translate-y-[9px] agar melayang pas */}
-          <div className="px-4 pb-[3px]">
-            <div
-              className="
-      relative
-      bg-white
-      rounded-lg
-      p-[2px]
-      flex
-      translate-y-[9px]
-      ring-1 ring-slate-900/[0.04]
-      shadow-layer-sm
-    "
-            >
-              {/* Sliding Active Background — Diperbaiki rumusnya */}
+          {/* Tabs */}
+          <div className="px-4 mt-2">
+            <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[2px] flex ring-1 ring-white/10">
+              {/* Active indicator */}
               <div
                 className="
-        absolute top-[2px] bottom-[2px]
-        rounded-[6px]
-        bg-[#D89B2B]
-        shadow-[0_1px_4px_rgba(216,155,43,0.35)]
-        transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) {/* Menggunakan bezier premium */}
-      "
+            absolute top-[2px] bottom-[2px]
+            rounded-[10px]
+            bg-white
+            shadow-[0_2px_8px_rgba(0,0,0,0.12)]
+            transition-all duration-300
+            ease-[cubic-bezier(0.16,1,0.3,1)]
+          "
                 style={{
-                  // Mengurangi padding 4px dari total ruang agar transisi stabil
-                  transform: `translateX(${FILTER_TABS.findIndex((t) => t.key === activeFilter) * 100}%) scale(${activeFilter ? 1 : 0.95})`,
-                  left: "2px", // Mengunci posisi awal sejajar p-[2px] kontainer
-                  width: `calc((100% - 4px) / ${FILTER_TABS.length})`,
+                  transform: `translateX(${
+                    FILTER_TABS.findIndex((t) => t.key === activeFilter) * 100
+                  }%)`,
+                  width: `calc(100% / ${FILTER_TABS.length})`,
                 }}
               />
 
@@ -916,16 +900,11 @@ export default function OrdersPage() {
                     key={tab.key}
                     onClick={() => setActiveFilter(tab.key)}
                     className={`
-            relative z-10
-            flex-1 h-7
-            rounded-[6px]
-            text-[12px]
-            font-bold
-            transition-colors duration-300 {/* Disamakan dengan durasi background */}
-            active:scale-[0.97]
-            border-none outline-none
-            ${active ? "text-white" : "text-gray-400"}
-          `}
+                relative z-10 flex-1 h-8
+                text-[12px] font-semibold
+                transition-colors
+                ${active ? "text-emerald-800" : "text-white/70"}
+              `}
                   >
                     {tab.label}
                   </button>
@@ -939,7 +918,7 @@ export default function OrdersPage() {
       {/* List */}
       <div className="pt-[22px]">
         {isLoading ? (
-          <div className="px-4 space-y-2">
+          <div className="px-2 space-y-2">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
@@ -956,7 +935,7 @@ export default function OrdersPage() {
                   </h2>
                 </div>
                 {/* FIXED: space-y-2, bukan space-y-1 */}
-                <div className="px-4 space-y-2">
+                <div className="px-2 space-y-2">
                   {group.orders.map((order) => (
                     <OrderCard
                       key={order.id}

@@ -276,9 +276,9 @@ export default function NotificationsPage() {
     <div className="min-h-screen bg-white pb-5">
       {/* Sticky Header + Tabs */}
       <div className="sticky top-0 z-50">
-        <div className="bg-[#048750] rounded-b-[14px] shadow-xs">
+        <div className="bg-emerald-700 rounded-b-[22px] shadow-sm pb-2">
           {/* Title bar */}
-          <div className="flex items-end justify-between px-3 h-11 pb-1">
+          <div className="flex items-center justify-between px-4 h-10">
             <div className="flex items-center gap-1">
               <button
                 onClick={() => router.back()}
@@ -311,46 +311,39 @@ export default function NotificationsPage() {
           </div>
 
           {/* Tabs */}
-          <div className="px-4 pb-[3px]">
-            <div
-              className="
-                relative bg-white rounded-lg p-[2px] flex
-                translate-y-[9px]
-                ring-1 ring-slate-900/[0.04] shadow-layer-sm
-              "
-            >
-              {/* Sliding active background */}
+          <div className="px-4 mt-2">
+            <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[2px] flex ring-1 ring-white/10">
+              {/* Active indicator */}
               <div
                 className="
-                  absolute top-[2px] bottom-[2px]
-                  rounded-[6px]
-                  bg-[#D89B2B]
-                  shadow-[0_1px_4px_rgba(216,155,43,0.35)]
-                  transition-all duration-300
-                "
+        absolute top-[2px] bottom-[2px]
+        rounded-[10px]
+        bg-white
+        shadow-[0_2px_8px_rgba(0,0,0,0.12)]
+        transition-all duration-300
+        ease-[cubic-bezier(0.16,1,0.3,1)]
+      "
                 style={{
-                  left: "2px",
-                  width: `calc((100% - 4px) / ${TABS.length})`,
                   transform: `translateX(${
                     TABS.findIndex((t) => t.key === activeTab) * 100
                   }%)`,
+                  width: `calc(100% / ${TABS.length})`,
                 }}
               />
 
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.key;
+
                 return (
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={`
-                      relative z-10 flex-1 h-7 rounded-[6px]
-                      text-[12px] font-bold
-                      transition-colors duration-300
-                      active:scale-[0.97]
-                      border-none outline-none
-                      ${isActive ? "text-white" : "text-gray-400"}
-                    `}
+            relative z-10 flex-1 h-8
+            text-[12px] font-semibold
+            transition-colors
+            ${isActive ? "text-emerald-800" : "text-white/70"}
+          `}
                   >
                     {tab.label}
                   </button>

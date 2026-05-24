@@ -16,9 +16,6 @@ import {
   Bell,
   Info,
   LogOut,
-  Trash2,
-  MapPinHouse,
-  MapPinPlus,
   Phone,
   Mail,
   User,
@@ -35,15 +32,6 @@ const mockUser = {
   phone: "081-234-5678",
   avatar: null,
 };
-
-const initialAddresses = [
-  {
-    id: "1",
-    label: "Rumah",
-    address: "Jl. Melati No. 12, Telang Indah, Kamal",
-    isMain: true,
-  },
-];
 
 const mockNotifPrefs = { orderUpdates: true, promoOffers: false };
 const mockStats = { orders: 12, favorites: 8, reviews: 4 };
@@ -202,12 +190,10 @@ function FieldRow({
 // ── Profile Completion Card ──
 function ProfileCompletion({
   user,
-  addresses,
   avatarPreview,
   onLengkapi,
 }: {
   user: { name: string; username: string; email: string; phone: string };
-  addresses: { isMain: boolean }[];
   avatarPreview: string | null;
   onLengkapi: () => void;
 }) {
@@ -216,7 +202,6 @@ function ProfileCompletion({
     { label: "Email", done: !!user.email.trim() },
     { label: "No. Telepon", done: !!user.phone.trim() },
     { label: "Foto Profil", done: !!avatarPreview },
-    { label: "Alamat Utama", done: addresses.some((a) => a.isMain) },
   ];
 
   const completed = items.filter((i) => i.done).length;
@@ -226,8 +211,8 @@ function ProfileCompletion({
 
   function getCopy(n: number): string {
     if (n === 0) return "Mulai lengkapi profilmu!";
-    if (n === 4) return "Tinggal 1 langkah lagi";
-    if (n === 5) return "Profilmu sudah lengkap";
+    if (n === 3) return "Tinggal 1 langkah lagi";
+    if (n === 4) return "Profilmu sudah lengkap";
     return "Yuk, lengkapi data profilmu!";
   }
 
@@ -366,17 +351,9 @@ export default function ProfilePage() {
   const [user, setUser] = useState(mockUser);
   const [notifPrefs, setNotifPrefs] = useState(mockNotifPrefs);
   const [dataPribadiOpen, setDataPribadiOpen] = useState(false);
-  const [alamatOpen, setAlamatOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [addresses, setAddresses] = useState(initialAddresses);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [editAddrLabel, setEditAddrLabel] = useState("");
-  const [editAddrText, setEditAddrText] = useState("");
-  const [addingAddress, setAddingAddress] = useState(false);
-  const [newAddrLabel, setNewAddrLabel] = useState("");
-  const [newAddrText, setNewAddrText] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar,
   );
@@ -391,8 +368,7 @@ export default function ProfilePage() {
     !!user.name.trim() &&
     !!user.email.trim() &&
     !!user.phone.trim() &&
-    !!avatarPreview &&
-    addresses.some((a) => a.isMain);
+    !!avatarPreview;
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -441,41 +417,6 @@ export default function ProfilePage() {
     );
   };
 
-  const handleDeleteAddr = (id: string) => {
-    setAddresses((prev) => {
-      const filtered = prev.filter((a) => a.id !== id);
-      const hasMain = filtered.some((a) => a.isMain);
-      if (!hasMain && filtered.length > 0)
-        return filtered.map((a, i) => ({ ...a, isMain: i === 0 }));
-      return filtered;
-    });
-  };
-
-  const handleAddAddrSave = () => {
-    if (!newAddrLabel.trim() || !newAddrText.trim()) return;
-    setAddresses((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        label: newAddrLabel.trim(),
-        address: newAddrText.trim(),
-        isMain: addresses.length === 0,
-      },
-    ]);
-    setNewAddrLabel("");
-    setNewAddrText("");
-    setAddingAddress(false);
-  };
-
-  const handleAddAddrCancel = () => {
-    setNewAddrLabel("");
-    setNewAddrText("");
-    setAddingAddress(false);
-  };
-
-  const canDelete = addresses.length > 1;
-  const canAdd = addresses.length < 3;
-
   const handleEditStart = (key: string, val: string) => {
     setEditingField(key);
     setEditValue(val);
@@ -487,21 +428,6 @@ export default function ProfilePage() {
   const handleEditSave = (key: string) => {
     setUser((prev) => ({ ...prev, [key]: editValue }));
     handleEditCancel();
-  };
-  const handleEditAddrStart = (addr: any) => {
-    setEditingAddressId(addr.id);
-    setEditAddrLabel(addr.label);
-    setEditAddrText(addr.address);
-  };
-  const handleEditAddrSave = () => {
-    setAddresses((prev) =>
-      prev.map((a) =>
-        a.id === editingAddressId
-          ? { ...a, label: editAddrLabel, address: editAddrText }
-          : a,
-      ),
-    );
-    setEditingAddressId(null);
   };
 
   const handleLengkapi = () => {
@@ -588,7 +514,7 @@ export default function ProfilePage() {
             >
               {/* Body bubble — stroke putih */}
               <path
-                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+               d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
                 fill="white"
                 stroke="white"
                 strokeWidth="2"
@@ -639,7 +565,6 @@ export default function ProfilePage() {
         ) : (
           <ProfileCompletion
             user={user}
-            addresses={addresses}
             avatarPreview={avatarPreview}
             onLengkapi={handleLengkapi}
           />
@@ -734,196 +659,6 @@ export default function ProfilePage() {
 
           <div className="border-t border-gray-100" />
 
-          {/* Alamat Pengiriman */}
-          <button
-            onClick={() => setAlamatOpen((p) => !p)}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
-                <MapPinHouse
-                  size={16}
-                  className="text-gray-500"
-                  strokeWidth={2.5}
-                />
-              </div>
-              <div className="text-left">
-                <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                  Alamat Pengiriman
-                </p>
-                <p className="text-[10px] text-gray-500 font-medium mt-0.5">
-                  Kelola alamat pengiriman pesanan
-                </p>
-              </div>
-            </div>
-            {alamatOpen ? (
-              <ChevronDown size={16} className="text-gray-400" />
-            ) : (
-              <ChevronRight size={16} className="text-gray-400" />
-            )}
-          </button>
-
-          <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
-            style={{
-              maxHeight: alamatOpen ? "800px" : "0px",
-              opacity: alamatOpen ? 1 : 0,
-            }}
-          >
-            <div className="border-t border-gray-100 p-3 flex flex-col gap-3">
-              {addresses.map((addr) => {
-                const isEditing = editingAddressId === addr.id;
-                return (
-                  <div
-                    key={addr.id}
-                    className="p-3 rounded-xl ring-1 ring-slate-900/[0.04]"
-                  >
-                    {isEditing ? (
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            value={editAddrLabel}
-                            onChange={(e) => setEditAddrLabel(e.target.value)}
-                            placeholder="Label (Contoh: Rumah)"
-                            className="flex-1 text-[12px] font-bold text-gray-800 bg-gray-50 rounded-lg px-2.5 py-1.5 outline-none border border-emerald-600/50 focus:border-emerald-600 transition-all"
-                          />
-                          <button
-                            onClick={() => setEditingAddressId(null)}
-                            className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-all active:scale-90 flex-shrink-0"
-                          >
-                            <X size={13} strokeWidth={2.5} />
-                          </button>
-                          <button
-                            onClick={handleEditAddrSave}
-                            className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 transition-all active:scale-90 flex-shrink-0"
-                          >
-                            <Check size={13} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                        <textarea
-                          value={editAddrText}
-                          onChange={(e) => setEditAddrText(e.target.value)}
-                          placeholder="Alamat lengkap..."
-                          rows={2}
-                          className="w-full text-[11px] font-medium text-gray-700 bg-gray-50 rounded-lg px-2.5 py-1.5 outline-none border border-emerald-600/50 focus:border-emerald-600 resize-none transition-all"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex-shrink-0 flex items-center justify-center">
-                          <label
-                            className={`flex items-center justify-center w-6 h-6 rounded-full border-2 cursor-pointer relative transition-colors ${addr.isMain ? "border-emerald-500 bg-emerald-50" : "border-gray-300 hover:border-gray-400"}`}
-                          >
-                            <input
-                              type="radio"
-                              name="mainAddress"
-                              checked={addr.isMain}
-                              onChange={() =>
-                                setAddresses((prev) =>
-                                  prev.map((a) => ({
-                                    ...a,
-                                    isMain: a.id === addr.id,
-                                  })),
-                                )
-                              }
-                              className="opacity-0 absolute w-full h-full cursor-pointer"
-                            />
-                            {addr.isMain && (
-                              <div className="w-3.5 h-3.5 rounded-full bg-emerald-500" />
-                            )}
-                          </label>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[13px] font-bold text-gray-800">
-                              {addr.label}
-                            </span>
-                            {addr.isMain && (
-                              <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-bold rounded">
-                                Utama
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[11px] text-gray-700 leading-snug pr-2">
-                            {addr.address}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          {!addr.isMain && canDelete && (
-                            <button
-                              onClick={() => handleDeleteAddr(addr.id)}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-400 hover:bg-red-50 transition-all active:scale-90"
-                            >
-                              <Trash2 size={14} strokeWidth={2.5} />
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleEditAddrStart(addr)}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-emerald-500 hover:bg-emerald-50 transition-all active:scale-90"
-                          >
-                            <Pencil size={14} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-
-              {addingAddress && (
-                <div className="p-3 rounded-xl ring-1 ring-emerald-500/30 border border-dashed border-emerald-300 bg-emerald-50/30 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={newAddrLabel}
-                      onChange={(e) => setNewAddrLabel(e.target.value)}
-                      placeholder="Label (Contoh: Kos)"
-                      autoFocus
-                      className="flex-1 text-[12px] font-bold text-gray-800 bg-white rounded-lg px-2.5 py-1.5 outline-none border border-emerald-600/50 transition-all"
-                    />
-                    <button
-                      onClick={handleAddAddrCancel}
-                      className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-all active:scale-90 flex-shrink-0"
-                    >
-                      <X size={13} strokeWidth={2.5} />
-                    </button>
-                    <button
-                      onClick={handleAddAddrSave}
-                      className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 transition-all active:scale-90 flex-shrink-0"
-                    >
-                      <Check size={13} strokeWidth={2.5} />
-                    </button>
-                  </div>
-                  <textarea
-                    value={newAddrText}
-                    onChange={(e) => setNewAddrText(e.target.value)}
-                    placeholder="Alamat lengkap..."
-                    rows={2}
-                    className="w-full text-[11px] font-medium text-gray-700 bg-white rounded-lg px-2.5 py-1.5 outline-none border border-emerald-600/50 resize-none transition-all"
-                  />
-                </div>
-              )}
-
-              {canAdd && !addingAddress && (
-                <button
-                  onClick={() => setAddingAddress(true)}
-                  className="w-full py-2.5 border border-dashed border-gray-300 rounded-xl text-[12px] font-bold text-gray-500 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all flex items-center justify-center gap-2"
-                >
-                  <MapPinPlus size={15} strokeWidth={2.5} /> Tambah Alamat Baru
-                </button>
-              )}
-
-              {!canAdd && !addingAddress && (
-                <p className="text-center text-[10px] text-gray-500 font-medium py-1">
-                  Maksimal 3 alamat tersimpan
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100" />
-
           {/* Notifikasi */}
           <button
             onClick={() => setNotifOpen((p) => !p)}
@@ -963,7 +698,7 @@ export default function ProfilePage() {
                     Update Pesanan
                   </p>
                   <p className="text-[10px] text-gray-600 font-medium mt-0.5">
-                    Info status pengiriman real-time
+                    Info status pemesanan real-time
                   </p>
                 </div>
                 <Toggle
