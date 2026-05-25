@@ -401,13 +401,13 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
           {/* ── Slide 0 — Overview ── */}
-          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3">
+          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-4">
             <div className="flex flex-col items-center flex-shrink-0">
               <div className="flex items-center">
                 {items.slice(0, 3).map((item, i) => (
                   <div
                     key={item.productId}
-                    className="w-12 h-12 rounded-xl border-2 border-white shadow-sm
+                    className="w-13.5 h-13.5 rounded-xl border-2 border-white shadow-sm
                     overflow-hidden bg-gray-50 flex-shrink-0"
                     style={{
                       marginLeft: i === 0 ? 0 : -14,
@@ -424,7 +424,7 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                 ))}
                 {items.length > 3 && (
                   <div
-                    className="w-12 h-12 rounded-xl border-2 border-white shadow-sm
+                    className="w-13.5 h-13.5 rounded-xl border-2 border-white shadow-sm
                     bg-gray-100 flex items-center justify-center
                     flex-shrink-0 -ml-3.5"
                     style={{ zIndex: 0 }}
@@ -435,25 +435,6 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                   </div>
                 )}
               </div>
-              {totalSlides > 1 && (
-                <div className="flex items-center gap-1 mt-1.5">
-                  {Array.from({ length: totalSlides }).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActive(i);
-                      }}
-                      className={`rounded-full transition-all duration-200
-                      ${
-                        i === active
-                          ? "w-3 h-1 bg-gray-400"
-                          : "w-1 h-1 bg-gray-200"
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
 
             <div className="flex-1 min-w-0">
@@ -472,11 +453,11 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
           {items.map((item, idx) => (
             <div
               key={item.productId}
-              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3"
+              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-4"
             >
               <div className="flex flex-col items-center flex-shrink-0">
                 {/* FIXED: rounded-xl konsisten dengan stack */}
-                <div className="w-12 h-12 rounded-xl border border-gray-100 overflow-hidden bg-gray-50">
+                <div className="w-13.5 h-13.5 rounded-xl border border-gray-100 overflow-hidden bg-gray-50">
                   <ProductImage
                     category={item.category}
                     name={item.name}
@@ -484,25 +465,6 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {totalSlides > 1 && (
-                  <div className="flex items-center gap-1 mt-1.5">
-                    {Array.from({ length: totalSlides }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActive(i);
-                        }}
-                        className={`rounded-full transition-all duration-200
-                        ${
-                          i === active
-                            ? "w-3 h-1 bg-gray-400"
-                            : "w-1 h-1 bg-gray-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div className="flex-1 min-w-0">
@@ -548,7 +510,7 @@ function OrderCard({
   } = STATUS_CONFIG[order.status];
 
   return (
-    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+    <div className="bg-white overflow-hidden">
       {/* Header */}
       <div className="px-4 py-2.5 flex items-center justify-between">
         <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
@@ -570,22 +532,16 @@ function OrderCard({
         </div>
       </div>
 
-      <div className="border-t border-gray-100 mx-4" />
-
       {/* Carousel */}
-      <ProductCarousel items={order.items} />
-
-      <div className="border-t border-gray-100 mx-4" />
+      <div className="bg-gray-50/[0.35]">
+        <ProductCarousel items={order.items} />
+      </div>
 
       {/* Footer — FIXED: py lebih longgar */}
-      <div className="px-4 py-3 flex items-center justify-between gap-3">
+      <div className="px-4 py-2 flex items-center justify-between gap-2.5">
         <div>
-          {/* FIXED: 10px, bukan 9px */}
-          <p className="text-[10px] text-gray-400 font-medium">
-            Total Pembayaran
-          </p>
           {/* FIXED: gray-900 font-black — paling gelap di card */}
-          <p className="text-[14px] font-black text-gray-900 leading-tight mt-0.5">
+          <p className="text-[13px] font-bold text-gray-800 tracking-[-0.01em] leading-none">
             {formatRupiah(order.total)}
           </p>
         </div>
@@ -635,12 +591,15 @@ function OrderCard({
                   `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
                 );
               }}
-              className="px-3 py-1.5 rounded-lg
-              border border-amber-500
-              text-[11px] font-semibold text-amber-600
-              hover:bg-amber-50
-              active:scale-95
-              transition-all"
+              className="
+px-3 py-1 rounded-lg
+border border-gray-200
+bg-white
+text-[11px] font-semibold text-gray-700
+hover:bg-gray-50
+active:scale-95
+transition-all
+"
             >
               Hubungi Penjual
             </button>
@@ -672,12 +631,15 @@ function OrderCard({
                     `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
                   );
                 }}
-                className="px-3 py-1.5 rounded-lg
-                border border-amber-500
-                text-[11px] font-semibold text-amber-600
-                hover:bg-amber-50
-                active:scale-95
-                transition-all"
+                className="
+px-3 py-1 rounded-lg
+border border-gray-200
+bg-white
+text-[11px] font-semibold text-gray-700
+hover:bg-gray-50
+active:scale-95
+transition-all
+"
               >
                 Hubungi Penjual
               </button>
@@ -706,7 +668,7 @@ function OrderCard({
 // ── Skeleton ──
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+    <div className="bg-white overflow-hidden">
       <div className="px-4 py-2.5 flex justify-between">
         <div className="h-3.5 w-28 bg-gray-100 rounded" />
         <div className="flex items-center gap-2">
@@ -720,7 +682,7 @@ function SkeletonCard() {
           {[0, 1].map((i) => (
             <div
               key={i}
-              className="w-12 h-12 rounded-xl bg-gray-100 flex-shrink-0"
+              className="w-13.5 h-13.5 rounded-xl bg-gray-100 flex-shrink-0"
               style={{ marginLeft: i === 0 ? 0 : -10 }}
             />
           ))}
@@ -929,19 +891,23 @@ export default function OrdersPage() {
           <div className="space-y-5">
             {groups.map((group) => (
               <div key={group.label}>
-                <div className="px-5 pb-2">
-                  <h2 className="text-[12px] font-semibold text-gray-500 tracking-tight">
+                {/* Label grup — sekali di atas */}
+                <div className="px-3 pb-1.5">
+                  <h2 className="text-[11px] font-semibold text-gray-400 tracking-wide uppercase">
                     {group.label}
                   </h2>
                 </div>
-                {/* FIXED: space-y-2, bukan space-y-1 */}
-                <div className="px-2 space-y-2">
-                  {group.orders.map((order) => (
-                    <OrderCard
-                      key={order.id}
-                      order={order}
-                      activeFilter={activeFilter}
-                    />
+
+                {/* Card digabung dalam satu container */}
+                <div className="mx-2 bg-white rounded-xl overflow-hidden border border-gray-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+                  {group.orders.map((order, idx) => (
+                    <div key={order.id}>
+                      <OrderCard order={order} activeFilter={activeFilter} />
+                      {/* Divider antar card, kecuali card terakhir */}
+                      {idx < group.orders.length - 1 && (
+                        <div className="border-t border-gray-200/90 mx-4" />
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>

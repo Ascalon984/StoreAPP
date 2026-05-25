@@ -63,9 +63,10 @@ export default async function Home() {
         className="
     relative z-10
     flex flex-col
-    pt-1.5
-    bg-gray-50/[0.55]
+    pt-1
+    bg-[#f8faf8]
     rounded-t-[24px]
+    border-t border-white/80
     -mt-1
   "
       >

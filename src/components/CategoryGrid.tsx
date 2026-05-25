@@ -57,18 +57,18 @@ function CategoryItem({
     <button
       onClick={onClick}
       className="
-        flex flex-col items-center
-        justify-start
-        pt-2 pb-2
-        gap-2
-        transition-all
-        active:scale-95
+      flex flex-col items-center
+      justify-start
+      pt-1.5 pb-1.5
+      gap-1.5
+      transition-all
+      active:scale-95
       "
     >
       <div
         className={`
           transition-all duration-200
-          ${isActive ? "scale-105 opacity-100" : "opacity-75"}
+          ${isActive ? "scale-105 opacity-100" : "opacity-90"}
         `}
       >
         {icon}
@@ -147,7 +147,7 @@ export default function CategoryGrid({
                 alt={cat.name}
                 width={32}
                 height={32}
-                className="w-8 h-8 object-contain"
+                className="w-7 h-7 object-contain"
                 priority={false}
               />
             }
@@ -163,7 +163,7 @@ export default function CategoryGrid({
             icon={
               // TODO: Replace dengan custom icon untuk "Semua"
               // <GridColorIcon size={32} />
-              <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-[10px] text-gray-500">
+              <div className="w-7 h-7 bg-gray-200 rounded-lg flex items-center justify-center text-[9px] text-gray-500">
                 ※
               </div>
             }
