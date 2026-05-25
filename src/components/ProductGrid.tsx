@@ -234,14 +234,12 @@ function PromoCardSkeleton() {
 /* ── Highlight Card Skeleton ──────────────────────── */
 function HighlightCardSkeleton() {
   return (
-    <div className="flex-shrink-0 w-[200px] bg-white rounded-xl shadow-sm overflow-hidden p-2 flex flex-row items-center gap-3">
-      <div className="w-16 h-16 bg-gray-100 skeleton rounded-lg animate-pulse flex-shrink-0" />
-      <div className="flex-1 flex flex-col gap-2">
-        <div className="h-2 w-full bg-gray-100 skeleton rounded animate-pulse" />
-        <div className="flex items-center justify-between">
-          <div className="h-3 w-16 bg-gray-100 skeleton rounded animate-pulse" />
-          <div className="h-2.5 w-8 bg-gray-100 skeleton rounded animate-pulse" />
-        </div>
+    <div className="flex-shrink-0 w-[210px] bg-white rounded-xl shadow-sm overflow-hidden flex flex-row items-center border border-gray-100/50 h-[76px]">
+      <div className="w-[72px] h-full bg-gray-100 skeleton animate-pulse flex-shrink-0" />
+      <div className="flex-1 flex flex-col gap-2 px-2.5 py-2">
+        <div className="h-2.5 w-full bg-gray-100 skeleton rounded animate-pulse" />
+        <div className="h-2.5 w-3/4 bg-gray-100 skeleton rounded animate-pulse" />
+        <div className="h-2 w-1/2 bg-gray-100 skeleton rounded animate-pulse" />
       </div>
     </div>
   );
@@ -294,7 +292,7 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
       href={`/product/${product.slug}`}
       className="block flex-shrink-0 w-[200px] group"
     >
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[80px]">
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[76px]">
         {/* Gambar full-bleed kiri */}
         <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
@@ -402,7 +400,7 @@ function HighlightCard({
       className="block flex-shrink-0 w-[200px] group"
     >
       {/* Remaining time */}
-      <div className="absolute top-1.5 right-2 z-10">
+      <div className="absolute top-1 right-2 z-10">
         {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
         <span className="bg-orange-500/90 text-white text-[9px] font-black px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
           3 Hari Lagi
@@ -410,9 +408,9 @@ function HighlightCard({
       </div>
 
       {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[88px]">
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[76px]">
         {/* Gambar full-bleed kiri */}
-        <div className="w-[80px] flex-shrink-0 self-stretch bg-gray-50">
+        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
             category={product.category}
             name={product.name}
@@ -506,12 +504,12 @@ function HighlightSection({
         ) : displayProducts.length > 0 ? (
           <div
             ref={scrollRef}
-            className="flex gap-2.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+            className="flex gap-0.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
           >
             {displayProducts.map((product, i) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 snap-start w-[200px]"
+                className="flex-shrink-0 snap-start w-[210px]"
               >
                 <HighlightCard product={product} index={i} />
               </div>

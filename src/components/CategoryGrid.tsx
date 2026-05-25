@@ -15,8 +15,8 @@ const iconPathMap: Record<string, string> = {
   listrik: "/icons/listrik.png",
   "e-wallet": "/icons/e-wallet.png",
   tagihan: "/icons/tagihan.png",
-  game: "/icons/game.png",
   voucher: "/icons/voucher.png",
+  game: "/icons/game.png",
   subscription: "/icons/subscription.png",
 };
 

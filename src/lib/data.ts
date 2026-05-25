@@ -25,11 +25,11 @@ export const categories: Category[] = [
   { id: "all", name: "Semua", icon: "LayoutGrid" },
   { id: "pulsa", name: "Pulsa", icon: "Phone", priority: 1 },
   { id: "paket-data", name: "Paket Data", icon: "Wifi", priority: 2 },
-  { id: "listrik", name: "Listrik", icon: "Zap", priority: 3 },
-  { id: "e-wallet", name: "E-Wallet", icon: "CreditCard", priority: 4 },
-  { id: "tagihan", name: "Tagihan", icon: "FileText", priority: 5 },
-  { id: "game", name: "Game", icon: "Gamepad2", priority: 6 },
-  { id: "voucher", name: "Voucher", icon: "Gift", priority: 7 },
+  { id: "e-wallet", name: "E-Wallet", icon: "CreditCard", priority: 3 },
+  { id: "voucher", name: "Voucher", icon: "Gift", priority: 4 },
+  { id: "listrik", name: "Listrik", icon: "Zap", priority: 5 },
+  { id: "tagihan", name: "Tagihan", icon: "FileText", priority: 6 },
+  { id: "game", name: "Game", icon: "Gamepad2", priority: 7 },
   { id: "subscription", name: "Subscription", icon: "Star", priority: 8 },
 ];
 

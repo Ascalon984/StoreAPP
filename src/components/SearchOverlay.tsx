@@ -19,12 +19,17 @@ export default function SearchOverlay() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
+  const [popularProducts, setPopularProducts] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen && products.length === 0) {
       fetch(`/api/public/products?t=${Date.now()}`, { cache: "no-store" })
         .then((res) => res.json())
-        .then((data) => setProducts(data));
+        .then((data) => {
+          setProducts(data);
+          // Ambil 6 produk pertama sebagai popular/suggested
+          setPopularProducts(data.slice(0, 6));
+        });
     }
   }, [isOpen, products.length]);
 
@@ -92,7 +97,7 @@ export default function SearchOverlay() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] bg-white/95 backdrop-blur-md animate-fade-in border-b border-gray-100 shadow-layer-md">
+    <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
       <div className="max-w-container mx-auto px-4">
         <form
           onSubmit={handleSearchSubmit}
@@ -121,7 +126,7 @@ export default function SearchOverlay() {
           </button>
         </form>
 
-        <div className="py-4 overflow-y-auto max-h-[calc(100vh-60px)]">
+        <div className="py-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-60px)]">
           {suggestions.length > 0 && (
             <div className="space-y-1">
               {suggestions.map((product) => (
@@ -131,11 +136,6 @@ export default function SearchOverlay() {
                   onClick={() => handleSelect(product.name)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 hover:shadow-layer-xs transition-all duration-200"
                 >
-                  <Search
-                    size={16}
-                    strokeWidth={1.5}
-                    className="text-gray-500 flex-shrink-0"
-                  />
                   <span className="text-sm flex-1">
                     {highlightMatch(product.name, debouncedQuery)}
                   </span>
@@ -152,18 +152,20 @@ export default function SearchOverlay() {
           {!debouncedQuery.trim() && recentSearches.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                   Pencarian Terakhir
                 </span>
+
                 <button
                   onClick={clearRecentSearches}
-                  className="text-xs text-primary hover:text-primary-dark"
+                  className="text-[11px] font-semibold text-rose-500"
                 >
                   Hapus
                 </button>
               </div>
+
               <div className="space-y-1">
-                {recentSearches.map((term, i) => (
+                {recentSearches.slice(0, 3).map((term, i) => (
                   <button
                     key={i}
                     onClick={() => setQuery(term)}
@@ -176,6 +178,40 @@ export default function SearchOverlay() {
                     />
                     <span className="text-sm text-gray-700">{term}</span>
                   </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!debouncedQuery.trim() && popularProducts.length > 0 && (
+            <div className="mt-5 pt-4 border-t border-gray-100">
+              <span className="text-xs font-medium text-gray-600 uppercase tracking-wider block mb-3">
+                Lagi Banyak Dicari
+              </span>
+              <div className="grid grid-cols-2 gap-3">
+                {popularProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.slug}`}
+                    onClick={() => handleSelect(product.name)}
+                    className="flex flex-col gap-1.5 rounded-2xl bg-white border border-gray-100 p-2 group active:scale-[0.98] transition-all duration-200"
+                  >
+                    <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 relative">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="min-h-[2rem]">
+                      <p className="text-[11px] text-gray-700 font-medium line-clamp-2 group-hover:text-primary transition-colors">
+                        {product.name}
+                      </p>
+                    </div>
+                    <p className="text-[12px] font-black text-emerald-700 tracking-tight">
+                      Rp {product.price?.toLocaleString("id-ID")}
+                    </p>
+                  </Link>
                 ))}
               </div>
             </div>
