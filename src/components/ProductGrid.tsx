@@ -486,7 +486,7 @@ function HighlightSection({
 
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[14px] font-black text-white tracking-tight leading-none">
+            <h3 className="text-[13.5px] font-black text-white/95 tracking-tight leading-none">
               Penawaran Terbatas
             </h3>
           </div>

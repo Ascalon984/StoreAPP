@@ -17,6 +17,7 @@ export default function SearchOverlay() {
     clearRecentSearches,
   } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const [popularProducts, setPopularProducts] = useState<any[]>([]);
@@ -47,6 +48,16 @@ export default function SearchOverlay() {
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [isOpen]);
+
+  // Lock body scroll saat overlay terbuka
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
     }
   }, [isOpen]);
 
@@ -96,6 +107,18 @@ export default function SearchOverlay() {
 
   if (!isOpen) return null;
 
+  const handleScrollContainer = (e: React.UIEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
       <div className="max-w-container mx-auto px-4">
@@ -126,7 +149,13 @@ export default function SearchOverlay() {
           </button>
         </form>
 
-        <div className="py-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-60px)]">
+        <div
+          ref={scrollContainerRef}
+          className="py-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-60px)] touch-action-pan-x"
+          onScroll={handleScrollContainer}
+          onWheel={handleWheel}
+          onTouchMove={handleTouchMove}
+        >
           {suggestions.length > 0 && (
             <div className="space-y-1">
               {suggestions.map((product) => (

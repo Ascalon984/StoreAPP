@@ -85,7 +85,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
           behavior: "smooth",
         });
       }
-    }, 5000);
+    }, 6000);
   }, [hasMultipleBanners]);
 
   useEffect(() => {
@@ -122,7 +122,9 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
       isResettingRef.current = true;
       el.style.scrollSnapType = "none";
       el.scrollLeft = stepWidth;
-      el.style.scrollSnapType = "x mandatory";
+      requestAnimationFrame(() => {
+        el.style.scrollSnapType = "x mandatory";
+      });
       setCurrent(0);
       setTimeout(() => {
         isResettingRef.current = false;
