@@ -31,6 +31,26 @@ const SORT_OPTIONS = [
   { id: "expensive", label: "Termahal", Icon: TrendingUp },
 ];
 
+/* ── Category Filter Chips ────────────────────────── */
+const CATEGORY_CHIPS: Record<string, string[]> = {
+  pulsa: ["Semua", "Telkomsel", "XL", "Axis", "Tri", "Indosat", "Smartfren"],
+  "paket-data": [
+    "Semua",
+    "Telkomsel",
+    "XL",
+    "Axis",
+    "Tri",
+    "Indosat",
+    "Smartfren",
+  ],
+  listrik: ["Semua", "Prabayar", "Pascabayar"],
+  "e-wallet": ["Semua", "GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"],
+  game: ["Semua", "Mobile Legends", "Free Fire", "PUBG", "Genshin", "Valorant"],
+  voucher: ["Semua", "Google Play", "App Store", "Steam", "Garena"],
+  tagihan: ["Semua", "PLN", "PDAM", "BPJS", "Telkom"],
+  subscription: ["Semua", "Netflix", "Spotify", "Disney+", "YouTube", "iCloud"],
+};
+
 function applySort(products: Product[], sort: string): Product[] {
   const arr = [...products];
   switch (sort) {
@@ -504,6 +524,111 @@ function HighlightSection({
   );
 }
 
+function CategoryChips({ category }: { category: string }) {
+  const [active, setActive] = useState("Semua");
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const { sort, setSort } = useFilterStore();
+  const sortMenuRef = useRef<HTMLDivElement>(null);
+
+  const chips = CATEGORY_CHIPS[category];
+  if (!chips) return null;
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        sortMenuRef.current &&
+        !sortMenuRef.current.contains(e.target as Node)
+      ) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-2 px-2 pb-2">
+      {/* Wrapper relative untuk fade effect */}
+      <div className="relative flex-1 min-w-0">
+        {/* Chip scroll */}
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+          {chips.map((chip) => (
+            <button
+              key={chip}
+              onClick={() => setActive(chip)}
+              className={`flex-shrink-0 rounded-full px-3 py-[5px] text-[11px] font-semibold border transition-colors active:scale-95 hover:bg-gray-50
+              ${
+                active === chip
+                  ? "bg-emerald-50 border-emerald-500 text-emerald-700"
+                  : "bg-white border-gray-200 text-gray-600"
+              }`}
+            >
+              {chip}
+            </button>
+          ))}
+        </div>
+
+        {/* Fade gradient kanan — sinyal ada konten tenggelam */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />
+      </div>
+
+      {/* Filter button */}
+      <div className="relative flex-shrink-0" ref={sortMenuRef}>
+        <div className="bg-white border border-gray-300 rounded-lg p-[1px] overflow-hidden">
+          <button
+            onClick={() => setShowSortMenu((v) => !v)}
+            className={`flex items-center justify-center w-6 h-6 rounded-[7px] transition-all active:scale-90
+      ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
+          >
+            <SlidersHorizontal size={13} strokeWidth={2.5} />
+          </button>
+        </div>
+
+        {showSortMenu && (
+          <div
+            className="absolute right-0 top-full mt-1.5 z-40 bg-white rounded-lg overflow-hidden min-w-[140px]
+  shadow-[0_4px_20px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)]
+  border border-gray-100/80"
+          >
+            {SORT_OPTIONS.map((opt) => {
+              const isOptionActive = sort === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => {
+                    setSort(opt.id);
+                    setShowSortMenu(false);
+                  }}
+                  className={`w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold transition-colors text-left
+                ${
+                  isOptionActive
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+                >
+                  <opt.Icon
+                    size={14}
+                    strokeWidth={2}
+                    className={
+                      isOptionActive ? "text-emerald-600" : "text-gray-400"
+                    }
+                  />
+                  {opt.label}
+                  {isOptionActive && (
+                    <span className="ml-auto text-emerald-500 text-[10px] font-bold">
+                      ✓
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ── Inline Sticker: Promo (ratio 2.55:1 → slim) ─── */
 function PromoInlineBanner() {
   return (
@@ -732,14 +857,17 @@ export default function ProductGrid({
           SECTION 3 — Semua Produk
           ══════════════════════════════════════════ */}
       <section className="px-2 pt-2 pb-3 min-h-[50vh]">
-        <div className="mb-1 flex items-start justify-between px-0.5">
-          <div>
-            <h2 className="text-[13px] font-black text-gray-800 tracking-tight leading-tight">
+        {/* Header — hanya tampil saat home view */}
+        {isHomeView && (
+          <div className="mb-2 flex items-center justify-between px-0.5">
+            <h2 className="text-[13px] font-black text-gray-800 tracking-tight">
               {categoryName}
             </h2>
-            <p className="text-[10px] text-gray-400 font-medium mt-0.5"></p>
           </div>
-        </div>
+        )}
+
+        {/* Chip filter — hanya tampil saat kategori spesifik */}
+        {isSpecificCategory && <CategoryChips category={category!} />}
 
         {isLoadingAll ? (
           <div className="flex items-start gap-3">

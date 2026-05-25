@@ -195,13 +195,13 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                 startAutoPlay();
               }}
               className={`
-  rounded-full transition-all duration-300
-  ${
-    i === current
-      ? "w-5 h-[5px] bg-[#048750]"
-      : "w-[7px] h-[5px] bg-gray-300/90"
-  }
-`}
+                rounded-full transition-all duration-300
+                ${
+                  i === current
+                    ? "w-5 h-[5px] bg-[#048750]"
+                    : "w-[7px] h-[5px] bg-gray-300/70"
+                }
+              `}
               aria-label={`Slide ${i + 1}`}
             />
           ))}

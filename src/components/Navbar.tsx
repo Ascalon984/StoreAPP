@@ -1,14 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  Search,
-  Bell,
-  SlidersHorizontal,
-  Star,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react";
+import { Search, Bell, Star, TrendingDown, TrendingUp } from "lucide-react";
 import { useSearchStore } from "@/store/useSearchStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useFilterStore } from "@/store/useFilterStore";
@@ -77,9 +70,6 @@ export default function Navbar() {
   const { fetchSettings } = useSettingsStore();
   const { sort, setSort } = useFilterStore();
 
-  const [showSortMenu, setShowSortMenu] = useState(false);
-  const sortMenuRef = useRef<HTMLDivElement>(null);
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   // ─── Scroll Handler (SIMPLIFIED & STABLE) ───
@@ -94,8 +84,8 @@ export default function Navbar() {
           setIsScrolled((prev) => {
             // Hysteresis: collapse di >50, expand hanya di <10
             // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
-            if (!prev && y > 50) return true;
-            if (prev && y < 10) return false;
+            if (!prev && y > 30) return true;
+            if (prev && y < 8) return false;
             return prev; // zona mati (10–50): pertahankan state
           });
 
@@ -113,19 +103,6 @@ export default function Navbar() {
   useEffect(() => {
     fetchSettings();
   }, [fetchSettings]);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowSortMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -155,28 +132,29 @@ export default function Navbar() {
 
   return (
     <div
-  className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm"
-  style={{
-    borderBottomLeftRadius: isScrolled ? "0px" : "26px",
-    borderBottomRightRadius: isScrolled ? "0px" : "26px",
-    transition: "border-radius 300ms ease-in-out",
-  }}
->
+      className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm"
+      style={{
+        borderBottomLeftRadius: isScrolled ? "0px" : "26px",
+        borderBottomRightRadius: isScrolled ? "0px" : "26px",
+        transition: "border-radius 250ms ease-in-out",
+        willChange: "border-radius",
+      }}
+    >
       <header className="w-full px-4 overflow-visible">
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
           <div
-            className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+            className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isScrolled
-                ? "grid-rows-[0fr] opacity-0 pointer-events-none"
-                : "grid-rows-[1fr] opacity-100 pointer-events-auto"
+                ? "grid-rows-[0fr] opacity-0"
+                : "grid-rows-[1fr] opacity-100"
             }`}
           >
             {/* Tambahkan min-h-0 di sini agar grid bisa collapse sempurna ke 0 */}
             <div className="overflow-hidden min-h-0">
               {/* Ganti mb-2 menjadi pb-2 pada wrapper ini, margin membuat animasi grid patah */}
               <div className="pb-2">
-                <div className="flex items-center justify-between h-12">
+                <div className="flex items-center justify-between h-12 pt-0.5">
                   {/* Avatar */}
                   <div className="flex items-center gap-3 min-w-0">
                     <Link
@@ -233,7 +211,7 @@ export default function Navbar() {
             }`}
           >
             {/* Search Bar */}
-            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-2 py-1 flex items-center gap-2.5 shadow-sm">
+            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
               <button
                 onClick={openSearch}
                 className="flex-1 flex items-center gap-2.5 min-w-0"
@@ -245,59 +223,6 @@ export default function Navbar() {
                 />
                 <AnimatedPlaceholder />
               </button>
-
-              {/* Divider */}
-              <div className="w-px h-4 bg-gray-200 flex-shrink-0" />
-
-              {/* Filter button */}
-              <div className="relative flex-shrink-0" ref={sortMenuRef}>
-                <button
-                  onClick={() => setShowSortMenu((v) => !v)}
-                  className={`p-1 rounded-lg transition-colors duration-200 active:scale-95 ${
-                    showSortMenu
-                      ? "text-emerald-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <SlidersHorizontal size={17} strokeWidth={2} />
-                </button>
-
-                {showSortMenu && (
-                  <div className="absolute -right-3.5 top-full mt-1 z-40 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden min-w-[140px]">
-                    {SORT_OPTIONS.map((opt) => {
-                      const isActive = sort === opt.id;
-                      return (
-                        <button
-                          key={opt.id}
-                          onClick={() => {
-                            setSort(opt.id);
-                            setShowSortMenu(false);
-                          }}
-                          className={`w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold transition-colors duration-150 text-left ${
-                            isActive
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "text-gray-600 hover:bg-gray-50"
-                          }`}
-                        >
-                          <opt.Icon
-                            size={14}
-                            strokeWidth={2}
-                            className={
-                              isActive ? "text-emerald-600" : "text-gray-400"
-                            }
-                          />
-                          {opt.label}
-                          {isActive && (
-                            <span className="ml-auto text-emerald-500 text-[10px] font-bold">
-                              ✓
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Bell (scrolled) */}

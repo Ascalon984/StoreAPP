@@ -17,7 +17,7 @@ export interface Product {
   sold: number;
   stock: number;
   description: string;
-  images?: string[];    // Max 3 — controlled by admin
+  images?: string[]; // Max 3 — controlled by admin
   variants?: ProductVariant[];
 }
 
@@ -25,6 +25,7 @@ export interface Category {
   id: string;
   name: string;
   icon: string;
+  priority?: number;
 }
 
 export interface Review {
