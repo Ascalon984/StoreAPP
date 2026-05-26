@@ -21,6 +21,8 @@ import {
   User,
   ArrowRight,
   ShieldCheck,
+  Gift,
+  CircleQuestionMark,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -34,7 +36,13 @@ const mockUser = {
 };
 
 const mockNotifPrefs = { orderUpdates: true, promoOffers: false };
-const mockStats = { orders: 12, favorites: 8, reviews: 4 };
+const mockPoints = {
+  total: 12450,
+  transactionPoints: 11250,
+  checkinPoints: 1200,
+  dailyStreak: 4,
+  rewardStreakPoints: 100,
+};
 
 // ── Helper ──
 function getInitials(name: string): string {
@@ -47,28 +55,39 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-function formatStat(n: number): string {
-  return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n);
-}
-
 // ── Sub-components ──
-function AvatarCircle({ name, src }: { name: string; src: string | null }) {
+function AvatarCircle({
+  name,
+  src,
+  size = 56,
+}: {
+  name: string;
+  src: string | null;
+  size?: number;
+}) {
   if (src) {
     return (
-      <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100">
+      <div
+        style={{ width: size, height: size }}
+        className="rounded-full border-2 border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
+      >
         <Image
           src={src}
           alt={name}
-          width={96}
-          height={96}
+          width={size}
+          height={size}
           className="object-cover w-full h-full"
         />
       </div>
     );
   }
+
   return (
-    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-      <span className="text-emerald-700 font-black text-2xl tracking-tight">
+    <div
+      style={{ width: size, height: size }}
+      className="rounded-full border-2 border-white shadow-lg bg-emerald-100 flex items-center justify-center flex-shrink-0"
+    >
+      <span className="text-emerald-700 font-black text-[18px]">
         {getInitials(name)}
       </span>
     </div>
@@ -187,159 +206,113 @@ function FieldRow({
   );
 }
 
-// ── Profile Completion Card ──
-function ProfileCompletion({
-  user,
-  avatarPreview,
-  onLengkapi,
+// ── Points Card (muncul setelah profil lengkap) ──
+function PointsCard({
+  points,
+  onOpenInfo,
 }: {
-  user: { name: string; username: string; email: string; phone: string };
-  avatarPreview: string | null;
-  onLengkapi: () => void;
+  points: {
+    total: number;
+    transactionPoints: number;
+    checkinPoints: number;
+    dailyStreak: number;
+    rewardStreakPoints: number;
+  };
+  onOpenInfo: () => void;
 }) {
-  const items = [
-    { label: "Nama Lengkap", done: !!user.name.trim() },
-    { label: "Email", done: !!user.email.trim() },
-    { label: "No. Telepon", done: !!user.phone.trim() },
-    { label: "Foto Profil", done: !!avatarPreview },
-  ];
-
-  const completed = items.filter((i) => i.done).length;
-  const total = items.length;
-  const pct = Math.round((completed / total) * 100);
-  const isComplete = pct === 100;
-
-  function getCopy(n: number): string {
-    if (n === 0) return "Mulai lengkapi profilmu!";
-    if (n === 3) return "Tinggal 1 langkah lagi";
-    if (n === 4) return "Profilmu sudah lengkap";
-    return "Yuk, lengkapi data profilmu!";
-  }
-
-  const copy = getCopy(completed);
-
-  const S = 58;
-  const SW = 6;
-  const R = (S - SW) / 2;
-  const C = 2 * Math.PI * R;
-  const offset = C * (1 - pct / 100);
-
   return (
-    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs px-3.5 py-4 min-h-[88px]">
-      <div className="grid grid-cols-[58px_1fr_auto] gap-x-3 items-start">
-        <div
-          className="row-span-2 row-start-1 col-start-1 self-center relative flex-shrink-0"
-          style={{ width: S, height: S }}
-        >
-          <svg width={S} height={S} className="-rotate-90">
-            <circle
-              cx={S / 2}
-              cy={S / 2}
-              r={R}
-              fill="none"
-              stroke="#f3f4f6"
-              strokeWidth={SW}
-            />
-            <circle
-              cx={S / 2}
-              cy={S / 2}
-              r={R}
-              fill="none"
-              stroke={isComplete ? "#059669" : "#10b981"}
-              strokeWidth={SW}
-              strokeLinecap="round"
-              strokeDasharray={C}
-              strokeDashoffset={offset}
-              className="transition-all duration-700 ease-out"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[13px] font-black text-gray-900 leading-none">
-              {pct}
-              <span className="text-[8px] font-bold text-gray-500 ml-px">
-                %
+    <div className="mx-3 mt-2">
+      <div className="bg-white rounded-xl overflow-hidden">
+        {/* TOP */}
+        <div className="px-4 pt-4 pb-3 flex items-start justify-between">
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 mb-1">
+              Poin Kamu
+            </p>
+
+            <div className="flex items-end gap-2">
+              <span className="text-[23px] font-black text-gray-600 tabular-nums leading-none">
+                {points.total.toLocaleString("id-ID")}
               </span>
-            </span>
+
+              <Image
+                src="/icons/poin.svg"
+                alt="Poin"
+                width={20}
+                height={20}
+                className="opacity-90 mb-[2px]"
+              />
+            </div>
+
+            <p className="text-[10px] text-gray-500 mt-1">
+              Bisa dipakai untuk belanja
+            </p>
+          </div>
+
+          <button
+            onClick={onOpenInfo}
+            className="w-8 h-8 rounded-full hover:bg-gray-100 active:scale-95 transition-all flex items-center justify-center"
+          >
+            <CircleQuestionMark
+              size={16}
+              className="text-gray-500"
+              strokeWidth={2.3}
+            />
+          </button>
+        </div>
+
+        {/* STREAK */}
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-[11px] font-bold text-gray-700">
+                Check-in Harian
+              </p>
+            </div>
+
+            <button className="px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5">
+              <span className="text-[9px] font-black text-white">Check-in</span>
+            </button>
+          </div>
+
+          {/* DAYS */}
+          <div className="flex items-center justify-between">
+            {Array.from({ length: 7 }).map((_, i) => {
+              const completed = i < points.dailyStreak;
+              const isRewardDay = i === 6;
+
+              return (
+                <div key={i} className="flex flex-col items-center gap-1">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                      completed
+                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                        : "bg-gray-100 text-gray-400"
+                    }`}
+                  >
+                    {completed ? (
+                      <Check size={13} strokeWidth={3} />
+                    ) : (
+                      <Gift
+                        size={12}
+                        strokeWidth={2.3}
+                        className={isRewardDay ? "text-amber-500" : ""}
+                      />
+                    )}
+                  </div>
+
+                  <span
+                    className={`text-[9px] font-bold ${
+                      completed ? "text-gray-600" : "text-gray-600"
+                    }`}
+                  >
+                    Hari {i + 1}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
-
-        <p className="row-start-1 col-start-2 text-[13px] font-bold text-gray-800 leading-tight">
-          Kelengkapan Profil
-        </p>
-
-        <div className="row-start-1 col-start-3 justify-self-end">
-          {isComplete ? (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-gray-600 whitespace-nowrap">
-              Lengkap
-            </span>
-          ) : (
-            <span className="px-2 py-0.5 rounded-full bg-transparent text-[10px] font-bold text-gray-600 tabular-nums whitespace-nowrap">
-              {completed}/{total} terisi
-            </span>
-          )}
-        </div>
-
-        <div className="row-start-2 col-start-2 col-span-2 flex items-center justify-between gap-3">
-          <p
-            className={`text-[11px] font-medium leading-snug ${
-              isComplete ? "text-emerald-700" : "text-gray-500"
-            }`}
-          >
-            {copy}
-          </p>
-
-          {isComplete ? (
-            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 whitespace-nowrap">
-              <Check size={10} strokeWidth={3} /> Selesai
-            </span>
-          ) : (
-            <button
-              onClick={onLengkapi}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 text-[10px] font-bold text-white hover:bg-emerald-700 active:scale-95 transition-all shadow-sm shadow-emerald-600/20 whitespace-nowrap"
-            >
-              Lengkapi
-              <ArrowRight size={10} strokeWidth={2.5} />
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Stats Card (muncul setelah profil lengkap) ──
-function StatsCard({
-  stats,
-}: {
-  stats: { orders: number; favorites: number; reviews: number };
-}) {
-  return (
-    <div className="mx-3 mt-5 bg-white rounded-2xl ring-1 ring-slate-900/[0.04] shadow-layer-xs px-3.5 py-4 min-h-[88px]">
-      <div className="flex-1 flex flex-col items-center gap-0.5">
-        <span className="text-[17px] font-black text-gray-900 leading-none tabular-nums">
-          {formatStat(stats.orders)}
-        </span>
-        <span className="text-[10px] font-medium text-gray-400 mt-0.5">
-          Pesanan
-        </span>
-      </div>
-      <div className="w-px h-9 bg-gray-200/80" />
-      <div className="flex-1 flex flex-col items-center gap-0.5">
-        <span className="text-[17px] font-black text-gray-900 leading-none tabular-nums">
-          {formatStat(stats.favorites)}
-        </span>
-        <span className="text-[10px] font-medium text-gray-400 mt-0.5">
-          Favorit
-        </span>
-      </div>
-      <div className="w-px h-9 bg-gray-200/80" />
-      <div className="flex-1 flex flex-col items-center gap-0.5">
-        <span className="text-[17px] font-black text-gray-900 leading-none tabular-nums">
-          {formatStat(stats.reviews)}
-        </span>
-        <span className="text-[10px] font-medium text-gray-400 mt-0.5">
-          Ulasan
-        </span>
       </div>
     </div>
   );
@@ -352,6 +325,7 @@ export default function ProfilePage() {
   const [notifPrefs, setNotifPrefs] = useState(mockNotifPrefs);
   const [dataPribadiOpen, setDataPribadiOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
@@ -444,131 +418,80 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50/80 pb-24">
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
-        <div className="absolute top-0 left-0 w-full h-[230px] z-0">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <pattern
-                id="dots"
-                x="0"
-                y="0"
-                width="4"
-                height="4"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle cx="1" cy="1" r="0.7" fill="white" fillOpacity="0.18" />
-              </pattern>
+        {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
+        <div className="absolute top-0 left-0 w-full h-[140px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[16px]" />
 
-              <linearGradient id="fadeDown" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="white" stopOpacity="1" />{" "}
-                {/* ← max 1 */}
-                <stop offset="60%" stopColor="white" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="white" stopOpacity="0" />
-              </linearGradient>
-
-              <mask id="dotMask">
-                <rect
-                  x="0"
-                  y="0"
-                  width="100"
-                  height="100"
-                  fill="url(#fadeDown)"
+        {/* CONTENT */}
+        <div className="relative z-10 px-5 pt-4 pb-0 flex items-start justify-between">
+          {/* LEFT: AVATAR + NAME */}
+          <div className="flex items-start gap-3.5">
+            <div className="relative flex-shrink-0">
+              <AvatarCircle name={user.name} src={avatarPreview} size={46} />
+              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-emerald-600 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
+                <Pencil
+                  size={9}
+                  strokeWidth={2.5}
+                  className="text-emerald-700"
                 />
-              </mask>
-            </defs>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </label>
+            </div>
 
-            {/* Background hijau */}
-            <path d="M0 0 H100 V70 Q50 95 0 70 Z" fill="#048750" />
-
-            {/* Dots dengan fade ke bawah via mask */}
-            <rect
-              x="0"
-              y="0"
-              width="100"
-              height="100"
-              fill="url(#dots)"
-              mask="url(#dotMask)"
-            />
-
-            {/* Strip amber */}
-            <path d="M0 70 Q50 95 100 70 V78 Q50 103 0 78 Z" fill="#D89B2B" />
-          </svg>
-        </div>
-
-        {/* Live Chat di pojok kanan atas hero header */}
-        <div className="absolute top-4 right-4 z-20">
-          <button
-            onClick={() => router.push("/chat?source=profile")}
-            aria-label="Buka Live Chat"
-            className="relative w-10 h-10 flex items-center justify-center text-white active:scale-90 transition-transform"
-          >
-            <svg
-              width="25"
-              height="25"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="drop-shadow-sm"
-            >
-              {/* Body bubble — stroke putih */}
-              <path
-               d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                fill="white"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              {/* Dot-dot — stroke/fill hitam */}
-              <circle cx="9" cy="12" r="1" fill="#111" />
-              <circle cx="12" cy="12" r="1" fill="#111" />
-              <circle cx="15" cy="12" r="1" fill="#111" />
-            </svg>
-            {/* Dot rose di luar, dot hitam di dalam icon */}
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 border border-white" />
-          </button>
-        </div>
-
-        <div className="relative z-10 flex flex-col items-center pt-10 pb-0">
-          <div className="relative">
-            <AvatarCircle name={user.name} src={avatarPreview} />
-            <label className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-sm hover:bg-emerald-600 active:scale-90 transition-all cursor-pointer">
-              <Pencil size={10} strokeWidth={2.5} className="text-white" />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
-            </label>
+            <div className="flex flex-col leading-tight">
+              <h1 className="text-[16px] font-black text-white tracking-tight">
+                {user.name || "Pengguna"}
+              </h1>
+              <p className="text-[11px] text-white/70 font-medium tracking-wide mt-0.5">
+                @{user.username}
+              </p>
+            </div>
           </div>
-          <h1 className="text-[17px] font-black text-white tracking-tight leading-none mt-3 min-h-[17px]">
-            {user.name || "Pengguna"}
-          </h1>
-          {/* Username permanen — diambil dari user.username, tidak bisa diedit */}
-          <p className="text-[12px] text-white/60 font-medium mt-0.5 tracking-wide">
-            @{user.username}
-          </p>
+
+          {/* RIGHT: LIVE CHAT */}
+          <div className="flex-shrink-0 -mt-0.5">
+            <button
+              onClick={() => router.push("/chat?source=profile")}
+              aria-label="Buka Live Chat"
+              className="relative w-8 h-8 flex items-center justify-center text-white active:scale-90 transition-transform"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="drop-shadow-sm"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  fill="white"
+                  stroke="white"
+                  strokeWidth="2"
+                />
+                <circle cx="9" cy="12" r="1" fill="#111" />
+                <circle cx="12" cy="12" r="1" fill="#111" />
+                <circle cx="15" cy="12" r="1" fill="#111" />
+              </svg>
+
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+            </button>
+          </div>
         </div>
-        <div className="h-[80px]" />
+
+        {/* spacing bawah agar overlap card tetap enak */}
+        <div className="h-[55px]" />
       </div>
 
       {/* ── SCROLLABLE BODY ── */}
-      <div className="relative z-10 -mt-[60px]">
-        {/* ══════════════════════════════════════════
-            SWAP ZONE: Profile Completion ↔ Stats
-            ══════════════════════════════════════════ */}
-        {isProfileComplete ? (
-          <StatsCard stats={mockStats} />
-        ) : (
-          <ProfileCompletion
-            user={user}
-            avatarPreview={avatarPreview}
-            onLengkapi={handleLengkapi}
-          />
-        )}
+      <div className="relative z-10 -mt-[45px]">
+        <PointsCard
+          points={mockPoints}
+          onOpenInfo={() => setPointsInfoOpen(true)}
+        />
 
         {/* ── SECTION: Pengaturan Akun ── */}
         <div ref={pengaturanRef}>
@@ -823,6 +746,57 @@ export default function ProfilePage() {
               >
                 Gunakan Foto Ini
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── POINTS INFO MODAL ── */}
+      {pointsInfoOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-5">
+          {/* BACKDROP */}
+          <button
+            onClick={() => setPointsInfoOpen(false)}
+            className="absolute inset-0 bg-black/35 backdrop-blur-[2px]"
+          />
+
+          {/* MODAL */}
+          <div className="relative w-full max-w-[320px] rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
+            {/* CLOSE */}
+            <button
+              onClick={() => setPointsInfoOpen(false)}
+              className="absolute top-3 right-3 w-7 h-7 rounded-full hover:bg-gray-100 active:scale-90 transition-all flex items-center justify-center"
+            >
+              <X size={15} className="text-gray-400" strokeWidth={2.5} />
+            </button>
+
+            {/* CONTENT */}
+            <div className="px-5 pt-5 pb-5">
+              <h3 className="text-[15px] font-bold text-gray-900">
+                Tentang Poin
+              </h3>
+
+              <p className="mt-2 text-[12px] leading-relaxed text-gray-500">
+                Poin didapat dari transaksi, check-in harian, dan aktivitas
+                akun. Poin bisa digunakan untuk potongan atau benefit tertentu.
+              </p>
+
+              {/* LIST */}
+              <div className="mt-5 space-y-3">
+                {[
+                  "Check-in harian membantu meningkatkan streak poin.",
+                  "Semakin aktif transaksi, semakin banyak poin terkumpul.",
+                  "Poin memiliki syarat penggunaan tertentu.",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
+
+                    <p className="text-[11px] leading-relaxed text-gray-600">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
