@@ -23,6 +23,7 @@ import {
   ShieldCheck,
   Gift,
   CircleQuestionMark,
+  CalendarDays,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -152,7 +153,7 @@ function FieldRow({
       className={`px-4 py-3 transition-colors ${isDisabled ? "opacity-60" : ""}`}
     >
       <div
-        className={`flex ${isEditing ? "items-center" : "items-start"} gap-3`}
+        className={`flex ${isEditing ? "items-stretch" : "items-start"} gap-3`}
       >
         {!isEditing && (
           <div className="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -168,6 +169,11 @@ function FieldRow({
               type={inputType}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
+              onBlur={onEditCancel}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onEditSave(fieldKey);
+                if (e.key === "Escape") onEditCancel();
+              }}
               autoFocus
               className="w-full text-[13px] font-medium text-gray-800 bg-gray-50 rounded-lg px-2.5 py-1.5 outline-none border border-emerald-600/50 focus:border-emerald-600 transition-colors duration-150"
             />
@@ -178,20 +184,13 @@ function FieldRow({
           )}
         </div>
         {isEditing ? (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <button
-              onClick={onEditCancel}
-              className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
-            >
-              <X size={13} strokeWidth={2.5} />
-            </button>
-            <button
-              onClick={() => onEditSave(fieldKey)}
-              className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 active:scale-90 transition-all"
-            >
-              <Check size={13} strokeWidth={2.5} />
-            </button>
-          </div>
+          <button
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onEditSave(fieldKey)}
+            className="w-[34px] h-[34px] rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 active:scale-90 transition-all flex-shrink-0 self-end"
+          >
+            <Check size={13} strokeWidth={2.5} />
+          </button>
         ) : (
           <button
             onClick={() => !isDisabled && onEditStart(fieldKey, value)}
@@ -221,8 +220,8 @@ function PointsCard({
   onOpenInfo: () => void;
 }) {
   return (
-    <div className="mx-3 mt-2">
-      <div className="bg-white rounded-xl overflow-hidden">
+    <div className="mx-2 mt-2">
+      <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
         {/* TOP */}
         <div className="px-4 pt-4 pb-3 flex items-start justify-between">
           <div>
@@ -262,11 +261,15 @@ function PointsCard({
         </div>
 
         {/* STREAK */}
-        <div className="px-4 py-3">
+        <div className="px-4 py-2">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-[11px] font-bold text-gray-700">
-                Check-in Harian
+                Check-in harianmu
+              </p>
+
+              <p className="text-[9px] text-gray-500 mt-0.5">
+                Raih bonus poin tambahan
               </p>
             </div>
 
@@ -282,30 +285,30 @@ function PointsCard({
               const isRewardDay = i === 6;
 
               return (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
-                      completed
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                        : "bg-gray-100 text-gray-400"
-                    }`}
-                  >
-                    {completed ? (
+                <div className="flex flex-col items-center gap-1">
+                  {completed ? (
+                    <div className="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
                       <Check size={13} strokeWidth={3} />
-                    ) : (
-                      <Gift
-                        size={12}
-                        strokeWidth={2.3}
-                        className={isRewardDay ? "text-amber-500" : ""}
-                      />
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 flex items-center justify-center">
+                      {isRewardDay ? (
+                        <Gift
+                          size={13}
+                          strokeWidth={2.3}
+                          className="text-amber-500"
+                        />
+                      ) : (
+                        <CalendarDays
+                          size={13}
+                          strokeWidth={2.3}
+                          className="text-gray-400"
+                        />
+                      )}
+                    </div>
+                  )}
 
-                  <span
-                    className={`text-[9px] font-bold ${
-                      completed ? "text-gray-600" : "text-gray-600"
-                    }`}
-                  >
+                  <span className="text-[9px] font-bold text-gray-600">
                     Hari {i + 1}
                   </span>
                 </div>
@@ -419,15 +422,15 @@ export default function ProfilePage() {
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div className="absolute top-0 left-0 w-full h-[140px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[16px]" />
+        <div className="absolute top-0 left-0 w-full h-[160px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[14px]" />
 
         {/* CONTENT */}
-        <div className="relative z-10 px-5 pt-4 pb-0 flex items-start justify-between">
+        <div className="relative z-10 px-4 pt-4 pb-0 flex items-start justify-between">
           {/* LEFT: AVATAR + NAME */}
           <div className="flex items-start gap-3.5">
             <div className="relative flex-shrink-0">
               <AvatarCircle name={user.name} src={avatarPreview} size={46} />
-              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-emerald-600 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
+              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white-500 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
                 <Pencil
                   size={9}
                   strokeWidth={2.5}
@@ -446,7 +449,7 @@ export default function ProfilePage() {
               <h1 className="text-[16px] font-black text-white tracking-tight">
                 {user.name || "Pengguna"}
               </h1>
-              <p className="text-[11px] text-white/70 font-medium tracking-wide mt-0.5">
+              <p className="text-[11px] text-white/70 font-medium tracking-wide mt-1.5">
                 @{user.username}
               </p>
             </div>
@@ -493,13 +496,11 @@ export default function ProfilePage() {
           onOpenInfo={() => setPointsInfoOpen(true)}
         />
 
-        {/* ── SECTION: Pengaturan Akun ── */}
-        <div ref={pengaturanRef}>
-          <SectionLabel label="Pengaturan Akun" />
-        </div>
+        {/* ── SINGLE SETTINGS CARD ── */}
+        <div ref={pengaturanRef} className="mt-7" />
 
-        <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
-          {/* Data Pribadi */}
+        <div className="mx-2 bg-white rounded-xl overflow-hidden">
+          {/* ── Data Pribadi ── */}
           <button
             onClick={() => {
               setDataPribadiOpen((p) => !p);
@@ -515,7 +516,7 @@ export default function ProfilePage() {
                 <p className="text-[13px] font-semibold text-gray-800 leading-none">
                   Data Pribadi
                 </p>
-                <p className="text-[10px] text-gray-500 font-medium mt-0.5">
+                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
                   Nama, email, no telepon
                 </p>
               </div>
@@ -535,15 +536,12 @@ export default function ProfilePage() {
             }}
           >
             <div className="border-t border-gray-100 divide-y divide-gray-100/60">
-              {/* ── Data Pribadi fields ──
-                  Catatan: username TIDAK dimasukkan di sini karena bersifat permanen.
-                  Yang bisa diubah hanya: nama, email, dan nomor telepon.
-              ── */}
               <FieldRow
                 label="Nama Lengkap"
                 fieldKey="name"
                 value={user.name}
                 icon={<User size={14} />}
+                inputType="text"
                 editingField={editingField}
                 editValue={editValue}
                 setEditValue={setEditValue}
@@ -580,9 +578,9 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-100" />
+          <div className="ml-[60px] border-t border-gray-100/80" />
 
-          {/* Notifikasi */}
+          {/* ── Notifikasi ── */}
           <button
             onClick={() => setNotifOpen((p) => !p)}
             className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
@@ -595,7 +593,7 @@ export default function ProfilePage() {
                 <p className="text-[13px] font-semibold text-gray-800 leading-none">
                   Preferensi Notifikasi
                 </p>
-                <p className="text-[10px] text-gray-500 font-medium mt-0.5">
+                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
                   Atur notifikasi yang kamu terima
                 </p>
               </div>
@@ -620,7 +618,7 @@ export default function ProfilePage() {
                   <p className="text-[13px] font-semibold text-gray-800 leading-none">
                     Update Pesanan
                   </p>
-                  <p className="text-[10px] text-gray-600 font-medium mt-0.5">
+                  <p className="text-[10px] text-gray-400 font-medium mt-0.5">
                     Info status pemesanan real-time
                   </p>
                 </div>
@@ -639,7 +637,7 @@ export default function ProfilePage() {
                   <p className="text-[13px] font-semibold text-gray-800 leading-none">
                     Promo & Penawaran
                   </p>
-                  <p className="text-[10px] text-gray-600 font-medium mt-0.5">
+                  <p className="text-[10px] text-gray-400 font-medium mt-0.5">
                     Diskon dan voucher eksklusif
                   </p>
                 </div>
@@ -655,12 +653,11 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ── SECTION: Informasi ── */}
-        <SectionLabel label="Informasi" />
-        <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
-          <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
+          <div className="ml-[60px] border-t border-gray-100/80" />
+
+          {/* ── Kebijakan & Privasi ── */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
             <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
               <ShieldCheck
                 size={16}
@@ -673,8 +670,9 @@ export default function ProfilePage() {
             </span>
             <ArrowRight size={15} className="text-gray-300" />
           </button>
-          <div className="border-t border-gray-100" />
-          <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
+
+          {/* ── Tentang Aplikasi ── */}
+          <button className="w-full flex items-center gap-3 px-4 pt-3 pb-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
             <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
               <Info size={16} className="text-gray-500" strokeWidth={2.5} />
             </div>
@@ -686,14 +684,14 @@ export default function ProfilePage() {
         </div>
 
         {/* ── CTA Logout ── */}
-        <div className="mx-3 mt-6">
-          <button className="group w-full py-3.5 px-4 rounded-xl border border-amber-600/40 hover:border-amber-600 hover:bg-amber-600 active:scale-[0.96] transition-all duration-200 flex items-center justify-center gap-2">
+        <div className="mx-3 mt-4 mb-2">
+          <button className="group w-full py-3.5 px-4 rounded-xl border border-red-200 hover:border-red-400 hover:bg-red-500 active:scale-[0.96] transition-all duration-200 flex items-center justify-center gap-2">
             <LogOut
-              size={16}
+              size={15}
               strokeWidth={2}
-              className="text-amber-600 group-hover:text-white transition-colors duration-200"
+              className="text-red-400 group-hover:text-white transition-colors duration-200"
             />
-            <span className="font-bold text-sm text-gray-700 group-hover:text-white transition-colors duration-200">
+            <span className="font-semibold text-[13px] text-red-400 group-hover:text-white transition-colors duration-200">
               Keluar Akun
             </span>
           </button>

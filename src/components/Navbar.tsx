@@ -138,6 +138,9 @@ export default function Navbar() {
         borderBottomRightRadius: isScrolled ? "0px" : "26px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
+        boxShadow: isScrolled
+          ? "0 10px 24px rgba(0,0,0,0.18)"
+          : "0 2px 8px rgba(0,0,0,0.06)",
       }}
     >
       <header className="w-full px-4 overflow-visible">

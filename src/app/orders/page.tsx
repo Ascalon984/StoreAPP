@@ -377,14 +377,22 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
   const [active, setActive] = useState(0);
   const totalSlides = items.length + 1;
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0); // ← tambah ini
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY; // ← catat Y juga
   };
+
   const onTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) setActive((p) => Math.min(p + 1, totalSlides - 1));
+    const diffX = touchStartX.current - e.changedTouches[0].clientX;
+    const diffY = touchStartY.current - e.changedTouches[0].clientY; // ← hitung Y
+
+    // Abaikan jika gerakan vertikal lebih dominan (scroll halaman)
+    if (Math.abs(diffY) > Math.abs(diffX)) return; // ← filter ini
+
+    if (Math.abs(diffX) > 40) {
+      if (diffX > 0) setActive((p) => Math.min(p + 1, totalSlides - 1));
       else setActive((p) => Math.max(p - 1, 0));
     }
   };
@@ -410,7 +418,7 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                     className="w-13.5 h-13.5 rounded-xl border-2 border-white shadow-sm
                     overflow-hidden bg-gray-50 flex-shrink-0"
                     style={{
-                      marginLeft: i === 0 ? 0 : -14,
+                      marginLeft: i === 0 ? 0 : -16,
                       zIndex: 3 - i,
                     }}
                   >
@@ -822,10 +830,30 @@ export default function OrdersPage() {
   const HEADER_H = 48;
   const FILTER_H = 40;
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
       <div className="sticky top-0 z-50">
-        <div className="bg-emerald-700 rounded-b-[22px] shadow-sm pb-2">
+        <div
+          className="bg-emerald-700 rounded-b-[22px] pb-2"
+          style={{
+            boxShadow: isScrolled
+              ? "0 10px 24px rgba(0,0,0,0.18)"
+              : "0 2px 8px rgba(0,0,0,0.06)",
+            transition: "box-shadow 250ms ease-in-out",
+          }}
+        >
           {/* Title */}
           <div className="flex items-center justify-center px-4 h-10">
             <span className="text-[15px] font-black text-white leading-none">
@@ -899,7 +927,7 @@ export default function OrdersPage() {
                 </div>
 
                 {/* Card digabung dalam satu container */}
-                <div className="mx-2 bg-white rounded-xl overflow-hidden border border-gray-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+                <div className="mx-2 bg-white rounded-xl overflow-hidden shadow-sm">
                   {group.orders.map((order, idx) => (
                     <div key={order.id}>
                       <OrderCard order={order} activeFilter={activeFilter} />

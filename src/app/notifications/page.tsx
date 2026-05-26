@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Bell, TicketPercent, CheckCheck } from "lucide-react";
 
@@ -272,11 +272,31 @@ export default function NotificationsPage() {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
   }, []);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white pb-5">
       {/* Sticky Header + Tabs */}
       <div className="sticky top-0 z-50">
-        <div className="bg-emerald-700 rounded-b-[22px] shadow-sm pb-2">
+        <div
+          className="bg-emerald-700 rounded-b-[22px] pb-2"
+          style={{
+            boxShadow: isScrolled
+              ? "0 10px 24px rgba(0,0,0,0.18)"
+              : "0 2px 8px rgba(0,0,0,0.06)",
+            transition: "box-shadow 250ms ease-in-out",
+          }}
+        >
           {/* Title bar */}
           <div className="flex items-center justify-between px-4 h-10">
             <div className="flex items-center gap-1">
