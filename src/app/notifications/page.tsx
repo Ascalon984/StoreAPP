@@ -41,7 +41,6 @@ function timeAgo(iso: string): string {
 }
 
 // ── Mock Data ──
-/* COMMENTED OUT FOR TESTING - UNCOMMENT BELOW TO USE MOCK DATA
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: "n1",
@@ -107,7 +106,6 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     orderId: "ORD-2026-004",
   },
 ];
-*/
 
 // ── Tab Config ──
 const TABS: { key: NotifTab; label: string }[] = [
@@ -246,7 +244,8 @@ function EmptyState({ tab }: { tab: NotifTab }) {
 export default function NotificationsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<NotifTab>("all");
-  const [notifications, setNotifications] = useState<Notification[]>([]); // MOCK_NOTIFICATIONS commented out for testing
+  const [notifications, setNotifications] =
+    useState<Notification[]>(MOCK_NOTIFICATIONS);
 
   // Sort: unread di atas, read di bawah; dalam grup, terbaru di atas
   const sorted = [...notifications].sort((a, b) => {
@@ -336,13 +335,13 @@ export default function NotificationsPage() {
               {/* Active indicator */}
               <div
                 className="
-        absolute top-[2px] bottom-[2px]
-        rounded-[10px]
-        bg-white
-        shadow-[0_2px_8px_rgba(0,0,0,0.12)]
-        transition-all duration-300
-        ease-[cubic-bezier(0.16,1,0.3,1)]
-      "
+              absolute top-[2px] bottom-[2px]
+              rounded-[10px]
+              bg-white
+              shadow-[0_2px_8px_rgba(0,0,0,0.12)]
+              transition-[transform] duration-300
+              ease-[cubic-bezier(0.25,1,0.5,1)]
+            "
                 style={{
                   transform: `translateX(${
                     TABS.findIndex((t) => t.key === activeTab) * 100
@@ -380,7 +379,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && activeTab !== "promo" && (
           <div className="px-4 pb-2 pt-1">
             <span className="text-[11px] font-medium text-gray-400">
-              3 pesan belum dibaca
+              {unreadCount} pesan belum dibaca
             </span>
           </div>
         )}

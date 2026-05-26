@@ -867,13 +867,13 @@ export default function OrdersPage() {
               {/* Active indicator */}
               <div
                 className="
-            absolute top-[2px] bottom-[2px]
-            rounded-[10px]
-            bg-white
-            shadow-[0_2px_8px_rgba(0,0,0,0.12)]
-            transition-all duration-300
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-          "
+                absolute top-[2px] bottom-[2px]
+                rounded-[10px]
+                bg-white
+                shadow-[0_2px_8px_rgba(0,0,0,0.12)]
+                transition-[transform] duration-300
+                ease-[cubic-bezier(0.25,1,0.5,1)]
+              "
                 style={{
                   transform: `translateX(${
                     FILTER_TABS.findIndex((t) => t.key === activeFilter) * 100
@@ -890,11 +890,11 @@ export default function OrdersPage() {
                     key={tab.key}
                     onClick={() => setActiveFilter(tab.key)}
                     className={`
-                relative z-10 flex-1 h-8
-                text-[12px] font-semibold
-                transition-colors
-                ${active ? "text-emerald-800" : "text-white/70"}
-              `}
+                    relative z-10 flex-1 h-8
+                    text-[12px] font-semibold
+                    transition-[color] duration-200
+                    ${active ? "text-emerald-800" : "text-white/70"}
+                  `}
                   >
                     {tab.label}
                   </button>
