@@ -42,6 +42,7 @@ const mockPoints = {
   transactionPoints: 11250,
   checkinPoints: 1200,
   dailyStreak: 4,
+  checkedInToday: true,
   rewardStreakPoints: 100,
 };
 
@@ -215,12 +216,15 @@ function PointsCard({
     transactionPoints: number;
     checkinPoints: number;
     dailyStreak: number;
+    checkedInToday: boolean;
     rewardStreakPoints: number;
   };
   onOpenInfo: () => void;
 }) {
+  const [checkedInToday, setCheckedInToday] = useState(points.checkedInToday);
+
   return (
-    <div className="mx-2 mt-2">
+    <div className="mx-3 mt-2">
       <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
         {/* TOP */}
         <div className="px-4 pt-4 pb-3 flex items-start justify-between">
@@ -233,13 +237,10 @@ function PointsCard({
               <span className="text-[23px] font-black text-gray-600 tabular-nums leading-none">
                 {points.total.toLocaleString("id-ID")}
               </span>
-
-              <Image
-                src="/icons/poin.svg"
+              <img
+                src="/icons/stack_poin.svg"
                 alt="Poin"
-                width={20}
-                height={20}
-                className="opacity-90 mb-[2px]"
+                className="w-9 h-auto opacity-90 mb-0"
               />
             </div>
 
@@ -273,8 +274,15 @@ function PointsCard({
               </p>
             </div>
 
-            <button className="px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5">
+            <button
+              onClick={() => setCheckedInToday(true)}
+              className="px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5 relative"
+            >
               <span className="text-[9px] font-black text-white">Check-in</span>
+
+              {!checkedInToday && (
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+              )}
             </button>
           </div>
 
@@ -422,7 +430,7 @@ export default function ProfilePage() {
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div className="absolute top-0 left-0 w-full h-[160px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[14px]" />
+        <div className="absolute top-0 left-0 w-full h-[160px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[20px]" />
 
         {/* CONTENT */}
         <div className="relative z-10 px-4 pt-4 pb-0 flex items-start justify-between">
@@ -499,7 +507,7 @@ export default function ProfilePage() {
         {/* ── SINGLE SETTINGS CARD ── */}
         <div ref={pengaturanRef} className="mt-7" />
 
-        <div className="mx-2 bg-white rounded-xl overflow-hidden">
+        <div className="mx-3 bg-white rounded-xl overflow-hidden">
           {/* ── Data Pribadi ── */}
           <button
             onClick={() => {
@@ -522,9 +530,9 @@ export default function ProfilePage() {
               </div>
             </div>
             {dataPribadiOpen ? (
-              <ChevronDown size={16} className="text-gray-400" />
+              <ChevronDown size={20} className="text-gray-400" />
             ) : (
-              <ChevronRight size={16} className="text-gray-400" />
+              <ChevronRight size={20} className="text-gray-400" />
             )}
           </button>
 
@@ -599,9 +607,9 @@ export default function ProfilePage() {
               </div>
             </div>
             {notifOpen ? (
-              <ChevronDown size={16} className="text-gray-400" />
+              <ChevronDown size={20} className="text-gray-400" />
             ) : (
-              <ChevronRight size={16} className="text-gray-400" />
+              <ChevronRight size={20} className="text-gray-400" />
             )}
           </button>
 
@@ -668,7 +676,7 @@ export default function ProfilePage() {
             <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
               Kebijakan & Privasi
             </span>
-            <ArrowRight size={15} className="text-gray-300" />
+            <ArrowRight size={16} className="text-gray-300" />
           </button>
 
           {/* ── Tentang Aplikasi ── */}
@@ -679,7 +687,7 @@ export default function ProfilePage() {
             <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
               Tentang Aplikasi
             </span>
-            <ArrowRight size={15} className="text-gray-300" />
+            <ArrowRight size={16} className="text-gray-300" />
           </button>
         </div>
 
@@ -770,21 +778,26 @@ export default function ProfilePage() {
 
             {/* CONTENT */}
             <div className="px-5 pt-5 pb-5">
-              <h3 className="text-[15px] font-bold text-gray-900">
-                Tentang Poin
-              </h3>
+              <div className="flex items-center gap-2">
+                <img src="/icons/poin.svg" alt="Poin" className="w-5 h-5" />
+
+                <h3 className="text-[15px] font-bold text-gray-900">
+                  Cara Mendapatkan Poin
+                </h3>
+              </div>
 
               <p className="mt-2 text-[12px] leading-relaxed text-gray-500">
-                Poin didapat dari transaksi, check-in harian, dan aktivitas
-                akun. Poin bisa digunakan untuk potongan atau benefit tertentu.
+                Poin kamu didapat dari transaksi dan aktivitas check-in harian.
+                Semakin sering kamu bertransaksi dan menjaga streak check-in,
+                semakin banyak poin yang terkumpul.
               </p>
 
               {/* LIST */}
               <div className="mt-5 space-y-3">
                 {[
-                  "Check-in harian membantu meningkatkan streak poin.",
-                  "Semakin aktif transaksi, semakin banyak poin terkumpul.",
-                  "Poin memiliki syarat penggunaan tertentu.",
+                  "Dapatkan poin setiap kali melakukan transaksi.",
+                  "Bonus poin bertambah saat kamu check-in berturut-turut.",
+                  "Streak check-in meningkatkan total reward mingguan kamu.",
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
