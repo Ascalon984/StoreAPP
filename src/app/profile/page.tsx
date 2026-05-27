@@ -297,11 +297,17 @@ function PointsCard({
               return (
                 <div className="flex flex-col items-center gap-1">
                   {completed ? (
-                    <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
-                      <Check size={13} strokeWidth={3} className="text-white" />
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <div className="w-[22px] h-[22px] rounded-full bg-emerald-500 flex items-center justify-center">
+                        <Check
+                          size={12}
+                          strokeWidth={3}
+                          className="text-white"
+                        />
+                      </div>
                     </div>
                   ) : (
-                    <div className="-mb-[5px] w-7 h-7 flex items-center justify-center">
+                    <div className="w-6 h-6 flex items-center justify-center translate-y-[-1px]">
                       {isRewardDay ? (
                         <img
                           src="/icons/gift.png"
@@ -319,7 +325,7 @@ function PointsCard({
                     </div>
                   )}
 
-                  <span className="text-[9px] font-bold text-gray-600">
+                  <span className="text-[9px] font-bold text-gray-600 leading-none">
                     Hari {i + 1}
                   </span>
                 </div>

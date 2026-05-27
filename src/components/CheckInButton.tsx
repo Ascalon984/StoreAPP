@@ -48,7 +48,6 @@ export default function CheckInButton() {
             w-6 h-6
             rounded-full
             bg-white
-            backdrop-blur-sm
             border border-white
             shadow-md
             flex items-center justify-center
@@ -56,8 +55,8 @@ export default function CheckInButton() {
             transition-all duration-200
             ${
               isVisible
-                ? "opacity-90 scale-100"
-                : "opacity-0 scale-75 pointer-events-none"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-2 pointer-events-none"
             }
           `}
           >
@@ -105,16 +104,15 @@ export default function CheckInButton() {
           w-6 h-6
           rounded-full
           bg-white
-          backdrop-blur-sm
           border border-white
           shadow-md
           flex items-center justify-center
-          transition-all duration-300 ease-out
+          transition-all duration-500 ease-out
           active:scale-90
           ${
             !isVisible
-              ? "opacity-90 translate-x-0"
-              : "opacity-0 translate-x-4 pointer-events-none"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-2 pointer-events-none"
           }
         `}
       >
