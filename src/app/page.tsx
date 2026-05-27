@@ -3,6 +3,7 @@ import CategoryGrid from "@/components/CategoryGrid";
 import CategoryBottomSheet from "@/components/CategoryBottomSheet";
 import ProductGrid from "@/components/ProductGrid";
 import SettingsHydrator from "@/components/SettingsHydrator";
+import CheckInButton from "@/components/CheckInButton";
 import { Banner as BannerType, Category } from "@/lib/types";
 
 interface Settings {
@@ -48,9 +49,10 @@ export default async function Home() {
   const { banners, categories, settings } = await getInitData();
 
   return (
-    <div className="min-h-screen bg-gray-50/80 pb-24">
+    <div className="min-h-screen bg-gray-50/80 pb-24 relative">
       {settings && <SettingsHydrator settings={settings} />}
       <CategoryBottomSheet allCategories={categories} />
+      <CheckInButton />
 
       <div className="bg-white relative z-0">
         <Banner initialBanners={banners} />

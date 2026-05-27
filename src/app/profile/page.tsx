@@ -23,7 +23,7 @@ import {
   ShieldCheck,
   Gift,
   CircleQuestionMark,
-  CalendarDays,
+  CalendarCheck,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -227,7 +227,7 @@ function PointsCard({
     <div className="mx-3 mt-2">
       <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
         {/* TOP */}
-        <div className="px-4 pt-4 pb-3 flex items-start justify-between">
+        <div className="px-4 pt-4 pb-4 flex items-start justify-between">
           <div>
             <p className="text-[10px] font-semibold text-gray-500 mb-1">
               Poin Kamu
@@ -262,7 +262,7 @@ function PointsCard({
         </div>
 
         {/* STREAK */}
-        <div className="px-4 py-2">
+        <div className="px-4 pt-1 pb-3">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-[11px] font-bold text-gray-700">
@@ -276,12 +276,14 @@ function PointsCard({
 
             <button
               onClick={() => setCheckedInToday(true)}
-              className="px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5 relative"
+              className="px-2.5 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1.5 relative"
             >
-              <span className="text-[9px] font-black text-white">Check-in</span>
+              <span className="text-[9.5px] font-black text-white">
+                Check-in
+              </span>
 
               {!checkedInToday && (
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+                <span className="absolute -top-0.5 -right-0 w-2 h-2 rounded-full bg-rose-500" />
               )}
             </button>
           </div>
@@ -295,20 +297,21 @@ function PointsCard({
               return (
                 <div className="flex flex-col items-center gap-1">
                   {completed ? (
-                    <div className="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-                      <Check size={13} strokeWidth={3} />
+                    <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Check size={13} strokeWidth={3} className="text-white" />
                     </div>
                   ) : (
-                    <div className="w-7 h-7 flex items-center justify-center">
+                    <div className="-mb-[5px] w-7 h-7 flex items-center justify-center">
                       {isRewardDay ? (
-                        <Gift
-                          size={13}
-                          strokeWidth={2.3}
-                          className="text-amber-500"
+                        <img
+                          src="/icons/gift.png"
+                          alt="Reward"
+                          className="w-[20px] h-auto object-contain"
+                          draggable={false}
                         />
                       ) : (
-                        <CalendarDays
-                          size={13}
+                        <CalendarCheck
+                          size={17}
                           strokeWidth={2.3}
                           className="text-gray-400"
                         />
@@ -488,7 +491,7 @@ export default function ProfilePage() {
                 <circle cx="15" cy="12" r="1" fill="#111" />
               </svg>
 
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 border border-white" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500" />
             </button>
           </div>
         </div>
