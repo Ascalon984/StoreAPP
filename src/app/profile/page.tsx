@@ -240,7 +240,7 @@ function PointsCard({
               <img
                 src="/icons/stack_poin.svg"
                 alt="Poin"
-                className="w-9 h-auto opacity-90 mb-0"
+                className="w-8 h-auto opacity-90 mb-0"
               />
             </div>
 
