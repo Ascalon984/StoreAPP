@@ -147,17 +147,15 @@ export default function Navbar() {
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
           <div
-            className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`grid transition-[grid-template-rows,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] origin-top ${
               isScrolled
-                ? "grid-rows-[0fr] opacity-0"
-                : "grid-rows-[1fr] opacity-100"
+                ? "grid-rows-[0fr] opacity-0 -translate-y-1"
+                : "grid-rows-[1fr] opacity-100 translate-y-0"
             }`}
           >
-            {/* Tambahkan min-h-0 di sini agar grid bisa collapse sempurna ke 0 */}
             <div className="overflow-hidden min-h-0">
-              {/* Ganti mb-2 menjadi pb-2 pada wrapper ini, margin membuat animasi grid patah */}
               <div className="pb-2">
-                <div className="flex items-center justify-between h-12 pt-0.5">
+                <div className="flex items-center justify-between h-12 pt-[6px]">
                   {/* Avatar */}
                   <div className="flex items-center gap-3 min-w-0">
                     <Link
@@ -182,8 +180,6 @@ export default function Navbar() {
                         )}
                       </div>
                     </Link>
-
-                    {/* Greeting */}
                     <div className="flex flex-col min-w-0">
                       <p className="text-white/60 text-[11px] font-medium leading-none">
                         {getGreeting()}

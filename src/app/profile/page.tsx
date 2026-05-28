@@ -157,7 +157,7 @@ function FieldRow({
         className={`flex ${isEditing ? "items-stretch" : "items-start"} gap-3`}
       >
         {!isEditing && (
-          <div className="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
             <span className="text-gray-400">{icon}</span>
           </div>
         )}
@@ -188,17 +188,17 @@ function FieldRow({
           <button
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onEditSave(fieldKey)}
-            className="w-[34px] h-[34px] rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 active:scale-90 transition-all flex-shrink-0 self-end"
+            className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 active:scale-90 transition-all flex-shrink-0 self-end"
           >
-            <Check size={13} strokeWidth={2.5} />
+            <Check size={15} strokeWidth={2.5} />
           </button>
         ) : (
           <button
             onClick={() => !isDisabled && onEditStart(fieldKey, value)}
             disabled={isDisabled}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-emerald-500 hover:bg-emerald-50 active:scale-90 transition-all flex-shrink-0 mt-0.5"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-300 hover:text-emerald-500 hover:bg-emerald-50 active:scale-90 transition-all flex-shrink-0 mt-0.5"
           >
-            <Pencil size={13} strokeWidth={2} />
+            <Pencil size={15} strokeWidth={2} />
           </button>
         )}
       </div>
@@ -439,7 +439,7 @@ export default function ProfilePage() {
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div className="absolute top-0 left-0 w-full h-[160px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[20px]" />
+        <div className="absolute top-0 left-0 w-full h-[158px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[18px]" />
 
         {/* CONTENT */}
         <div className="relative z-10 px-4 pt-4 pb-0 flex items-start justify-between">
@@ -526,8 +526,8 @@ export default function ProfilePage() {
             className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
-                <User size={16} className="text-gray-500" strokeWidth={2.5} />
+              <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
+                <User size={15} className="text-gray-500" strokeWidth={2.5} />
               </div>
               <div className="text-left">
                 <p className="text-[13px] font-semibold text-gray-800 leading-none">
@@ -570,7 +570,7 @@ export default function ProfilePage() {
                 label="Email"
                 fieldKey="email"
                 value={user.email}
-                icon={<Mail size={14} />}
+                icon={<Mail size={15} />}
                 inputType="email"
                 editingField={editingField}
                 editValue={editValue}
@@ -583,7 +583,7 @@ export default function ProfilePage() {
                 label="Nomor Telepon"
                 fieldKey="phone"
                 value={user.phone}
-                icon={<Phone size={14} />}
+                icon={<Phone size={15} />}
                 inputType="tel"
                 editingField={editingField}
                 editValue={editValue}
@@ -603,8 +603,8 @@ export default function ProfilePage() {
             className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
-                <Bell size={16} className="text-gray-500" strokeWidth={2.5} />
+              <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
+                <Bell size={15} className="text-gray-500" strokeWidth={2.5} />
               </div>
               <div className="text-left">
                 <p className="text-[13px] font-semibold text-gray-800 leading-none">
@@ -675,9 +675,9 @@ export default function ProfilePage() {
 
           {/* ── Kebijakan & Privasi ── */}
           <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-            <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
               <ShieldCheck
-                size={16}
+                size={15}
                 className="text-gray-500"
                 strokeWidth={2.5}
               />
@@ -690,8 +690,8 @@ export default function ProfilePage() {
 
           {/* ── Tentang Aplikasi ── */}
           <button className="w-full flex items-center gap-3 px-4 pt-3 pb-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-            <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center">
-              <Info size={16} className="text-gray-500" strokeWidth={2.5} />
+            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
+              <Info size={17} className="text-gray-500" strokeWidth={2.5} />
             </div>
             <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
               Tentang Aplikasi
@@ -729,7 +729,7 @@ export default function ProfilePage() {
               </p>
               <button
                 onClick={() => setCropSrc(null)}
-                className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
+                className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
               >
                 <X size={14} strokeWidth={2.5} />
               </button>
@@ -780,7 +780,7 @@ export default function ProfilePage() {
             {/* CLOSE */}
             <button
               onClick={() => setPointsInfoOpen(false)}
-              className="absolute top-3 right-3 w-7 h-7 rounded-full hover:bg-gray-100 active:scale-90 transition-all flex items-center justify-center"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full hover:bg-gray-100 active:scale-90 transition-all flex items-center justify-center"
             >
               <X size={15} className="text-gray-400" strokeWidth={2.5} />
             </button>

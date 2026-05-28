@@ -33,8 +33,8 @@ export default function CheckInButton() {
           transition-all duration-300 ease-out
           ${
             isVisible
-              ? "opacity-100 translate-x-0"
-              : "opacity-100 translate-x-14"
+              ? "translate-x-0 opacity-100 pointer-events-auto"
+              : "translate-x-[52px] opacity-90 pointer-events-none"
           }
         `}
       >
@@ -79,7 +79,7 @@ export default function CheckInButton() {
             "
           >
             <img
-              src="/icons/check_in.gif"
+              src="/icons/calendar_poin.webp"
               alt="Check In"
               className="
                 w-full h-full
