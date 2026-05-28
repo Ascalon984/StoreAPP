@@ -119,6 +119,7 @@ export default function ProductDetailPage({
     (Product & { reviews?: Review[] }) | null
   >(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const loaderStartTimeRef = useRef<number | null>(null);
 
   const [votedIds, setVotedIds] = useState<string[]>([]);
@@ -350,11 +351,11 @@ export default function ProductDetailPage({
   const liveRating =
     liveReviewCount > 0
       ? Number(
-        (
-          specificReviews.reduce((acc, r) => acc + r.rating, 0) /
-          specificReviews.length
-        ).toFixed(1),
-      )
+          (
+            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+            specificReviews.length
+          ).toFixed(1),
+        )
       : serverRating;
 
   const distribution = getRatingDistribution(allReviews);
@@ -366,6 +367,31 @@ export default function ProductDetailPage({
       ? product.description.slice(0, 300) + "..."
       : product.description
     : "";
+
+  // Ekstraksi gambar ke scope komponen agar bisa diakses Gallery & Lightbox
+  const rawImages = product?.images || (product as any)?.image;
+  let productImages: string[] = [];
+
+  if (product) {
+    if (Array.isArray(rawImages)) {
+      productImages = rawImages.flatMap((img) => {
+        if (!img || typeof img !== "string") return [];
+        if (img.startsWith("data:image") || img.startsWith("http")) return [img];
+        return img
+          .split("|")
+          .filter(
+            (i) =>
+              i?.trim()?.startsWith("data:image") ||
+              i?.trim()?.startsWith("http"),
+          );
+      });
+    } else if (typeof rawImages === "string") {
+      productImages = rawImages
+        .split("|")
+        .map((img) => img?.trim())
+        .filter((img) => img && (img.startsWith("data:image") || img.startsWith("http")));
+    }
+  }
 
   return (
     <div className="bg-gray-50 pb-24 min-h-screen">
@@ -470,86 +496,52 @@ export default function ProductDetailPage({
               </div>
 
               <div ref={imageContainerRef}>
-                {(() => {
-                  const rawImages = product.images || (product as any).image;
-                  let productImages: string[] = [];
-
-                  if (Array.isArray(rawImages)) {
-                    productImages = rawImages.flatMap((img) => {
-                      if (!img || typeof img !== "string") return [];
-                      if (
-                        img.startsWith("data:image") ||
-                        img.startsWith("http")
-                      )
-                        return [img];
-                      return img
-                        .split("|")
-                        .filter(
-                          (i) =>
-                            i?.trim()?.startsWith("data:image") ||
-                            i?.trim()?.startsWith("http"),
-                        );
-                    });
-                  } else if (typeof rawImages === "string") {
-                    productImages = rawImages
-                      .split("|")
-                      .map((img) => img?.trim())
-                      .filter(
-                        (img) =>
-                          img &&
-                          (img.startsWith("data:image") ||
-                            img.startsWith("http")),
-                      );
-                  }
-
-                  const slideCount =
-                    productImages.length > 0 ? productImages.length : 1;
-                  const slides = Array.from(
-                    { length: slideCount },
-                    (_, i) => i,
-                  );
-
-                  return (
-                    <>
-                      <div
-                        ref={scrollContainerRef}
-                        onScroll={handleScroll}
-                        className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
-                        style={{
-                          scrollbarWidth: "none",
-                          msOverflowStyle: "none",
-                        }}
-                      >
-                        {slides.map((i) => (
-                          <div
-                            key={i}
-                            className="flex-shrink-0 w-full snap-start"
-                          >
-                            <ProductImage
-                              category={product.category}
-                              name={product.name}
-                              variant={i}
-                              src={productImages[i]}
-                              className="w-full aspect-[3/2] sm:aspect-video"
-                            />
-                          </div>
-                        ))}
+                <div
+                  ref={scrollContainerRef}
+                  onScroll={handleScroll}
+                  onClick={() => setLightboxOpen(true)}
+                  className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth cursor-zoom-in"
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                  }}
+                >
+                  {productImages.length > 0 ? (
+                    productImages.map((src, i) => (
+                      <div key={i} className="flex-shrink-0 w-full snap-start">
+                        <ProductImage
+                          category={product.category}
+                          name={product.name}
+                          variant={i}
+                          src={src}
+                          className="w-full aspect-[3/2] sm:aspect-video"
+                        />
                       </div>
-                      {slideCount > 1 && (
-                        <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
-                          <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
-                            {slides.map((i) => (
-                              <div
-                                key={i}
-                                className={`transition-all duration-500 rounded-full ${currentIndex === i ? "w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "w-1 h-1 bg-white/40"}`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
+                    ))
+                  ) : (
+                    <div className="flex-shrink-0 w-full snap-start">
+                      <ProductImage
+                        category={product.category}
+                        name={product.name}
+                        variant={0}
+                        className="w-full aspect-[3/2] sm:aspect-video"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {productImages.length > 1 && (
+                  <div className="absolute bottom-5 left-0 right-0 z-20 flex justify-center items-center">
+                    <div className="flex gap-1 px-2 py-1 bg-black/5 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
+                      {productImages.map((_, i) => (
+                        <div
+                          key={i}
+                          className={`transition-all duration-500 rounded-full ${currentIndex === i ? "w-5 h-1 bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "w-1 h-1 bg-white/40"}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -640,13 +632,15 @@ export default function ProductDetailPage({
                         disabled={isOutOfStock}
                         className={`
                           px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all duration-200
-                          ${isSelected
-                            ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
-                            : "border-gray-300 text-gray-700 bg-white hover:border-gray-300"
+                          ${
+                            isSelected
+                              ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
+                              : "border-gray-300 text-gray-700 bg-white hover:border-gray-300"
                           }
-                          ${isOutOfStock
-                            ? "opacity-40 cursor-not-allowed line-through border-gray-100 bg-gray-50 text-gray-400"
-                            : "active:scale-95"
+                          ${
+                            isOutOfStock
+                              ? "opacity-40 cursor-not-allowed line-through border-gray-100 bg-gray-50 text-gray-400"
+                              : "active:scale-95"
                           }
                         `}
                       >
@@ -748,7 +742,7 @@ export default function ProductDetailPage({
                   {[5, 4, 3, 2, 1].map((star) => {
                     const pct =
                       distribution.percent[
-                      star as keyof typeof distribution.percent
+                        star as keyof typeof distribution.percent
                       ];
                     const count =
                       distribution.raw[star as keyof typeof distribution.raw];
@@ -771,8 +765,8 @@ export default function ProductDetailPage({
                             style={{ width: `${pct}%` }}
                           />
                         </div>
-                        <span className="text-[9px] text-gray-600 tabular-nums min-w-[20px] text-right">
-                          {count}
+                        <span className="text-[9px] text-gray-400 tabular-nums w-7 text-right">
+                          {pct}%
                         </span>
                       </div>
                     );
@@ -920,6 +914,25 @@ export default function ProductDetailPage({
               <path d="M18 15l-6-6-6 6" />
             </svg>
           </button>
+
+          {/* Lightbox — selalu render, transisi via opacity/scale */}
+          <div
+            className={`fixed inset-0 z-[100] flex items-center justify-center cursor-zoom-out
+              transition-[opacity,backdrop-filter] duration-300 ease-out
+              ${lightboxOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+            style={{ backgroundColor: "rgba(0,0,0,0.88)" }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            <img
+              src={productImages[currentIndex] || ""}
+              alt={`${product.name} - Preview`}
+              className={`max-w-full max-h-full object-contain shadow-2xl
+                transition-[opacity,transform] duration-300 ease-out
+                ${lightboxOpen ? "opacity-100 scale-100" : "opacity-0 scale-[0.92]"}`}
+              style={{ touchAction: "pinch-zoom" }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
 
           <style jsx>{`
             .hide-scrollbar::-webkit-scrollbar {

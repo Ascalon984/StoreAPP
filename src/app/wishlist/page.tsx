@@ -124,7 +124,7 @@ function ProductRow({
 
   return (
     <>
-      {!isFirst && <div className="h-px bg-gray-100 ml-[92px] mr-4" />}
+      {!isFirst && <div className="h-px bg-gray-200/90 ml-[92px] mr-4" />}
 
       <div className="flex items-center gap-3 px-4 py-3 bg-white">
         {/* Image */}
@@ -322,7 +322,7 @@ export default function WishlistPage() {
     }
 
     return (
-      <div className="mx-2 bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white">
         {sortedItems.map((product, i) => (
           <ProductRow
             key={product.id}
@@ -340,7 +340,7 @@ export default function WishlistPage() {
   const isFilterActive = activeSort !== "Semua";
 
   return (
-    <div className="min-h-screen bg-[#F5F7F5] pb-10">
+    <div className="min-h-screen bg-white pb-10">
       {/* ── STICKY HEADER ── */}
       <div className="sticky top-0 z-50">
         <div

@@ -44,7 +44,7 @@ export default function CheckInButton() {
             onClick={toggleVisibility}
             aria-label="Sembunyikan check-in"
             className={`
-            absolute -top-0.99 -left-4 z-10
+            absolute -top-0.5 -left-4 z-10
             w-6 h-6
             rounded-full
             bg-white
