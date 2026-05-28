@@ -34,17 +34,17 @@ export default function CheckInButton() {
           ${
             isVisible
               ? "translate-x-0 opacity-100 pointer-events-auto"
-              : "translate-x-[52px] opacity-90 pointer-events-none"
+              : "translate-x-[64.5px] opacity-90 pointer-events-none"
           }
         `}
       >
-        <div className="relative w-[58px] h-[58px]">
+        <div className="relative w-[72px] h-[72px]">
           {/* Hide Chevron (Kondisi Terbuka) */}
           <button
             onClick={toggleVisibility}
             aria-label="Sembunyikan check-in"
             className={`
-            absolute -top-4 -left-6 z-10
+            absolute -top-0.99 -left-4 z-10
             w-6 h-6
             rounded-full
             bg-white
@@ -79,16 +79,20 @@ export default function CheckInButton() {
             "
           >
             <img
-              src="/icons/calendar_poin.webp"
+              src="/icons/check_koin.webp"
               alt="Check In"
-              className="
-                w-full h-full
-                object-contain
-                drop-shadow-[0_8px_18px_rgba(0,0,0,0.16)]
-                select-none
-                pointer-events-none
-              "
-              draggable={false}
+              className={`
+              w-full h-full
+              object-contain
+              select-none
+              pointer-events-none
+              transition-[filter] duration-300
+              ${
+                isVisible
+                  ? "drop-shadow-[0_6px_10px_rgba(255,255,255,0.25)]"
+                  : "drop-shadow-none"
+              }
+            `}
             />
           </Link>
         </div>
