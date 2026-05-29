@@ -549,17 +549,42 @@ function CategoryChips({ category }: { category: string }) {
       {/* Wrapper relative untuk fade effect */}
       <div className="relative flex-1 min-w-0">
         {/* Chip scroll */}
-        <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+        <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pr-3">
           {chips.map((chip) => (
             <button
               key={chip}
               onClick={() => setActive(chip)}
-              className={`flex-shrink-0 rounded-full px-3 py-[5px] text-[11px] font-semibold border transition-colors active:scale-95 hover:bg-gray-50
+              className={`
+              flex-shrink-0
+
+              h-7 px-3
+
+              rounded-full
+
+              text-[10px]
+              font-semibold
+              tracking-tight
+
+              border
+              transition-all duration-200
+              active:scale-[0.97]
+
               ${
                 active === chip
-                  ? "bg-emerald-50 border-emerald-500 text-emerald-700"
-                  : "bg-white border-gray-200 text-gray-600"
-              }`}
+                  ? `
+                    bg-emerald-600
+                    border-emerald-600
+                    text-white
+
+                    shadow-[0_3px_10px_rgba(5,150,105,0.18)]
+                  `
+                  : `
+                    bg-white/90
+                    border-gray-200
+                    text-gray-600
+                  `
+              }
+            `}
             >
               {chip}
             </button>
@@ -567,7 +592,7 @@ function CategoryChips({ category }: { category: string }) {
         </div>
 
         {/* Fade gradient kanan — sinyal ada konten tenggelam */}
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none" />
       </div>
 
       {/* Filter button */}
@@ -727,9 +752,11 @@ export default function ProductGrid({
   const [highlightProducts, setHighlightProducts] = useState<Product[]>([]);
   const [isLoadingHighlight, setIsLoadingHighlight] = useState(true);
 
+  // State untuk menyimpan daftar kategori agar lookup nama kategori bekerja
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+
   const isSpecificCategory = category !== null && category !== "all";
 
-  const categories: Category[] = initialCategories;
   const categoryName =
     categories.find((c) => c.id === category)?.name ?? "Semua Produk";
 
@@ -737,6 +764,20 @@ export default function ProductGrid({
   useEffect(() => {
     fetchReviews().catch(console.error);
   }, []);
+
+  /* Fetch categories if not provided as props */
+  useEffect(() => {
+    if (initialCategories.length > 0) {
+      setCategories(initialCategories);
+      return;
+    }
+    fetch("/api/public/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .catch(console.error);
+  }, [initialCategories]);
 
   /* Fetch highlight products — mock for now */
   useEffect(() => {
@@ -818,7 +859,7 @@ export default function ProductGrid({
 
   /* ── Render ── */
   return (
-    <>
+    <div id="product-area" className="scroll-mt-40">
       {/* ══════════════════════════════════════════
           SECTION 0 — HIGHLIGHT / PROMO CARD
           Tampil tepat setelah category grid (tab Semua)
@@ -854,76 +895,119 @@ export default function ProductGrid({
       {/* ══════════════════════════════════════════
           SECTION 3 — Semua Produk
           ══════════════════════════════════════════ */}
-      <section className="px-2 pt-2 pb-3 min-h-[50vh]">
-        {/* Header — hanya tampil saat home view */}
-        {isHomeView && (
-          <div className="mb-2 flex items-center justify-between px-0.5">
+      <section className="px-2 pb-3 min-h-[50vh]">
+        {/* Header Sticky untuk Kategori Spesifik */}
+        <div
+          className={
+            isSpecificCategory
+              ? `
+              sticky top-[50px] z-40
+              -mx-2 px-2
+              pt-2 pb-2.5
+              mb-3
+
+              bg-white
+              border-b border-gray-100
+
+              shadow-[0_8px_24px_rgba(15,23,42,0.08)]
+
+              transition-all duration-300
+            `
+              : "pt-2 mb-2 transition-all duration-300"
+          }
+        >
+          <div className="flex items-center justify-between px-0.5 mb-2.5">
             <h2 className="text-[13px] font-black text-gray-800 tracking-tight">
               {categoryName}
             </h2>
+            {isSpecificCategory && (
+              <button
+                onClick={() => {
+                  useFilterStore.getState().setCategory("all");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="
+                flex items-center justify-center
+                h-7 px-3
+                rounded-full
+                bg-emerald-600
+                text-white
+                text-[10px]
+                font-bold
+                tracking-tight
+                active:scale-95
+                transition-all duration-200
+              "
+              >
+                Reset
+              </button>
+            )}
           </div>
-        )}
 
-        {/* Chip filter — hanya tampil saat kategori spesifik */}
-        {isSpecificCategory && <CategoryChips category={category!} />}
+          {/* Chip filter — hanya tampil saat kategori spesifik */}
+          {isSpecificCategory && <CategoryChips category={category!} />}
+        </div>
 
-        {isLoadingAll ? (
-          <div className="flex items-start gap-3">
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <CardSkeleton key={`left-${i}`} isTall={i === 1} />
-              ))}
-            </div>
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <CardSkeleton key={`right-${i}`} isTall={false} />
-              ))}
-            </div>
-          </div>
-        ) : filteredAll.length === 0 ? (
-          <EmptyState message="Coba pilih kategori lain atau cek kata kunci pencarianmu." />
-        ) : (
-          <>
+        <div className={isSpecificCategory ? "pt-1.5" : ""}>
+          {isLoadingAll ? (
             <div className="flex items-start gap-3">
-              {/* Kolom Kiri */}
               <div className="flex flex-col gap-3 flex-1 min-w-0">
-                {filteredAll
-                  .filter((_, i) => i % 2 === 0)
-                  .map((product, idx) => {
-                    const globalIndex = idx * 2;
-                    // Hanya baris 2 (indeks 2) yang lonjong untuk menciptakan offset genteng permanen
-                    const isTall = globalIndex === 2;
-                    return (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        index={globalIndex}
-                        isTall={isTall}
-                      />
-                    );
-                  })}
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <CardSkeleton key={`left-${i}`} isTall={i === 1} />
+                ))}
               </div>
 
-              {/* Kolom Kanan */}
               <div className="flex flex-col gap-3 flex-1 min-w-0">
-                {filteredAll
-                  .filter((_, i) => i % 2 === 1)
-                  .map((product, idx) => {
-                    const globalIndex = idx * 2 + 1;
-                    return (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        index={globalIndex}
-                        isTall={false}
-                      />
-                    );
-                  })}
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <CardSkeleton key={`right-${i}`} isTall={false} />
+                ))}
               </div>
             </div>
-          </>
-        )}
+          ) : filteredAll.length === 0 ? (
+            <EmptyState message="Coba pilih kategori lain atau cek kata kunci pencarianmu." />
+          ) : (
+            <>
+              <div className="flex items-start gap-3">
+                {/* Kolom Kiri */}
+                <div className="flex flex-col gap-3 flex-1 min-w-0">
+                  {filteredAll
+                    .filter((_, i) => i % 2 === 0)
+                    .map((product, idx) => {
+                      const globalIndex = idx * 2;
+                      const isTall = globalIndex === 2;
+
+                      return (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          index={globalIndex}
+                          isTall={isTall}
+                        />
+                      );
+                    })}
+                </div>
+
+                {/* Kolom Kanan */}
+                <div className="flex flex-col gap-3 flex-1 min-w-0">
+                  {filteredAll
+                    .filter((_, i) => i % 2 === 1)
+                    .map((product, idx) => {
+                      const globalIndex = idx * 2 + 1;
+                      return (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          index={globalIndex}
+                          isTall={false}
+                        />
+                      );
+                    })}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </section>
-    </>
+    </div>
   );
 }

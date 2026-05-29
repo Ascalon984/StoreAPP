@@ -139,7 +139,7 @@ export default function Navbar() {
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
-          ? "0 10px 24px rgba(0,0,0,0.18)"
+          ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",
       }}
     >

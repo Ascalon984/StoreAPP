@@ -120,10 +120,16 @@ export default function CategoryGrid({
 
   const handleClick = (catId: string) => {
     setCategory(catId);
+
     const el = document.getElementById("product-area");
+
     if (el) {
-      const top = window.scrollY + el.getBoundingClientRect().top;
-      window.scrollTo({ top: Math.max(top - 60, 0), behavior: "smooth" });
+      const top = window.scrollY + el.getBoundingClientRect().top - 70; // offset sticky header
+
+      window.scrollTo({
+        top: Math.max(top, 0),
+        behavior: "smooth",
+      });
     }
   };
 

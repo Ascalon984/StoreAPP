@@ -36,7 +36,7 @@ export default function FilterSort() {
   return (
     <section
       className={`
-        sticky top-[52px] z-30 bg-white backdrop-blur-md
+        sticky top-[52px] z-40 bg-white backdrop-blur-md
         border-b border-gray-100 
         transition-all duration-300 ease-in-out
         pb-2 pt-1
@@ -58,9 +58,10 @@ export default function FilterSort() {
                   rounded-2xl text-[10px] font-bold tracking-tight
                   transition-all duration-300 ease-out
                   active:scale-95
-                  ${isActive
-                    ? "bg-emerald-600 text-white shadow-layer-lg"
-                    : "bg-white text-gray-600 ring-1 ring-slate-900/[0.04] shadow-layer-xs"
+                  ${
+                    isActive
+                      ? "bg-emerald-600 text-white shadow-layer-lg"
+                      : "bg-white text-gray-600 ring-1 ring-slate-900/[0.04] shadow-layer-xs"
                   }
                 `}
               >
