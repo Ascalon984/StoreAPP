@@ -241,8 +241,8 @@ export default function CheckoutPage() {
         </div>
 
         {/* ── SCROLLABLE CONTENT ── */}
-        <div className="flex-1 bg-gray-50/80 overflow-y-auto checkout-scroll">
-          <div className="max-w-lg mx-auto pb-10">
+        <div className="flex-1 overflow-y-auto checkout-scroll">
+          <div className="max-w-lg mx-auto">
             {/* ═══ BLOK 1: RINGKASAN PESANAN & TARGET ID ═══ */}
             <div className="mx-4 mt-5 mb-2">
               <h2 className="text-[15px] font-bold text-gray-900 tracking-tight">
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
               </h2>
             </div>
 
-            <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+            <div className="bg-white border-y border-gray-100">
               {/* Product list */}
               <div className="px-3 py-1 divide-y divide-gray-50">
                 {items.map((item) => {
@@ -376,13 +376,13 @@ export default function CheckoutPage() {
             </div>
 
             {/* ═══ BLOK 2: METODE PEMBAYARAN ═══ */}
-            <div className="mx-4 mt-5 mb-2">
-              <h2 className="text-[15px] font-bold text-gray-900 tracking-tight">
+            <div className="px-4 pt-4 pb-2">
+              <h2 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                 Metode Pembayaran
               </h2>
             </div>
 
-            <div className="mx-3 bg-white rounded-xl ring-1 ring-slate-900/[0.04] shadow-layer-xs overflow-hidden">
+            <div className="bg-white border-y border-gray-100">
               <div className="divide-y divide-gray-100/60">
                 {Object.values(PAYMENT_METHODS).map((method) => {
                   const Icon = method.icon;
@@ -490,6 +490,7 @@ export default function CheckoutPage() {
                 })}
               </div>
             </div>
+            <div className="h-3 bg-gradient-to-b from-white to-gray-50/30" />
           </div>
         </div>
 

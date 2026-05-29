@@ -331,3 +331,12 @@ select:-webkit-autofill {
 
   transition: background-color 9999s ease-in-out 0s;
 }
+
+.crop-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.crop-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+}

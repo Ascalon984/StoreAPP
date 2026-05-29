@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ReactCrop, {
   type Crop,
@@ -87,11 +87,13 @@ function AvatarCircle({
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full border-2 border-white shadow-lg bg-emerald-100 flex items-center justify-center flex-shrink-0"
+      className="rounded-full border-2 border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
     >
-      <span className="text-emerald-700 font-black text-[18px]">
-        {getInitials(name)}
-      </span>
+      <img
+        src="/icons/avatar.png"
+        alt="avatar"
+        className="w-full h-full object-cover opacity-70"
+      />
     </div>
   );
 }
@@ -357,6 +359,17 @@ export default function ProfilePage() {
   const imgRef = useRef<HTMLImageElement>(null);
   const pengaturanRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (cropSrc) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [cropSrc]);
+  
   // ── Hitung kelengkapan profil (shared logic) ──
   const isProfileComplete =
     !!user.name.trim() &&
@@ -717,7 +730,7 @@ export default function ProfilePage() {
 
       {/* Modal Crop */}
       {cropSrc && (
-        <div className="fixed inset-0 z-[120] flex items-start justify-center p-4 pt-[8vh]">
+        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-4 pb-0 sm:pb-4">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setCropSrc(null)}
@@ -734,7 +747,10 @@ export default function ProfilePage() {
                 <X size={14} strokeWidth={2.5} />
               </button>
             </div>
-            <div className="flex-1 min-h-0 overflow-y-auto bg-gray-50 p-2">
+            <div
+              className="crop-scroll flex-1 min-h-0 overflow-y-auto bg-gray-50 p-2"
+              style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+            >
               <div className="min-w-full flex justify-center">
                 <ReactCrop
                   crop={crop}
