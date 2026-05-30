@@ -82,18 +82,26 @@ function EmptyState({ onExplore }: { onExplore: () => void }) {
 // ─────────────────────────────────────────
 //  EMPTY SEARCH STATE
 // ─────────────────────────────────────────
-function EmptySearch() {
+function EmptySearch({ keyword }: { keyword: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-3">
-        <Search size={20} strokeWidth={1.8} className="text-gray-400" />
-      </div>
-      <p className="text-[13px] font-bold text-gray-700 mb-1">
+    <div className="flex flex-col items-center justify-center px-6 pt-12 pb-10 text-center">
+      <img
+        src="/illustrations/Favorit Product Not Found.svg"
+        alt="Produk favorit tidak ditemukan"
+        className="w-52 h-52 object-contain -translate-x-1"
+      />
+
+      <h2 className="mt-1 text-[17px] font-bold text-gray-800 tracking-tight">
         Produk tidak ditemukan
+      </h2>
+
+      <p className="mt-2 text-[13px] text-gray-500 leading-relaxed max-w-[260px]">
+        Tidak ada produk favorit yang cocok dengan
       </p>
-      <p className="text-[12px] text-gray-400 font-medium">
-        Coba ubah kata kunci pencarian
-      </p>
+
+      <div className="mt-2 px-3 py-1 rounded-full bg-gray-100 text-[12px] font-semibold text-gray-700">
+        "{keyword}"
+      </div>
     </div>
   );
 }
@@ -318,7 +326,7 @@ export default function WishlistPage() {
       return <EmptyState onExplore={() => router.push("/")} />;
 
     if (searchFiltered.length === 0 && search) {
-      return <EmptySearch />;
+      return <EmptySearch keyword={search} />;
     }
 
     return (
@@ -340,7 +348,7 @@ export default function WishlistPage() {
   const isFilterActive = activeSort !== "Semua";
 
   return (
-    <div className="min-h-screen bg-white pb-10">
+    <div className="min-h-screen bg-white pb-20">
       {/* ── STICKY HEADER ── */}
       <div className="sticky top-0 z-50">
         <div
@@ -458,20 +466,6 @@ export default function WishlistPage() {
       {/* ── CONTENT ── */}
       <div className="pt-4 pb-6">
         {!mounted ? <SkeletonList /> : renderContent()}
-
-        {mounted && items.length > 0 && (
-          <div className="flex items-center justify-center gap-2 mt-6 px-4">
-            <div className="flex-1 h-px bg-gray-200" />
-            <div className="flex items-center gap-1.5">
-              <Bookmark size={10} strokeWidth={2} className="text-gray-400" />
-              <span className="text-[10px] font-semibold text-gray-500 tracking-wide">
-                {sortedItems.length} produk tersimpan
-              </span>
-              <Bookmark size={10} strokeWidth={2} className="text-gray-400" />
-            </div>
-            <div className="flex-1 h-px bg-gray-200" />
-          </div>
-        )}
       </div>
 
       <style jsx>{`

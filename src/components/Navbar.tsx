@@ -150,15 +150,16 @@ export default function Navbar() {
           {/* ── Greeting Row ── */}
           <div
             style={{
-              maxHeight: isScrolled ? "0px" : "60px",
+              display: "grid",
+              gridTemplateRows: isScrolled ? "0fr" : "1fr",
               opacity: isScrolled ? 0 : 1,
-              overflow: "hidden",
               transition:
-                "max-height 280ms cubic-bezier(0.22,1,0.36,1), opacity 200ms ease",
-              willChange: "max-height, opacity",
+                "grid-template-rows 280ms cubic-bezier(0.22,1,0.36,1), opacity 200ms ease",
+              willChange: "grid-template-rows, opacity",
             }}
           >
-            <div className="pb-2">
+            <div style={{ overflow: "hidden" }}>
+              <div className="pb-2">
               <div className="flex items-center justify-between h-12 pt-[6px]">
                 {/* Avatar */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -203,6 +204,7 @@ export default function Navbar() {
                   <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
                 </Link>
               </div>
+            </div>
             </div>
           </div>
 

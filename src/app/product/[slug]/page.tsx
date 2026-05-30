@@ -376,7 +376,8 @@ export default function ProductDetailPage({
     if (Array.isArray(rawImages)) {
       productImages = rawImages.flatMap((img) => {
         if (!img || typeof img !== "string") return [];
-        if (img.startsWith("data:image") || img.startsWith("http")) return [img];
+        if (img.startsWith("data:image") || img.startsWith("http"))
+          return [img];
         return img
           .split("|")
           .filter(
@@ -389,7 +390,10 @@ export default function ProductDetailPage({
       productImages = rawImages
         .split("|")
         .map((img) => img?.trim())
-        .filter((img) => img && (img.startsWith("data:image") || img.startsWith("http")));
+        .filter(
+          (img) =>
+            img && (img.startsWith("data:image") || img.startsWith("http")),
+        );
     }
   }
 
@@ -398,8 +402,45 @@ export default function ProductDetailPage({
       <LoadingScreen isLoading={loading} />
 
       {!loading && !product ? (
-        <div className="p-8 text-center min-h-screen bg-gray-50 flex items-center justify-center">
-          Product not found.
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+          <div className="flex flex-col items-center text-center">
+            <img
+              src="/illustrations/Search Not Found.svg"
+              alt="Produk tidak ditemukan"
+              className="
+        w-56 h-56
+        object-contain
+        -translate-x-1
+      "
+            />
+
+            <h2 className="mt-2 text-lg font-semibold text-gray-800">
+              Produk tidak ditemukan
+            </h2>
+
+            <p className="mt-1 text-sm text-gray-500 max-w-[280px] leading-relaxed">
+              Produk mungkin sudah dihapus atau tautan yang Anda buka tidak
+              tersedia.
+            </p>
+
+            <button
+              onClick={handleBack}
+              className="
+        mt-5
+        px-5 py-2.5
+        rounded-xl
+        bg-emerald-600
+        text-white
+        text-sm
+        font-semibold
+        hover:bg-emerald-700
+        active:scale-95
+        transition-all
+      "
+            >
+              Kembali
+            </button>
+          </div>
         </div>
       ) : product ? (
         <>

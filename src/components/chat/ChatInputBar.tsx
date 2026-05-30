@@ -1,6 +1,6 @@
 "use client";
 
-import { Paperclip, SendHorizontal } from "lucide-react";
+import { Plus, SendHorizontal } from "lucide-react";
 
 interface ChatInputBarProps {
   inputText: string;
@@ -34,10 +34,12 @@ export default function ChatInputBar({
               src={attachmentPreview}
               alt="Preview"
               className="
-                w-12 h-12
-                rounded-lg
-                object-cover
-                border border-gray-200
+                p-2
+                text-gray-500
+                hover:text-emerald-600
+                hover:bg-emerald-50
+                rounded-full
+                transition-all
               "
             />
 
@@ -62,38 +64,31 @@ export default function ChatInputBar({
       )}
 
       {/* ── Input Row ── */}
-      <div className="flex items-end gap-1.5 px-3 pt-1.5 pb-[calc(env(safe-area-inset-bottom)+10px)]">
-        {/* Attachment Button */}
+      <div className="flex items-end gap-1.5 px-3 py-2 pb-[calc(env(safe-area-inset-bottom)+8px)]">
+        {/* Plus */}
         <button
           onClick={onPickAttachment}
-          aria-label="Lampirkan gambar"
           className="
-            p-2
-            text-gray-500
-            hover:text-gray-700
-            transition-colors
-            flex-shrink-0
-            mb-[2px]
-          "
+  p-2.5
+  text-gray-500
+  hover:text-gray-700
+  transition-colors
+  flex-shrink-0
+  self-end
+  mb-[2px]
+"
         >
-          <Paperclip size={20} strokeWidth={2} />
+          <Plus size={20} strokeWidth={2} />
         </button>
 
-        {/* ── Composer ── */}
+        {/* Composer */}
         <div
-          className="
-            flex-1
-            flex items-end
-            bg-gray-50
-            rounded-2xl
-            border border-gray-200
-            overflow-hidden
-            transition-colors
-            focus-within:border-gray-300
-          "
+          className={`flex-1 flex bg-gray-50 rounded-2xl border border-gray-200 px-3 py-1.5 transition-colors focus-within:border-gray-300 min-h-[38px] ${
+            inputText.includes("\n") ? "items-end" : "items-center"
+          }`}
         >
-          {/* Textarea Area */}
-          <div className="flex-1 px-3 py-1.5">
+          {/* Textarea */}
+          <div className="flex-1 flex">
             <textarea
               ref={inputRef}
               value={inputText}
@@ -101,44 +96,39 @@ export default function ChatInputBar({
               placeholder="Ketik pesan..."
               rows={1}
               className="
-  w-full
-  resize-none
-  bg-transparent
-  text-[14px]
-  text-gray-800
-  placeholder:text-gray-400
-  outline-none
-  leading-relaxed
-  max-h-[96px]
-"
-              style={{
-                minHeight: "26px",
-              }}
+          w-full
+          resize-none
+          bg-transparent
+          text-[14px]
+          text-gray-800
+          placeholder:text-gray-400
+          outline-none
+          leading-snug
+          max-h-[96px]
+        "
+              style={{ minHeight: "20px" }}
             />
           </div>
 
-          {/* Send Area */}
-          <div className="flex items-end px-2 pb-1">
+          {/* Send Button */}
+          <div className="ml-2 flex items-end self-end pb-[2px]">
             <button
               onClick={onSend}
               disabled={!canSend}
-              aria-label="Kirim pesan"
               className={`
-      w-8 h-8
-      rounded-full
-      flex items-center justify-center
-      flex-shrink-0
-      mb-[2px]
-      transition-all duration-200
-      ${
-        canSend
-          ? "bg-[#D89B2B] text-white active:scale-90"
-          : "bg-gray-200 text-gray-400 cursor-not-allowed"
-      }
-    `}
+          w-8 h-8
+          flex items-center justify-center
+          rounded-full
+          transition-all duration-200
+          ${
+            canSend
+              ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-90 shadow-sm"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }
+        `}
             >
               <SendHorizontal
-                size={18}
+                size={16}
                 strokeWidth={1.8}
                 className="-rotate-12"
               />
