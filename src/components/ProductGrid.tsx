@@ -2,10 +2,9 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useFilterStore } from "@/store/useFilterStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import { useReviewStore } from "@/store/useReviewStore";
-import { Product, Category } from "@/lib/types";
+import { Product } from "@/lib/types";
 import ProductCard from "./ProductCard";
 import ProductImage from "./ProductImage";
 import { formatRupiah } from "@/lib/utils";
@@ -14,15 +13,8 @@ import {
   TrendingDown,
   TrendingUp,
   Star,
-  Tag,
-  ChevronRight,
   Flame,
-  Sparkles,
 } from "lucide-react";
-
-interface ProductGridProps {
-  initialCategories?: Category[];
-}
 
 /* ── Sort ─────────────────────────────────────────── */
 const SORT_OPTIONS = [
@@ -30,26 +22,6 @@ const SORT_OPTIONS = [
   { id: "cheapest", label: "Termurah", Icon: TrendingDown },
   { id: "expensive", label: "Termahal", Icon: TrendingUp },
 ];
-
-/* ── Category Filter Chips ────────────────────────── */
-const CATEGORY_CHIPS: Record<string, string[]> = {
-  pulsa: ["Semua", "Telkomsel", "XL", "Axis", "Tri", "Indosat", "Smartfren"],
-  "paket-data": [
-    "Semua",
-    "Telkomsel",
-    "XL",
-    "Axis",
-    "Tri",
-    "Indosat",
-    "Smartfren",
-  ],
-  listrik: ["Semua", "Prabayar", "Pascabayar"],
-  "e-wallet": ["Semua", "GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"],
-  game: ["Semua", "Mobile Legends", "Free Fire", "PUBG", "Genshin", "Valorant"],
-  voucher: ["Semua", "Google Play", "App Store", "Steam", "Garena"],
-  tagihan: ["Semua", "PLN", "PDAM", "BPJS", "Telkom"],
-  subscription: ["Semua", "Netflix", "Spotify", "Disney+", "YouTube", "iCloud"],
-};
 
 function applySort(products: Product[], sort: string): Product[] {
   const arr = [...products];
@@ -522,185 +494,7 @@ function HighlightSection({
   );
 }
 
-function CategoryChips({ category }: { category: string }) {
-  const [active, setActive] = useState("Semua");
-  const [showSortMenu, setShowSortMenu] = useState(false);
-  const { sort, setSort } = useFilterStore();
-  const sortMenuRef = useRef<HTMLDivElement>(null);
 
-  const chips = CATEGORY_CHIPS[category];
-  if (!chips) return null;
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowSortMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  return (
-    <div className="flex items-center gap-2 px-2 pb-2">
-      {/* Wrapper relative untuk fade effect */}
-      <div className="relative flex-1 min-w-0">
-        {/* Chip scroll */}
-        <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pr-3">
-          {chips.map((chip) => (
-            <button
-              key={chip}
-              onClick={() => setActive(chip)}
-              className={`
-              flex-shrink-0
-
-              h-7 px-3
-
-              rounded-full
-
-              text-[10px]
-              font-semibold
-              tracking-tight
-
-              border
-              transition-all duration-200
-              active:scale-[0.97]
-
-              ${
-                active === chip
-                  ? `
-                    bg-emerald-600
-                    border-emerald-600
-                    text-white
-
-                    shadow-[0_3px_10px_rgba(5,150,105,0.18)]
-                  `
-                  : `
-                    bg-white/90
-                    border-gray-200
-                    text-gray-600
-                  `
-              }
-            `}
-            >
-              {chip}
-            </button>
-          ))}
-        </div>
-
-        {/* Fade gradient kanan — sinyal ada konten tenggelam */}
-        <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none" />
-      </div>
-
-      {/* Filter button */}
-      <div className="relative flex-shrink-0" ref={sortMenuRef}>
-        <div className="bg-white border border-gray-300 rounded-lg p-[1px] overflow-hidden">
-          <button
-            onClick={() => setShowSortMenu((v) => !v)}
-            className={`flex items-center justify-center w-6 h-6 rounded-[7px] transition-all active:scale-90
-      ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
-          >
-            <SlidersHorizontal size={13} strokeWidth={2.5} />
-          </button>
-        </div>
-
-        {showSortMenu && (
-          <div
-            className="absolute right-0 top-full mt-1.5 z-40 bg-white rounded-lg overflow-hidden min-w-[140px]
-  shadow-[0_4px_20px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)]
-  border border-gray-100/80"
-          >
-            {SORT_OPTIONS.map((opt) => {
-              const isOptionActive = sort === opt.id;
-              return (
-                <button
-                  key={opt.id}
-                  onClick={() => {
-                    setSort(opt.id);
-                    setShowSortMenu(false);
-                  }}
-                  className={`w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold transition-colors text-left
-                ${
-                  isOptionActive
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                >
-                  <opt.Icon
-                    size={14}
-                    strokeWidth={2}
-                    className={
-                      isOptionActive ? "text-emerald-600" : "text-gray-400"
-                    }
-                  />
-                  {opt.label}
-                  {isOptionActive && (
-                    <span className="ml-auto text-emerald-500 text-[10px] font-bold">
-                      ✓
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ── Inline Sticker: Promo (ratio 2.55:1 → slim) ─── */
-function PromoInlineBanner() {
-  return (
-    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#FEF3E2]">
-      <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-[#F5A623]/20" />
-      <div className="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-[#D89B2B]/15" />
-      <div className="absolute right-10 -bottom-4 w-10 h-10 rounded-full bg-[#F5A623]/10" />
-
-      <div className="absolute inset-0 flex flex-col justify-center px-5">
-        <span className="text-[13px] font-black text-[#7A4A00] tracking-tight leading-tight">
-          🔥 Lebih Hemat Hari Ini
-        </span>
-        <p className="text-[10px] text-[#9E6300]/80 font-medium mt-0.5 leading-snug">
-          Promo pilihan untukmu · Jangan sampai kehabisan!
-        </p>
-        <div className="mt-1.5">
-          <span className="inline-block bg-[#D89B2B] text-white text-[9px] font-bold px-2.5 py-1 rounded-full leading-none">
-            Lihat semua promo →
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Inline Sticker: Popular (ratio 2.55:1 → slim) ── */
-function PopularInlineBanner() {
-  return (
-    <div className="relative w-full aspect-[2.55/1] rounded-2xl overflow-hidden bg-[#E8F5F0]">
-      <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-[#048750]/15" />
-      <div className="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-[#048750]/10" />
-      <div className="absolute right-10 -bottom-4 w-10 h-10 rounded-full bg-[#048750]/08" />
-
-      <div className="absolute inset-0 flex flex-col justify-center px-5">
-        <span className="text-[13px] font-black text-[#085041] tracking-tight leading-tight">
-          💡 Lagi banyak dibeli
-        </span>
-        <p className="text-[10px] text-[#085041]/70 font-medium mt-0.5 leading-snug">
-          Stok favorit minggu ini · Buruan sebelum habis!
-        </p>
-        <div className="mt-1.5">
-          <span className="inline-block bg-[#048750] text-white text-[9px] font-bold px-2.5 py-1 rounded-full leading-none">
-            Cek selengkapnya →
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ── Empty State ──────────────────────────────────── */
 function EmptyState({ message }: { message: string }) {
@@ -732,52 +526,24 @@ function EmptyState({ message }: { message: string }) {
 }
 
 /* ── Main Component ───────────────────────────────── */
-export default function ProductGrid({
-  initialCategories = [],
-}: ProductGridProps) {
-  const { category } = useFilterStore();
+export default function ProductGrid() {
   const { query } = useSearchStore();
-  const { sort: allSort } = useFilterStore();
   const { fetchReviews, refreshVersion } = useReviewStore();
 
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
-  const [promoProducts, setPromoProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   const [isLoadingPopular, setIsLoadingPopular] = useState(true);
-  const [isLoadingPromo, setIsLoadingPromo] = useState(true);
   const [isLoadingAll, setIsLoadingAll] = useState(true);
 
   /* ── Highlight state ── */
   const [highlightProducts, setHighlightProducts] = useState<Product[]>([]);
   const [isLoadingHighlight, setIsLoadingHighlight] = useState(true);
 
-  // State untuk menyimpan daftar kategori agar lookup nama kategori bekerja
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
-
-  const isSpecificCategory = category !== null && category !== "all";
-
-  const categoryName =
-    categories.find((c) => c.id === category)?.name ?? "Semua Produk";
-
   /* Fetch reviews once */
   useEffect(() => {
     fetchReviews().catch(console.error);
   }, []);
-
-  /* Fetch categories if not provided as props */
-  useEffect(() => {
-    if (initialCategories.length > 0) {
-      setCategories(initialCategories);
-      return;
-    }
-    fetch("/api/public/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setCategories(data);
-      })
-      .catch(console.error);
-  }, [initialCategories]);
 
   /* Fetch highlight products — mock for now */
   useEffect(() => {
@@ -811,30 +577,15 @@ export default function ProductGrid({
       .finally(() => setIsLoadingPopular(false));
   }, [refreshVersion]);
 
-  /* Fetch promo products */
-  useEffect(() => {
-    setIsLoadingPromo(true);
-    fetch("/api/public/products?filter=hemat")
-      .then((r) => r.json())
-      .then((d) => setPromoProducts(Array.isArray(d) ? d : []))
-      .catch(() => setPromoProducts([]))
-      .finally(() => setIsLoadingPromo(false));
-  }, [refreshVersion]);
-
-  /* Fetch all / category products */
+  /* Fetch all products (home view — no category filter) */
   useEffect(() => {
     setIsLoadingAll(true);
-    const params = new URLSearchParams();
-    if (category !== null) params.append("category", category);
-    const url = params.toString()
-      ? `/api/public/products?${params}`
-      : "/api/public/products";
-    fetch(url)
+    fetch("/api/public/products")
       .then((r) => r.json())
       .then((d) => setAllProducts(Array.isArray(d) ? d : []))
       .catch(() => setAllProducts([]))
       .finally(() => setIsLoadingAll(false));
-  }, [category, refreshVersion]);
+  }, [refreshVersion]);
 
   /* Derived data */
   const filteredQuery = (arr: Product[]) =>
@@ -846,109 +597,51 @@ export default function ProductGrid({
     (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 6),
   );
 
-  const filteredAll = applySort(filteredQuery(allProducts), allSort);
-  const firstChunk = filteredAll.slice(0, 10);
-  const restChunk = filteredAll.slice(10);
-
-  const activeSortOption =
-    SORT_OPTIONS.find((o) => o.id === allSort) || SORT_OPTIONS[0];
-
-  const showPromoSection = !isSpecificCategory && promoProducts.length > 0;
-
-  const isHomeView = !category || category === "all";
+  const filteredAll = applySort(filteredQuery(allProducts), "popular");
 
   /* ── Render ── */
   return (
     <div id="product-area" className="scroll-mt-40">
       {/* ══════════════════════════════════════════
           SECTION 0 — HIGHLIGHT / PROMO CARD
-          Tampil tepat setelah category grid (tab Semua)
           ══════════════════════════════════════════ */}
-      {isHomeView && (
-        <HighlightSection
-          products={highlightProducts}
-          isLoading={isLoadingHighlight}
-        />
-      )}
+      <HighlightSection
+        products={highlightProducts}
+        isLoading={isLoadingHighlight}
+      />
 
       {/* ══════════════════════════════════════════
-          SECTION 1 — Paling Dicari (tab Semua saja)
+          SECTION 1 — Paling Dicari
           ══════════════════════════════════════════ */}
-      {isHomeView && (
-        <section id="product-grid" className="px-2 pt-2 pb-4">
-          {isLoadingPopular ? (
-            <div className="grid grid-cols-2 gap-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <CardSkeleton key={i} />
-              ))}
-            </div>
-          ) : popularToShow.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3">
-              {popularToShow.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
-          ) : null}
-        </section>
-      )}
+      <section id="product-grid" className="px-2 pt-2 pb-4">
+        {isLoadingPopular ? (
+          <div className="grid grid-cols-2 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </div>
+        ) : popularToShow.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3">
+            {popularToShow.map((product, i) => (
+              <ProductCard key={product.id} product={product} index={i} />
+            ))}
+          </div>
+        ) : null}
+      </section>
 
       {/* ══════════════════════════════════════════
-          SECTION 3 — Semua Produk
+          SECTION 2 — Semua Produk
           ══════════════════════════════════════════ */}
       <section className="px-2 pb-3 min-h-[50vh]">
-        {/* Header Sticky untuk Kategori Spesifik */}
-        <div
-          className={
-            isSpecificCategory
-              ? `
-              sticky top-[50px] z-40
-              -mx-2 px-2
-              pt-2 pb-2.5
-              mb-3
-
-              bg-white
-              border-b border-gray-100
-
-              shadow-[0_8px_24px_rgba(15,23,42,0.08)]
-
-              transition-all duration-300
-            `
-              : "pt-2 mb-2 transition-all duration-300"
-          }
-        >
+        <div className="pt-2 mb-2">
           <div className="flex items-center justify-between px-0.5 mb-2.5">
             <h2 className="text-[13px] font-black text-gray-800 tracking-tight">
-              {categoryName}
+              Semua Produk
             </h2>
-            {isSpecificCategory && (
-              <button
-                onClick={() => {
-                  useFilterStore.getState().setCategory("all");
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="
-                flex items-center justify-center
-                h-7 px-3
-                rounded-full
-                bg-emerald-600
-                text-white
-                text-[10px]
-                font-bold
-                tracking-tight
-                active:scale-95
-                transition-all duration-200
-              "
-              >
-                Reset
-              </button>
-            )}
           </div>
-
-          {/* Chip filter — hanya tampil saat kategori spesifik */}
-          {isSpecificCategory && <CategoryChips category={category!} />}
         </div>
 
-        <div className={isSpecificCategory ? "pt-1.5" : ""}>
+        <div>
           {isLoadingAll ? (
             <div className="flex items-start gap-3">
               <div className="flex flex-col gap-3 flex-1 min-w-0">
@@ -956,7 +649,6 @@ export default function ProductGrid({
                   <CardSkeleton key={`left-${i}`} isTall={i === 1} />
                 ))}
               </div>
-
               <div className="flex flex-col gap-3 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`right-${i}`} isTall={false} />
@@ -964,47 +656,44 @@ export default function ProductGrid({
               </div>
             </div>
           ) : filteredAll.length === 0 ? (
-            <EmptyState message="Coba pilih kategori lain atau cek kata kunci pencarianmu." />
+            <EmptyState message="Coba cek kata kunci pencarianmu." />
           ) : (
-            <>
-              <div className="flex items-start gap-3">
-                {/* Kolom Kiri */}
-                <div className="flex flex-col gap-3 flex-1 min-w-0">
-                  {filteredAll
-                    .filter((_, i) => i % 2 === 0)
-                    .map((product, idx) => {
-                      const globalIndex = idx * 2;
-                      const isTall = globalIndex === 2;
-
-                      return (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          index={globalIndex}
-                          isTall={isTall}
-                        />
-                      );
-                    })}
-                </div>
-
-                {/* Kolom Kanan */}
-                <div className="flex flex-col gap-3 flex-1 min-w-0">
-                  {filteredAll
-                    .filter((_, i) => i % 2 === 1)
-                    .map((product, idx) => {
-                      const globalIndex = idx * 2 + 1;
-                      return (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          index={globalIndex}
-                          isTall={false}
-                        />
-                      );
-                    })}
-                </div>
+            <div className="flex items-start gap-3">
+              {/* Kolom Kiri */}
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                {filteredAll
+                  .filter((_, i) => i % 2 === 0)
+                  .map((product, idx) => {
+                    const globalIndex = idx * 2;
+                    const isTall = globalIndex === 2;
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        index={globalIndex}
+                        isTall={isTall}
+                      />
+                    );
+                  })}
               </div>
-            </>
+
+              {/* Kolom Kanan */}
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                {filteredAll
+                  .filter((_, i) => i % 2 === 1)
+                  .map((product, idx) => {
+                    const globalIndex = idx * 2 + 1;
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        index={globalIndex}
+                        isTall={false}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
           )}
         </div>
       </section>

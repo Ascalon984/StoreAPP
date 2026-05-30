@@ -60,6 +60,7 @@ function AnimatedPlaceholder() {
 export default function Navbar() {
   const pathname = usePathname();
   const isProductDetail = pathname?.startsWith("/product/");
+  const isCategoryDetail = pathname?.startsWith("/category/");
   const isCheckout = pathname === "/checkout";
   const isProfile = pathname === "/profile";
   const isOrders = pathname === "/orders";
@@ -125,6 +126,7 @@ export default function Navbar() {
     isOrders ||
     isWishlist ||
     isProductDetail ||
+    isCategoryDetail ||
     isNotifications
   ) {
     return null;
@@ -137,7 +139,7 @@ export default function Navbar() {
         borderBottomLeftRadius: isScrolled ? "0px" : "26px",
         borderBottomRightRadius: isScrolled ? "0px" : "26px",
         transition: "border-radius 250ms ease-in-out",
-        willChange: "border-radius",
+        willChange: "border-radius, opacity, transform",
         boxShadow: isScrolled
           ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",

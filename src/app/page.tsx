@@ -74,7 +74,7 @@ export default async function Home() {
       >
         {/* Scrollable container for products */}
         <div className="pb-24">
-          <ProductGrid initialCategories={categories} />
+          <ProductGrid />
         </div>
       </div>
     </div>

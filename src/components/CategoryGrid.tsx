@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useFilterStore } from "@/store/useFilterStore";
+import { useRouter } from "next/navigation";
 import { useCategoryBottomSheetStore } from "@/store/useCategoryBottomSheetStore";
 import { Category } from "@/lib/types";
 import { GridColorIcon } from "./GridColorIcon";
@@ -95,12 +95,44 @@ function CategoryItem({
 export default function CategoryGrid({
   initialCategories = [],
 }: CategoryGridProps) {
-  const { category, setCategory } = useFilterStore();
+  const router = useRouter();
   const { openSheet } = useCategoryBottomSheetStore();
   const [isLoading, setIsLoading] = useState(initialCategories.length === 0);
   const [categories, setCategories] = useState<Category[]>(() =>
     initialCategories.filter((c) => c.id !== "all").slice(0, 8),
   );
+  const [imagesReady, setImagesReady] = useState(false);
+
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    setImagesReady(false);
+    let cancelled = false;
+
+    const urls = categories.map(
+      (cat) => iconPathMap[cat.name.toLowerCase()] || "/icons/default.png",
+    );
+
+    let loaded = 0;
+
+    urls.forEach((url) => {
+      const img = new window.Image();
+      img.src = url;
+
+      img.onload = img.onerror = () => {
+        if (cancelled) return;
+
+        loaded += 1;
+        if (loaded === urls.length) {
+          setImagesReady(true);
+        }
+      };
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [categories]);
 
   useEffect(() => {
     if (initialCategories.length > 0) return;
@@ -119,21 +151,12 @@ export default function CategoryGrid({
   }, [initialCategories.length]);
 
   const handleClick = (catId: string) => {
-    setCategory(catId);
-
-    const el = document.getElementById("product-area");
-
-    if (el) {
-      const top = window.scrollY + el.getBoundingClientRect().top - 70; // offset sticky header
-
-      window.scrollTo({
-        top: Math.max(top, 0),
-        behavior: "smooth",
-      });
-    }
+    router.push(`/category/${catId}`);
   };
 
-  if (isLoading) return <CategorySkeleton />;
+  if (!categories.length || !imagesReady) {
+    return <CategorySkeleton />;
+  }
 
   return (
     <section className="px-4 pt-3 pb-3.5">
@@ -143,7 +166,7 @@ export default function CategoryGrid({
           <CategoryItem
             key={cat.id}
             label={cat.name}
-            isActive={category === cat.id}
+            isActive={false}
             onClick={() => handleClick(cat.id)}
             icon={
               <Image
@@ -164,11 +187,9 @@ export default function CategoryGrid({
         {categories.length < 8 && (
           <CategoryItem
             label="Semua"
-            isActive={category === "all"}
+            isActive={false}
             onClick={openSheet}
             icon={
-              // TODO: Replace dengan custom icon untuk "Semua"
-              // <GridColorIcon size={32} />
               <div className="w-7 h-7 bg-gray-200 rounded-lg flex items-center justify-center text-[9px] text-gray-500">
                 ※
               </div>
