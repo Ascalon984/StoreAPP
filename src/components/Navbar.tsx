@@ -149,65 +149,66 @@ export default function Navbar() {
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
           <div
-            className={`grid transition-[grid-template-rows,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] origin-top ${
-              isScrolled
-                ? "grid-rows-[0fr] opacity-0 -translate-y-1"
-                : "grid-rows-[1fr] opacity-100 translate-y-0"
-            }`}
+            style={{
+              maxHeight: isScrolled ? "0px" : "60px",
+              opacity: isScrolled ? 0 : 1,
+              overflow: "hidden",
+              transition:
+                "max-height 280ms cubic-bezier(0.22,1,0.36,1), opacity 200ms ease",
+              willChange: "max-height, opacity",
+            }}
           >
-            <div className="overflow-hidden min-h-0">
-              <div className="pb-2">
-                <div className="flex items-center justify-between h-12 pt-[6px]">
-                  {/* Avatar */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Link
-                      href="/profile"
-                      className="active:scale-95 transition-transform flex-shrink-0"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
-                        {mockUser.avatar ? (
-                          <img
-                            src={mockUser.avatar}
-                            alt={mockUser.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-emerald-700 text-xs font-bold">
-                            {mockUser.name
-                              .split(" ")
-                              .map((n: string) => n[0])
-                              .join("")
-                              .slice(0, 2)}
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                    <div className="flex flex-col min-w-0">
-                      <p className="text-white/60 text-[11px] font-medium leading-none">
-                        {getGreeting()}
-                      </p>
-                      <p className="text-white text-sm font-semibold truncate mt-0.5">
-                        {mockUser.name.split(" ")[0]}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Bell (unscrolled) */}
+            <div className="pb-2">
+              <div className="flex items-center justify-between h-12 pt-[6px]">
+                {/* Avatar */}
+                <div className="flex items-center gap-3 min-w-0">
                   <Link
-                    href="/notifications"
-                    className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
+                    href="/profile"
+                    className="active:scale-95 transition-transform flex-shrink-0"
                   >
-                    <Bell size={20} className="text-white" strokeWidth={2} />
-                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
+                    <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
+                      {mockUser.avatar ? (
+                        <img
+                          src={mockUser.avatar}
+                          alt={mockUser.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-emerald-700 text-xs font-bold">
+                          {mockUser.name
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")
+                            .slice(0, 2)}
+                        </span>
+                      )}
+                    </div>
                   </Link>
+                  <div className="flex flex-col min-w-0">
+                    <p className="text-white/60 text-[11px] font-medium leading-none">
+                      {getGreeting()}
+                    </p>
+                    <p className="text-white text-sm font-semibold truncate mt-0.5">
+                      {mockUser.name.split(" ")[0]}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Bell (unscrolled) */}
+                <Link
+                  href="/notifications"
+                  className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
+                >
+                  <Bell size={20} className="text-white" strokeWidth={2} />
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
+                </Link>
               </div>
             </div>
           </div>
 
           {/* ── Search Row ── */}
           <div
-            className={`flex items-center gap-2 pb-2.5 transition-all duration-300 ease-in-out ${
+            className={`flex items-center gap-2 pb-2.5 transition-[padding] duration-300 ease-in-out ${
               isScrolled ? "pt-2.5" : "pt-0"
             }`}
           >
