@@ -437,7 +437,7 @@ function ProductCarousel({ items }: { items: OrderItem[] }) {
                     flex-shrink-0 -ml-3.5"
                     style={{ zIndex: 0 }}
                   >
-                    <span className="text-[10px] font-black text-gray-500">
+                    <span className="text-[10px] font-semibold text-gray-500">
                       +{items.length - 3}
                     </span>
                   </div>
@@ -572,7 +572,7 @@ function OrderCard({
                 onClick={() => router.push("/")}
                 className="px-3 py-1.5 rounded-lg
                 bg-emerald-600
-                text-white text-[11px] font-bold
+                text-white text-[11px] font-semibold
                 hover:bg-emerald-600
                 active:scale-95
                 transition-all"
@@ -659,7 +659,7 @@ transition-all
               onClick={() => router.push("/")}
               className="px-3 py-1.5 rounded-lg
               bg-emerald-600
-              text-white text-[11px] font-bold
+              text-white text-[11px] font-semibold
               hover:bg-emerald-600
               active:scale-95
               transition-all"
@@ -856,7 +856,7 @@ export default function OrdersPage() {
         >
           {/* Title */}
           <div className="flex items-center justify-center px-4 h-10">
-            <span className="text-[15px] font-black text-white leading-none">
+            <span className="text-[15px] font-extrabold text-white leading-none">
               Riwayat Pesanan
             </span>
           </div>

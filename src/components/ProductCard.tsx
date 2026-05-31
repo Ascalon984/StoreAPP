@@ -88,12 +88,10 @@ export default function ProductCard({
 
   const titleSize =
     product.name.length > 50
-      ? "text-[9.5px] leading-[1.15]"
+      ? "text-[11px] leading-[1.3]"
       : product.name.length > 35
-        ? "text-[10.5px] leading-[1.2]"
-        : product.name.length > 25
-          ? "text-[11px] leading-snug"
-          : "text-[12.5px] leading-snug";
+        ? "text-[11.5px] leading-[1.3]"
+        : "text-[12px] leading-snug";
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
@@ -112,9 +110,9 @@ export default function ProductCard({
           <div
             className="absolute top-0 right-0 z-30 px-2.5 py-1 
   bg-gradient-to-l from-rose-600 to-rose-500 
-  text-white text-[10px] font-black 
+  text-white text-[10px] font-bold 
   rounded-tr-xl rounded-bl-2xl   {/* ← tambah rounded-tr-xl */}
-  shadow-layer-md tracking-tighter"
+  shadow-layer-md tracking-tight"
           >
             -{discount}%
           </div>
@@ -141,11 +139,11 @@ export default function ProductCard({
           </h3>
 
           <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-[15px] font-black text-emerald-700 tracking-tighter">
+            <span className="text-[14px] font-extrabold text-emerald-700 tracking-tight">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-[10px] text-gray-600 line-through font-medium">
+              <span className="text-[10px] text-gray-400 line-through font-normal">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
@@ -155,13 +153,13 @@ export default function ProductCard({
             {/* LEFT: Rating */}
             <div className="flex items-center gap-0.5 text-[10.5px] font-bold text-gray-600">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />
-              <span className="text-gray-700 font-extrabold">
+              <span className="text-gray-700 font-semibold">
                 {displayRating}
               </span>
             </div>
 
             {/* RIGHT: Sold */}
-            <div className="text-[10px] text-gray-500 font-bold">
+            <div className="text-[10px] text-gray-400 font-medium">
               {formatSold(product.sold)} terjual
             </div>
 

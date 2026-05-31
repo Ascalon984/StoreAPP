@@ -222,7 +222,7 @@ export default function CategoryProductPage({
           </button>
 
           <div className="flex-1 min-w-0">
-            <h1 className="text-[15px] font-black text-gray-800 tracking-tight capitalize truncate">
+            <h1 className="text-[15px] font-extrabold text-gray-800 tracking-tight capitalize truncate">
               {categoryName}
             </h1>
           </div>
@@ -265,8 +265,7 @@ export default function CategoryProductPage({
                       active:scale-[0.97]
                       ${
                         activeChip === chip
-                          ? `bg-emerald-600 border-emerald-600 text-white
-                             shadow-[0_3px_10px_rgba(5,150,105,0.25)]`
+                          ? `bg-emerald-600 border-emerald-600 text-white`
                           : `bg-white/90 border-gray-200 text-gray-600`
                       }
                     `}
@@ -343,7 +342,7 @@ export default function CategoryProductPage({
           <span className="text-[11px] text-gray-500 font-medium">
             Hasil pencarian:
           </span>
-          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
             &quot;{query}&quot;
           </span>
         </div>

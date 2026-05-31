@@ -137,7 +137,7 @@ export default function SearchOverlay() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Cari produk..."
-            className="flex-1 text-sm outline-none bg-transparent placeholder:text-gray-500"
+            className="flex-1 text-sm outline-none bg-transparent placeholder:text-gray-400"
           />
           <button
             type="button"
@@ -181,7 +181,7 @@ export default function SearchOverlay() {
           {!debouncedQuery.trim() && recentSearches.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                   Pencarian Terakhir
                 </span>
 
@@ -214,7 +214,7 @@ export default function SearchOverlay() {
 
           {!debouncedQuery.trim() && popularProducts.length > 0 && (
             <div className="mt-5 pt-4 border-t border-gray-100">
-              <span className="text-xs font-medium text-gray-600 uppercase tracking-wider block mb-3">
+              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-3">
                 Lagi Banyak Dicari
               </span>
               <div className="grid grid-cols-2 gap-3">
@@ -237,7 +237,7 @@ export default function SearchOverlay() {
                         {product.name}
                       </p>
                     </div>
-                    <p className="text-[12px] font-black text-emerald-700 tracking-tight">
+                    <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight">
                       Rp {product.price?.toLocaleString("id-ID")}
                     </p>
                   </Link>
@@ -270,9 +270,9 @@ export default function SearchOverlay() {
                   Produk tidak ditemukan
                 </h3>
 
-                <p className="mt-2 text-[13px] leading-snug text-gray-400 font-medium max-w-[250px]">
+                <p className="mt-2 text-[13px] leading-snug text-gray-400 font-normal max-w-[250px]">
                   Kami belum menemukan hasil untuk
-                  <span className="font-bold text-gray-500">
+                  <span className="font-semibold text-gray-600">
                     {" "}
                     "{debouncedQuery}"
                   </span>

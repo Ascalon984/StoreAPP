@@ -294,13 +294,13 @@ function PromoCard({ product, index }: { product: Product; index: number }) {
               </p>
             )}
 
-            <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
+            <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight leading-none">
               {formatRupiah(product.price)}
             </p>
 
             {/* Progress */}
             <div className="mt-1.5">
-              <span className="text-[8px] font-semibold text-orange-500 leading-none">
+              <span className="text-[9px] font-medium text-orange-500 leading-none">
                 Tersisa 12
               </span>
 
@@ -374,7 +374,7 @@ function HighlightCard({
       {/* Remaining time */}
       <div className="absolute top-1 right-2 z-10">
         {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
-        <span className="bg-orange-500/90 text-white text-[9px] font-black px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
+        <span className="bg-orange-500/90 text-white text-[9px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
           3 Hari Lagi
         </span>
       </div>
@@ -410,7 +410,7 @@ function HighlightCard({
               </p>
             )}
 
-            <p className="text-[12px] font-black text-emerald-700 tracking-tighter leading-none">
+            <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight leading-none">
               {formatRupiah(product.price)}
             </p>
 
@@ -424,7 +424,7 @@ function HighlightCard({
                   />
                 </div>
 
-                <span className="text-[7px] font-bold text-orange-500 leading-none shrink-0">
+                <span className="text-[8px] font-semibold text-orange-500 leading-none shrink-0">
                   12
                 </span>
               </div>
@@ -458,7 +458,7 @@ function HighlightSection({
 
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[13.5px] font-black text-white/95 tracking-tight leading-none">
+            <h3 className="text-[13.5px] font-extrabold text-white tracking-tight leading-none">
               Penawaran Terbatas
             </h3>
           </div>
@@ -493,8 +493,6 @@ function HighlightSection({
     </section>
   );
 }
-
-
 
 /* ── Empty State ──────────────────────────────────── */
 function EmptyState({ message }: { message: string }) {
@@ -635,7 +633,7 @@ export default function ProductGrid() {
       <section className="px-2 pb-3 min-h-[50vh]">
         <div className="pt-2 mb-2">
           <div className="flex items-center justify-between px-0.5 mb-2.5">
-            <h2 className="text-[13px] font-black text-gray-800 tracking-tight">
+            <h2 className="text-[13px] font-extrabold text-gray-800 tracking-tight">
               Semua Produk
             </h2>
           </div>

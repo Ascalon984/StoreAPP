@@ -50,7 +50,7 @@ function AnimatedPlaceholder() {
   }, [displayed, isDeleting, phraseIndex]);
 
   return (
-    <span className="text-gray-400 text-xs font-medium">
+    <span className="text-gray-400 text-[13px] font-normal tracking-[-0.01em]">
       {displayed}
       <span className="inline-block w-[1.5px] h-3 bg-gray-300 ml-[1px] align-middle animate-[blink_1s_step-end_infinite]" />
     </span>
@@ -139,7 +139,7 @@ export default function Navbar() {
         borderBottomLeftRadius: isScrolled ? "0px" : "26px",
         borderBottomRightRadius: isScrolled ? "0px" : "26px",
         transition: "border-radius 250ms ease-in-out",
-        willChange: "border-radius, opacity, transform",
+        willChange: "border-radius",
         boxShadow: isScrolled
           ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",
@@ -154,57 +154,56 @@ export default function Navbar() {
               gridTemplateRows: isScrolled ? "0fr" : "1fr",
               opacity: isScrolled ? 0 : 1,
               transition:
-                "grid-template-rows 280ms cubic-bezier(0.22,1,0.36,1), opacity 200ms ease",
-              willChange: "grid-template-rows, opacity",
+                "grid-template-rows 250ms ease-in-out, opacity 200ms ease-in-out",
             }}
           >
             <div style={{ overflow: "hidden" }}>
               <div className="pb-2">
-              <div className="flex items-center justify-between h-12 pt-[6px]">
-                {/* Avatar */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <Link
-                    href="/profile"
-                    className="active:scale-95 transition-transform flex-shrink-0"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
-                      {mockUser.avatar ? (
-                        <img
-                          src={mockUser.avatar}
-                          alt={mockUser.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-emerald-700 text-xs font-bold">
-                          {mockUser.name
-                            .split(" ")
-                            .map((n: string) => n[0])
-                            .join("")
-                            .slice(0, 2)}
-                        </span>
-                      )}
+                <div className="flex items-center justify-between h-12 pt-[6px]">
+                  {/* Avatar */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Link
+                      href="/profile"
+                      className="active:scale-95 transition-transform flex-shrink-0"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
+                        {mockUser.avatar ? (
+                          <img
+                            src={mockUser.avatar}
+                            alt={mockUser.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-emerald-700 text-xs font-bold">
+                            {mockUser.name
+                              .split(" ")
+                              .map((n: string) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="flex flex-col min-w-0">
+                      <p className="text-white/80 text-xs font-medium tracking-wide leading-none">
+                        {getGreeting()}
+                      </p>
+                      <p className="text-white text-sm font-semibold tracking-[-0.01em] truncate mt-0.5">
+                        {mockUser.name.split(" ")[0]}
+                      </p>
                     </div>
-                  </Link>
-                  <div className="flex flex-col min-w-0">
-                    <p className="text-white/60 text-[11px] font-medium leading-none">
-                      {getGreeting()}
-                    </p>
-                    <p className="text-white text-sm font-semibold truncate mt-0.5">
-                      {mockUser.name.split(" ")[0]}
-                    </p>
                   </div>
-                </div>
 
-                {/* Bell (unscrolled) */}
-                <Link
-                  href="/notifications"
-                  className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
-                >
-                  <Bell size={20} className="text-white" strokeWidth={2} />
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
-                </Link>
+                  {/* Bell (unscrolled) */}
+                  <Link
+                    href="/notifications"
+                    className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
+                  >
+                    <Bell size={20} className="text-white" strokeWidth={2} />
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
+                  </Link>
+                </div>
               </div>
-            </div>
             </div>
           </div>
 
@@ -221,9 +220,9 @@ export default function Navbar() {
                 className="flex-1 flex items-center gap-2.5 min-w-0"
               >
                 <Search
-                  size={18}
-                  className="text-gray-500 flex-shrink-0"
-                  strokeWidth={2.5}
+                  size={16}
+                  className="text-gray-400 flex-shrink-0"
+                  strokeWidth={2}
                 />
                 <AnimatedPlaceholder />
               </button>
@@ -231,7 +230,7 @@ export default function Navbar() {
 
             {/* Bell (scrolled) */}
             <div
-              className={`flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+              className={`flex-shrink-0 overflow-hidden transition-[width,opacity,transform] duration-300 ease-in-out ${
                 isScrolled
                   ? "w-8 opacity-100 scale-100"
                   : "w-0 opacity-0 scale-75"

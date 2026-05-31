@@ -60,10 +60,10 @@ function EmptyState({ onExplore }: { onExplore: () => void }) {
           />
         </svg>
       </div>
-      <h2 className="text-[18px] font-black text-gray-900 tracking-tight mb-2">
+      <h2 className="text-[18px] font-extrabold text-gray-900 tracking-tight mb-2">
         Belum ada produk favorit
       </h2>
-      <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-8 max-w-[230px]">
+      <p className="text-[13px] text-gray-500 font-normal leading-relaxed mb-8 max-w-[230px]">
         Tambahkan produk yang kamu suka untuk disimpan di sini
       </p>
       <button
@@ -151,7 +151,7 @@ function ProductRow({
           </div>
 
           {discount > 0 && (
-            <div className="absolute top-0 left-0 px-1.5 py-0.5 bg-rose-500 text-white text-[8px] font-black rounded-br-lg z-10">
+            <div className="absolute top-0 left-0 px-1.5 py-0.5 bg-rose-500 text-white text-[8px] font-bold rounded-br-lg z-10">
               -{discount}%
             </div>
           )}
@@ -182,12 +182,12 @@ function ProductRow({
           <div className="mt-2 flex items-end justify-between gap-2">
             <div className="flex flex-col justify-end min-h-[32px]">
               {product.originalPrice && (
-                <p className="mb-1 text-[11px] text-gray-400 line-through font-medium leading-none">
+                <p className="mb-1 text-[11px] text-gray-400 line-through font-normal leading-none">
                   {formatRupiah(product.originalPrice)}
                 </p>
               )}
 
-              <p className="text-[15px] font-black text-emerald-700 tracking-tight leading-none">
+              <p className="text-[15px] font-extrabold text-emerald-700 tracking-tight leading-none">
                 {formatRupiah(product.price)}
               </p>
             </div>
@@ -362,7 +362,7 @@ export default function WishlistPage() {
         >
           {/* Title */}
           <div className="flex items-center justify-center px-4 h-10">
-            <span className="text-[15px] font-black text-white leading-none">
+            <span className="text-[15px] font-extrabold text-white leading-none">
               Favorit Saya
             </span>
           </div>
@@ -456,7 +456,7 @@ export default function WishlistPage() {
           </span>
           <button
             onClick={() => setActiveSort("Semua")}
-            className="text-[11px] font-bold text-emerald-700 underline underline-offset-2"
+            className="text-[11px] font-semibold text-emerald-700 underline underline-offset-2"
           >
             Reset
           </button>
