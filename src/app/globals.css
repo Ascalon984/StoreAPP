@@ -358,3 +358,29 @@ select:-webkit-autofill {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 999px;
 }
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.9);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1.08);
+  }
+
+  25% {
+    transform: translateY(0) scale(1);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.95);
+  }
+}
