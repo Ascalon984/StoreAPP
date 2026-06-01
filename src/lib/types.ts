@@ -4,6 +4,8 @@ export interface ProductVariant {
   stock: number;
 }
 
+export type ProductTargetType = "phone" | "text" | "number" | "email" | "none";
+
 export interface Product {
   id: string;
   slug: string;
@@ -19,6 +21,7 @@ export interface Product {
   description: string;
   images?: string[]; // Max 3 — controlled by admin
   variants?: ProductVariant[];
+  targetType?: ProductTargetType;
 }
 
 export interface Category {

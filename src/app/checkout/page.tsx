@@ -14,6 +14,7 @@ import {
   Minus,
   Plus,
   Tag,
+  QrCode,
   Receipt,
   Trash2,
 } from "lucide-react";
@@ -25,6 +26,43 @@ import { useReviewStore } from "@/store/useReviewStore";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
 
+const formatTargetInput = (value: string, type?: string) => {
+  const digits = value.replace(/\D/g, "");
+
+  switch (type) {
+    case "phone": {
+      const limited = digits.slice(0, 12);
+
+      if (limited.length <= 3) return limited;
+      if (limited.length <= 7)
+        return `${limited.slice(0, 3)}-${limited.slice(3)}`;
+
+      return `${limited.slice(0, 3)}-${limited.slice(3, 7)}-${limited.slice(7)}`;
+    }
+
+    case "number":
+      return digits;
+
+    default:
+      return value;
+  }
+};
+
+const getTargetPlaceholder = (type?: string) => {
+  switch (type) {
+    case "phone":
+      return "Nomor HP (08123456789)";
+    case "email":
+      return "Email aktif";
+    case "number":
+      return "ID angka / nomor akun";
+    case "none":
+      return "Tidak diperlukan";
+    default:
+      return "ID tujuan / username";
+  }
+};
+
 // Mock user dari profil
 const PROFILE_USER = {
   name: "Ahmad Fauzi",
@@ -33,11 +71,11 @@ const PROFILE_USER = {
 
 // ── Payment method data ──
 const PAYMENT_METHODS = {
-  cod: {
-    id: "cod",
-    label: "Bayar Nanti",
-    icon: Banknote,
-    description: "Bayar saat pesanan dikonfirmasi",
+  qr: {
+    id: "qr",
+    label: "QRIS",
+    icon: QrCode,
+    description: "Scan QR untuk menyelesaikan pembayaran",
     options: null,
   },
   ewallet: {
@@ -77,10 +115,16 @@ export default function CheckoutPage() {
 
   const [targetIds, setTargetIds] = useState<Record<string, string>>({});
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
-  const [selectedSubPayment, setSelectedSubPayment] = useState<string | null>(null);
-  const [expandedAccordion, setExpandedAccordion] = useState<string | null>(null);
+  const [selectedSubPayment, setSelectedSubPayment] = useState<string | null>(
+    null,
+  );
+  const [expandedAccordion, setExpandedAccordion] = useState<string | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const userPoints = 12500;
 
   useEffect(() => {
     if (items.length === 0 && !isSubmitting) router.replace("/");
@@ -90,8 +134,8 @@ export default function CheckoutPage() {
     if (expandedAccordion === id) setExpandedAccordion(null);
     else {
       setExpandedAccordion(id);
-      if (id === "cod") {
-        setSelectedPayment("cod");
+      if (id === "qr") {
+        setSelectedPayment("qr");
         setSelectedSubPayment(null);
       }
     }
@@ -107,20 +151,32 @@ export default function CheckoutPage() {
     (sum, item) => sum + (item.product?.price || 0) * (item.quantity || 0),
     0,
   );
+
+  const totalQty = items.reduce((s, i) => s + (i.quantity || 0), 0);
+
   const totalSavings = items.reduce((sum, item) => {
     const orig = item.product?.originalPrice;
     const price = item.product?.price;
     const qty = item.quantity || 0;
-    if (orig && price && orig > price) return sum + (orig - price) * qty;
+
+    if (orig && price && orig > price) {
+      return sum + (orig - price) * qty;
+    }
+
     return sum;
   }, 0);
-  const total = subtotal;
+  const pointsToUse = usePoints ? Math.min(userPoints, subtotal) : 0;
+  const total = subtotal - totalSavings - pointsToUse;
 
   const isPaymentSelected =
     selectedPayment !== null &&
-    (selectedPayment === "cod" || selectedSubPayment !== null);
-  
+    (selectedPayment === "qr" || selectedSubPayment !== null);
+
   const allTargetsFilled = items.every((item) => {
+    const type = item.product.targetType;
+
+    if (!type || type === "none") return true;
+
     const val = targetIds[item.product.id];
     return val && val.trim().length > 0;
   });
@@ -208,7 +264,7 @@ export default function CheckoutPage() {
 
   const getPaymentLabel = () => {
     if (!selectedPayment) return "";
-    if (selectedPayment === "cod") return "COD - Bayar Nanti";
+    if (selectedPayment === "qr") return "QRIS";
     const method =
       PAYMENT_METHODS[selectedPayment as keyof typeof PAYMENT_METHODS];
     if (!method?.options || !selectedSubPayment) return "";
@@ -321,9 +377,17 @@ export default function CheckoutPage() {
                       <div className="mt-2.5 mb-1 pl-[56px] pr-2">
                         <input
                           type="text"
-                          placeholder="Masukkan Nomor HP / ID Tujuan..."
+                          placeholder={getTargetPlaceholder(product.targetType)}
                           value={targetIds[product.id] || ""}
-                          onChange={(e) => setTargetIds((prev) => ({ ...prev, [product.id]: e.target.value }))}
+                          onChange={(e) =>
+                            setTargetIds((prev) => ({
+                              ...prev,
+                              [product.id]: formatTargetInput(
+                                e.target.value,
+                                product.targetType,
+                              ),
+                            }))
+                          }
                           className="w-full text-[12px] bg-gray-50 border border-gray-200/80 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"
                         />
                       </div>
@@ -338,11 +402,9 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
                     <Receipt size={12} strokeWidth={2} />
-                    <span>
-                      Subtotal ({items.reduce((s, i) => s + i.quantity, 0)}{" "}
-                      produk)
-                    </span>
+                    <span>Subtotal ({totalQty} item)</span>
                   </div>
+
                   <span className="text-[12px] font-semibold text-gray-700">
                     {formatRupiah(subtotal)}
                   </span>
@@ -355,18 +417,54 @@ export default function CheckoutPage() {
                       <Tag size={12} strokeWidth={2} />
                       <span>Diskon</span>
                     </div>
+
                     <span className="text-[12px] font-semibold text-emerald-600">
                       -{formatRupiah(totalSavings)}
                     </span>
                   </div>
                 )}
 
-                {/* Divider */}
+                {/* Points row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
+                    <Tag size={12} strokeWidth={2} />
+                    <span>Gunakan Poin</span>
+                  </div>
+                  <button
+                    onClick={() => setUsePoints((p) => !p)}
+                    className={`relative w-9 h-5 rounded-full transition-colors flex-shrink-0 ${
+                      usePoints ? "bg-emerald-500" : "bg-gray-200"
+                    }`}
+                    aria-label="Gunakan poin"
+                    role="switch"
+                    aria-checked={usePoints}
+                  >
+                    <span
+                      className={`absolute top-[2px] left-[2px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                        usePoints ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {usePoints && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] text-emerald-600 pl-[18px]">
+                      Poin kamu ({userPoints.toLocaleString()} poin)
+                    </span>
+                    <span className="text-[12px] font-semibold text-emerald-600">
+                      -{formatRupiah(pointsToUse)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Divider + Total */}
                 <div className="border-t border-dashed border-gray-200 pt-2 mt-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] font-bold text-gray-800">
                       Total Pembayaran
                     </span>
+
                     <span className="text-[15px] font-extrabold text-emerald-700 tracking-tight">
                       {formatRupiah(total)}
                     </span>
@@ -420,21 +518,6 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {isSelected && method.id === "cod" && (
-                            <CheckCircle
-                              size={15}
-                              className="text-emerald-600"
-                              strokeWidth={2.5}
-                            />
-                          )}
-                          {method.options && (
-                            <ChevronDown
-                              size={15}
-                              className={`text-gray-400 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
-                            />
-                          )}
-                        </div>
                       </button>
 
                       {method.options && (
@@ -456,10 +539,11 @@ export default function CheckoutPage() {
                                   onClick={() =>
                                     handleSubPaymentSelect(method.id, opt.id)
                                   }
-                                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${isSubSelected
-                                    ? "bg-emerald-50 border border-emerald-400 shadow-sm"
-                                    : "border border-transparent hover:border-emerald-100 hover:bg-emerald-50/30"
-                                    }`}
+                                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
+                                    isSubSelected
+                                      ? "bg-emerald-50 border border-emerald-400 shadow-sm"
+                                      : "border border-transparent hover:border-emerald-100 hover:bg-emerald-50/30"
+                                  }`}
                                 >
                                   <div
                                     className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0"
@@ -520,13 +604,14 @@ export default function CheckoutPage() {
             <button
               onClick={handleSubmitOrder}
               disabled={!canSubmit || isSubmitting}
-              className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${canSubmit && !isSubmitting
-                ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg shadow-emerald-700/20"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                }`}
+              className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${
+                canSubmit && !isSubmitting
+                  ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg shadow-emerald-700/20"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
             >
               {isSubmitting ? (
-               <>
+                <>
                   <Loader size={17} className="animate-spin" strokeWidth={2} />
                   <span>Memproses...</span>
                 </>
