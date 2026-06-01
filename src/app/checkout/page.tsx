@@ -25,6 +25,7 @@ import { useReviewModalStore } from "@/store/useReviewModalStore";
 import { useReviewStore } from "@/store/useReviewStore";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
+import PaymentModal, { PaymentStep } from "@/components/PaymentModal";
 
 const formatTargetInput = (value: string, type?: string) => {
   const digits = value.replace(/\D/g, "");
@@ -124,6 +125,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [usePoints, setUsePoints] = useState(false);
+  const [paymentStep, setPaymentStep] = useState<PaymentStep>("idle");
   const userPoints = 12500;
 
   useEffect(() => {
@@ -183,7 +185,7 @@ export default function CheckoutPage() {
 
   const canSubmit = allTargetsFilled && isPaymentSelected && items.length > 0;
 
-  const handleSubmitOrder = async () => {
+  const executeOrderSubmission = async () => {
     if (!canSubmit || isSubmitting) return;
     try {
       setIsSubmitting(true);
@@ -220,6 +222,19 @@ export default function CheckoutPage() {
       showToast("Terjadi kesalahan saat memproses pesanan.");
     } finally {
       setIsSubmitting(false);
+      setPaymentStep("idle");
+    }
+  };
+
+  const handleCheckoutClick = () => {
+    if (!canSubmit || isSubmitting) return;
+    if (selectedPayment === "qr") {
+      setPaymentStep("qr");
+    } else {
+      setPaymentStep("pending");
+      setTimeout(() => {
+        setPaymentStep("success");
+      }, 3000);
     }
   };
 
@@ -602,26 +617,28 @@ export default function CheckoutPage() {
               )}
             </div>
             <button
-              onClick={handleSubmitOrder}
-              disabled={!canSubmit || isSubmitting}
+              onClick={handleCheckoutClick}
+              disabled={!canSubmit}
               className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] ${
-                canSubmit && !isSubmitting
+                canSubmit
                   ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg shadow-emerald-700/20"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              {isSubmitting ? (
-                <>
-                  <Loader size={17} className="animate-spin" strokeWidth={2} />
-                  <span>Memproses...</span>
-                </>
-              ) : (
-                <span>Bayar Sekarang</span>
-              )}
+              <span>Bayar Sekarang</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* ── PAYMENT MODALS ── */}
+      <PaymentModal
+        paymentStep={paymentStep}
+        setPaymentStep={setPaymentStep}
+        isSubmitting={isSubmitting}
+        executeOrderSubmission={executeOrderSubmission}
+        total={total}
+      />
 
       {/* ── CANCEL MODAL ── */}
       {showCancelModal && (
