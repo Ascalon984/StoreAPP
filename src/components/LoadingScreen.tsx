@@ -88,19 +88,6 @@ export default function LoadingScreen({ isLoading }: { isLoading: boolean }) {
             </g>
           </svg>
         </div>
-
-       {/* Teks Loading yang Lebih Luks */}
-      <div className="mt-8 flex flex-col items-center gap-1.5">
-        <p className="text-[13px] font-medium text-gray-500 tracking-wide">
-          Sedang memuat...
-        </p>
-          {/* Animasi Dot dengan Aksen Orange saat Melompat */}
-          <div className="mt-1 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-gray-200 rounded-full animate-bounce [animation-delay:-0.3s] shadow-sm !bg-orange-500"></span>
-            <span className="w-1.5 h-1.5 bg-gray-200 rounded-full animate-bounce [animation-delay:-0.15s] shadow-sm !bg-orange-500"></span>
-            <span className="w-1.5 h-1.5 bg-gray-200 rounded-full animate-bounce shadow-sm !bg-orange-500"></span>
-          </div>
-        </div>
       </div>
     </div>
   );
