@@ -11,9 +11,9 @@ import {
   Banknote,
   Wallet,
   Building2,
+  Tag,
   Minus,
   Plus,
-  Tag,
   QrCode,
   Receipt,
   Trash2,
@@ -123,7 +123,6 @@ export default function CheckoutPage() {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
   const [usePoints, setUsePoints] = useState(false);
   const [paymentStep, setPaymentStep] = useState<PaymentStep>("idle");
   const userPoints = 12500;
@@ -186,7 +185,7 @@ export default function CheckoutPage() {
   const canSubmit = allTargetsFilled && isPaymentSelected && items.length > 0;
 
   const executeOrderSubmission = async () => {
-    if (!canSubmit || isSubmitting) return;
+    if (!canSubmit || isSubmitting) return false;
     try {
       setIsSubmitting(true);
       const adminApiUrl =
@@ -207,46 +206,48 @@ export default function CheckoutPage() {
         }),
       );
       await Promise.all(orderPromises);
-      if (items.length === 1) openModal(items[0].product.slug);
-      else openModal();
+
       triggerRefresh();
       clearCart();
-      showToast("Pesanan berhasil dibuat! 🎉");
-      const source = navStore.checkoutSource;
-      navStore.setCheckoutSource(null);
-      if (source === "product" && items.length === 1) router.back();
-      else router.replace("/");
-      router.refresh();
+      return true;
     } catch (error) {
       console.error("[Checkout Error]", error);
       showToast("Terjadi kesalahan saat memproses pesanan.");
+      return false;
     } finally {
       setIsSubmitting(false);
-      setPaymentStep("idle");
     }
+  };
+
+  const handleFinishCheckout = () => {
+    showToast("Pesanan berhasil dibuat! 🎉");
+    if (items.length === 1) openModal(items[0].product.slug);
+    else openModal();
+    const source = navStore.checkoutSource;
+    navStore.setCheckoutSource(null);
+    setPaymentStep("idle");
+    if (source === "product" && items.length === 1) router.back();
+    else router.replace("/");
+    router.refresh();
   };
 
   const handleCheckoutClick = () => {
     if (!canSubmit || isSubmitting) return;
     if (selectedPayment === "qr") {
       setPaymentStep("qr");
-    } else {
-      setPaymentStep("pending");
-      setTimeout(() => {
-        setPaymentStep("success");
-      }, 3000);
+    } else if (selectedPayment === "va") {
+      setPaymentStep("va");
+    } else if (selectedPayment === "ewallet") {
+      setPaymentStep("ewallet");
     }
   };
 
-  const handleBack = useCallback(() => setShowCancelModal(true), []);
-
-  const confirmCancel = () => {
-    setShowCancelModal(false);
+  const handleBack = useCallback(() => {
     const source = navStore.checkoutSource;
     navStore.setCheckoutSource(null);
     if (source === "product") router.back();
     else router.push("/");
-  };
+  }, [navStore, router]);
 
   const getCartImage = (product: any): string | undefined => {
     const rawImages = product.images || product.image;
@@ -634,59 +635,14 @@ export default function CheckoutPage() {
       {/* ── PAYMENT MODALS ── */}
       <PaymentModal
         paymentStep={paymentStep}
+        paymentMethod={selectedPayment as any}
+        paymentDetail={selectedSubPayment}
         setPaymentStep={setPaymentStep}
         isSubmitting={isSubmitting}
         executeOrderSubmission={executeOrderSubmission}
+        onFinish={handleFinishCheckout}
         total={total}
       />
-
-      {/* ── CANCEL MODAL ── */}
-      {showCancelModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setShowCancelModal(false)}
-          />
-          <div className="relative bg-white rounded-3xl shadow-2xl max-w-[320px] w-full p-6 text-center border border-gray-50">
-            <div className="flex flex-col items-center">
-              <div className="w-[140px] h-[140px] mb-2 relative">
-                <Image
-                  src="/illustrations/Checkout confirmation.svg"
-                  alt="Batalkan pesanan"
-                  fill
-                  sizes="118px"
-                  unoptimized
-                  priority
-                  className="object-contain"
-                />
-              </div>
-              <div className="space-y-1.5 mb-5">
-                <h3 className="text-base font-black text-gray-900 leading-tight">
-                  Batalkan Pesanan?
-                </h3>
-                <p className="text-[11px] text-gray-500 leading-relaxed px-1">
-                  Checkout belum selesai. Anda dapat melanjutkan kembali nanti
-                  dari keranjang belanja.
-                </p>
-              </div>
-              <div className="flex gap-3 w-full">
-                <button
-                  onClick={() => setShowCancelModal(false)}
-                  className="flex-1 h-11 border border-gray-300 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-50 active:scale-95 transition-all"
-                >
-                  Tetap di Sini
-                </button>
-                <button
-                  onClick={confirmCancel}
-                  className="flex-1 h-11 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-900 shadow-sm shadow-emerald-800/25 active:scale-95 transition-all"
-                >
-                  Ya, Keluar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
