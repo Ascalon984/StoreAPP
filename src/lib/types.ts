@@ -21,6 +21,7 @@ export interface Product {
   description: string;
   images?: string[]; // Max 3 — controlled by admin
   variants?: ProductVariant[];
+  variant?: string;
   targetType?: ProductTargetType;
 }
 

@@ -30,7 +30,7 @@ export function BackConfirmDialog({
         <div className="flex flex-col items-center">
           <div className="w-[140px] h-[140px] mb-2 relative">
             <Image
-              src="/illustrations/Checkout confirmation.svg"
+              src="/illustrations/Cancel_order.svg"
               alt="Batalkan pesanan"
               fill
               sizes="118px"

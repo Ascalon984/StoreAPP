@@ -1,7 +1,18 @@
-import { Copy, Info } from "lucide-react";
+import { Copy, Info, Check } from "lucide-react";
+import { useState } from "react";
 import { formatRupiah } from "@/lib/utils";
 import { useToastStore } from "@/store/useToastStore";
 import { BackButton } from "./SharedComponents";
+
+const VA_CONFIG: Record<
+  string,
+  { label: string; color: string; bgColor: string }
+> = {
+  bca: { label: "BCA", color: "#003D79", bgColor: "#003D7912" },
+  mandiri: { label: "Mandiri", color: "#003876", bgColor: "#00387612" },
+  bri: { label: "BRI", color: "#00529C", bgColor: "#00529C12" },
+  bni: { label: "BNI", color: "#F05A22", bgColor: "#F05A2212" },
+};
 
 interface VaStepProps {
   total: number;
@@ -9,6 +20,7 @@ interface VaStepProps {
   onProcessPayment: () => void;
   isSubmitting: boolean;
   isProcessing: boolean;
+  provider?: string | null;
 }
 
 export function VaStep({
@@ -17,8 +29,24 @@ export function VaStep({
   onProcessPayment,
   isSubmitting,
   isProcessing,
+  provider,
 }: VaStepProps) {
   const { showToast } = useToastStore();
+  const [copied, setCopied] = useState(false);
+
+  const config = provider
+    ? VA_CONFIG[provider] || VA_CONFIG.bca
+    : VA_CONFIG.bca;
+
+  const handleCopy = () => {
+    // Salin nomor VA ke clipboard
+    navigator.clipboard.writeText("1234567890123456");
+    setCopied(true);
+    showToast("Nomor VA berhasil disalin");
+
+    // Reset ikon setelah 2 detik
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="flex-1 flex flex-col">
@@ -32,86 +60,97 @@ export function VaStep({
 
       {/* CONTENT */}
       <div className="flex-1 flex flex-col px-6 pt-6 max-w-lg mx-auto w-full">
-        <div className="flex flex-col items-center mt-2">
-          <div className="px-4 py-1.5 bg-blue-50 text-blue-700 font-bold text-lg rounded-md mb-1">
-            BCA
+        <div className="flex flex-col items-center">
+          {/* BANK */}
+          <div className="px-5 py-2 rounded-2xl bg-blue-50">
+            <span className="text-blue-700 text-lg font-black tracking-tight">
+              BCA
+            </span>
           </div>
-          <p className="text-[13px] text-gray-600 font-medium">
-            Virtual Account
+
+          {/* TOTAL */}
+          <p className="mt-5 text-[11px] font-medium text-gray-500">
+            Total Pembayaran
           </p>
-        </div>
 
-        {/* VA NUMBER */}
-        <div className="mt-6 flex items-center justify-between px-4 py-3 border border-gray-200 rounded-xl bg-gray-50">
-          <span className="font-mono text-lg font-bold text-gray-800 tracking-wider">
-            1234 5678 9012 3456
-          </span>
-          <button
-            onClick={() => showToast("Nomor VA berhasil disalin")}
-            className="p-2 text-gray-500 hover:text-emerald-600 active:scale-95 transition"
-            aria-label="Salin nomor VA"
-          >
-            <Copy size={18} />
-          </button>
-        </div>
+          <p className="mt-1 text-[28px] font-black text-gray-700 tracking-tight">
+            {formatRupiah(total)}
+          </p>
 
-        {/* ORDER INFO */}
-        <div className="flex items-center justify-between w-full mt-6 px-2">
-          <div>
-            <p className="text-[11px] text-gray-500">Total Pembayaran</p>
-            <p className="text-[15px] font-bold text-emerald-700">
-              {formatRupiah(total)}
+          {/* VA NUMBER */}
+          <div className="w-full mt-5 py-4">
+            <div className="flex items-center gap-3">
+              <p className="text-[11px] text-gray-500 font-medium">
+                Nomor Virtual Account
+              </p>
+
+              <button
+                onClick={handleCopy}
+                className="
+                  text-gray-400
+                  hover:text-gray-600
+                  active:scale-90
+                  transition-all
+                "
+                aria-label="Salin nomor VA"
+              >
+                {copied ? (
+                  <Check
+                    size={13}
+                    className="text-emerald-600 animate-in zoom-in duration-300"
+                  />
+                ) : (
+                  <Copy size={13} />
+                )}
+              </button>
+            </div>
+
+            <p className="mt-2 font-mono text-[20px] font-black tracking-wider text-gray-800">
+              1234 5678 9012 3456
             </p>
           </div>
-        </div>
 
-        <div className="w-full mt-4 pt-4 border-t border-gray-100 px-2">
-          <p className="text-[11px] text-gray-500">Bayar Sebelum</p>
-          <p className="text-[13px] font-bold text-gray-800">
-            02 Jun 2026 • 23:59 WIB
-          </p>
-        </div>
+          {/* EXPIRY */}
+          <div className="w-full mt-4 rounded-xl border border-gray-100 bg-white px-4 py-3 text-center">
+            <p className="text-[11px] font-medium text-amber-600">
+              Bayar Sebelum
+            </p>
 
-        {/* CARA PEMBAYARAN */}
-        <div className="w-full mt-5 pt-4 border-t border-gray-100 px-2">
-          <div className="flex items-center gap-2 mb-3">
-            <Info size={14} className="text-gray-500" strokeWidth={2.2} />
-            <p className="text-[11px] font-semibold text-gray-700">
-              Cara Pembayaran
+            <p className="mt-1 text-[13px] font-medium text-gray-500">
+              03 Juni 2026, Pukul 23:59 WIB
             </p>
           </div>
-          <div className="space-y-2.5 text-[11px] text-gray-600 font-medium ml-1">
-            {[
-              "Transfer ke nomor Virtual Account di atas.",
-              "Dapat dibayar melalui m-BCA, KlikBCA, atau ATM BCA.",
-              "Pembayaran akan diverifikasi secara otomatis.",
-            ].map((text, i) => (
-              <div key={i} className="flex gap-2 items-start">
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0" />
-                <p>{text}</p>
-              </div>
-            ))}
+
+          {/* INSTRUCTIONS */}
+          <div className="w-full mt-4 pt-3 border-t border-gray-100 px-2">
+            <div className="flex items-center gap-2 mb-3">
+              <Info size={14} className="text-gray-500" strokeWidth={2.2} />
+
+              <p className="text-[11px] font-semibold text-gray-700">
+                Petunjuk
+              </p>
+            </div>
+
+            <div className="space-y-2.5 text-[11px] text-gray-600 font-medium">
+              {[
+                `Transfer ke nomor Virtual Account ${config.label} di atas.`,
+                `Gunakan aplikasi m-Banking ${config.label} atau ATM terdekat.`,
+                "Pastikan nominal pembayaran sesuai.",
+                "Status pesanan akan diperbarui otomatis setelah pembayaran berhasil.",
+              ].map((text, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <span className="w-4 shrink-0">{i + 1}.</span>
+                  <p>{text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* FOOTER */}
       <div className="px-6 pb-5 pt-3 border-t border-gray-100 bg-white mt-auto">
-        <div className="max-w-lg mx-auto w-full space-y-2">
-          <button
-            className="w-full py-3 rounded-xl font-bold text-[13px] text-white bg-emerald-600 active:scale-[0.98] transition-all hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 disabled:opacity-50 disabled:pointer-events-none"
-            onClick={onProcessPayment}
-            disabled={isSubmitting || isProcessing}
-          >
-            Cek Status Pembayaran
-          </button>
-          <button
-            className="w-full py-3 rounded-xl font-bold text-[13px] text-gray-700 bg-white border border-gray-200 active:scale-[0.98] transition-all hover:bg-gray-50"
-            onClick={onBack}
-          >
-            Ganti Metode
-          </button>
-        </div>
+        <div className="max-w-lg mx-auto w-full space-y-2"></div>
       </div>
     </div>
   );

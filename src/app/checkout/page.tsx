@@ -6,15 +6,17 @@ import Image from "next/image";
 import {
   ChevronLeft,
   ChevronDown,
+  ChevronRight,
   Loader,
   CheckCircle,
-  Banknote,
+  HandCoins,
   Wallet,
   Building2,
   Tag,
   Minus,
   Plus,
   QrCode,
+  Box,
   Receipt,
   Trash2,
 } from "lucide-react";
@@ -85,11 +87,11 @@ const PAYMENT_METHODS = {
     icon: Wallet,
     description: "Bayar dengan dompet digital",
     options: [
-      { id: "gopay", name: "GoPay", color: "#00AED6" },
-      { id: "dana", name: "DANA", color: "#108EE9" },
-      { id: "ovo", name: "OVO", color: "#4C3494" },
-      { id: "linkaja", name: "LinkAja", color: "#E82529" },
-      { id: "shopeepay", name: "ShopeePay", color: "#EE4D2D" },
+      { id: "gopay", name: "GoPay", image: "Gopay.png" },
+      { id: "dana", name: "DANA", image: "DANA.png" },
+      { id: "ovo", name: "OVO", image: "OVO.png" },
+      { id: "linkaja", name: "LinkAja", image: "LinkAja.png" },
+      { id: "shopeepay", name: "ShopeePay", image: "Shoppepay.png" },
     ],
   },
   va: {
@@ -98,10 +100,10 @@ const PAYMENT_METHODS = {
     icon: Building2,
     description: "Transfer via bank virtual account",
     options: [
-      { id: "bca", name: "BCA", color: "#003D79" },
-      { id: "mandiri", name: "Mandiri", color: "#003876" },
-      { id: "bri", name: "BRI", color: "#00529C" },
-      { id: "bni", name: "BNI", color: "#F05A22" },
+      { id: "bca", name: "BCA", image: "BCA.png" },
+      { id: "mandiri", name: "Mandiri", image: "Mandiri.png" },
+      { id: "bri", name: "BRI", image: "BRI.png" },
+      { id: "bni", name: "BNI", image: "BNI.png" },
     ],
   },
 };
@@ -114,6 +116,7 @@ export default function CheckoutPage() {
   const { triggerRefresh } = useReviewStore();
   const navStore = useNavigationStore();
 
+  const paymentSectionRef = useRef<HTMLDivElement | null>(null);
   const [targetIds, setTargetIds] = useState<Record<string, string>>({});
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [selectedSubPayment, setSelectedSubPayment] = useState<string | null>(
@@ -139,6 +142,18 @@ export default function CheckoutPage() {
         setSelectedPayment("qr");
         setSelectedSubPayment(null);
       }
+
+      // Auto-scroll ke section pembayaran agar pilihan terlihat
+      setTimeout(() => {
+        if (paymentSectionRef.current) {
+          const yOffset = -70; // Offset agar tidak terlalu mepet ke header sticky
+          const element = paymentSectionRef.current;
+          const y =
+            element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }, 100); // Delay kecil menunggu accordion mulai mengembang
     }
   };
 
@@ -167,7 +182,11 @@ export default function CheckoutPage() {
     return sum;
   }, 0);
   const pointsToUse = usePoints ? Math.min(userPoints, subtotal) : 0;
-  const total = subtotal - totalSavings - pointsToUse;
+  const serviceFee = 1000; // Data mock biaya layanan
+  const grossSubtotal = subtotal + totalSavings;
+  const discountPercentage =
+    grossSubtotal > 0 ? Math.round((totalSavings / grossSubtotal) * 100) : 0;
+  const total = grossSubtotal - totalSavings - pointsToUse + serviceFee;
 
   const isPaymentSelected =
     selectedPayment !== null &&
@@ -336,35 +355,32 @@ export default function CheckoutPage() {
 
                   return (
                     <div key={product.id} className="py-2.5">
-                      <div className="flex gap-3 items-center">
+                      <div className="flex gap-3 items-start">
                         <ProductImage
                           category={product.category}
                           name={product.name}
                           src={cartImg}
                           className="w-11 h-11 rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-white"
                         />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-xs font-semibold text-gray-800 truncate leading-tight">
+                        <div className="flex-1 min-w-0 pt-0.5 max-h-11 overflow-hidden">
+                          <h3 className="text-[13px] font-semibold text-gray-800 leading-snug truncate">
                             {product.name}
                           </h3>
-                          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                            <span className="text-emerald-600 font-bold text-[11px]">
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="text-emerald-600 font-bold text-[12px]">
                               {formatRupiah(price)}
                             </span>
-                            {hasDiscount && (
-                              <span className="text-[10px] text-gray-400 line-through">
-                                {formatRupiah(originalPrice)}
-                              </span>
+                            {product.variant && (
+                              <>
+                                <div className="w-[1px] h-3 bg-gray-200" />
+                                <span className="text-[11px] text-gray-400 font-medium truncate">
+                                  {product.variant}
+                                </span>
+                              </>
                             )}
                           </div>
-                          <p className="text-[9px] text-gray-400 font-medium mt-0.5">
-                            Subtotal:{" "}
-                            <span className="text-gray-600 font-bold">
-                              {formatRupiah(subtotalItem)}
-                            </span>
-                          </p>
                         </div>
-                        <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden">
+                        <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden mt-0.5">
                           <button
                             onClick={() => updateQuantity(product.id, qty - 1)}
                             disabled={qty <= 1}
@@ -382,30 +398,36 @@ export default function CheckoutPage() {
                             <Plus size={10} strokeWidth={2.5} />
                           </button>
                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-2.5">
+                        {product.targetType !== "none" && (
+                          <input
+                            type="text"
+                            placeholder={getTargetPlaceholder(
+                              product.targetType,
+                            )}
+                            value={targetIds[product.id] || ""}
+                            onChange={(e) =>
+                              setTargetIds((prev) => ({
+                                ...prev,
+                                [product.id]: formatTargetInput(
+                                  e.target.value,
+                                  product.targetType,
+                                ),
+                              }))
+                            }
+                            className="flex-1 text-[12px] bg-gray-50 border border-gray-200/80 rounded-lg px-3 h-9 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"
+                          />
+                        )}
                         <button
                           onClick={() => removeItem(product.id)}
-                          className="p-1.5 text-gray-300 hover:text-red-500 transition-colors active:scale-90 flex-shrink-0"
-                          aria-label="Hapus produk"
+                          className="flex-shrink-0 h-9 px-3 text-[11px] font-medium rounded-lg flex items-center gap-1.5
+    text-amber-600 active:scale-95 transition-all"
                         >
-                          <Trash2 size={15} strokeWidth={2.2} />
+                          <Trash2 size={12} strokeWidth={2} />
+                          Hapus
                         </button>
-                      </div>
-                      <div className="mt-2.5 mb-1 pl-[56px] pr-2">
-                        <input
-                          type="text"
-                          placeholder={getTargetPlaceholder(product.targetType)}
-                          value={targetIds[product.id] || ""}
-                          onChange={(e) =>
-                            setTargetIds((prev) => ({
-                              ...prev,
-                              [product.id]: formatTargetInput(
-                                e.target.value,
-                                product.targetType,
-                              ),
-                            }))
-                          }
-                          className="w-full text-[12px] bg-gray-50 border border-gray-200/80 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"
-                        />
                       </div>
                     </div>
                   );
@@ -413,16 +435,26 @@ export default function CheckoutPage() {
               </div>
 
               {/* ── Rincian Pembayaran ── */}
-              <div className="border-t border-gray-100 px-4 py-3 space-y-2">
-                {/* Subtotal */}
+              <div
+                className="
+    relative z-10
+    px-4 py-3 space-y-2
+    bg-[#f8faf8]/70
+    border-t border-white/60
+  "
+              >
+                {/* HEADER BARU */}
+                <h2 className="text-[15px] font-bold text-gray-900">Rincian</h2>
+
+                {/* TOTAL ITEM (REPLACE SUBTOTAL) */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
-                    <Receipt size={12} strokeWidth={2} />
-                    <span>Subtotal ({totalQty} item)</span>
+                    <Box size={12} strokeWidth={2} />
+                    <span>Total item</span>
                   </div>
 
                   <span className="text-[12px] font-semibold text-gray-700">
-                    {formatRupiah(subtotal)}
+                    {totalQty}
                   </span>
                 </div>
 
@@ -431,7 +463,7 @@ export default function CheckoutPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-[12px] text-emerald-600">
                       <Tag size={12} strokeWidth={2} />
-                      <span>Diskon</span>
+                      <span>Diskon ({discountPercentage}%)</span>
                     </div>
 
                     <span className="text-[12px] font-semibold text-emerald-600">
@@ -440,10 +472,22 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
+                {/* Biaya layanan */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
+                    <Receipt size={12} strokeWidth={2} />
+                    <span>Biaya layanan</span>
+                  </div>
+
+                  <span className="text-[12px] font-semibold text-gray-700">
+                    {formatRupiah(serviceFee)}
+                  </span>
+                </div>
+
                 {/* Points row */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[12px] text-gray-500">
-                    <Tag size={12} strokeWidth={2} />
+                    <HandCoins size={12} strokeWidth={2} />
                     <span>Gunakan Poin</span>
                   </div>
                   <button
@@ -490,8 +534,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* ═══ BLOK 2: METODE PEMBAYARAN ═══ */}
-            <div className="px-4 pt-4 pb-2">
-              <h2 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+            <div ref={paymentSectionRef} className="px-4 pt-4 pb-2">
+              <h2 className="text-[15px] font-bold text-gray-900">
                 Metode Pembayaran
               </h2>
             </div>
@@ -507,11 +551,18 @@ export default function CheckoutPage() {
                     <div key={method.id}>
                       <button
                         onClick={() => toggleAccordion(method.id)}
-                        className={`w-full flex items-center justify-between px-4 py-3 transition-colors ${isSelected ? "bg-emerald-50/50" : "hover:bg-gray-50/50"}`}
+                        className={`w-full flex items-center justify-between px-4 py-3 transition-colors ${
+                          isSelected
+                            ? "bg-emerald-50/50"
+                            : "hover:bg-gray-50/50"
+                        }`}
                       >
+                        {/* LEFT CONTENT */}
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isSelected ? "bg-emerald-100" : "bg-gray-100"}`}
+                            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                              isSelected ? "bg-emerald-100" : "bg-gray-100"
+                            }`}
                           >
                             <Icon
                               size={16}
@@ -523,9 +574,14 @@ export default function CheckoutPage() {
                               strokeWidth={2}
                             />
                           </div>
+
                           <div className="text-left">
                             <p
-                              className={`text-[12px] font-semibold leading-none ${isSelected ? "text-emerald-800" : "text-gray-800"}`}
+                              className={`text-[12px] font-semibold leading-none ${
+                                isSelected
+                                  ? "text-emerald-800"
+                                  : "text-gray-800"
+                              }`}
                             >
                               {method.label}
                             </p>
@@ -534,51 +590,97 @@ export default function CheckoutPage() {
                             </p>
                           </div>
                         </div>
+
+                        {/* RIGHT CHEVRON (INI TARUH DI SINI) */}
+                        {method.options && (
+                          <div className="ml-auto">
+                            {isExpanded ? (
+                              <ChevronDown
+                                size={20}
+                                className="text-gray-600"
+                              />
+                            ) : (
+                              <ChevronRight
+                                size={20}
+                                className="text-gray-600"
+                              />
+                            )}
+                          </div>
+                        )}
                       </button>
 
                       {method.options && (
                         <div
                           className="overflow-hidden transition-all duration-300 ease-in-out"
                           style={{
-                            maxHeight: isExpanded ? "300px" : "0px",
+                            maxHeight: isExpanded ? "400px" : "0px",
                             opacity: isExpanded ? 1 : 0,
                           }}
                         >
-                          <div className="px-4 pb-2.5 space-y-1.5">
+                          <div
+                            className={`px-4 pt-2 pb-4 ${
+                              method.id === "ewallet"
+                                ? "grid grid-cols-3 gap-2"
+                                : method.id === "va"
+                                  ? "grid grid-cols-2 gap-2"
+                                  : "space-y-1.5"
+                            }`}
+                          >
                             {method.options.map((opt) => {
                               const isSubSelected =
                                 selectedPayment === method.id &&
                                 selectedSubPayment === opt.id;
+
+                              if (method.id === "ewallet") {
+                                return (
+                                  <button
+                                    key={opt.id}
+                                    onClick={() =>
+                                      handleSubPaymentSelect(method.id, opt.id)
+                                    }
+                                    className={`flex flex-col items-center gap-2 p-2.5 rounded-xl transition-all shadow-layer-xs ${
+                                      isSubSelected
+                                        ? "bg-emerald-50 border-emerald-500 shadow-sm"
+                                        : "bg-white border-gray-50"
+                                    }`}
+                                  >
+                                    <div className="w-9 h-9 flex-shrink-0 relative">
+                                      <Image
+                                        src={`/icons/${(opt as any).image}`}
+                                        alt={opt.name}
+                                        fill
+                                        className="object-contain"
+                                      />
+                                    </div>
+                                    <span
+                                      className={`text-[11px] font-bold text-center leading-none ${isSubSelected ? "text-emerald-800" : "text-gray-600"}`}
+                                    >
+                                      {opt.name}
+                                    </span>
+                                  </button>
+                                );
+                              }
+
                               return (
                                 <button
                                   key={opt.id}
                                   onClick={() =>
                                     handleSubPaymentSelect(method.id, opt.id)
                                   }
-                                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${
+                                  className={`flex items-center justify-center h-12 rounded-xl transition-all shadow-layer-xs ${
                                     isSubSelected
-                                      ? "bg-emerald-50 border border-emerald-400 shadow-sm"
-                                      : "border border-transparent hover:border-emerald-100 hover:bg-emerald-50/30"
+                                      ? "bg-emerald-50 border-emerald-500 shadow-sm"
+                                      : "bg-white border-gray-50"
                                   }`}
                                 >
-                                  <div
-                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0"
-                                    style={{ backgroundColor: opt.color }}
-                                  >
-                                    {opt.name.charAt(0)}
-                                  </div>
-                                  <span
-                                    className={`text-[12px] font-medium flex-1 text-left ${isSubSelected ? "text-emerald-800 font-semibold" : "text-gray-700"}`}
-                                  >
-                                    {opt.name}
-                                  </span>
-                                  {isSubSelected && (
-                                    <CheckCircle
-                                      size={15}
-                                      className="text-emerald-600"
-                                      strokeWidth={2.5}
+                                  <div className="relative w-24 h-7">
+                                    <Image
+                                      src={`/icons/${(opt as any).image}`}
+                                      alt={opt.name}
+                                      fill
+                                      className="object-contain"
                                     />
-                                  )}
+                                  </div>
                                 </button>
                               );
                             })}
@@ -597,26 +699,14 @@ export default function CheckoutPage() {
         {/* ── STICKY FOOTER ── */}
         <div className="flex-shrink-0 bg-white border-t border-gray-100 px-4 pt-2.5 pb-4 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
           <div className="max-w-lg mx-auto">
-            <div className="flex items-center justify-between mb-2.5">
-              <div>
-                <p className="text-[10px] text-gray-500 leading-none">
-                  Total Pembayaran
-                </p>
-                <p className="text-xl font-extrabold text-gray-900 tracking-tight mt-0.5">
-                  {formatRupiah(total)}
+            {selectedPayment && (
+              <div className="text-right mb-2.5">
+                <p className="text-[10px] text-gray-500 leading-none">Metode</p>
+                <p className="text-[12px] font-semibold text-emerald-700 mt-0.5">
+                  {getPaymentLabel()}
                 </p>
               </div>
-              {selectedPayment && (
-                <div className="text-right">
-                  <p className="text-[10px] text-gray-500 leading-none">
-                    Metode
-                  </p>
-                  <p className="text-[12px] font-semibold text-emerald-700 mt-0.5">
-                    {getPaymentLabel()}
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
             <button
               onClick={handleCheckoutClick}
               disabled={!canSubmit}
@@ -626,7 +716,7 @@ export default function CheckoutPage() {
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              <span>Bayar Sekarang</span>
+              <span>Bayar {formatRupiah(total)}</span>
             </button>
           </div>
         </div>

@@ -129,10 +129,12 @@ export default function PaymentModal({
         clearInterval(ewalletPollRef.current!);
         ewalletPollRef.current = null;
         isProcessingRef.current = false;
-        
+
         // Dynamic error message
-        const providerName = paymentDetail ? paymentDetail.charAt(0).toUpperCase() + paymentDetail.slice(1) : "E-Wallet";
-        
+        const providerName = paymentDetail
+          ? paymentDetail.charAt(0).toUpperCase() + paymentDetail.slice(1)
+          : "E-Wallet";
+
         setFailedMessage(
           `Pembayaran ${providerName} belum terverifikasi. Cek status di aplikasi Anda.`,
         );
@@ -173,6 +175,7 @@ export default function PaymentModal({
         {paymentStep === "va" && (
           <VaStep
             total={total}
+            provider={paymentDetail}
             onBack={handleBackWithConfirm}
             onProcessPayment={handleProcessPayment}
             isSubmitting={isSubmitting}
