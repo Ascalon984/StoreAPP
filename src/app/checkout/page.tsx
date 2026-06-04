@@ -110,11 +110,35 @@ const PAYMENT_METHODS = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart, updateQuantity, removeItem } = useCartStore();
+  const {
+    items,
+    clearCart,
+    updateQuantity,
+    removeItem,
+    buyNowItem,
+    setBuyNowItem,
+  } = useCartStore();
   const { showToast } = useToastStore();
   const { openModal } = useReviewModalStore();
   const { triggerRefresh } = useReviewStore();
   const navStore = useNavigationStore();
+
+  const isBuyNow = navStore.checkoutSource === "product";
+  const displayItems = isBuyNow && buyNowItem ? [buyNowItem] : items;
+
+  const handleUpdateQuantity = (productId: string, qty: number) => {
+    if (isBuyNow && buyNowItem) {
+      if (qty <= 0) setBuyNowItem(null);
+      else setBuyNowItem({ ...buyNowItem, quantity: qty });
+    } else {
+      updateQuantity(productId, qty);
+    }
+  };
+
+  const handleRemoveItem = (productId: string) => {
+    if (isBuyNow) setBuyNowItem(null);
+    else removeItem(productId);
+  };
 
   const paymentSectionRef = useRef<HTMLDivElement | null>(null);
   const [targetIds, setTargetIds] = useState<Record<string, string>>({});
@@ -129,10 +153,6 @@ export default function CheckoutPage() {
   const [usePoints, setUsePoints] = useState(false);
   const [paymentStep, setPaymentStep] = useState<PaymentStep>("idle");
   const userPoints = 12500;
-
-  useEffect(() => {
-    if (items.length === 0 && !isSubmitting) router.replace("/");
-  }, [items.length, router, isSubmitting]);
 
   const toggleAccordion = (id: string) => {
     if (expandedAccordion === id) setExpandedAccordion(null);
@@ -163,14 +183,14 @@ export default function CheckoutPage() {
   };
 
   // ── Kalkulasi ──
-  const subtotal = items.reduce(
+  const subtotal = displayItems.reduce(
     (sum, item) => sum + (item.product?.price || 0) * (item.quantity || 0),
     0,
   );
 
-  const totalQty = items.reduce((s, i) => s + (i.quantity || 0), 0);
+  const totalQty = displayItems.reduce((s, i) => s + (i.quantity || 0), 0);
 
-  const totalSavings = items.reduce((sum, item) => {
+  const totalSavings = displayItems.reduce((sum, item) => {
     const orig = item.product?.originalPrice;
     const price = item.product?.price;
     const qty = item.quantity || 0;
@@ -192,7 +212,7 @@ export default function CheckoutPage() {
     selectedPayment !== null &&
     (selectedPayment === "qr" || selectedSubPayment !== null);
 
-  const allTargetsFilled = items.every((item) => {
+  const allTargetsFilled = displayItems.every((item) => {
     const type = item.product.targetType;
 
     if (!type || type === "none") return true;
@@ -201,7 +221,8 @@ export default function CheckoutPage() {
     return val && val.trim().length > 0;
   });
 
-  const canSubmit = allTargetsFilled && isPaymentSelected && items.length > 0;
+  const canSubmit =
+    allTargetsFilled && isPaymentSelected && displayItems.length > 0;
 
   const executeOrderSubmission = async () => {
     if (!canSubmit || isSubmitting) return false;
@@ -209,7 +230,7 @@ export default function CheckoutPage() {
       setIsSubmitting(true);
       const adminApiUrl =
         process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:3000";
-      const orderPromises = items.map((item) =>
+      const orderPromises = displayItems.map((item) =>
         fetch(`${adminApiUrl}/api/admin/orders`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -227,7 +248,8 @@ export default function CheckoutPage() {
       await Promise.all(orderPromises);
 
       triggerRefresh();
-      clearCart();
+      if (isBuyNow) setBuyNowItem(null);
+      else clearCart();
       return true;
     } catch (error) {
       console.error("[Checkout Error]", error);
@@ -240,12 +262,12 @@ export default function CheckoutPage() {
 
   const handleFinishCheckout = () => {
     showToast("Pesanan berhasil dibuat! 🎉");
-    if (items.length === 1) openModal(items[0].product.slug);
+    if (displayItems.length === 1) openModal(displayItems[0].product.slug);
     else openModal();
     const source = navStore.checkoutSource;
     navStore.setCheckoutSource(null);
     setPaymentStep("idle");
-    if (source === "product" && items.length === 1) router.back();
+    if (source === "product" && displayItems.length === 1) router.back();
     else router.replace("/");
     router.refresh();
   };
@@ -307,7 +329,65 @@ export default function CheckoutPage() {
     return sub ? `${method.label} - ${sub.name}` : "";
   };
 
-  if (items.length === 0 && !isSubmitting) return null;
+  if (displayItems.length === 0 && !isSubmitting) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        {/* ── HEADER ── */}
+        <div
+          className="sticky top-0 z-50 bg-[#048750] shadow-layer-xs"
+          style={{ height: 48 }}
+        >
+          <div className="flex items-center h-full px-4">
+            <button
+              onClick={handleBack}
+              aria-label="Kembali"
+              className="flex items-center gap-1.5 active:opacity-70 transition-opacity duration-150"
+            >
+              <ChevronLeft size={23} strokeWidth={2.7} className="text-white" />
+              <h1 className="text-[14px] font-bold text-white tracking-tight leading-none -mt-[1px]">
+                Keranjang
+              </h1>
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <div className="relative w-48 h-48 mb-4">
+            <Image
+              src="/illustrations/Empty Cart.png"
+              alt="Keranjang Kosong"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <h2 className="text-[16px] font-bold text-gray-900 mb-2">
+            Keranjang masih kosong
+          </h2>
+          <p className="text-[13px] text-gray-500 text-center mb-8 max-w-[280px]">
+            Tambahkan produk terlebih dahulu untuk melanjutkan checkout
+          </p>
+          <button
+            onClick={() => router.push("/")}
+            className="
+            w-full
+            max-w-[260px]
+            h-11
+            rounded-xl
+            bg-emerald-600
+            text-white
+            font-semibold
+            text-[13px]
+            active:scale-95
+            transition-all
+            shadow-layer-sm
+          "
+          >
+            Mulai Belanja
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -344,7 +424,7 @@ export default function CheckoutPage() {
             <div className="bg-white border-y border-gray-100">
               {/* Product list */}
               <div className="px-3 py-1 divide-y divide-gray-50">
-                {items.map((item) => {
+                {displayItems.map((item) => {
                   const product = item.product;
                   const qty = item.quantity || 0;
                   const price = product?.price ?? 0;
@@ -382,7 +462,9 @@ export default function CheckoutPage() {
                         </div>
                         <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden mt-0.5">
                           <button
-                            onClick={() => updateQuantity(product.id, qty - 1)}
+                            onClick={() =>
+                              handleUpdateQuantity(product.id, qty - 1)
+                            }
                             disabled={qty <= 1}
                             className={`w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 border-r border-gray-200/60 ${qty <= 1 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-gray-700"}`}
                           >
@@ -392,7 +474,9 @@ export default function CheckoutPage() {
                             {qty}
                           </span>
                           <button
-                            onClick={() => updateQuantity(product.id, qty + 1)}
+                            onClick={() =>
+                              handleUpdateQuantity(product.id, qty + 1)
+                            }
                             className="w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 text-gray-500 hover:text-gray-700 border-l border-gray-200/60"
                           >
                             <Plus size={10} strokeWidth={2.5} />
@@ -421,7 +505,7 @@ export default function CheckoutPage() {
                           />
                         )}
                         <button
-                          onClick={() => removeItem(product.id)}
+                          onClick={() => handleRemoveItem(product.id)}
                           className="flex-shrink-0 h-9 px-3 text-[11px] font-medium rounded-lg flex items-center gap-1.5
     text-amber-600 active:scale-95 transition-all"
                         >

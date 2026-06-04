@@ -11,11 +11,15 @@ interface CartStore {
   toggleCart: () => void;
   openCart: () => void;
   closeCart: () => void;
+  buyNowItem: CartItem | null;
+  setBuyNowItem: (item: CartItem | null) => void;
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
+  buyNowItem: null,
   isOpen: false,
+  setBuyNowItem: (item) => set({ buyNowItem: item }),
   addItem: (product) => {
     const items = get().items;
     const existing = items.find((item) => item.product.id === product.id);

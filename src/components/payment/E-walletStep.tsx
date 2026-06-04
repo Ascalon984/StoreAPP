@@ -1,18 +1,19 @@
 import { Info, Copy, Check } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 import { formatRupiah } from "@/lib/utils";
 import { useToastStore } from "@/store/useToastStore";
 import { BackButton } from "./SharedComponents";
 
 const EWALLET_CONFIG: Record<
   string,
-  { iconText: string; color: string; label: string }
+  { image: string; color: string; label: string }
 > = {
-  gopay: { iconText: "gopay", color: "#00AED6", label: "GoPay" },
-  dana: { iconText: "DANA", color: "#108EE9", label: "DANA" },
-  ovo: { iconText: "OVO", color: "#4C3494", label: "OVO" },
-  linkaja: { iconText: "LinkAja", color: "#E82529", label: "LinkAja" },
-  shopeepay: { iconText: "ShopeePay", color: "#EE4D2D", label: "ShopeePay" },
+  gopay: { image: "Gopay.png", color: "#00AED6", label: "GoPay" },
+  dana: { image: "DANA.png", color: "#108EE9", label: "DANA" },
+  ovo: { image: "OVO.png", color: "#4C3494", label: "OVO" },
+  linkaja: { image: "LinkAja.png", color: "#E82529", label: "LinkAja" },
+  shopeepay: { image: "Shoppepay.png", color: "#EE4D2D", label: "ShopeePay" },
 };
 
 interface EwalletStepProps {
@@ -65,17 +66,17 @@ export function EwalletStep({
         <div className="flex flex-col items-center">
           {/* LOGO */}
           <div
-            className="w-20 h-20 rounded-3xl flex items-center justify-center"
+            className="w-20 h-20 rounded-3xl flex items-center justify-center relative overflow-hidden"
             style={{
               backgroundColor: `${config.color}12`,
             }}
           >
-            <span
-              className="text-lg font-black tracking-tight"
-              style={{ color: config.color }}
-            >
-              {config.iconText}
-            </span>
+            <Image
+              src={`/icons/${config.image}`}
+              alt={config.label}
+              fill
+              className="object-contain p-4"
+            />
           </div>
 
           {/* TOTAL */}

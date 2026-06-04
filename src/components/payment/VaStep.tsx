@@ -1,17 +1,38 @@
 import { Copy, Info, Check } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 import { formatRupiah } from "@/lib/utils";
 import { useToastStore } from "@/store/useToastStore";
 import { BackButton } from "./SharedComponents";
 
 const VA_CONFIG: Record<
   string,
-  { label: string; color: string; bgColor: string }
+  { label: string; color: string; bgColor: string; image: string }
 > = {
-  bca: { label: "BCA", color: "#003D79", bgColor: "#003D7912" },
-  mandiri: { label: "Mandiri", color: "#003876", bgColor: "#00387612" },
-  bri: { label: "BRI", color: "#00529C", bgColor: "#00529C12" },
-  bni: { label: "BNI", color: "#F05A22", bgColor: "#F05A2212" },
+  bca: {
+    label: "BCA",
+    color: "#003D79",
+    bgColor: "#003D7912",
+    image: "BCA.png",
+  },
+  mandiri: {
+    label: "Mandiri",
+    color: "#003876",
+    bgColor: "#00387612",
+    image: "Mandiri.png",
+  },
+  bri: {
+    label: "BRI",
+    color: "#00529C",
+    bgColor: "#00529C12",
+    image: "BRI.png",
+  },
+  bni: {
+    label: "BNI",
+    color: "#F05A22",
+    bgColor: "#F05A2212",
+    image: "BNI.png",
+  },
 };
 
 interface VaStepProps {
@@ -62,10 +83,13 @@ export function VaStep({
       <div className="flex-1 flex flex-col px-6 pt-6 max-w-lg mx-auto w-full">
         <div className="flex flex-col items-center">
           {/* BANK */}
-          <div className="px-5 py-2 rounded-2xl bg-blue-50">
-            <span className="text-blue-700 text-lg font-black tracking-tight">
-              BCA
-            </span>
+          <div className="w-32 h-12 relative">
+            <Image
+              src={`/icons/${config.image}`}
+              alt={config.label}
+              fill
+              className="object-contain"
+            />
           </div>
 
           {/* TOTAL */}

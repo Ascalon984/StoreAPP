@@ -104,7 +104,7 @@ export default function ProductDetailPage({
   const { slug } = params;
   const router = useRouter();
 
-  const { addItem } = useCartStore();
+  const { addItem, setBuyNowItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
   const {
     getReviewsForProduct,
@@ -223,7 +223,18 @@ export default function ProductDetailPage({
 
   const handleBuyNow = () => {
     if (!product) return;
-    addItem(product);
+    
+    // Jika ada variant yang dipilih, kita bisa memasukkan info tersebut, 
+    // tapi untuk sementara kita samakan perilakunya dengan addItem sebelumnya.
+    const productToAdd = { ...product };
+    if (selectedVariant && productToAdd.variants) {
+       const variantData = productToAdd.variants.find((v: any) => v.id === selectedVariant);
+       if (variantData) {
+         productToAdd.variant = variantData.name;
+       }
+    }
+    
+    setBuyNowItem({ product: productToAdd, quantity: 1 });
     const { setCheckoutSource } = useNavigationStore.getState();
     setCheckoutSource("product");
     router.push("/checkout");
