@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { CheckCircle, XCircle } from "lucide-react";
 import { useToastStore } from "@/store/useToastStore";
 
 export default function Toast() {
@@ -27,7 +26,6 @@ export default function Toast() {
       setOpacity(1);
       setIsSwiped(false);
     } else if (shouldRender) {
-      // Jika ditutup via swipe, jangan jalankan animasi keluar CSS (animate-toast-out)
       if (isSwiped) {
         setShouldRender(false);
       } else {
@@ -41,33 +39,23 @@ export default function Toast() {
   const handleTouchStart = (e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX;
     isDragging.current = true;
-    // Hentikan animasi CSS saat mulai geser agar transform inline tidak konflik
     setAnimationClass("");
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging.current) return;
-    const currentX = e.touches[0].clientX;
-    const deltaX = currentX - startX.current;
-
-    // Berikan sedikit resistance agar tidak terlalu liar
+    const deltaX = e.touches[0].clientX - startX.current;
     setDragX(deltaX);
-
-    // Kurangi opacity seiring jauhnya geseran (maksimal transparan di 150px)
-    const newOpacity = Math.max(0, 1 - Math.abs(deltaX) / 150);
-    setOpacity(newOpacity);
+    setOpacity(Math.max(0, 1 - Math.abs(deltaX) / 150));
   };
 
   const handleTouchEnd = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
-
-    // Jika geseran lebih dari 80px, anggap sebagai perintah tutup
     if (Math.abs(dragX) > 80) {
       setIsSwiped(true);
       hideToast();
     } else {
-      // Jika tidak cukup jauh, kembalikan ke posisi semula
       setDragX(0);
       setOpacity(1);
     }
@@ -77,46 +65,27 @@ export default function Toast() {
 
   return (
     <div
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] w-[90%] max-w-[360px] touch-none select-none ${animationClass}`}
+      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] w-auto max-w-[80%] touch-none select-none ${animationClass}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{
         transform: `translate(calc(-50% + ${dragX}px), 0)`,
-        opacity: opacity,
+        opacity,
         transition: isDragging.current
           ? "none"
           : "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
-      <div className="bg-white/95 backdrop-blur-md border border-gray-100/80 px-4 py-3 rounded-2xl shadow-layer-lg flex items-center gap-3.5 cursor-grab active:cursor-grabbing">
-        {/* Ikon: Ukuran sedikit diperbesar agar seimbang dengan 2 baris teks */}
-        <div
-          className={`
-          w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm 
-          ${
-            type === "error"
-              ? "bg-red-500 shadow-red-200"
-              : "bg-emerald-500 shadow-emerald-200"
-          }
-        `}
-        >
-          {type === "error" ? (
-            <XCircle size={18} strokeWidth={2.5} className="text-white" />
-          ) : (
-            <CheckCircle size={18} strokeWidth={2.5} className="text-white" />
-          )}
-        </div>
-
-        {/* Kontainer Teks: Dibuat rapat dan tajam */}
-        <div className="flex flex-col min-w-0 flex-1">
-          <p className="text-[13px] font-bold text-gray-900 leading-tight">
-            {type === "error" ? "Gagal" : "Berhasil"}
-          </p>
-          <p className="text-[11px] text-gray-500 font-medium leading-snug mt-0.5 break-words line-clamp-2 tracking-tight">
-            {message}
-          </p>
-        </div>
+      <div
+        className={`
+        px-4 py-2.5 rounded-2xl shadow-md cursor-grab active:cursor-grabbing
+        ${type === "error" ? "bg-red-500" : "bg-gray-700"}
+      `}
+      >
+        <p className="text-[12px] font-medium text-white text-center leading-snug break-words line-clamp-2">
+          {message}
+        </p>
       </div>
     </div>
   );

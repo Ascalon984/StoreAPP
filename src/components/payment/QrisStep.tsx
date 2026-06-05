@@ -91,13 +91,6 @@ export function QrisStep({
       <div className="px-6 pb-5 pt-3 border-t border-gray-100 bg-white mt-auto">
         <div className="max-w-lg mx-auto w-full space-y-2">
           <button
-            className="w-full py-3 rounded-xl font-bold text-[13px] text-white bg-emerald-600 active:scale-[0.98] transition-all hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 disabled:opacity-50 disabled:pointer-events-none"
-            onClick={onProcessPayment}
-            disabled={isSubmitting || isProcessing}
-          >
-            Saya Sudah Bayar
-          </button>
-          <button
             className="w-full py-3 rounded-xl font-bold text-[12px] text-gray-700 bg-white border border-gray-200 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-gray-50"
             onClick={() => showToast("QR Code berhasil didownload!")}
           >

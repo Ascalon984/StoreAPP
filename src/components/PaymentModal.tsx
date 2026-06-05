@@ -9,6 +9,53 @@ import { PendingStep, FailedStep, SuccessStep } from "./payment/StatusSteps";
 
 export type { PaymentStep, PaymentMethod };
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+function generateOrderId(): string {
+  const ts = Date.now().toString(36).toUpperCase();
+  const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${ts}-${rand}`;
+}
+
+/** Bonus poin transaksi: 1 poin per Rp 2.000 dibayarkan */
+function calcBonusPoints(total: number): number {
+  return Math.floor(total / 2000);
+}
+
+/** Human-readable label untuk metode & sub-metode pembayaran */
+function resolveMethodLabel(
+  paymentMethod?: PaymentMethod | null,
+  paymentDetail?: string | null,
+): string {
+  if (!paymentMethod) return "-";
+
+  const detailMap: Record<string, string> = {
+    // e-wallet
+    gopay: "GoPay",
+    dana: "DANA",
+    ovo: "OVO",
+    linkaja: "LinkAja",
+    shopeepay: "ShopeePay",
+    // virtual account
+    bca: "BCA",
+    mandiri: "Mandiri",
+    bri: "BRI",
+    bni: "BNI",
+  };
+
+  if (paymentMethod === "qris") return "QRIS";
+
+  const detailLabel = paymentDetail
+    ? (detailMap[paymentDetail] ?? paymentDetail)
+    : null;
+
+  if (paymentMethod === "va")
+    return detailLabel ? `Virtual Account ${detailLabel}` : "Virtual Account";
+  if (paymentMethod === "ewallet") return detailLabel ?? "E-Wallet";
+
+  return "-";
+}
+
+// ── Component ──────────────────────────────────────────────────────────────
 export default function PaymentModal({
   paymentStep,
   paymentMethod,
@@ -21,19 +68,27 @@ export default function PaymentModal({
 }: PaymentModalProps) {
   const { showToast } = useToastStore();
 
-  // ── Guard: mencegah double-submit ──────────────────────────────────────
+  // ── Guard: mencegah double-submit ────────────────────────────────────────
   const isProcessingRef = useRef(false);
 
-  // ── Cleanup: simpan ref ke setTimeout agar bisa di-clear saat unmount ──
+  // ── Cleanup: simpan ref ke setTimeout agar bisa di-clear saat unmount ───
   const pendingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ── Konfirmasi back di tengah pembayaran ───────────────────────────────
+  // ── Konfirmasi back di tengah pembayaran ──────────────────────────────
   const [showBackConfirm, setShowBackConfirm] = useState(false);
 
-  // ── Pesan error untuk state "failed" ──────────────────────────────────
+  // ── Pesan error untuk state "failed" ────────────────────────────────────
   const [failedMessage, setFailedMessage] = useState<string>(
     "Pembayaran gagal diproses. Silakan coba lagi.",
   );
+
+  // ── Transaction info (generated once per payment attempt) ───────────────
+  const [orderId, setOrderId] = useState<string>(() => generateOrderId());
+  const [transactionDateTime, setTransactionDateTime] = useState<Date>(
+    () => new Date(),
+  );
+  const bonusPoints = calcBonusPoints(total);
+  const paymentMethodLabel = resolveMethodLabel(paymentMethod, paymentDetail);
 
   // Cleanup timer saat komponen unmount
   useEffect(() => {
@@ -44,19 +99,18 @@ export default function PaymentModal({
     };
   }, []);
 
-  // ── Handler: Download receipt ──────────────────────────────────────────
+  // ── Handler: Download receipt ────────────────────────────────────────────
   const handleDownloadReceipt = () => {
     showToast("Bukti transaksi berhasil disimpan");
   };
 
-  // ── Handler: Tombol back saat pembayaran aktif ─────────────────────────
+  // ── Handler: Tombol back saat pembayaran aktif ───────────────────────────
   const handleBackWithConfirm = () => {
     setShowBackConfirm(true);
   };
 
   const handleConfirmBack = () => {
     setShowBackConfirm(false);
-    // Bersihkan timer jika masih berjalan
     if (pendingTimerRef.current) {
       clearTimeout(pendingTimerRef.current);
       pendingTimerRef.current = null;
@@ -65,25 +119,30 @@ export default function PaymentModal({
     setPaymentStep("idle");
   };
 
-  // ── Handler: Proses pembayaran QRIS & VA ───────────────────────────────
+  // ── Handler: Proses pembayaran QRIS & VA ─────────────────────────────────
   const handleProcessPayment = () => {
-    // Guard: tolak jika sedang dalam proses
     if (isProcessingRef.current || isSubmitting) return;
     isProcessingRef.current = true;
 
-    setPaymentStep("pending");
+    // Buat orderId & timestamp baru setiap kali mencoba bayar
+    const newOrderId = generateOrderId();
+    setOrderId(newOrderId);
 
-    // Simulasi verifikasi pihak ketiga / bank
+    setPaymentStep("success");
+
     pendingTimerRef.current = setTimeout(async () => {
       try {
         const success = await executeOrderSubmission();
         if (success !== false) {
+          setTransactionDateTime(new Date());
           setPaymentStep("success");
         } else {
+          setTransactionDateTime(new Date());
           setFailedMessage("Pembayaran gagal diproses. Silakan coba lagi.");
           setPaymentStep("failed");
         }
       } catch (err) {
+        setTransactionDateTime(new Date());
         setFailedMessage("Terjadi kesalahan tak terduga. Silakan coba lagi.");
         setPaymentStep("failed");
       } finally {
@@ -93,20 +152,18 @@ export default function PaymentModal({
     }, 2500);
   };
 
-  // ── Handler: E-Wallet — setelah user diarahkan ke app e-wallet ──────────────
+  // ── Handler: E-Wallet ────────────────────────────────────────────────────
   const ewalletPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleOpenEwallet = () => {
     if (isProcessingRef.current || isSubmitting) return;
     isProcessingRef.current = true;
 
-    // 1. Arahkan user ke deeplink E-Wallet (di production gunakan URL asli)
-    // window.location.href = "gojek://gopay/...";
+    const newOrderId = generateOrderId();
+    setOrderId(newOrderId);
 
-    // 2. Masuk ke state pending
-    setPaymentStep("pending");
+    setPaymentStep("success");
 
-    // 3. Poll status pembayaran setiap 3 detik (max 5x = 15 detik)
     let attempts = 0;
     const MAX_ATTEMPTS = 5;
 
@@ -118,6 +175,7 @@ export default function PaymentModal({
           clearInterval(ewalletPollRef.current!);
           ewalletPollRef.current = null;
           isProcessingRef.current = false;
+          setTransactionDateTime(new Date());
           setPaymentStep("success");
           return;
         }
@@ -130,11 +188,11 @@ export default function PaymentModal({
         ewalletPollRef.current = null;
         isProcessingRef.current = false;
 
-        // Dynamic error message
         const providerName = paymentDetail
           ? paymentDetail.charAt(0).toUpperCase() + paymentDetail.slice(1)
           : "E-Wallet";
 
+        setTransactionDateTime(new Date());
         setFailedMessage(
           `Pembayaran ${providerName} belum terverifikasi. Cek status di aplikasi Anda.`,
         );
@@ -152,10 +210,9 @@ export default function PaymentModal({
     };
   }, []);
 
-  // ── Render guard ───────────────────────────────────────────────────────
+  // ── Render guard ──────────────────────────────────────────────────────────
   if (paymentStep === "idle") return null;
 
-  // Step mana saja yang dianggap "pembayaran sedang berjalan" untuk konfirmasi back
   const activePaymentSteps: PaymentStep[] = ["qr", "va", "ewallet"];
   const isActivePayment = activePaymentSteps.includes(paymentStep);
 
@@ -199,6 +256,9 @@ export default function PaymentModal({
         {paymentStep === "failed" && (
           <FailedStep
             total={total}
+            orderId={orderId}
+            paymentMethodLabel={paymentMethodLabel}
+            transactionDateTime={transactionDateTime}
             failedMessage={failedMessage}
             onRetry={() => {
               isProcessingRef.current = false;
@@ -217,6 +277,10 @@ export default function PaymentModal({
         {paymentStep === "success" && (
           <SuccessStep
             total={total}
+            orderId={orderId}
+            paymentMethodLabel={paymentMethodLabel}
+            transactionDateTime={transactionDateTime}
+            bonusPoints={bonusPoints}
             isSubmitting={isSubmitting}
             onFinish={() => {
               if (onFinish) onFinish();

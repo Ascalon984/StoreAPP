@@ -351,7 +351,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col items-center justify-center px-6">
+        <div className="flex-1 flex flex-col items-center justify-start px-6 pt-20">
           <div className="relative w-48 h-48 mb-4">
             <Image
               src="/illustrations/Empty Cart.png"

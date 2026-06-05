@@ -1,8 +1,33 @@
 import Image from "next/image";
-import { X, AlertCircle, RefreshCw, Check, Download, Loader } from "lucide-react";
+import {
+  X,
+  AlertCircle,
+  RefreshCw,
+  Check,
+  Download,
+  Loader,
+  Star,
+} from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 
-// ─── PENDING STEP ───────────────────────────────────────────────────────────
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+// ─── PENDING STEP ────────────────────────────────────────────────────────────
 export function PendingStep() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-6 max-w-lg mx-auto w-full">
@@ -15,7 +40,7 @@ export function PendingStep() {
           unoptimized
         />
       </div>
-      <h2 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+      <h2 className="text-xl font-black text-gray-700 mb-2 tracking-tight">
         Memproses Pembayaran
       </h2>
       <p className="text-[13px] text-gray-500 text-center max-w-[280px] font-medium leading-relaxed">
@@ -25,9 +50,12 @@ export function PendingStep() {
   );
 }
 
-// ─── FAILED STEP ────────────────────────────────────────────────────────────
+// ─── FAILED STEP ─────────────────────────────────────────────────────────────
 interface FailedStepProps {
   total: number;
+  orderId: string;
+  paymentMethodLabel: string;
+  transactionDateTime: Date;
   failedMessage: string;
   onRetry: () => void;
   onChangeMethod: () => void;
@@ -35,6 +63,9 @@ interface FailedStepProps {
 
 export function FailedStep({
   total,
+  orderId,
+  paymentMethodLabel,
+  transactionDateTime,
   failedMessage,
   onRetry,
   onChangeMethod,
@@ -73,8 +104,21 @@ export function FailedStep({
           </div>
           <div className="flex items-center justify-between py-3">
             <span className="text-[12px] text-gray-500">ID Pesanan</span>
+            <span className="text-[12px] font-semibold text-gray-900 font-mono tracking-wide">
+              #{orderId}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-3">
+            <span className="text-[12px] text-gray-500">Metode</span>
             <span className="text-[12px] font-semibold text-gray-900">
-              #ORD-XXXX
+              {paymentMethodLabel}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-3">
+            <span className="text-[12px] text-gray-500">Tanggal & Waktu</span>
+            <span className="text-[12px] font-semibold text-gray-900">
+              {formatDate(transactionDateTime)},{" "}
+              {formatTime(transactionDateTime)}
             </span>
           </div>
         </div>
@@ -101,9 +145,13 @@ export function FailedStep({
   );
 }
 
-// ─── SUCCESS STEP ───────────────────────────────────────────────────────────
+// ─── SUCCESS STEP ─────────────────────────────────────────────────────────────
 interface SuccessStepProps {
   total: number;
+  orderId: string;
+  paymentMethodLabel: string;
+  transactionDateTime: Date;
+  bonusPoints: number;
   isSubmitting: boolean;
   onFinish: () => void;
   onDownloadReceipt: () => void;
@@ -111,6 +159,10 @@ interface SuccessStepProps {
 
 export function SuccessStep({
   total,
+  orderId,
+  paymentMethodLabel,
+  transactionDateTime,
+  bonusPoints,
   isSubmitting,
   onFinish,
   onDownloadReceipt,
@@ -142,32 +194,60 @@ export function SuccessStep({
             </button>
           </div>
 
-          <div className="divide-y divide-gray-100 border-b border-gray-100">
+          <div className="divide-y divide-gray-100 border-t border-b border-gray-100">
+            {/* Total */}
             <div className="flex items-center justify-between py-3">
               <span className="text-[12px] text-gray-500">Total</span>
               <span className="text-[13px] font-bold text-emerald-700">
                 {formatRupiah(total)}
               </span>
             </div>
+
+            {/* ID Pesanan */}
             <div className="flex items-center justify-between py-3">
               <span className="text-[12px] text-gray-500">ID Pesanan</span>
-              <span className="text-[12px] font-semibold text-gray-900">
-                #ORD-XXXX
+              <span className="text-[12px] font-semibold text-gray-900 font-mono tracking-wide">
+                #{orderId}
               </span>
             </div>
+
+            {/* Metode */}
             <div className="flex items-center justify-between py-3">
-              <span className="text-[12px] text-gray-500">Tanggal</span>
+              <span className="text-[12px] text-gray-500">Metode</span>
               <span className="text-[12px] font-semibold text-gray-900">
-                02 Jun 2026
+                {paymentMethodLabel}
               </span>
             </div>
+
+            {/* Tanggal & Waktu (digabung satu baris) */}
             <div className="flex items-center justify-between py-3">
-              <span className="text-[12px] text-gray-500">Waktu</span>
+              <span className="text-[12px] text-gray-500">Tanggal & Waktu</span>
               <span className="text-[12px] font-semibold text-gray-900">
-                10:45 AM
+                {formatDate(transactionDateTime)},{" "}
+                {formatTime(transactionDateTime)}
+              </span>
+            </div>
+
+            {/* Bonus Poin — hanya transaksi berhasil */}
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-1.5">
+                <Star
+                  size={12}
+                  className="text-amber-400 fill-amber-400"
+                  strokeWidth={0}
+                />
+                <span className="text-[12px] text-gray-500">Bonus Poin</span>
+              </div>
+              <span className="text-[12px] font-bold text-amber-600">
+                +{bonusPoints.toLocaleString("id-ID")} poin
               </span>
             </div>
           </div>
+
+          {/* Info kecil bonus poin */}
+          <p className="mt-2.5 text-[10px] text-gray-400 text-right leading-relaxed">
+            1 poin per Rp 2.000 yang dibayarkan
+          </p>
         </div>
       </div>
 

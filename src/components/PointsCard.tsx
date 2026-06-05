@@ -102,7 +102,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         animation: "floatUp 1.8s ease-out forwards",
                       }}
                     >
-                      +20
+                      +10
                     </span>
                   )}
                   {showFloating100 && (
@@ -110,7 +110,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                       className="absolute -top-2 -right-9 text-[13px] font-black text-emerald-500 pointer-events-none"
                       style={{ animation: "floatUp 1.8s ease-out forwards" }}
                     >
-                      +100
+                      +50
                     </span>
                   )}
                 </div>

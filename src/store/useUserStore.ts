@@ -8,10 +8,10 @@ export const mockUser = {
 
 export const getGreeting = () => {
   const hour = new Date().getHours();
-  if (hour >= 0 && hour < 11) return "Selamat Pagi";
-  if (hour >= 11 && hour < 15) return "Selamat Siang";
-  if (hour >= 15 && hour < 19) return "Selamat Sore";
-  return "Selamat Malam";
+  if (hour >= 0 && hour < 11) return "Selamat pagi";
+  if (hour >= 11 && hour < 15) return "Selamat siang";
+  if (hour >= 15 && hour < 19) return "Selamat sore";
+  return "Selamat malam";
 };
 
 interface UserState {

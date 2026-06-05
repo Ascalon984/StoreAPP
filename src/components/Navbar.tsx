@@ -190,7 +190,7 @@ export default function Navbar() {
                     </div>
                   </Link>
                   <div className="flex flex-col min-w-0">
-                    <p className="text-white/75 text-[11px] font-medium leading-none">
+                    <p className="text-white/75 text-[10.5px] font-medium leading-none">
                       {getGreeting()}
                     </p>
                     <p className="text-white text-sm font-semibold tracking-[-0.01em] truncate mt-0.5">

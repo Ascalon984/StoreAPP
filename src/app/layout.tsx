@@ -18,7 +18,7 @@ const ReviewModal = dynamic(() => import("@/components/ReviewModal"), {
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: `PalugadaStore — Belanja Harian Lebih Mudah`,
+  title: `Atheris`,
   description:
     "Belanja kebutuhan harian, snack, minuman, dan produk pilihan dengan cepat dan praktis di PalugadaStore.",
   icons: {
