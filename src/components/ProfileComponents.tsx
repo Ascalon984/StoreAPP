@@ -59,9 +59,11 @@ export function SectionLabel({ label }: { label: string }) {
 export function Toggle({
   on,
   onToggle,
+  ariaLabel = "Toggle",
 }: {
   on: boolean;
   onToggle: () => void;
+  ariaLabel?: string;
 }) {
   return (
     <button
@@ -69,6 +71,7 @@ export function Toggle({
       className={`relative w-11 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${on ? "bg-emerald-500" : "bg-gray-200"}`}
       aria-checked={on}
       role="switch"
+      aria-label={ariaLabel}
     >
       <span
         className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${on ? "left-[22px]" : "left-0.5"}`}
@@ -146,6 +149,7 @@ export function FieldRow({
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onEditSave(fieldKey)}
             className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-white hover:bg-emerald-600 active:scale-90 transition-all flex-shrink-0 self-end"
+            aria-label="Save"
           >
             <Check size={15} strokeWidth={2.5} />
           </button>
@@ -154,6 +158,7 @@ export function FieldRow({
             onClick={() => !isDisabled && onEditStart(fieldKey, value)}
             disabled={isDisabled}
             className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-300 hover:text-emerald-500 hover:bg-emerald-50 active:scale-90 transition-all flex-shrink-0 mt-0.5"
+            aria-label={`Edit ${label}`}
           >
             <Pencil size={15} strokeWidth={2} />
           </button>

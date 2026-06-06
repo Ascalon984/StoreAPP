@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -80,29 +81,26 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
 }
 
 /* ── Empty State ──────────────────────────────────── */
-function EmptyState({ message }: { message: string }) {
+function EmptyState({ category }: { category: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-        <svg
-          className="w-7 h-7 text-gray-300"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
-      </div>
-      <h4 className="text-gray-700 font-bold text-sm">
-        Produk Tidak Ditemukan
+    <div className="flex flex-col items-center justify-center min-h-[55vh] px-6 text-center">
+      <Image
+        src="/illustrations/Not Found Sub Category.png"
+        alt="Produk tidak ditemukan"
+        width={180}
+        height={180}
+        priority
+        className="w-[220px] h-auto select-none pointer-events-none"
+      />
+
+      <h4 className="mt-3 text-gray-800 font-bold text-sm">
+        Produk Belum Tersedia
       </h4>
-      <p className="text-[11px] text-gray-400 mt-1 max-w-[200px] leading-snug">
-        {message}
+
+      <p className="mt-2 text-[12px] leading-relaxed text-gray-500 max-w-[260px]">
+        Saat ini belum ada produk{" "}
+        <span className="font-semibold text-gray-700">{category}</span> yang
+        tersedia.
       </p>
     </div>
   );
@@ -200,12 +198,12 @@ export default function CategoryProductPage({
         className="sticky top-0 z-50 bg-white transition-shadow duration-300"
         style={{
           boxShadow: isScrolled
-            ? "0 2px 16px rgba(0,0,0,0.08)"
+            ? "0 2px 10px rgba(0,0,0,0.06)"
             : "0 1px 0 rgba(0,0,0,0.06)",
         }}
       >
         {/* Back row */}
-        <div className="flex items-center gap-3 px-4 pt-3.5 pb-2">
+        <div className="flex items-center gap-2 px-4 pt-2.5 pb-1.5">
           <button
             onClick={() => router.back()}
             className="
@@ -218,11 +216,11 @@ export default function CategoryProductPage({
           "
             aria-label="Kembali"
           >
-            <ChevronLeft size={21} strokeWidth={2.5} />
+            <ChevronLeft size={23} strokeWidth={2.5} />
           </button>
 
-          <div className="flex-1 min-w-0">
-            <h1 className="text-[15px] font-extrabold text-gray-800 tracking-tight capitalize truncate">
+          <div className="flex-1 min-w-0 -ml-1">
+            <h1 className="text-[15px] font-bold text-gray-800 tracking-tight capitalize truncate">
               {categoryName}
             </h1>
           </div>
@@ -244,7 +242,7 @@ export default function CategoryProductPage({
         </div>
 
         {/* Sub-category chips + sort */}
-        <div className="flex items-center gap-2 px-4 py-2.5">
+        <div className="flex items-center gap-2 px-4 py-2">
           {/* Chip scroll area */}
           {chips ? (
             <div className="relative flex-1 min-w-0">
@@ -266,7 +264,7 @@ export default function CategoryProductPage({
                       ${
                         activeChip === chip
                           ? `bg-emerald-600 border-emerald-600 text-white`
-                          : `bg-white/90 border-gray-200 text-gray-600`
+                          : `bg-white/90 border-gray-300 text-gray-600`
                       }
                     `}
                   >
@@ -286,10 +284,10 @@ export default function CategoryProductPage({
             <div className="bg-white rounded-xl">
               <button
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-90
+                className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all
                 ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
               >
-                <SlidersHorizontal size={17} strokeWidth={2.2} />
+                <SlidersHorizontal size={18} strokeWidth={2.2} />
               </button>
             </div>
 
@@ -364,7 +362,9 @@ export default function CategoryProductPage({
             </div>
           </div>
         ) : sorted.length === 0 ? (
-          <EmptyState message="Coba pilih sub-kategori lain atau ubah kata kunci pencarianmu." />
+          <EmptyState
+            category={activeChip === "Semua" ? categoryName : activeChip}
+          />
         ) : (
           <div className="flex items-start gap-3">
             {/* Kolom Kiri */}
