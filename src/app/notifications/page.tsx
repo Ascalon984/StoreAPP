@@ -4,24 +4,8 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Bell, TicketPercent, CheckCheck } from "lucide-react";
 
-// ── Types ──
-type NotifType = "activity" | "promo";
-type NotifTab = "all" | "activity" | "promo";
-
-type Notification = {
-  id: string;
-  type: NotifType;
-  isRead: boolean;
-  createdAt: string; // ISO string
-  // Activity-specific
-  activityTitle?: string;
-  productName?: string;
-  orderId?: string;
-  // Promo-specific
-  promoProduct?: string;
-  promoDiscount?: number; // percent
-  promoCopy?: string;
-};
+import { mockNotifications } from "@/lib/data";
+import { Notification, NotifType } from "@/lib/types";
 
 // ── Helper: relative time ──
 function timeAgo(iso: string): string {
@@ -40,74 +24,9 @@ function timeAgo(iso: string): string {
   return past.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
 }
 
-// ── Mock Data ──
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: "n1",
-    type: "activity",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(), // 15 mnt lalu
-    activityTitle: "Pesanan berhasil dibuat",
-    productName: "Indomie Goreng Original × 5",
-    orderId: "ORD-2026-010",
-  },
-  {
-    id: "n2",
-    type: "promo",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 mnt lalu
-    promoProduct: "Aqua 600ml",
-    promoDiscount: 20,
-    promoCopy: "Hidrasi hemat, stok terbatas — jangan sampai kehabisan!",
-  },
-  {
-    id: "n3",
-    type: "activity",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 jam lalu
-    activityTitle: "Pesanan berhasil dibuat",
-    productName: "Mie Sedaap Korean Spicy × 3",
-    orderId: "ORD-2026-009",
-  },
-  {
-    id: "n4",
-    type: "promo",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(), // 8 jam lalu
-    promoProduct: "SilverQueen Almond 65g",
-    promoDiscount: 15,
-    promoCopy: "Coklat premium favoritmu kini lebih terjangkau!",
-  },
-  {
-    id: "n5",
-    type: "activity",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(), // kemarin
-    activityTitle: "Pesanan berhasil dibuat",
-    productName: "Good Day Cappuccino × 6",
-    orderId: "ORD-2026-007",
-  },
-  {
-    id: "n6",
-    type: "promo",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(), // 2 hari lalu
-    promoProduct: "Chitato Beef Barbeque 68g",
-    promoDiscount: 25,
-    promoCopy: "Snack kesukaanmu diskon gede, yuk borong sekarang!",
-  },
-  {
-    id: "n7",
-    type: "activity",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), // 3 hari lalu
-    activityTitle: "Pesanan berhasil dibuat",
-    productName: "Coca Cola 390ml × 2",
-    orderId: "ORD-2026-004",
-  },
-];
-
 // ── Tab Config ──
+type NotifTab = "all" | "activity" | "promo";
+
 const TABS: { key: NotifTab; label: string }[] = [
   { key: "all", label: "Semua" },
   { key: "activity", label: "Aktivitas" },
@@ -245,7 +164,7 @@ export default function NotificationsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<NotifTab>("all");
   const [notifications, setNotifications] =
-    useState<Notification[]>(MOCK_NOTIFICATIONS);
+    useState<Notification[]>(mockNotifications);
 
   // Sort: unread di atas, read di bawah; dalam grup, terbaru di atas
   const sorted = [...notifications].sort((a, b) => {

@@ -1,4 +1,4 @@
-import { Product, Category, Review, Banner } from "./types";
+import { Product, Category, Review, Banner, Order, Notification } from "./types";
 
 export const banners: Banner[] = [
   {
@@ -446,3 +446,169 @@ export const defaultReviews: Review[] = [
     isVerified: true,
   },
 ];
+
+export const mockOrders: Order[] = [
+  {
+    id: "1",
+    orderId: "ORD-2026-001",
+    createdAt: "2026-05-11T10:30:00Z",
+    status: "completed",
+    items: [
+      {
+        productId: "p1",
+        name: "Telkomsel Pulsa",
+        category: "pulsa",
+        image: null,
+        price: 5000,
+        quantity: 1,
+      },
+    ],
+    total: 5000,
+    paymentMethod: "GoPay",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "-",
+  },
+  {
+    id: "2",
+    orderId: "ORD-2026-002",
+    createdAt: "2026-05-11T08:10:00Z",
+    status: "processing",
+    items: [
+      {
+        productId: "d1",
+        name: "Telkomsel Paket Data",
+        category: "paket-data",
+        image: null,
+        price: 42000,
+        quantity: 1,
+      },
+    ],
+    total: 42000,
+    paymentMethod: "OVO",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "-",
+  },
+  {
+    id: "3",
+    orderId: "ORD-2026-003",
+    createdAt: "2026-05-08T14:15:00Z",
+    status: "processing",
+    items: [
+      {
+        productId: "l1",
+        name: "PLN Token Listrik",
+        category: "listrik",
+        image: null,
+        price: 20000,
+        quantity: 1,
+      },
+      {
+        productId: "w1",
+        name: "GoPay",
+        category: "e-wallet",
+        image: null,
+        price: 50000,
+        quantity: 1,
+      },
+    ],
+    total: 70000,
+    paymentMethod: "DANA",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "-",
+  },
+  {
+    id: "4",
+    orderId: "ORD-2026-004",
+    createdAt: "2026-05-05T19:40:00Z",
+    status: "completed",
+    items: [
+      {
+        productId: "g1",
+        name: "Mobile Legends Diamonds",
+        category: "game",
+        image: null,
+        price: 8000,
+        quantity: 1,
+      },
+    ],
+    total: 8000,
+    paymentMethod: "ShopeePay",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "-",
+  },
+  {
+    id: "5",
+    orderId: "ORD-2026-005",
+    createdAt: "2026-05-03T11:00:00Z",
+    status: "cancelled",
+    items: [
+      {
+        productId: "vc1",
+        name: "McDonald's Voucher",
+        category: "voucher",
+        image: null,
+        price: 45000,
+        quantity: 1,
+      },
+    ],
+    total: 45000,
+    paymentMethod: "BCA VA",
+    customerName: "Ahmad Fauzi",
+    phone: "081234567890",
+    address: "-",
+  },
+];
+
+export const mockNotifications: Notification[] = [
+  {
+    id: "n1",
+    type: "activity",
+    isRead: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+    activityTitle: "Pesanan berhasil dibuat",
+    productName: "Telkomsel Pulsa",
+    orderId: "ORD-2026-010",
+  },
+  {
+    id: "n2",
+    type: "promo",
+    isRead: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    promoProduct: "Mobile Legends Diamonds",
+    promoDiscount: 20,
+    promoCopy: "Diskon top up diamond hari ini!",
+  },
+  {
+    id: "n3",
+    type: "activity",
+    isRead: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    activityTitle: "Pesanan berhasil dibuat",
+    productName: "Netflix Premium",
+    orderId: "ORD-2026-009",
+  },
+  {
+    id: "n4",
+    type: "promo",
+    isRead: true,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
+    promoProduct: "PLN Token Listrik",
+    promoDiscount: 15,
+    promoCopy: "Promo token listrik hemat untukmu!",
+  },
+  {
+    id: "n5",
+    type: "activity",
+    isRead: true,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+    activityTitle: "Pesanan berhasil dibuat",
+    productName: "GoPay",
+    orderId: "ORD-2026-007",
+  },
+];
+
+export const mockFavorites: Product[] = products.filter(p => ["p1", "d1", "l1", "g1", "s1"].includes(p.id));

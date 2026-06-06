@@ -501,7 +501,19 @@ export default function CheckoutPage() {
                                 ),
                               }))
                             }
-                            className="flex-1 text-[12px] bg-gray-50 border border-gray-200/80 rounded-lg px-3 h-9 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"
+                            className="
+                            flex-1
+                            h-9
+                            px-3
+                            text-[12px]
+                            text-gray-800
+                            bg-gray-50
+                            border border-gray-200/60
+                            rounded-lg
+                            placeholder:text-gray-400
+                            focus:outline-none
+                            focus:border-emerald-500
+                            "
                           />
                         )}
                         <button
@@ -510,7 +522,7 @@ export default function CheckoutPage() {
     text-amber-600 active:scale-95 transition-all"
                         >
                           <Trash2 size={12} strokeWidth={2} />
-                          Hapus
+                          {isBuyNow ? "Batal" : "Hapus"}
                         </button>
                       </div>
                     </div>
@@ -606,7 +618,7 @@ export default function CheckoutPage() {
                 <div className="border-t border-dashed border-gray-200 pt-2 mt-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] font-bold text-gray-800">
-                      Total Pembayaran
+                      Total Bayar
                     </span>
 
                     <span className="text-[15px] font-extrabold text-emerald-700 tracking-tight">

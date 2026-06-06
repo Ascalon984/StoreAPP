@@ -60,3 +60,44 @@ export interface Banner {
   subtitle: string;
   image: string;
 }
+
+export type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  category: string;
+  image: string | null;
+  price: number;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  orderId: string;
+  createdAt: string;
+  status: OrderStatus;
+  items: OrderItem[];
+  total: number;
+  paymentMethod: string;
+  customerName: string;
+  phone: string;
+  address: string;
+}
+
+export type NotifType = "activity" | "promo";
+
+export interface Notification {
+  id: string;
+  type: NotifType;
+  isRead: boolean;
+  createdAt: string; // ISO string
+  // Activity-specific
+  activityTitle?: string;
+  productName?: string;
+  orderId?: string;
+  // Promo-specific
+  promoProduct?: string;
+  promoDiscount?: number; // percent
+  promoCopy?: string;
+}
