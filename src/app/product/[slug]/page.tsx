@@ -344,34 +344,39 @@ export default function ProductDetailPage({
             {/* Info Section */}
             <div className="px-3 pt-2 pb-1.5">
               <div className="flex justify-between items-start gap-3 mb-2">
-                <h1 className="text-lg md:text-xl font-semibold text-gray-900 leading-snug flex-1">
+                <h1 className="text-base md:text-lg font-semibold text-gray-900 leading-snug flex-1">
                   {product.name}
                 </h1>
                 <div className="text-right flex-shrink-0">
                   <div className="flex items-center gap-1 text-orange-500">
-                    <Flame size={14} strokeWidth={1.5} />
-                    <span className="font-semibold text-gray-800 text-sm">
+                    <Flame
+                      size={14}
+                      className="text-orange-500 fill-orange-400/80"
+                    />
+                    <span className="font-semibold text-gray-800 text-[13px]">
                       {Math.max(product.sold, product.sold || 0)}
                     </span>
                   </div>
-                  <p className="text-[10px] text-gray-500">Terjual</p>
+                  <p className="text-[10px] text-gray-400">Terjual</p>
                 </div>
               </div>
 
               <div className="flex items-end justify-between mb-1.5">
                 <div>
                   {product.originalPrice && (
-                    <p className="text-sm text-gray-500 line-through mb-1">
+                    <p className="text-[12px] text-gray-400 line-through mb-0.5">
                       {formatRupiah(product.originalPrice)}
                     </p>
                   )}
-                  <p className="text-2xl font-bold text-emerald-700 tracking-tight">
+                  <p className="text-[22px] font-bold text-emerald-700 tracking-tight">
                     {formatRupiah(product.price)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 mb-1">Sisa Stok</p>
-                  <p className="font-semibold text-gray-800">{product.stock}</p>
+                  <p className="text-[11px] text-gray-400 mb-0.5">Sisa Stok</p>
+                  <p className="text-[13px] font-semibold text-gray-800">
+                    {product.stock}
+                  </p>
                 </div>
               </div>
             </div>

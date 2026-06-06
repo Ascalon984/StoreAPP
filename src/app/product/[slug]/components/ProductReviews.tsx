@@ -15,11 +15,11 @@ import { maskName } from "@/lib/utils";
 import { useReviewStore } from "@/store/useReviewStore";
 
 const RATING_COLORS: Record<number, string> = {
-  5: "bg-gray-600",
-  4: "bg-gray-600",
-  3: "bg-gray-600",
-  2: "bg-gray-600",
-  1: "bg-gray-600",
+  5: "bg-gray-500",
+  4: "bg-gray-500",
+  3: "bg-gray-500",
+  2: "bg-gray-500",
+  1: "bg-gray-500",
 };
 
 const colors = [
@@ -147,6 +147,11 @@ export default function ProductReviews({
     }
   };
 
+  const hasReview = allReviews.length > 0;
+
+  const safeRating =
+    Number.isFinite(liveRating) && liveRating > 0 ? liveRating : 0;
+
   return (
     <div className="bg-white px-4 py-3 mt-1">
       <h2 className="text-sm font-bold text-gray-800 tracking-tight">
@@ -154,7 +159,7 @@ export default function ProductReviews({
       </h2>
 
       {/* Gauge + Bar Distribution */}
-      <div className="bg-gray-50/50 rounded-xl p-4 mb-4 shadow-layer-xs mt-2">
+      <div className="bg-gray-50/70 rounded-xl p-4 mb-4 shadow-layer-sm mt-2">
         <div className="flex items-center gap-0">
           {/* Gauge — 40% */}
           <div
@@ -197,7 +202,9 @@ export default function ProductReviews({
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeDasharray="157.08"
-                strokeDashoffset={157.08 * (1 - (liveRating - 1) / 4)}
+                strokeDashoffset={
+                  safeRating > 0 ? 157.08 * (1 - (safeRating - 1) / 4) : 157.08
+                }
               />
               <circle cx="55" cy="54" r="3" fill="#374151" />
               <line
@@ -208,20 +215,25 @@ export default function ProductReviews({
                 stroke="#374151"
                 strokeWidth="1.8"
                 strokeLinecap="round"
-                transform={`rotate(${-90 + ((liveRating - 1) / 4) * 180}, 55, 54)`}
+                transform={
+                  safeRating > 0
+                    ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
+                    : `rotate(-90, 55, 54)`
+                }
               />
             </svg>
 
             <span className="text-xl font-extrabold text-gray-800 leading-none -mt-0.5">
-              {liveRating.toFixed(1)}
+              {(safeRating || 0).toFixed(1)}
             </span>
             <div className="flex gap-0.5 my-0.5">
-              {[1, 2, 3, 4, 5].map((i) => renderStar(i, liveRating))}
+              {hasReview &&
+                [1, 2, 3, 4, 5].map((i) => renderStar(i, safeRating))}
             </div>
             <span
-              className={`text-[10px] font-bold ${getRatingColor(liveRating)}`}
+              className={`text-[10px] font-bold ${getRatingColor(safeRating)}`}
             >
-              {getRatingLabel(liveRating)}
+              {hasReview ? getRatingLabel(safeRating) : "Belum ada ulasan"}
             </span>
           </div>
 
@@ -234,7 +246,7 @@ export default function ProductReviews({
               const pct =
                 distribution.percent[star as keyof typeof distribution.percent];
               return (
-                <div key={star} className="flex items-center gap-1.5">
+                <div key={star} className="flex items-center gap-0.5">
                   <span className="text-[10px] font-semibold text-gray-600 w-2 text-center tabular-nums">
                     {star}
                   </span>
@@ -249,7 +261,7 @@ export default function ProductReviews({
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-[9px] text-gray-400 tabular-nums w-6 text-right">
+                  <span className="text-[9px] text-gray-400 tabular-nums min-w-[26px] text-right">
                     {pct}%
                   </span>
                 </div>
@@ -259,12 +271,9 @@ export default function ProductReviews({
         </div>
       </div>
 
-      <div className="space-y-2.5 px-1">
-        {displayedReviews.map((review: Review) => (
-          <div
-            key={review.id}
-            className="py-2.5 border-b border-gray-100 last:border-0"
-          >
+      <div className="space-y-0 px-1">
+        {displayedReviews.map((review: Review, index: number) => (
+          <div key={review.id} className="py-2.5">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-3">
                 <div
@@ -343,6 +352,11 @@ export default function ProductReviews({
                 )}
               </div>
             </div>
+
+            {/* Divider skip area avatar */}
+            {index < displayedReviews.length - 1 && (
+              <div className="ml-[48px] border-b border-gray-100 mt-2.5" />
+            )}
           </div>
         ))}
       </div>

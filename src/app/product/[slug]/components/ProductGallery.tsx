@@ -52,7 +52,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
               className="text-gray-900"
             />
           </button>
-          <div className="absolute top-4 right-4 z-20 flex items-center bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-[0_8px_24px_rgba(0,0,0,0.1)] rounded-full px-1.5 h-[38px]">
+          <div className="absolute top-4 right-4 z-20 flex items-center bg-white/70 backdrop-blur-md border border-gray-200/40 rounded-full px-1 h-[34px]">
             <button
               onClick={handleShare}
               className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
