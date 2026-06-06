@@ -606,6 +606,11 @@ export const defaultReviews: Review[] = [
     isVerified: true,
     likes: 24,
     dislikes: 1,
+    reply: {
+      adminName: "Atheris",
+      comment: "Terima kasih atas ulasan positifnya kak. Ditunggu orderan selanjutnya ya!",
+      createdAt: generateReviewDate(0.5),
+    },
   },
   {
     id: "r2",
@@ -617,6 +622,11 @@ export const defaultReviews: Review[] = [
     isVerified: true,
     likes: 12,
     dislikes: 0,
+    reply: {
+      adminName: "Sarah",
+      comment: "Senang bisa melayani kakak, terima kasih atas kepercayaannya belanja di toko kami.",
+      createdAt: generateReviewDate(2),
+    },
   },
   {
     id: "r3",

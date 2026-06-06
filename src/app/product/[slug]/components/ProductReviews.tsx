@@ -353,6 +353,34 @@ export default function ProductReviews({
               </div>
             </div>
 
+            {review.reply && (
+              <div className="ml-[48px] mt-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
+                {/* header */}
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">
+                      CS
+                    </div>
+
+                    <div className="min-w-0">
+                      <span className="block text-[11px] font-bold text-gray-800 truncate">
+                        {review.reply.adminName}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="text-[10px] text-gray-400">
+                    <TimeAgo date={review.reply.createdAt} />
+                  </span>
+                </div>
+
+                {/* content */}
+                <p className="text-[12px] text-gray-600 leading-snug">
+                  {review.reply.comment}
+                </p>
+              </div>
+            )}
+
             {/* Divider skip area avatar */}
             {index < displayedReviews.length - 1 && (
               <div className="ml-[48px] border-b border-gray-100 mt-2.5" />

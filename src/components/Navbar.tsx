@@ -85,8 +85,8 @@ export default function Navbar() {
           setIsScrolled((prev) => {
             // Hysteresis: collapse di >50, expand hanya di <10
             // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
-            if (!prev && y > 30) return true;
-            if (prev && y < 8) return false;
+            if (!prev && y > 80) return true;
+            if (prev && y < 20) return false;
             return prev; // zona mati (10–50): pertahankan state
           });
 

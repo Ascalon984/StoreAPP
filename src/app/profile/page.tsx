@@ -22,11 +22,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
-import {
-  AvatarCircle,
-  Toggle,
-  FieldRow,
-} from "@/components/ProfileComponents";
+import { AvatarCircle, Toggle, FieldRow } from "@/components/ProfileComponents";
 
 // ── Mock data ──
 const mockUser = {
@@ -448,7 +444,7 @@ export default function ProfilePage() {
 
       {/* Modal Crop */}
       {cropSrc && (
-        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-4 pb-0 sm:pb-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setCropSrc(null)}
@@ -466,7 +462,7 @@ export default function ProfilePage() {
               </button>
             </div>
             <div
-              className="crop-scroll flex-1 min-h-0 overflow-y-auto bg-gray-50 p-2"
+              className="crop-scroll flex-1 min-h-0 overflow-y-auto bg-white p-2"
               style={{
                 WebkitOverflowScrolling: "touch",
                 overscrollBehavior: "contain",
@@ -507,9 +503,9 @@ export default function ProfilePage() {
       {pointsInfoOpen && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-5">
           {/* BACKDROP */}
-          <button
-            onClick={() => setPointsInfoOpen(false)}
+          <div
             className="absolute inset-0 bg-black/35 backdrop-blur-[2px]"
+            onClick={() => setPointsInfoOpen(false)}
           />
 
           {/* MODAL */}

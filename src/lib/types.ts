@@ -42,6 +42,11 @@ export interface Review {
   isVerified: boolean;
   likes?: number;
   dislikes?: number;
+  reply?: {
+    adminName: string;
+    comment: string;
+    createdAt: string;
+  };
 }
 
 export interface CartItem {

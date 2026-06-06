@@ -48,6 +48,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
         isVerified: r.is_active !== false,
         likes: r.likes || 0,
         dislikes: r.dislikes || 0,
+        reply: r.reply,
       }));
 
       set({ reviews, isLoading: false });

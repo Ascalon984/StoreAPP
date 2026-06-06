@@ -137,31 +137,25 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
 
         {/* footer row (timestamp + copy) */}
         <div
-          className={`mt-1 flex items-center gap-2 text-[10px] text-gray-400 ${
-            isUser ? "justify-end" : "justify-start"
+          className={`mt-1 w-full flex items-center text-[10px] text-gray-400 ${
+            isUser ? "justify-end" : "justify-between"
           }`}
         >
-          <span className="text-[10px] text-gray-400 flex items-center gap-0.5">
-            {formatTime(msg.timestamp)}
-          </span>
+          <span>{formatTime(msg.timestamp)}</span>
 
-          {/* COPY BUTTON */}
-          <button
-            onClick={() => handleCopy(msg.text ?? "")}
-            className={`
-    absolute bottom-1
-    opacity-100
-    text-gray-400 hover:text-gray-600
-    transition
-    ${isUser ? "left-1" : "right-1"}
-  `}
-          >
-            {copied ? (
-              <Check size={13} className="text-green-500" />
-            ) : (
-              <Copy size={13} />
-            )}
-          </button>
+          {!isUser && (
+            <button
+              onClick={() => handleCopy(msg.text ?? "")}
+              aria-label="Salin pesan"
+              className="text-gray-400 hover:text-gray-600 active:scale-90 transition"
+            >
+              {copied ? (
+                <Check size={12} className="text-green-500" />
+              ) : (
+                <Copy size={12} />
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

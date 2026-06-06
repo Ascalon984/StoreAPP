@@ -188,20 +188,7 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
   );
 }
 
-function PromoCardSkeleton() {
-  return (
-    <div className="flex-shrink-0 w-[200px] bg-white rounded-xl shadow-sm overflow-hidden p-2 flex flex-row items-center gap-3">
-      <div className="w-16 h-16 bg-gray-100 skeleton rounded-lg animate-pulse flex-shrink-0" />
-      <div className="flex-1 flex flex-col gap-2">
-        <div className="h-2 w-full bg-gray-100 skeleton rounded animate-pulse" />
-        <div className="flex items-center justify-between">
-          <div className="h-3 w-16 bg-gray-100 skeleton rounded animate-pulse" />
-          <div className="h-2.5 w-8 bg-gray-100 skeleton rounded animate-pulse" />
-        </div>
-      </div>
-    </div>
-  );
-}
+
 
 /* ── Highlight Card Skeleton ──────────────────────── */
 function HighlightCardSkeleton() {
@@ -214,107 +201,6 @@ function HighlightCardSkeleton() {
         <div className="h-2 w-1/2 bg-gray-100 skeleton rounded animate-pulse" />
       </div>
     </div>
-  );
-}
-
-/* ── Compact Promo Card (horizontal scroll) ────────── */
-function PromoCard({ product, index }: { product: Product; index: number }) {
-  const { getReviewsForProduct } = useReviewStore();
-  const localReviews = getReviewsForProduct(product.id);
-
-  const rawImages = product.images || (product as any).image;
-  let productImages: string[] = [];
-  if (Array.isArray(rawImages)) {
-    productImages = rawImages.flatMap((img) => {
-      if (!img || typeof img !== "string") return [];
-      if (img.startsWith("data:image") || img.startsWith("http")) return [img];
-      return img
-        .split("|")
-        .filter(
-          (i) =>
-            i?.trim()?.startsWith("data:image") ||
-            i?.trim()?.startsWith("http"),
-        );
-    });
-  } else if (typeof rawImages === "string") {
-    productImages = rawImages
-      .split("|")
-      .map((i) => i?.trim())
-      .filter((i) => i && (i.startsWith("data:image") || i.startsWith("http")));
-  }
-
-  const specificReviews = localReviews.filter(
-    (r) => r.productId === product.id,
-  );
-  const displayRating =
-    specificReviews.length > 0
-      ? Number(
-          (
-            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
-            specificReviews.length
-          ).toFixed(1),
-        )
-      : product.rating || 0;
-
-  const hasDiscount =
-    product.originalPrice && product.originalPrice > product.price;
-
-  return (
-    <Link
-      href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[200px] group"
-    >
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[76px]">
-        {/* Gambar full-bleed kiri */}
-        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
-          <ProductImage
-            category={product.category}
-            name={product.name}
-            variant={index}
-            src={productImages[0]}
-            className="w-full h-full object-cover"
-            style={{} as React.CSSProperties}
-          />
-        </div>
-
-        {/* Konten kanan */}
-        <div className="flex-1 min-w-0 flex flex-col px-2.5 py-2">
-          {/* Nama */}
-          <div className="min-h-[28px] mb-1">
-            <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
-              {product.name}
-            </p>
-          </div>
-
-          {/* Harga & progress */}
-          <div className="flex flex-col gap-0.5 mt-auto">
-            {hasDiscount && (
-              <p className="text-[9px] text-gray-400 line-through leading-none">
-                {formatRupiah(product.originalPrice!)}
-              </p>
-            )}
-
-            <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight leading-none">
-              {formatRupiah(product.price)}
-            </p>
-
-            {/* Progress */}
-            <div className="mt-1.5">
-              <span className="text-[9px] font-medium text-orange-500 leading-none">
-                Tersisa 12
-              </span>
-
-              <div className="mt-1 h-1.5 bg-orange-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"
-                  style={{ width: "78%" }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </Link>
   );
 }
 

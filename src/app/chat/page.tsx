@@ -111,7 +111,12 @@ function ChatPageInner() {
     if (greetingShownRef.current) return;
     greetingShownRef.current = true;
 
-    const mockUserName = "Ahmad";
+    const mockUser = {
+      username: "aditya99",
+      displayName: "Aditya",
+    };
+
+    const displayName = mockUser.displayName?.trim() || `@${mockUser.username}`;
 
     if (source === "product" && productSlug) {
       const product = products.find((p) => p.slug === productSlug);
@@ -121,7 +126,7 @@ function ChatPageInner() {
           name: product.name,
           price: product.price,
         };
-        setMessages(getGreetingMessage("product", mockUserName, snippet));
+        setMessages(getGreetingMessage("product", displayName, snippet));
         return;
       }
     }
@@ -135,13 +140,11 @@ function ChatPageInner() {
             ? parsedImages
             : ["/products/s1.jpg", "/products/m2.jpg", "/products/k3.jpg"],
       };
-      setMessages(
-        getGreetingMessage("order", mockUserName, undefined, snippet),
-      );
+      setMessages(getGreetingMessage("order", displayName, undefined, snippet));
       return;
     }
 
-    setMessages(getGreetingMessage("profile", mockUserName));
+    setMessages(getGreetingMessage("profile", displayName));
   }, [source, productSlug, orderId]);
 
   /* ── Auto-scroll on new messages / typing ── */
