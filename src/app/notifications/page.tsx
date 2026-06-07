@@ -207,7 +207,7 @@ export default function NotificationsPage() {
       {/* Sticky Header + Tabs */}
       <div className="sticky top-0 z-50">
         <div
-          className="bg-emerald-700 rounded-b-[22px] pb-2"
+          className="bg-emerald-700 rounded-b-[18px] pb-2"
           style={{
             boxShadow: isScrolled
               ? "0 10px 24px rgba(0,0,0,0.18)"
@@ -216,8 +216,8 @@ export default function NotificationsPage() {
           }}
         >
           {/* Title bar */}
-          <div className="flex items-center justify-between px-4 h-10">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between px-4 h-8 pt-1">
+            <div className="flex items-center">
               <button
                 onClick={() => router.back()}
                 className="
@@ -230,7 +230,7 @@ export default function NotificationsPage() {
                 <ChevronLeft size={24} strokeWidth={2.5} />
               </button>
 
-              <span className="text-[15px] font-black text-white">
+              <span className="text-[14px] font-bold text-white">
                 Notifikasi
               </span>
             </div>
@@ -239,7 +239,7 @@ export default function NotificationsPage() {
               onClick={handleMarkAllRead}
               disabled={unreadCount === 0}
               className={`
-      w-9 h-9 flex items-center justify-center
+      w-8 h-8 flex items-center justify-center
       transition-all active:scale-90
       ${unreadCount > 0 ? "text-white/90" : "text-white/30 pointer-events-none"}
     `}

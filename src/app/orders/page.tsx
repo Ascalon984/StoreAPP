@@ -565,34 +565,23 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
       <div className="sticky top-0 z-50">
         <div
-          className="bg-emerald-700 pb-2"
+          className="bg-emerald-700 rounded-b-[18px] pb-2"
           style={{
-            borderBottomLeftRadius: isScrolled ? "0px" : "22px",
-            borderBottomRightRadius: isScrolled ? "0px" : "22px",
             boxShadow: isScrolled
               ? "0 10px 24px rgba(0,0,0,0.18)"
               : "0 2px 8px rgba(0,0,0,0.06)",
-            transition:
-              "border-radius 250ms ease-in-out, box-shadow 250ms ease-in-out",
+            transition: "box-shadow 250ms ease-in-out",
           }}
         >
-          {/* Title — hide saat scroll */}
-          <div
-            style={{
-              height: isScrolled ? "0px" : "40px",
-              overflow: "hidden",
-              transition: "height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
-            }}
-          >
-            <div className="flex items-center justify-center px-4 h-10">
-              <span className="text-[15px] font-extrabold text-white leading-none">
-                Riwayat Transaksi
-              </span>
-            </div>
+          {/* Title */}
+          <div className="flex items-center justify-center px-4 h-8">
+            <span className="text-[14px] font-bold text-white leading-none">
+              Riwayat Transaksi
+            </span>
           </div>
 
           {/* Tabs */}
-          <div className="px-4 mt-2">
+          <div className="px-4 mt-1">
             <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[2px] flex ring-1 ring-white/10">
               {/* Active indicator */}
               <div

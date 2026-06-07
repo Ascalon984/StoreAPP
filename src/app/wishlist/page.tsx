@@ -352,7 +352,7 @@ export default function WishlistPage() {
       {/* ── STICKY HEADER ── */}
       <div className="sticky top-0 z-50">
         <div
-          className="bg-emerald-700 rounded-b-[22px] pb-2"
+          className="bg-emerald-700 rounded-b-[18px] pb-2"
           style={{
             boxShadow: isScrolled
               ? "0 10px 24px rgba(0,0,0,0.18)"
@@ -361,14 +361,14 @@ export default function WishlistPage() {
           }}
         >
           {/* Title */}
-          <div className="flex items-center justify-center px-4 h-10">
-            <span className="text-[15px] font-extrabold text-white leading-none">
+          <div className="flex items-center justify-center px-4 h-8">
+            <span className="text-[14px] font-bold text-white leading-none">
               Favorit Saya
             </span>
           </div>
 
           {/* Search + Sort Dropdown */}
-          <div className="px-4 mt-2 pb-1">
+          <div className="px-4 mt-1 pb-1">
             <div className="flex items-center gap-2">
               {/* Search Box */}
               <div className="group flex-1 relative">
@@ -415,7 +415,7 @@ export default function WishlistPage() {
                     }
                   `}
                 >
-                  <SlidersHorizontal size={14} strokeWidth={2.2} />
+                  <SlidersHorizontal size={16} strokeWidth={2.2} />
                   {isFilterActive && (
                     <span className="text-[11px]">{activeSort}</span>
                   )}
