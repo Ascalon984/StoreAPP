@@ -19,6 +19,7 @@ import {
   Box,
   Receipt,
   Trash2,
+  AlertCircle,
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { useToastStore } from "@/store/useToastStore";
@@ -153,6 +154,7 @@ export default function CheckoutPage() {
   const [usePoints, setUsePoints] = useState(false);
   const [paymentStep, setPaymentStep] = useState<PaymentStep>("idle");
   const userPoints = 12500;
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   const toggleAccordion = (id: string) => {
     if (expandedAccordion === id) setExpandedAccordion(null);
@@ -208,21 +210,23 @@ export default function CheckoutPage() {
     grossSubtotal > 0 ? Math.round((totalSavings / grossSubtotal) * 100) : 0;
   const total = grossSubtotal - totalSavings - pointsToUse + serviceFee;
 
-  const isPaymentSelected =
-    selectedPayment !== null &&
-    (selectedPayment === "qr" || selectedSubPayment !== null);
-
-  const allTargetsFilled = displayItems.every((item) => {
+  const hasValidTargets = displayItems.every((item) => {
     const type = item.product.targetType;
-
-    if (!type || type === "none") return true;
+    if (type === "none") return true; // hanya "none" eksplisit yang dibebaskan
 
     const val = targetIds[item.product.id];
-    return val && val.trim().length > 0;
+    return typeof val === "string" && val.trim().length > 0;
   });
 
+  const isPaymentValid =
+    selectedPayment === "qr" || Boolean(selectedSubPayment);
+
   const canSubmit =
-    allTargetsFilled && isPaymentSelected && displayItems.length > 0;
+    displayItems.length > 0 &&
+    selectedPayment !== null &&
+    isPaymentValid &&
+    hasValidTargets &&
+    !isSubmitting;
 
   const executeOrderSubmission = async () => {
     if (!canSubmit || isSubmitting) return false;
@@ -273,7 +277,30 @@ export default function CheckoutPage() {
   };
 
   const handleCheckoutClick = () => {
-    if (!canSubmit || isSubmitting) return;
+    setHasAttemptedSubmit(true);
+
+    if (isSubmitting) return;
+
+    if (!selectedPayment) {
+      showToast("Pilih metode pembayaran terlebih dahulu");
+      return;
+    }
+
+    if (selectedPayment !== "qr" && !selectedSubPayment) {
+      showToast("Pilih detail metode pembayaran");
+      return;
+    }
+
+    if (!hasValidTargets) {
+      showToast("Lengkapi data tujuan produk");
+      return;
+    }
+
+    if (!canSubmit) {
+      showToast("Data checkout belum lengkap");
+      return;
+    }
+
     if (selectedPayment === "qr") {
       setPaymentStep("qr");
     } else if (selectedPayment === "va") {
@@ -435,95 +462,75 @@ export default function CheckoutPage() {
 
                   return (
                     <div key={product.id} className="py-2.5">
-                      <div className="flex gap-3 items-start">
+                      <div className="flex gap-3 items-center">
+                        {/* IMAGE */}
                         <ProductImage
                           category={product.category}
                           name={product.name}
                           src={cartImg}
-                          className="w-11 h-11 rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-white"
+                          className="w-16 h-16 rounded-xl flex-shrink-0 border border-gray-100/50 object-cover bg-white"
                         />
-                        <div className="flex-1 min-w-0 pt-0.5 max-h-11 overflow-hidden">
-                          <h3 className="text-[13px] font-semibold text-gray-800 leading-snug truncate">
-                            {product.name}
-                          </h3>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="text-emerald-600 font-bold text-[12px]">
-                              {formatRupiah(price)}
-                            </span>
-                            {product.variant && (
-                              <>
-                                <div className="w-[1px] h-3 bg-gray-200" />
-                                <span className="text-[11px] text-gray-400 font-medium truncate">
-                                  {product.variant}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center bg-gray-50 border border-gray-200/60 rounded-lg flex-shrink-0 overflow-hidden mt-0.5">
-                          <button
-                            onClick={() =>
-                              handleUpdateQuantity(product.id, qty - 1)
-                            }
-                            disabled={qty <= 1}
-                            className={`w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 border-r border-gray-200/60 ${qty <= 1 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-gray-700"}`}
-                          >
-                            <Minus size={10} strokeWidth={2.5} />
-                          </button>
-                          <span className="w-6 text-center font-bold text-[11px] text-gray-800 select-none">
-                            {qty}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleUpdateQuantity(product.id, qty + 1)
-                            }
-                            className="w-7 h-7 bg-white flex items-center justify-center transition active:scale-90 text-gray-500 hover:text-gray-700 border-l border-gray-200/60"
-                          >
-                            <Plus size={10} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center gap-2 mt-2.5">
-                        {product.targetType !== "none" && (
-                          <input
-                            type="text"
-                            placeholder={getTargetPlaceholder(
-                              product.targetType,
-                            )}
-                            value={targetIds[product.id] || ""}
-                            onChange={(e) =>
-                              setTargetIds((prev) => ({
-                                ...prev,
-                                [product.id]: formatTargetInput(
-                                  e.target.value,
+                        {/* RIGHT CONTENT */}
+                        <div className="flex-1 min-w-0 flex flex-col gap-2">
+                          {/* TOP ROW */}
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-[13px] font-semibold text-gray-800 leading-snug">
+                                {product.name}
+                              </h3>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-emerald-600 font-bold text-[12px]">
+                                  {formatRupiah(price)}
+                                </span>
+                                {product.variant && (
+                                  <>
+                                    <div className="w-[1px] h-3 bg-gray-200" />
+                                    <span className="text-[11px] text-gray-400 font-medium truncate">
+                                      {product.variant}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => handleRemoveItem(product.id)}
+                              className="p-1.5 rounded-lg text-gray-300 hover:text-amber-500 active:scale-90 transition -mr-1"
+                            >
+                              <Trash2 size={15} strokeWidth={2} />
+                            </button>
+                          </div>
+
+                          {/* INPUT ROW — FIX ALIGNMENT */}
+                          {product.targetType !== "none" && (
+                            <div className="relative">
+                              <input
+                                type="text"
+                                placeholder={getTargetPlaceholder(
                                   product.targetType,
-                                ),
-                              }))
-                            }
-                            className="
-                            flex-1
-                            h-9
-                            px-3
-                            text-[12px]
-                            text-gray-800
-                            bg-gray-50
-                            border border-gray-200/60
-                            rounded-lg
-                            placeholder:text-gray-400
-                            focus:outline-none
-                            focus:border-emerald-500
-                            "
-                          />
-                        )}
-                        <button
-                          onClick={() => handleRemoveItem(product.id)}
-                          className="flex-shrink-0 h-9 px-3 text-[11px] font-medium rounded-lg flex items-center gap-1.5
-    text-amber-600 active:scale-95 transition-all"
-                        >
-                          <Trash2 size={12} strokeWidth={2} />
-                          {isBuyNow ? "Batal" : "Hapus"}
-                        </button>
+                                )}
+                                value={targetIds[product.id] || ""}
+                                onChange={(e) =>
+                                  setTargetIds((prev) => ({
+                                    ...prev,
+                                    [product.id]: formatTargetInput(
+                                      e.target.value,
+                                      product.targetType,
+                                    ),
+                                  }))
+                                }
+                                className="w-full h-8 px-2.5 pr-14 text-[12px] text-gray-800 bg-gray-50 border border-gray-200/60 rounded-lg placeholder:text-gray-400 focus:outline-none focus:border-emerald-500"
+                              />
+
+                              {!targetIds[product.id] && (
+                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-medium text-amber-500/80">
+                                  wajib
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
