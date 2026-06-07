@@ -19,8 +19,6 @@ import { Order, OrderItem, OrderStatus } from "@/lib/types";
 
 type FilterTab = "all" | "processing" | "completed" | "cancelled";
 
-
-
 function getOrderGroupLabel(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
@@ -72,14 +70,14 @@ const STATUS_CONFIG: Record<
   },
 
   completed: {
-    label: "Selesai",
+    label: "Berhasil",
     icon: CheckCircle2,
     iconClass: "text-emerald-600",
     textClass: "text-gray-500",
   },
 
   cancelled: {
-    label: "Dibatalkan",
+    label: "Gagal",
     icon: XCircle,
     iconClass: "text-rose-500",
     textClass: "text-gray-500",
@@ -89,8 +87,8 @@ const STATUS_CONFIG: Record<
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
   { key: "all", label: "Semua" },
   { key: "processing", label: "Diproses" },
-  { key: "completed", label: "Selesai" },
-  { key: "cancelled", label: "Dibatalkan" },
+  { key: "completed", label: "Berhasil" },
+  { key: "cancelled", label: "Gagal" },
 ];
 
 // ── Carousel Product Preview ──
@@ -449,13 +447,13 @@ function EmptyState({ filter }: { filter: FilterTab }) {
     },
     completed: {
       Icon: CheckCircle,
-      title: "Belum ada pesanan selesai",
-      sub: "Pesanan selesai akan tampil di sini.",
+      title: "Belum ada transaksi berhasil",
+      sub: "Transaksi berhasil akan tampil di sini.",
     },
     cancelled: {
       Icon: XCircle,
-      title: "Tidak ada pesanan dibatalkan",
-      sub: "Pesanan dibatalkan akan tampil di sini.",
+      title: "Tidak ada transaksi gagal",
+      sub: "Transaksi yang gagal akan tampil di sini.",
     },
   };
   const { Icon, title, sub } = map[filter];
@@ -567,19 +565,30 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
       <div className="sticky top-0 z-50">
         <div
-          className="bg-emerald-700 rounded-b-[22px] pb-2"
+          className="bg-emerald-700 pb-2"
           style={{
+            borderBottomLeftRadius: isScrolled ? "0px" : "22px",
+            borderBottomRightRadius: isScrolled ? "0px" : "22px",
             boxShadow: isScrolled
               ? "0 10px 24px rgba(0,0,0,0.18)"
               : "0 2px 8px rgba(0,0,0,0.06)",
-            transition: "box-shadow 250ms ease-in-out",
+            transition:
+              "border-radius 250ms ease-in-out, box-shadow 250ms ease-in-out",
           }}
         >
-          {/* Title */}
-          <div className="flex items-center justify-center px-4 h-10">
-            <span className="text-[15px] font-extrabold text-white leading-none">
-              Riwayat Pesanan
-            </span>
+          {/* Title — hide saat scroll */}
+          <div
+            style={{
+              height: isScrolled ? "0px" : "40px",
+              overflow: "hidden",
+              transition: "height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
+          >
+            <div className="flex items-center justify-center px-4 h-10">
+              <span className="text-[15px] font-extrabold text-white leading-none">
+                Riwayat Transaksi
+              </span>
+            </div>
           </div>
 
           {/* Tabs */}
