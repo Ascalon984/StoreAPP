@@ -85,8 +85,8 @@ export default function Navbar() {
           setIsScrolled((prev) => {
             // Hysteresis: collapse di >50, expand hanya di <10
             // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
-            if (!prev && y > 80) return true;
-            if (prev && y < 20) return false;
+            if (!prev && y > 60) return true;
+            if (prev && y < 15) return false;
             return prev; // zona mati (10–50): pertahankan state
           });
 
@@ -134,7 +134,7 @@ export default function Navbar() {
 
   return (
     <div
-      className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] shadow-sm"
+      className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
         borderBottomLeftRadius: isScrolled ? "0px" : "26px",
         borderBottomRightRadius: isScrolled ? "0px" : "26px",
@@ -213,7 +213,7 @@ export default function Navbar() {
 
           {/* ── Search Row ── */}
           <div
-            className={`flex items-center gap-2 pb-2.5 transition-[padding] duration-300 ease-in-out ${
+            className={`flex items-center gap-1 pb-2.5 transition-[padding] duration-300 ease-in-out ${
               isScrolled ? "pt-2.5" : "pt-0"
             }`}
           >
