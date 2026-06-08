@@ -8,16 +8,16 @@ import { Category } from "@/lib/types";
 import { GridColorIcon } from "./GridColorIcon";
 
 // Icon mapping - 2.5D icons library
-// Urutan: Pulsa, Paket Data, Listrik, E-Wallet, Tagihan, Game, Voucher, Subscription
+// Urutan: Pulsa, Paket Data, Listrik, E-Wallet, Voucher, Game, Hiburan, Produktivitas
 const iconPathMap: Record<string, string> = {
   pulsa: "/icons/pulsa.png",
   "paket data": "/icons/paket-data.png",
   listrik: "/icons/listrik.png",
   "e-wallet": "/icons/e-wallet.png",
-  tagihan: "/icons/tagihan.png",
   voucher: "/icons/voucher.png",
   game: "/icons/game.png",
-  subscription: "/icons/subscription.png",
+  hiburan: "/icons/hiburan.png",
+  produktivitas: "/icons/produktivitas.png",
 };
 
 interface CategoryGridProps {

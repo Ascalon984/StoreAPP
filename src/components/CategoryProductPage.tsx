@@ -35,12 +35,11 @@ const CATEGORY_CHIPS: Record<string, string[]> = {
     "Indosat",
     "Smartfren",
   ],
-  listrik: ["Semua", "Prabayar", "Pascabayar"],
   "e-wallet": ["Semua", "GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"],
   game: ["Semua", "Mobile Legends", "Free Fire", "PUBG", "Genshin", "Valorant"],
   voucher: ["Semua", "Google Play", "App Store", "Steam", "Garena"],
-  tagihan: ["Semua", "PLN", "PDAM", "BPJS", "Telkom"],
-  subscription: ["Semua", "Netflix", "Spotify", "Disney+", "YouTube", "iCloud"],
+  produktivitas: ["Semua", "Microsoft", "Zoom", "Google", "Adobe", "Notion"],
+  hiburan: ["Semua", "Netflix", "Spotify", "Disney+", "YouTube", "iCloud"],
 };
 
 function applySort(products: Product[], sort: string): Product[] {
@@ -242,96 +241,98 @@ export default function CategoryProductPage({
         </div>
 
         {/* Sub-category chips + sort */}
-        <div className="flex items-center gap-2 px-4 py-2">
-          {/* Chip scroll area */}
-          {chips ? (
-            <div className="relative flex-1 min-w-0">
-              <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pr-2">
-                {chips.map((chip) => (
-                  <button
-                    key={chip}
-                    onClick={() => setActiveChip(chip)}
-                    className={`
-                      flex-shrink-0
-                      h-7 px-3
-                      rounded-full
-                      text-[10px]
-                      font-semibold
-                      tracking-tight
-                      border
-                      transition-all duration-200
-                      active:scale-[0.97]
-                      ${
-                        activeChip === chip
-                          ? `bg-emerald-600 border-emerald-600 text-white`
-                          : `bg-white/90 border-gray-300 text-gray-600`
-                      }
-                    `}
-                  >
-                    {chip}
-                  </button>
-                ))}
-              </div>
-              {/* Fade right */}
-              <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/60 to-transparent pointer-events-none" />
-            </div>
-          ) : (
-            <div className="flex-1" />
-          )}
-
-          {/* Sort button */}
-          <div className="relative flex-shrink-0" ref={sortMenuRef}>
-            <div className="bg-white rounded-xl">
-              <button
-                onClick={() => setShowSortMenu(!showSortMenu)}
-                className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all
-                ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
-              >
-                <SlidersHorizontal size={18} strokeWidth={2.2} />
-              </button>
-            </div>
-
-            {showSortMenu && (
-              <div
-                className="
-      absolute right-0 top-full mt-1.5 z-50
-      bg-white rounded-xl overflow-hidden min-w-[148px]
-      shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]
-    "
-              >
-                {SORT_OPTIONS.map((opt) => {
-                  const isActive = sort === opt.id;
-
-                  return (
+        {categorySlug !== "listrik" && (
+          <div className="flex items-center gap-2 px-4 py-2">
+            {/* Chip scroll area */}
+            {chips ? (
+              <div className="relative flex-1 min-w-0">
+                <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pr-2">
+                  {chips.map((chip) => (
                     <button
-                      key={opt.id}
-                      onClick={() => {
-                        setSort(opt.id);
-                        setShowSortMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold text-gray-600 hover:bg-gray-50"
+                      key={chip}
+                      onClick={() => setActiveChip(chip)}
+                      className={`
+                        flex-shrink-0
+                        h-7 px-3
+                        rounded-full
+                        text-[10px]
+                        font-semibold
+                        tracking-tight
+                        border
+                        transition-all duration-200
+                        active:scale-[0.97]
+                        ${
+                          activeChip === chip
+                            ? `bg-emerald-600 border-emerald-600 text-white`
+                            : `bg-white/90 border-gray-300 text-gray-600`
+                        }
+                      `}
                     >
-                      {/* ICON BOX (ACTIVE STATE VISUAL) */}
-                      <div
-                        className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors
-              ${
-                isActive
-                  ? "bg-emerald-600 text-white"
-                  : "bg-gray-100 text-gray-400"
-              }`}
-                      >
-                        <opt.Icon size={14} strokeWidth={2} />
-                      </div>
-
-                      {/* LABEL */}
-                      <span>{opt.label}</span>
+                      {chip}
                     </button>
-                  );
-                })}
+                  ))}
+                </div>
+                {/* Fade right */}
+                <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/60 to-transparent pointer-events-none" />
               </div>
+            ) : (
+              <div className="flex-1" />
             )}
+
+            {/* Sort button */}
+            <div className="relative flex-shrink-0" ref={sortMenuRef}>
+              <div className="bg-white rounded-xl">
+                <button
+                  onClick={() => setShowSortMenu(!showSortMenu)}
+                  className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all
+                  ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
+                >
+                  <SlidersHorizontal size={18} strokeWidth={2.2} />
+                </button>
+              </div>
+
+              {showSortMenu && (
+                <div
+                  className="
+        absolute right-0 top-full mt-1.5 z-50
+        bg-white rounded-xl overflow-hidden min-w-[148px]
+        shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]
+      "
+                >
+                  {SORT_OPTIONS.map((opt) => {
+                    const isActive = sort === opt.id;
+
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setSort(opt.id);
+                          setShowSortMenu(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold text-gray-600 hover:bg-gray-50"
+                      >
+                        {/* ICON BOX (ACTIVE STATE VISUAL) */}
+                        <div
+                          className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors
+                ${
+                  isActive
+                    ? "bg-emerald-600 text-white"
+                    : "bg-gray-100 text-gray-400"
+                }`}
+                        >
+                          <opt.Icon size={14} strokeWidth={2} />
+                        </div>
+
+                        {/* LABEL */}
+                        <span>{opt.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* ── Active filter badge (jika search aktif) ── */}
