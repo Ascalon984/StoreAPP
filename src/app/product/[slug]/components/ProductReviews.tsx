@@ -159,7 +159,7 @@ export default function ProductReviews({
       </h2>
 
       {/* Gauge + Bar Distribution */}
-      <div className="bg-gray-50/70 rounded-xl p-4 mb-4 shadow-layer-sm mt-2">
+      <div className="bg-white/90 rounded-xl border border-gray-200/60 p-4 mb-4 mt-2 shadow-layer-xs">
         <div className="flex items-center gap-0">
           {/* Gauge — 40% */}
           <div

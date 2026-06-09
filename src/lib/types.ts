@@ -2,6 +2,8 @@ export interface ProductVariant {
   id: string;
   name: string;
   stock: number;
+  price?: number;
+  originalPrice?: number;
 }
 
 export type ProductTargetType = "phone" | "text" | "number" | "email" | "none";

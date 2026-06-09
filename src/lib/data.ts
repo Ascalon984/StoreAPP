@@ -90,9 +90,9 @@ export const products: Product[] = [
     description: "Paket data Telkomsel 3GB masa aktif 30 hari.",
     variant: "3 GB\n30 Hari",
     variants: [
-      { id: "v1", name: "1 GB 30 hari", stock: 99 },
-      { id: "v2", name: "3 GB 30 hari", stock: 99 },
-      { id: "v3", name: "5 GB 30 hari", stock: 99 },
+      { id: "v1", name: "1 GB 30 hari", stock: 99, price: 15000, originalPrice: 17000 },
+      { id: "v2", name: "3 GB 30 hari", stock: 99, price: 42000, originalPrice: 45000 },
+      { id: "v3", name: "5 GB 30 hari", stock: 99, price: 60000, originalPrice: 65000 },
     ],
   },
   {
@@ -109,9 +109,9 @@ export const products: Product[] = [
     description: "Paket data Indosat 5GB masa aktif 30 hari. Super cepat.",
     variant: "5 GB\n30 Hari",
     variants: [
-      { id: "v1", name: "3 GB 30 hari", stock: 99 },
-      { id: "v2", name: "5 GB 30 hari", stock: 99 },
-      { id: "v3", name: "10 GB 30 hari", stock: 99 },
+      { id: "v1", name: "3 GB 30 hari", stock: 99, price: 45000, originalPrice: 48000 },
+      { id: "v2", name: "5 GB 30 hari", stock: 99, price: 65000, originalPrice: 65000 },
+      { id: "v3", name: "10 GB 30 hari", stock: 99, price: 100000, originalPrice: 110000 },
     ],
   },
   {

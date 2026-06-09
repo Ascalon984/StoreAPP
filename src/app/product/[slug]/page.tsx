@@ -79,14 +79,10 @@ export default function ProductDetailPage({
         if (elapsed < MIN_DISPLAY_TIME) {
           setTimeout(() => {
             setProduct(data);
-            if (data.variants?.length > 0)
-              setSelectedVariant(data.variants[0].id);
             setLoading(false);
           }, MIN_DISPLAY_TIME - elapsed);
         } else {
           setProduct(data);
-          if (data.variants?.length > 0)
-            setSelectedVariant(data.variants[0].id);
           setLoading(false);
         }
       })
@@ -161,14 +157,11 @@ export default function ProductDetailPage({
 
   const handleAddToCart = () => {
     if (!product) return;
-    addItem(product);
-    const name =
-      product.name.length > 35 ? product.name.slice(0, 35) + "…" : product.name;
-    showToast(`${name} ditambahkan ke keranjang`);
-  };
 
-  const handleBuyNow = () => {
-    if (!product) return;
+    if (product.variants?.length && !selectedVariant) {
+      showToast("Pilih varian produk terlebih dahulu");
+      return;
+    }
 
     const productToAdd = { ...product };
     if (selectedVariant && productToAdd.variants) {
@@ -177,6 +170,32 @@ export default function ProductDetailPage({
       );
       if (variantData) {
         productToAdd.variant = variantData.name;
+        productToAdd.price = variantData.price || productToAdd.price;
+      }
+    }
+
+    addItem(productToAdd);
+    const name =
+      product.name.length > 35 ? product.name.slice(0, 35) + "…" : product.name;
+    showToast(`${name} ditambahkan ke keranjang`);
+  };
+
+  const handleBuyNow = () => {
+    if (!product) return;
+
+    if (product.variants?.length && !selectedVariant) {
+      showToast("Pilih varian produk terlebih dahulu");
+      return;
+    }
+
+    const productToAdd = { ...product };
+    if (selectedVariant && productToAdd.variants) {
+      const variantData = productToAdd.variants.find(
+        (v: any) => v.id === selectedVariant,
+      );
+      if (variantData) {
+        productToAdd.variant = variantData.name;
+        productToAdd.price = variantData.price || productToAdd.price;
       }
     }
 
@@ -213,6 +232,40 @@ export default function ProductDetailPage({
         )
       : serverRating;
 
+  const hasVariants = !!product?.variants && product.variants.length > 0;
+
+  let displayPrice = product ? formatRupiah(product.price) : "";
+  let displayOriginalPrice: string | null =
+    product?.originalPrice && product.originalPrice > product.price
+      ? formatRupiah(product.originalPrice)
+      : null;
+
+  if (product && hasVariants) {
+    if (selectedVariant) {
+      const variant = product.variants!.find((v) => v.id === selectedVariant);
+      if (variant) {
+        displayPrice = formatRupiah(variant.price || product.price);
+        displayOriginalPrice =
+          variant.originalPrice &&
+          variant.originalPrice > (variant.price || product.price)
+            ? formatRupiah(variant.originalPrice)
+            : null;
+      }
+    } else {
+      const variantPrices = product.variants!.map(
+        (v) => v.price || product.price,
+      );
+      const minPrice = Math.min(...variantPrices);
+      const maxPrice = Math.max(...variantPrices);
+      if (minPrice !== maxPrice) {
+        displayPrice = `${formatRupiah(minPrice)} - ${formatRupiah(maxPrice)}`;
+      } else {
+        displayPrice = formatRupiah(minPrice);
+      }
+      displayOriginalPrice = null;
+    }
+  }
+
   const needsTruncation = (product?.description?.length || 0) > 300;
 
   // Ekstraksi gambar
@@ -243,6 +296,12 @@ export default function ProductDetailPage({
         );
     }
   }
+
+  const isPriceRange =
+    product &&
+    hasVariants &&
+    !selectedVariant &&
+    (product.variants?.length ?? 0) > 1;
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -363,13 +422,17 @@ export default function ProductDetailPage({
 
               <div className="flex items-end justify-between mb-1.5">
                 <div>
-                  {product.originalPrice && (
+                  {displayOriginalPrice && (
                     <p className="text-[12px] text-gray-400 line-through mb-0.5">
-                      {formatRupiah(product.originalPrice)}
+                      {displayOriginalPrice}
                     </p>
                   )}
-                  <p className="text-[22px] font-bold text-emerald-700 tracking-tight">
-                    {formatRupiah(product.price)}
+                  <p
+                    className={`font-bold text-emerald-700 tracking-tight ${
+                      isPriceRange ? "text-[18px]" : "text-[22px]"
+                    }`}
+                  >
+                    {displayPrice}
                   </p>
                 </div>
                 <div className="text-right">

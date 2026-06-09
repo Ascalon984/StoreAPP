@@ -78,13 +78,27 @@ export default function ProductCard({
         )
       : serverRating;
 
+  const hasVariants = product.variants && product.variants.length > 0;
+
   const discount =
-    product.originalPrice && product.originalPrice > product.price
+    !hasVariants &&
+    product.originalPrice &&
+    product.originalPrice > product.price
       ? Math.round(
           ((product.originalPrice - product.price) / product.originalPrice) *
             100,
         )
       : 0;
+
+  let displayPrice = formatRupiah(product.price);
+
+  if (hasVariants) {
+    const variantPrices = product.variants!.map(
+      (v) => v.price || product.price,
+    );
+    const minPrice = Math.min(...variantPrices);
+    displayPrice = formatRupiah(minPrice);
+  }
 
   const titleSize =
     product.name.length > 50
@@ -140,13 +154,15 @@ export default function ProductCard({
 
           <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className="text-[14px] font-extrabold text-emerald-700 tracking-tight">
-              {formatRupiah(product.price)}
+              {displayPrice}
             </span>
-            {product.originalPrice && (
-              <span className="text-[10px] text-gray-400 line-through font-normal">
-                {formatRupiah(product.originalPrice)}
-              </span>
-            )}
+            {!hasVariants &&
+              product.originalPrice &&
+              product.originalPrice > product.price && (
+                <span className="text-[10px] text-gray-400 line-through font-normal">
+                  {formatRupiah(product.originalPrice)}
+                </span>
+              )}
           </div>
 
           <div className="flex items-end justify-between mt-auto pt-1 relative z-20">
