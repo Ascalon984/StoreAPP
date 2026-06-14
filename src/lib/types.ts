@@ -6,7 +6,13 @@ export interface ProductVariant {
   originalPrice?: number;
 }
 
-export type ProductTargetType = "phone" | "text" | "number" | "email" | "none";
+export type ProductTargetType =
+  | "phone"
+  | "text"
+  | "number"
+  | "email"
+  | "pln"
+  | "none";
 
 export interface Product {
   id: string;

@@ -427,6 +427,7 @@ export default function ProductDetailPage({
                       {displayOriginalPrice}
                     </p>
                   )}
+
                   <p
                     className={`font-bold text-emerald-700 tracking-tight ${
                       isPriceRange ? "text-[18px]" : "text-[22px]"
@@ -435,11 +436,30 @@ export default function ProductDetailPage({
                     {displayPrice}
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-[11px] text-gray-400 mb-0.5">Sisa Stok</p>
-                  <p className="text-[13px] font-semibold text-gray-800">
-                    {product.stock}
-                  </p>
+
+                <div
+                  className={`text-right ${
+                    product.category?.toLowerCase().includes("produktivitas")
+                      ? ""
+                      : "pb-1"
+                  }`}
+                >
+                  {product.category?.toLowerCase().includes("produktivitas") ? (
+                    <>
+                      <p className="text-[13px] font-semibold text-gray-800">
+                        {product.stock}
+                      </p>
+                      <p className="text-[10px] text-gray-400">Sisa Stok</p>
+                    </>
+                  ) : (
+                    <p
+                      className={`text-[13px] font-semibold ${
+                        product.stock > 0 ? "text-gray-800" : "text-red-500"
+                      }`}
+                    >
+                      {product.stock > 0 ? "Tersedia" : "Gangguan"}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -454,7 +474,7 @@ export default function ProductDetailPage({
               >
                 <div className="flex items-center gap-2">
                   <h2 className="text-sm font-bold text-gray-800 tracking-tight">
-                    Variasi Produk
+                    Variasi
                   </h2>
                   {selectedVariant && !isVariantOpen && (
                     <span className="text-[11px] font-semibold text-emerald-600 bg-white px-2 py-0.5 rounded-md">
@@ -574,7 +594,7 @@ export default function ProductDetailPage({
             </div>
           </div>
 
-          {/* Hubungi Penjual */}
+          {/* Hubungi Penjual Non aktif sementara
           <div className="bg-white px-4 py-2.5 mt-1 flex items-center justify-between">
             <p className="text-[12px] text-gray-500 font-medium">
               Ada pertanyaan?
@@ -588,7 +608,7 @@ export default function ProductDetailPage({
               <MessageCircle size={13} strokeWidth={2.2} />
               Hubungi Penjual
             </button>
-          </div>
+          </div> */}
 
           {/* Review Section */}
           <ProductReviews allReviews={allReviews} liveRating={liveRating} />
