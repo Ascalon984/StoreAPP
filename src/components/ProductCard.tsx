@@ -107,6 +107,17 @@ export default function ProductCard({
         ? "text-[11.5px] leading-[1.3]"
         : "text-[12px] leading-snug";
 
+  const priceLength = displayPrice.length;
+
+  const priceSize =
+    priceLength > 14
+      ? "text-[12px]"
+      : priceLength > 11
+        ? "text-[13px]"
+        : "text-[14px]";
+
+  const originalPriceSize = priceLength > 14 ? "text-[9px]" : "text-[10px]";
+
   return (
     <Link href={`/product/${product.slug}`} className="block group">
       <article
@@ -122,11 +133,14 @@ export default function ProductCard({
 
         {discount > 0 && (
           <div
-            className="absolute top-0 right-0 z-30 px-2.5 py-1 
-  bg-gradient-to-l from-rose-600 to-rose-500 
-  text-white text-[10px] font-bold 
-  rounded-tr-xl rounded-bl-2xl   {/* ← tambah rounded-tr-xl */}
-  shadow-layer-md tracking-tight"
+            className="
+            absolute top-0 right-0 z-30
+            px-2.5 py-1
+            bg-gradient-to-l from-rose-600 to-rose-500
+            text-white text-[10px] font-bold
+            rounded-tr-xl rounded-bl-2xl
+            shadow-layer-md tracking-tight
+          "
           >
             -{discount}%
           </div>
@@ -152,14 +166,32 @@ export default function ProductCard({
             {product.name}
           </h3>
 
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-[14px] font-extrabold text-emerald-700 tracking-tight">
+          <div className="flex items-baseline gap-1.5 w-full overflow-hidden whitespace-nowrap">
+            <span
+              className={`
+                ${priceSize}
+                font-extrabold
+                text-emerald-700
+                tracking-tight
+                truncate
+                flex-shrink-0
+              `}
+            >
               {displayPrice}
             </span>
             {!hasVariants &&
               product.originalPrice &&
               product.originalPrice > product.price && (
-                <span className="text-[10px] text-gray-400 line-through font-normal">
+                <span
+                  className={`
+    ${originalPriceSize}
+    text-gray-400
+    line-through
+    font-normal
+    truncate
+    flex-shrink
+  `}
+                >
                   {formatRupiah(product.originalPrice)}
                 </span>
               )}

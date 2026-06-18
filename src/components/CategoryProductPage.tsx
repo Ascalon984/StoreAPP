@@ -25,21 +25,46 @@ const SORT_OPTIONS = [
 
 /* ── Sub-Category Chips ───────────────────────────── */
 const CATEGORY_CHIPS: Record<string, string[]> = {
-  pulsa: ["Semua", "Telkomsel", "XL", "Axis", "Tri", "Indosat", "Smartfren"],
-  "paket-data": [
+  elektronik: ["Semua", "Smartphone", "Laptop", "Audio", "Gaming", "Aksesoris"],
+  fashion: ["Semua", "Pria", "Wanita", "Sepatu", "Tas", "Aksesoris"],
+
+  perabotan: [
     "Semua",
-    "Telkomsel",
-    "XL",
-    "Axis",
-    "Tri",
-    "Indosat",
-    "Smartfren",
+    "Dapur",
+    "Dekorasi",
+    "Pembersih",
+    "Penyimpanan",
+    "Peralatan",
   ],
-  "e-wallet": ["Semua", "GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"],
-  game: ["Semua", "Mobile Legends", "Free Fire", "PUBG", "Genshin", "Valorant"],
-  voucher: ["Semua", "Google Play", "App Store", "Steam", "Garena"],
-  produktivitas: ["Semua", "Microsoft", "Zoom", "Google", "Adobe", "Notion"],
-  hiburan: ["Semua", "Netflix", "Spotify", "Disney+", "YouTube", "iCloud"],
+
+  kesehatan: [
+    "Semua",
+    "Skincare",
+    "Makeup",
+    "Vitamin",
+    "Parfum",
+    "Perawatan Tubuh",
+  ],
+
+  hiburan: ["Semua", "Streaming", "Musik", "Film", "Anime", "Subscription"],
+
+  game: [
+    "Semua",
+    "Mobile Legends",
+    "Free Fire",
+    "PUBG Mobile",
+    "Genshin Impact",
+    "Valorant",
+  ],
+  produktivitas: ["Semua", "Office", "Desain", "Meeting", "Cloud", "AI Tools"],
+  otomotif: [
+    "Semua",
+    "Suku Cadang",
+    "Aksesoris",
+    "Perawatan",
+    "Riding Gear",
+    "Tools",
+  ],
 };
 
 function applySort(products: Product[], sort: string): Product[] {

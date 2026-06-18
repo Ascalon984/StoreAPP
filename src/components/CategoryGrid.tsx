@@ -10,14 +10,14 @@ import { GridColorIcon } from "./GridColorIcon";
 // Icon mapping - 2.5D icons library
 // Urutan: Pulsa, Paket Data, Listrik, E-Wallet, Voucher, Game, Hiburan, Produktivitas
 const iconPathMap: Record<string, string> = {
-  pulsa: "/icons/pulsa.png",
-  "paket data": "/icons/paket-data.png",
-  listrik: "/icons/listrik.png",
-  "e-wallet": "/icons/e-wallet.png",
-  voucher: "/icons/voucher.png",
-  game: "/icons/game.png",
+  elektronik: "/icons/elektronik.png",
+  fashion: "/icons/fashion.png",
+  perabotan: "/icons/rumah tangga.png",
+  kesehatan: "/icons/kesehatan kecantikan.png",
   hiburan: "/icons/hiburan.png",
+  game: "/icons/game.png",
   produktivitas: "/icons/produktivitas.png",
+  otomotif: "/icons/otomotif.png",
 };
 
 interface CategoryGridProps {
@@ -76,15 +76,13 @@ function CategoryItem({
 
       <span
         className={`
-          text-[11px]
-          text-center
-          transition-colors
-          ${
-            isActive
-              ? "text-emerald-600 font-semibold"
-              : "text-gray-600 font-medium"
-          }
-        `}
+      text-center
+      transition-colors
+      max-w-[72px]
+      leading-[1.1]
+      ${label.length > 14 ? "text-[10px]" : "text-[11px]"}
+      ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
+      `}
       >
         {label}
       </span>

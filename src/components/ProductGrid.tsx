@@ -44,122 +44,122 @@ function applySort(products: Product[], sort: string): Product[] {
 const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
   {
     id: "hl-1",
-    name: "Pulsa Telkomsel 10.000",
-    slug: "pulsa-telkomsel-10k",
-    price: 10500,
-    originalPrice: 11000,
-    category: "pulsa",
+    name: "Samsung Galaxy Buds FE",
+    slug: "samsung-galaxy-buds-fe",
+    price: 799000,
+    originalPrice: 899000,
+    category: "elektronik",
     images: [],
     rating: 4.8,
-    reviewCount: 320,
+    reviewCount: 1240,
     sold: 5200,
-    description: "Pulsa all operator instan masuk",
-    stock: 9999,
+    description: "Wireless earbuds dengan ANC dan suara jernih",
+    stock: 120,
   } as Product,
 
   {
     id: "hl-2",
-    name: "Paket Data 5GB 7 Hari",
-    slug: "paket-data-5gb-7hari",
-    price: 18500,
-    originalPrice: 22000,
-    category: "paket-data",
+    name: "Sneakers Casual Pria Urban Flex",
+    slug: "sneakers-casual-pria-urban-flex",
+    price: 249000,
+    originalPrice: 329000,
+    category: "fashion",
     images: [],
     rating: 4.7,
-    reviewCount: 410,
-    sold: 6100,
-    description: "Kuota internet cepat & stabil",
-    stock: 9999,
+    reviewCount: 860,
+    sold: 4100,
+    description: "Sneakers casual nyaman untuk aktivitas harian",
+    stock: 80,
   } as Product,
 
   {
     id: "hl-3",
-    name: "Token Listrik PLN 20.000",
-    slug: "token-listrik-20k",
-    price: 20500,
-    originalPrice: 22000,
-    category: "token-listrik",
+    name: "Set Peralatan Masak Anti Lengket",
+    slug: "set-peralatan-masak-anti-lengket",
+    price: 389000,
+    originalPrice: 459000,
+    category: "perabotan",
     images: [],
     rating: 4.9,
-    reviewCount: 890,
-    sold: 9800,
-    description: "Token listrik langsung masuk meteran",
-    stock: 9999,
+    reviewCount: 540,
+    sold: 2300,
+    description: "Cookware set lengkap untuk kebutuhan dapur modern",
+    stock: 45,
   } as Product,
 
   {
     id: "hl-4",
-    name: "Top Up DANA 50.000",
-    slug: "topup-dana-50k",
-    price: 50000,
-    originalPrice: 52000,
-    category: "e-wallet",
+    name: "Skincare Brightening Serum 30ml",
+    slug: "skincare-brightening-serum-30ml",
+    price: 129000,
+    originalPrice: 159000,
+    category: "kesehatan",
     images: [],
     rating: 4.8,
-    reviewCount: 760,
-    sold: 7400,
-    description: "Isi saldo e-wallet instan",
-    stock: 9999,
+    reviewCount: 2100,
+    sold: 9200,
+    description: "Serum wajah untuk mencerahkan dan melembapkan kulit",
+    stock: 150,
   } as Product,
 
   {
     id: "hl-5",
-    name: "Top Up Mobile Legends 86 Diamonds",
-    slug: "ml-86-diamonds",
-    price: 21000,
-    originalPrice: 25000,
-    category: "game",
+    name: "Netflix Premium 1 Bulan",
+    slug: "netflix-premium-1-bulan",
+    price: 65000,
+    originalPrice: 79000,
+    category: "hiburan",
     images: [],
     rating: 4.7,
-    reviewCount: 540,
-    sold: 8800,
-    description: "Diamond ML cepat & resmi",
+    reviewCount: 980,
+    sold: 6200,
+    description: "Langganan Netflix Premium resmi 1 bulan",
     stock: 9999,
   } as Product,
 
   {
     id: "hl-6",
-    name: "Voucher Google Play 50.000",
-    slug: "google-play-voucher-50k",
-    price: 50000,
-    originalPrice: 52000,
-    category: "voucher",
+    name: "Mobile Legends 86 Diamonds",
+    slug: "mobile-legends-86-diamonds",
+    price: 21000,
+    originalPrice: 25000,
+    category: "game",
     images: [],
-    rating: 4.6,
-    reviewCount: 300,
-    sold: 4100,
-    description: "Voucher digital Google Play",
+    rating: 4.9,
+    reviewCount: 3200,
+    sold: 18400,
+    description: "Top up diamond Mobile Legends instan dan resmi",
     stock: 9999,
   } as Product,
 
   {
     id: "hl-7",
     name: "Microsoft 365 Personal",
-    slug: "microsoft-365",
-    price: 150000,
-    originalPrice: 150000,
+    slug: "microsoft-365-personal",
+    price: 149000,
+    originalPrice: 179000,
     category: "produktivitas",
     images: [],
     rating: 4.8,
-    reviewCount: 1200,
-    sold: 15000,
-    description: "Lisensi Microsoft 365 Personal 1 Bulan",
+    reviewCount: 1420,
+    sold: 7600,
+    description: "Lisensi Microsoft 365 Personal original",
     stock: 9999,
   } as Product,
 
   {
     id: "hl-8",
-    name: "Netflix Premium 1 Bulan",
-    slug: "netflix-premium-1-bulan",
-    price: 65000,
-    originalPrice: 75000,
-    category: "hiburan",
+    name: "Helm Full Face Touring Pro",
+    slug: "helm-full-face-touring-pro",
+    price: 599000,
+    originalPrice: 699000,
+    category: "otomotif",
     images: [],
     rating: 4.7,
-    reviewCount: 980,
-    sold: 6200,
-    description: "Langganan Netflix resmi",
-    stock: 9999,
+    reviewCount: 670,
+    sold: 1900,
+    description: "Helm full face nyaman untuk touring dan harian",
+    stock: 35,
   } as Product,
 ];
 
@@ -187,8 +187,6 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
     </div>
   );
 }
-
-
 
 /* ── Highlight Card Skeleton ──────────────────────── */
 function HighlightCardSkeleton() {
@@ -299,22 +297,6 @@ function HighlightCard({
             <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight leading-none">
               {formatRupiah(product.price)}
             </p>
-
-            {/* Progress bar stok */}
-            <div className="mt-1">
-              <div className="flex items-center gap-1">
-                <div className="flex-1 h-1 bg-orange-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-orange-400 rounded-full"
-                    style={{ width: "78%" }}
-                  />
-                </div>
-
-                <span className="text-[8px] font-semibold text-orange-500 leading-none shrink-0">
-                  12
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </article>
@@ -331,7 +313,7 @@ function HighlightSection({
   isLoading: boolean;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const maxItems = 12;
+  const maxItems = 20;
   const displayProducts = products.slice(0, maxItems);
 
   return (
@@ -478,7 +460,7 @@ export default function ProductGrid() {
       : arr;
 
   const popularToShow = filteredQuery(
-    (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 6),
+    (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 8),
   );
 
   const filteredAll = applySort(filteredQuery(allProducts), "popular");
