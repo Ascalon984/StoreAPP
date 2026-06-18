@@ -626,3 +626,125 @@ export const products: Product[] = [
     description: "Lampu LED Osram H7. Penerangan lebih terang.",
   },
 ];
+
+export const mockNotifications: Notification[] = [
+  {
+    id: "n1",
+    type: "promo",
+    isRead: false,
+    createdAt: new Date().toISOString(),
+    promoProduct: "Samsung Galaxy S24",
+    promoDiscount: 10,
+    promoCopy: "Dapatkan diskon 10% untuk pembelian Samsung Galaxy S24 hari ini!",
+  },
+  {
+    id: "n2",
+    type: "activity",
+    isRead: true,
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    activityTitle: "Pesanan Dikirim",
+    productName: "iPhone 15 Pro Max",
+    orderId: "ORD-12345",
+  }
+];
+
+export const mockOrders: Order[] = [
+  {
+    id: "o1",
+    orderId: "ORD-12345",
+    createdAt: new Date().toISOString(),
+    status: "processing",
+    items: [
+      {
+        productId: "e2",
+        name: "iPhone 15 Pro Max",
+        category: "elektronik",
+        image: null,
+        price: 18000000,
+        quantity: 1
+      }
+    ],
+    total: 18000000,
+    paymentMethod: "bank_transfer",
+    customerName: "John Doe",
+    phone: "081234567890",
+    address: "Jl. Jendral Sudirman No. 1, Jakarta",
+  },
+  {
+    id: "o2",
+    orderId: "ORD-98765",
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+    status: "pending",
+    items: [
+      {
+        productId: "b1",
+        name: "Microsoft 365 Personal 1 Bulan",
+        category: "produktivitas",
+        image: null,
+        price: 150000,
+        quantity: 1
+      }
+    ],
+    total: 150000,
+    paymentMethod: "qris",
+    customerName: "John Doe",
+    phone: "081234567890",
+    address: "Jl. Jendral Sudirman No. 1, Jakarta",
+  },
+  {
+    id: "o3",
+    orderId: "ORD-54321",
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    status: "completed",
+    items: [
+      {
+        productId: "f1",
+        name: "Kaos Polo Ralph Lauren",
+        category: "fashion",
+        image: null,
+        price: 850000,
+        quantity: 2
+      }
+    ],
+    total: 1700000,
+    paymentMethod: "ewallet",
+    customerName: "John Doe",
+    phone: "081234567890",
+    address: "Jl. Jendral Sudirman No. 1, Jakarta",
+  },
+  {
+    id: "o4",
+    orderId: "ORD-11111",
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    status: "cancelled",
+    items: [
+      {
+        productId: "h1",
+        name: "Netflix Premium 1 Bulan",
+        category: "hiburan",
+        image: null,
+        price: 120000,
+        quantity: 1
+      }
+    ],
+    total: 120000,
+    paymentMethod: "bank_transfer",
+    customerName: "John Doe",
+    phone: "081234567890",
+    address: "Jl. Jendral Sudirman No. 1, Jakarta",
+  }
+];
+
+export const mockFavorites: Product[] = [products[0], products[1]];
+
+export const defaultReviews: Review[] = [
+  {
+    id: "r1",
+    productId: "e1",
+    name: "Budi Santoso",
+    rating: 5,
+    comment: "Barang bagus, pengiriman cepat!",
+    createdAt: new Date().toISOString(),
+    isVerified: true,
+  }
+];

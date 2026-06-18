@@ -11,13 +11,15 @@ import {
   Package,
   CheckCircle,
   XCircle,
+  MessageCircle,
+  Truck,
 } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
 import { products, mockOrders } from "@/lib/data";
 import { Order, OrderItem, OrderStatus } from "@/lib/types";
 
-type FilterTab = "all" | "processing" | "completed" | "cancelled";
+type FilterTab = "all" | "pending" | "processing" | "completed" | "cancelled";
 
 function getOrderGroupLabel(dateStr: string): string {
   const now = new Date();
@@ -86,6 +88,7 @@ const STATUS_CONFIG: Record<
 
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
   { key: "all", label: "Semua" },
+  { key: "pending", label: "Menunggu" },
   { key: "processing", label: "Diproses" },
   { key: "completed", label: "Berhasil" },
   { key: "cancelled", label: "Gagal" },
@@ -302,23 +305,30 @@ function OrderCard({
           )}
 
           {order.status === "processing" && (
-            <button
-              onClick={() => {
-                const imgs = order.items
-                  .map((it, i) => {
-                    const p = products.find((pp) => pp.id === it.productId);
-                    return p
-                      ? `/products/${p.id}.jpg`
-                      : `/products/${products[i % products.length].id}.jpg`;
-                  })
-                  .slice(0, 3)
-                  .join(",");
+            <>
+              <button
+                onClick={() => {
+                  const imgs = order.items
+                    .map((it, i) => {
+                      const p = products.find((pp) => pp.id === it.productId);
+                      return p
+                        ? `/products/${p.id}.jpg`
+                        : `/products/${products[i % products.length].id}.jpg`;
+                    })
+                    .slice(0, 3)
+                    .join(",");
 
-                router.push(
-                  `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
-                );
-              }}
-              className="
+                  router.push(
+                    `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
+                  );
+                }}
+                className="p-1.5 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 active:scale-95 transition-all"
+                title="Hubungi Penjual"
+              >
+                <MessageCircle size={16} />
+              </button>
+              <button
+                className="
 px-3 py-1 rounded-lg
 border border-gray-200
 bg-white
@@ -326,10 +336,13 @@ text-[11px] font-semibold text-gray-700
 hover:bg-gray-50
 active:scale-95
 transition-all
+flex items-center gap-1.5
 "
-            >
-              Hubungi Penjual
-            </button>
+              >
+                <Truck size={14} />
+                <span>Lacak</span>
+              </button>
+            </>
           )}
 
           {order.status === "pending" && (
@@ -358,17 +371,20 @@ transition-all
                     `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
                   );
                 }}
-                className="
-px-3 py-1 rounded-lg
-border border-gray-200
-bg-white
-text-[11px] font-semibold text-gray-700
-hover:bg-gray-50
-active:scale-95
-transition-all
-"
+                className="p-1.5 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 active:scale-95 transition-all"
+                title="Hubungi Penjual"
               >
-                Hubungi Penjual
+                <MessageCircle size={16} />
+              </button>
+              <button
+                className="px-4 py-1.5 rounded-lg
+                bg-emerald-600
+                text-white text-[11px] font-semibold
+                hover:bg-emerald-700
+                active:scale-95
+                transition-all"
+              >
+                Bayar
               </button>
             </>
           )}
@@ -439,6 +455,11 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       Icon: Package,
       title: "Belum ada pesanan",
       sub: "Yuk mulai belanja produk favoritmu!",
+    },
+    pending: {
+      Icon: Clock3,
+      title: "Tidak ada pesanan menunggu",
+      sub: "Pesanan yang belum dibayar akan tampil di sini.",
     },
     processing: {
       Icon: RefreshCw,
@@ -539,8 +560,6 @@ export default function OrdersPage() {
 
   const filtered = orders.filter((o) => {
     if (activeFilter === "all") return true;
-    if (activeFilter === "processing")
-      return o.status === "pending" || o.status === "processing";
     return o.status === activeFilter;
   });
 
@@ -565,7 +584,7 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
       <div className="sticky top-0 z-50">
         <div
-          className="bg-emerald-700 rounded-b-[18px] pb-2"
+          className="bg-emerald-700 rounded-b-[17px] pb-4"
           style={{
             boxShadow: isScrolled
               ? "0 10px 24px rgba(0,0,0,0.18)"
@@ -574,20 +593,20 @@ export default function OrdersPage() {
           }}
         >
           {/* Title */}
-          <div className="flex items-center justify-center px-4 h-8">
+          <div className="flex items-center justify-center px-4 h-8 pt-0.5">
             <span className="text-[14px] font-bold text-white leading-none">
               Riwayat Transaksi
             </span>
           </div>
 
           {/* Tabs */}
-          <div className="px-4 mt-1">
-            <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[2px] flex ring-1 ring-white/10">
+          <div className="px-2 mt-0.5 relative z-20 -mb-2.5 pt-2">
+            <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[1.5px] flex">
               {/* Active indicator */}
               <div
                 className="
-                absolute top-[2px] bottom-[2px]
-                rounded-[10px]
+                absolute top-[1.5px] bottom-[1.5px]
+                rounded-[12px]
                 bg-white
                 shadow-[0_2px_8px_rgba(0,0,0,0.12)]
                 transition-[transform] duration-300
