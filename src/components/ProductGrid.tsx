@@ -191,8 +191,8 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
 /* ── Highlight Card Skeleton ──────────────────────── */
 function HighlightCardSkeleton() {
   return (
-    <div className="flex-shrink-0 w-[210px] bg-white rounded-xl shadow-sm overflow-hidden flex flex-row items-center border border-gray-100/50 h-[76px]">
-      <div className="w-[72px] h-full bg-gray-100 skeleton animate-pulse flex-shrink-0" />
+    <div className="flex-shrink-0 w-[210px] bg-white rounded-xl shadow-sm overflow-hidden flex flex-row items-center border border-gray-100/50 h-[80px]">
+      <div className="w-[76px] h-full bg-gray-100 skeleton animate-pulse flex-shrink-0" />
       <div className="flex-1 flex flex-col gap-2 px-2.5 py-2">
         <div className="h-2.5 w-full bg-gray-100 skeleton rounded animate-pulse" />
         <div className="h-2.5 w-3/4 bg-gray-100 skeleton rounded animate-pulse" />
@@ -253,7 +253,7 @@ function HighlightCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[200px] group"
+      className="block flex-shrink-0 w-[212px] group"
     >
       {/* Remaining time */}
       <div className="absolute top-1 right-2 z-10">
@@ -264,9 +264,9 @@ function HighlightCard({
       </div>
 
       {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[76px]">
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[80px]">
         {/* Gambar full-bleed kiri */}
-        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
+        <div className="w-[76px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
             category={product.category}
             name={product.name}
@@ -349,7 +349,7 @@ function HighlightSection({
             {displayProducts.map((product, i) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 snap-start w-[210px]"
+                className="flex-shrink-0 snap-start w-[216px]"
               >
                 <HighlightCard product={product} index={i} />
               </div>
