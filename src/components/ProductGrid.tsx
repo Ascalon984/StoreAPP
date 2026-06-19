@@ -258,7 +258,7 @@ function HighlightCard({
       {/* Remaining time */}
       <div className="absolute top-1 right-2 z-10">
         {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
-        <span className="bg-orange-500/90 text-white text-[9px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
+        <span className="bg-orange-600/90 text-white text-[10px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
           3 Hari Lagi
         </span>
       </div>
@@ -317,7 +317,7 @@ function HighlightSection({
   const displayProducts = products.slice(0, maxItems);
 
   return (
-    <section className="mb-3">
+    <section className="mb-1">
       {/* ── Header emerald: judul + countdown saja ── */}
       <div className="mx-2 rounded-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-3 relative overflow-hidden">
         {/* decorative blobs */}
@@ -326,7 +326,7 @@ function HighlightSection({
 
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[13.5px] font-extrabold text-white tracking-tight leading-none">
+            <h3 className="text-[14px] font-bold text-white tracking-tight leading-none">
               Penawaran Terbatas
             </h3>
           </div>
@@ -344,7 +344,7 @@ function HighlightSection({
         ) : displayProducts.length > 0 ? (
           <div
             ref={scrollRef}
-            className="flex gap-0.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+            className="flex gap-1.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
           >
             {displayProducts.map((product, i) => (
               <div
@@ -480,6 +480,13 @@ export default function ProductGrid() {
           SECTION 1 — Paling Dicari
           ══════════════════════════════════════════ */}
       <section id="product-grid" className="px-2 pt-2 pb-4">
+        <div className="pt-1 mb-2">
+          <div className="flex items-center justify-between px-0.5">
+            <h2 className="text-[13px] font-bold text-gray-800 tracking-tight">
+              TERLARIS
+            </h2>
+          </div>
+        </div>
         {isLoadingPopular ? (
           <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -501,8 +508,8 @@ export default function ProductGrid() {
       <section className="px-2 pb-3 min-h-[50vh]">
         <div className="pt-2 mb-2">
           <div className="flex items-center justify-between px-0.5 mb-2.5">
-            <h2 className="text-[13px] font-extrabold text-gray-800 tracking-tight">
-              Semua Produk
+            <h2 className="text-[13px] font-bold text-gray-800 tracking-tight">
+              SEMUA PRODUK
             </h2>
           </div>
         </div>
