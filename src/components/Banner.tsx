@@ -11,7 +11,7 @@ interface BannerProps {
 function BannerSkeleton() {
   return (
     <section className="px-2.5 pt-4 pb-1 -mt-px">
-      <div className="w-full aspect-[2.7/1] skeleton rounded-lg" />
+      <div className="w-full aspect-[2.65/1] skeleton rounded-lg" />
     </section>
   );
 }
@@ -152,7 +152,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   return (
     <section className="px-2.5 pt-4 pb-1 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative rounded-lg overflow-hidden aspect-[2.7/1]">
+      <div className="relative rounded-lg overflow-hidden aspect-[2.65/1]">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -169,7 +169,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
               key={`${banner.id}-${index}`}
               className="flex-shrink-0 w-full snap-start"
             >
-              <div className="relative rounded-2xl overflow-hidden aspect-[2.7/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[2.65/1] shadow-md transition-transform duration-300 active:scale-[0.98]">
                 <Image
                   src={banner.image}
                   alt={banner.title}

@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  RefreshCw,
   Clock3,
   ClockFading,
   CheckCircle2,
@@ -19,7 +18,7 @@ import ProductImage from "@/components/ProductImage";
 import { products, mockOrders } from "@/lib/data";
 import { Order, OrderItem, OrderStatus } from "@/lib/types";
 
-type FilterTab = "all" | "pending" | "processing" | "completed" | "cancelled";
+type FilterTab = "all" | "active" | "completed" | "cancelled";
 
 function getOrderGroupLabel(dateStr: string): string {
   const now = new Date();
@@ -88,8 +87,7 @@ const STATUS_CONFIG: Record<
 
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
   { key: "all", label: "Semua" },
-  { key: "pending", label: "Menunggu" },
-  { key: "processing", label: "Diproses" },
+  { key: "active", label: "Aktif" },
   { key: "completed", label: "Berhasil" },
   { key: "cancelled", label: "Gagal" },
 ];
@@ -247,10 +245,9 @@ function OrderCard({
           #{order.orderId}
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {activeFilter === "all" && (
+          {(activeFilter === "all" || activeFilter === "active") && (
             <div className="flex items-center gap-1">
               <StatusIcon size={13} strokeWidth={2.4} className={iconClass} />
-
               <span className={`text-[10px] font-semibold ${textClass}`}>
                 {label}
               </span>
@@ -329,7 +326,7 @@ function OrderCard({
               </button>
               <button
                 className="
-px-3 py-1 rounded-lg
+px-3 py-1.5 rounded-lg
 border border-gray-200
 bg-white
 text-[11px] font-semibold text-gray-700
@@ -348,33 +345,15 @@ flex items-center gap-1.5
           {order.status === "pending" && (
             <>
               <button
-                className="text-[11px] font-semibold text-gray-400
-                hover:text-gray-600
-                transition-colors
-                active:scale-95"
+                className="px-3 py-1.5 rounded-lg
+                border border-gray-200
+                bg-white
+                text-[11px] font-semibold text-gray-700
+                hover:bg-gray-50
+                active:scale-95
+                transition-all"
               >
                 Batalkan
-              </button>
-              <button
-                onClick={() => {
-                  const imgs = order.items
-                    .map((it, i) => {
-                      const p = products.find((pp) => pp.id === it.productId);
-                      return p
-                        ? `/products/${p.id}.jpg`
-                        : `/products/${products[i % products.length].id}.jpg`;
-                    })
-                    .slice(0, 3)
-                    .join(",");
-
-                  router.push(
-                    `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
-                  );
-                }}
-                className="p-1.5 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 active:scale-95 transition-all"
-                title="Hubungi Penjual"
-              >
-                <MessageCircle size={16} />
               </button>
               <button
                 className="px-4 py-1.5 rounded-lg
@@ -456,15 +435,10 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       title: "Belum ada pesanan",
       sub: "Yuk mulai belanja produk favoritmu!",
     },
-    pending: {
+    active: {
       Icon: Clock3,
-      title: "Tidak ada pesanan menunggu",
-      sub: "Pesanan yang belum dibayar akan tampil di sini.",
-    },
-    processing: {
-      Icon: RefreshCw,
-      title: "Tidak ada pesanan diproses",
-      sub: "Pesanan aktif akan tampil di sini.",
+      title: "Tidak ada pesanan aktif",
+      sub: "Pesanan yang belum dibayar atau sedang diproses akan tampil di sini.",
     },
     completed: {
       Icon: CheckCircle,
@@ -560,6 +534,8 @@ export default function OrdersPage() {
 
   const filtered = orders.filter((o) => {
     if (activeFilter === "all") return true;
+    if (activeFilter === "active")
+      return o.status === "pending" || o.status === "processing";
     return o.status === activeFilter;
   });
 
@@ -600,14 +576,14 @@ export default function OrdersPage() {
           </div>
 
           {/* Tabs */}
-          <div className="px-2 mt-0.5 relative z-20 -mb-2.5 pt-2">
-            <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-[1.5px] flex">
+          <div className="px-2 mt-1 relative z-20 -mb-2.5 pt-2">
+            <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-[2px] flex">
               {/* Active indicator */}
               <div
                 className="
-                absolute top-[1.5px] bottom-[1.5px]
-                rounded-[12px]
-                bg-white
+    absolute top-[2px] bottom-[2px]
+    rounded-[14px]
+    bg-white
                 shadow-[0_2px_8px_rgba(0,0,0,0.12)]
                 transition-[transform] duration-300
                 ease-[cubic-bezier(0.25,1,0.5,1)]
@@ -628,7 +604,7 @@ export default function OrdersPage() {
                     key={tab.key}
                     onClick={() => setActiveFilter(tab.key)}
                     className={`
-                    relative z-10 flex-1 h-8
+                    relative z-10 flex-1 h-9
                     text-[12px] font-semibold
                     transition-[color] duration-200
                     ${active ? "text-emerald-800" : "text-white/70"}

@@ -191,7 +191,7 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
 /* ── Highlight Card Skeleton ──────────────────────── */
 function HighlightCardSkeleton() {
   return (
-    <div className="flex-shrink-0 w-[210px] bg-white rounded-xl shadow-sm overflow-hidden flex flex-row items-center border border-gray-100/50 h-[80px]">
+    <div className="flex-shrink-0 w-[210px] bg-white rounded-xl shadow-sm overflow-hidden flex flex-row items-center border border-gray-100/50 h-[82px]">
       <div className="w-[76px] h-full bg-gray-100 skeleton animate-pulse flex-shrink-0" />
       <div className="flex-1 flex flex-col gap-2 px-2.5 py-2">
         <div className="h-2.5 w-full bg-gray-100 skeleton rounded animate-pulse" />
@@ -264,7 +264,7 @@ function HighlightCard({
       </div>
 
       {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[80px]">
+      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px]">
         {/* Gambar full-bleed kiri */}
         <div className="w-[76px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
