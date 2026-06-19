@@ -317,7 +317,7 @@ function HighlightSection({
   const displayProducts = products.slice(0, maxItems);
 
   return (
-    <section className="mb-2">
+    <section className="mb-3">
       {/* ── Header emerald: judul + countdown saja ── */}
       <div className="mx-2 rounded-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-3 relative overflow-hidden">
         {/* decorative blobs */}
@@ -349,7 +349,7 @@ function HighlightSection({
             {displayProducts.map((product, i) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 snap-start w-[216px]"
+                className="flex-shrink-0 snap-start w-[213px]"
               >
                 <HighlightCard product={product} index={i} />
               </div>
