@@ -136,8 +136,8 @@ export default function Navbar() {
     <div
       className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "24px",
-        borderBottomRightRadius: isScrolled ? "0px" : "24px",
+        borderBottomLeftRadius: isScrolled ? "0px" : "22px",
+        borderBottomRightRadius: isScrolled ? "0px" : "22px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
@@ -150,21 +150,21 @@ export default function Navbar() {
           {/* ── Greeting Row ── */}
           <div
             style={{
-              height: isScrolled ? "0px" : "54px",
+              height: isScrolled ? "0px" : "50px",
               overflow: "hidden",
               transition: "height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
             <div
               style={{
-                transform: isScrolled ? "translateY(-54px)" : "translateY(0px)",
+                transform: isScrolled ? "translateY(-50px)" : "translateY(0px)",
                 opacity: isScrolled ? 0 : 1,
                 willChange: "transform, opacity",
                 transition:
                   "transform 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease",
               }}
             >
-              <div className="flex items-center justify-between h-[54px] pt-1">
+              <div className="flex items-center justify-between h-[50px] pt-1">
                 {/* Avatar */}
                 <div className="flex items-center gap-3 min-w-0">
                   <Link
