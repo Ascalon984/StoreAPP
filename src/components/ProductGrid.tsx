@@ -258,7 +258,7 @@ function HighlightCard({
       {/* Remaining time */}
       <div className="absolute top-1 right-2 z-10">
         {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
-        <span className="bg-orange-600/90 text-white text-[10px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
+        <span className="bg-orange-600/80 text-white text-[10px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
           3 Hari Lagi
         </span>
       </div>
@@ -326,7 +326,7 @@ function HighlightSection({
 
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[14px] font-bold text-white tracking-tight leading-none">
+            <h3 className="text-[13.5px] font-bold text-white tracking-tight leading-none">
               Penawaran Terbatas
             </h3>
           </div>

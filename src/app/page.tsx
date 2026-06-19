@@ -69,7 +69,7 @@ export default async function Home() {
     bg-[#f8faf8]
     rounded-t-[24px]
     border-t border-white/80
-    -mt-1
+    -mt-0.5
   "
       >
         {/* Scrollable container for products */}

@@ -136,8 +136,8 @@ export default function Navbar() {
     <div
       className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "20px",
-        borderBottomRightRadius: isScrolled ? "0px" : "20px",
+        borderBottomLeftRadius: isScrolled ? "0px" : "21px",
+        borderBottomRightRadius: isScrolled ? "0px" : "21px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
