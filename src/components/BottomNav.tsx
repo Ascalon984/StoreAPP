@@ -113,12 +113,13 @@ export default function BottomNav() {
   const isProductDetail = pathname?.startsWith("/product/");
   const isCheckout = pathname === "/checkout";
   const isNotifications = pathname === "/notifications";
+  const isProducts = pathname?.startsWith("/products/");
 
   const totalItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
-  if (isProductDetail || isCheckout || isNotifications) return null;
+  if (isProductDetail || isCheckout || isNotifications || isProducts) return null;
 
   return (
     <>

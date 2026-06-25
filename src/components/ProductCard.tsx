@@ -102,10 +102,10 @@ export default function ProductCard({
 
   const titleSize =
     product.name.length > 50
-      ? "text-[11px] leading-[1.3]"
+      ? "text-[11px] leading-[1.15]"
       : product.name.length > 35
-        ? "text-[11.5px] leading-[1.3]"
-        : "text-[12px] leading-snug";
+        ? "text-[11.5px] leading-[1.15]"
+        : "text-[12px] leading-[1.18]";
 
   const priceLength = displayPrice.length;
 
@@ -147,7 +147,7 @@ export default function ProductCard({
         )}
 
         <div
-          className={`relative w-full ${isTall ? "aspect-[5/4]" : "aspect-[3/2]"} bg-white overflow-hidden flex-shrink-0 z-10`}
+          className={`relative w-full ${isTall ? "aspect-[5/4]" : "aspect-[4/3]"} bg-white overflow-hidden flex-shrink-0 z-10`}
         >
           <ProductImage
             category={product.category}
@@ -159,9 +159,9 @@ export default function ProductCard({
           />
         </div>
 
-        <div className="p-3 pt-0 flex flex-col flex-1 gap-1.5 z-10 relative bg-white/50 backdrop-blur-sm">
+        <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-1 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
-            className={`text-gray-800 line-clamp-2 font-bold transition-colors duration-200 min-h-[2.4rem] tracking-tight ${titleSize}`}
+            className={`text-gray-800 line-clamp-2 font-normal transition-colors duration-200 min-h-[1.4rem] tracking-tight ${titleSize}`}
           >
             {product.name}
           </h3>
@@ -170,8 +170,8 @@ export default function ProductCard({
             <span
               className={`
                 ${priceSize}
-                font-extrabold
-                text-emerald-700
+                font-semibold
+                text-gray-700
                 tracking-tight
                 truncate
                 flex-shrink-0
@@ -207,7 +207,7 @@ export default function ProductCard({
             </div>
 
             {/* RIGHT: Sold */}
-            <div className="text-[10px] text-gray-400 font-medium">
+            <div className="text-[10px] text-gray-400 font-normal">
               {formatSold(product.sold)} terjual
             </div>
 

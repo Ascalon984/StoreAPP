@@ -66,6 +66,7 @@ export default function Navbar() {
   const isOrders = pathname === "/orders";
   const isWishlist = pathname === "/wishlist";
   const isNotifications = pathname === "/notifications";
+  const isProducts = pathname?.startsWith("/products/");
 
   const openSearch = useSearchStore((s) => s.openSearch);
   const { fetchSettings } = useSettingsStore();
@@ -127,7 +128,8 @@ export default function Navbar() {
     isWishlist ||
     isProductDetail ||
     isCategoryDetail ||
-    isNotifications
+    isNotifications ||
+    isProducts
   ) {
     return null;
   }

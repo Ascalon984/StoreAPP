@@ -282,7 +282,7 @@ function HighlightCard({
         <div className="flex-1 min-w-0 flex flex-col justify-between px-2.5 py-2">
           {/* Nama — min-h agar konsisten 1 atau 2 baris */}
           <div className="min-h-[28px]">
-            <p className="text-[10px] font-bold text-gray-800 line-clamp-2 leading-tight">
+            <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
               {product.name}
             </p>
           </div>
@@ -295,7 +295,7 @@ function HighlightCard({
               </p>
             )}
 
-            <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight leading-none">
+            <p className="text-[12px] font-semibold text-gray-700 tracking-tight leading-none">
               {formatRupiah(product.price)}
             </p>
           </div>
@@ -335,7 +335,7 @@ function HighlightSection({
       </div>
 
       {/* ── Cards: scroll bebas, background transparan ── */}
-      <div className="mt-2.5 px-2">
+      <div className="mt-1 px-2">
         {isLoading ? (
           <div className="flex gap-2.5 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -359,6 +359,7 @@ function HighlightSection({
           </div>
         ) : null}
       </div>
+      <div className="mx-4 mt-2 h-px" />
     </section>
   );
 }
@@ -489,10 +490,9 @@ export default function ProductGrid() {
 
             <Link
               href="/products/popular"
-              className="flex items-center gap-0.5 text-[11px] font-semibold text-emerald-700 active:scale-95 transition-transform"
+              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform"
             >
               Lihat Semua
-              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
