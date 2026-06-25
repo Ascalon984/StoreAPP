@@ -38,7 +38,7 @@ interface CategoryGridProps {
 function CategorySkeleton() {
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-4">
+      <div className="grid grid-cols-4 place-items-center gap-y-2">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -174,7 +174,7 @@ export default function CategoryGrid({
 
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-4">
+      <div className="grid grid-cols-4 place-items-center gap-y-2">
         {/* 8 categories: 2 rows x 4 columns */}
         {categories.map((cat) => (
           <CategoryItem

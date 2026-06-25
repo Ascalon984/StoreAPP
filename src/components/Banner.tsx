@@ -29,7 +29,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   const resumeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // gap-1 = 4px
-  const GAP_SIZE = 4;
+  const GAP_SIZE = 2;
 
   // --- Defined up top so every effect/callback below can rely on it safely ---
   const getStepWidth = useCallback((el: HTMLDivElement) => {
@@ -205,15 +205,15 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-2.5 pt-4 pb-1 -mt-px">
+    <section className="px-2.5 pt-4 pb-0 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative aspect-[2.65/1] overflow-visible">
+      <div className="relative aspect-[2.4/1] overflow-visible">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
           className="
   flex overflow-x-auto hide-scrollbar
-  gap-1
+  gap-0.3
   snap-x snap-mandatory
   overflow-y-visible
   px-2
@@ -240,18 +240,22 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                 key={`${banner.id}-${index}`}
                 className="
           flex-shrink-0
-          w-[94%]
-          snap-center
-          transition-all duration-500
+          w-[96.5%]
+          snap-center snap-always
+          transition-all duration-700 ease-out
         "
               >
                 <div
                   className={`
-            relative overflow-hidden aspect-[2.65/1]
+            relative overflow-hidden aspect-[2.6/1]
             rounded-2xl
             shadow-md
             transition-all duration-500
-            ${isActive ? "scale-100 opacity-100" : "scale-[0.97] opacity-70"}
+            ${
+              isActive
+                ? "scale-100 opacity-100 shadow-lg"
+                : "scale-[0.965] opacity-55 shadow-sm"
+            }
           `}
                 >
                   <Image
@@ -272,7 +276,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
 
       {/* Dot indicators — moved outside, below banner */}
       {banners.length > 1 && (
-        <div className="flex justify-center gap-1 -mt-0.5">
+        <div className="flex justify-center gap-[3px] -mt-2.5">
           {banners.map((_, i) => (
             <button
               key={i}
