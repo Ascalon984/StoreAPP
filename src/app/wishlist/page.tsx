@@ -358,6 +358,7 @@ export default function WishlistPage() {
               ? "0 10px 24px rgba(0,0,0,0.18)"
               : "0 2px 8px rgba(0,0,0,0.06)",
             transition: "box-shadow 250ms ease-in-out",
+            paddingTop: "env(safe-area-inset-top)",
           }}
         >
           {/* Title */}

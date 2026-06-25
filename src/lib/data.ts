@@ -46,44 +46,44 @@ export const categories: Category[] = [
   },
 
   {
-    id: "perabotan",
-    name: "Perabotan",
+    id: "rumah",
+    name: "Rumah",
     icon: "Home",
     priority: 3,
   },
 
   {
-    id: "kesehatan",
-    name: "Kesehatan",
+    id: "kecantikan",
+    name: "Kecantikan",
     icon: "Heart",
     priority: 4,
   },
 
   {
-    id: "hiburan",
-    name: "Hiburan",
-    icon: "MediaPlaySquare",
+    id: "makanan",
+    name: "Makanan",
+    icon: "UtensilCrossed",
     priority: 5,
   },
 
   {
-    id: "game",
-    name: "Game",
+    id: "hobi",
+    name: "Hobi",
     icon: "GamePad2",
     priority: 6,
-  },
-
-  {
-    id: "produktivitas",
-    name: "Produktivitas",
-    icon: "BriefCase",
-    priority: 7,
   },
 
   {
     id: "otomotif",
     name: "Otomotif",
     icon: "Car",
+    priority: 7,
+  },
+
+  {
+    id: "olahraga",
+    name: "Olahraga",
+    icon: "Running",
     priority: 8,
   },
 ];
@@ -635,7 +635,8 @@ export const mockNotifications: Notification[] = [
     createdAt: new Date().toISOString(),
     promoProduct: "Samsung Galaxy S24",
     promoDiscount: 10,
-    promoCopy: "Dapatkan diskon 10% untuk pembelian Samsung Galaxy S24 hari ini!",
+    promoCopy:
+      "Dapatkan diskon 10% untuk pembelian Samsung Galaxy S24 hari ini!",
   },
   {
     id: "n2",
@@ -645,7 +646,7 @@ export const mockNotifications: Notification[] = [
     activityTitle: "Pesanan Dikirim",
     productName: "iPhone 15 Pro Max",
     orderId: "ORD-12345",
-  }
+  },
 ];
 
 export const mockOrders: Order[] = [
@@ -661,8 +662,8 @@ export const mockOrders: Order[] = [
         category: "elektronik",
         image: null,
         price: 18000000,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     total: 18000000,
     paymentMethod: "bank_transfer",
@@ -682,8 +683,8 @@ export const mockOrders: Order[] = [
         category: "produktivitas",
         image: null,
         price: 150000,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     total: 150000,
     paymentMethod: "qris",
@@ -703,8 +704,8 @@ export const mockOrders: Order[] = [
         category: "fashion",
         image: null,
         price: 850000,
-        quantity: 2
-      }
+        quantity: 2,
+      },
     ],
     total: 1700000,
     paymentMethod: "ewallet",
@@ -724,15 +725,15 @@ export const mockOrders: Order[] = [
         category: "hiburan",
         image: null,
         price: 120000,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     total: 120000,
     paymentMethod: "bank_transfer",
     customerName: "John Doe",
     phone: "081234567890",
     address: "Jl. Jendral Sudirman No. 1, Jakarta",
-  }
+  },
 ];
 
 export const mockFavorites: Product[] = [products[0], products[1]];
@@ -746,5 +747,5 @@ export const defaultReviews: Review[] = [
     comment: "Barang bagus, pengiriman cepat!",
     createdAt: new Date().toISOString(),
     isVerified: true,
-  }
+  },
 ];

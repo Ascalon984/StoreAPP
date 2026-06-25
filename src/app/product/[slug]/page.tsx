@@ -344,6 +344,7 @@ export default function ProductDetailPage({
                 ? "opacity-100 translate-y-0 pointer-events-auto"
                 : "opacity-0 -translate-y-full pointer-events-none"
             }`}
+            style={{ paddingTop: "env(safe-area-inset-top)" }}
           >
             <div className="max-w-[500px] mx-auto flex items-center gap-2 px-3 h-14">
               <button

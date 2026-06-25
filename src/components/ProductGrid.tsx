@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Star,
   Flame,
+  ChevronRight,
 } from "lucide-react";
 
 /* ── Sort ─────────────────────────────────────────── */
@@ -485,6 +486,14 @@ export default function ProductGrid() {
             <h2 className="text-[13px] font-bold text-gray-800 tracking-tight">
               TERLARIS
             </h2>
+
+            <Link
+              href="/products/popular"
+              className="flex items-center gap-0.5 text-[11px] font-semibold text-emerald-700 active:scale-95 transition-transform"
+            >
+              Lihat Semua
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
         {isLoadingPopular ? (

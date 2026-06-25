@@ -224,6 +224,7 @@ export default function CategoryProductPage({
           boxShadow: isScrolled
             ? "0 2px 10px rgba(0,0,0,0.06)"
             : "0 1px 0 rgba(0,0,0,0.06)",
+          paddingTop: "env(safe-area-inset-top)",
         }}
       >
         {/* Back row */}

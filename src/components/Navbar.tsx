@@ -143,6 +143,7 @@ export default function Navbar() {
         boxShadow: isScrolled
           ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",
+        paddingTop: "env(safe-area-inset-top)",
       }}
     >
       <header className="w-full px-4 overflow-visible">

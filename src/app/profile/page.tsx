@@ -166,10 +166,16 @@ export default function ProfilePage() {
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div className="absolute top-0 left-0 w-full h-[158px] z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[18px]" />
+        <div 
+          className="absolute top-0 left-0 w-full z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[18px]"
+          style={{ height: "calc(158px + env(safe-area-inset-top))" }}
+        />
 
         {/* CONTENT */}
-        <div className="relative z-10 px-4 pt-4 pb-0 flex items-start justify-between">
+        <div 
+          className="relative z-10 px-4 pb-0 flex items-start justify-between"
+          style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
+        >
           {/* LEFT: AVATAR + NAME */}
           <div className="flex items-start gap-3.5">
             <div className="relative flex-shrink-0">

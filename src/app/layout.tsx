@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
@@ -26,6 +26,15 @@ export const metadata: Metadata = {
     shortcut: "/icons/logo-web.png",
     apple: "/icons/logo-web.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0E9F6E",
 };
 
 export default function RootLayout({

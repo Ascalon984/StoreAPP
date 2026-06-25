@@ -267,9 +267,9 @@ export default function CheckoutPage() {
         {/* ── HEADER ── */}
         <div
           className="sticky top-0 z-50 bg-[#048750] shadow-layer-xs"
-          style={{ height: 48 }}
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
-          <div className="flex items-center h-full px-4">
+          <div className="flex items-center h-[48px] px-4">
             <button
               onClick={handleBack}
               aria-label="Kembali"
@@ -327,9 +327,9 @@ export default function CheckoutPage() {
         {/* ── HEADER ── */}
         <div
           className="sticky top-0 z-50 bg-[#048750] border-b border-emerald-800/10"
-          style={{ height: 48 }}
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
-          <div className="flex items-center h-full px-4">
+          <div className="flex items-center h-[48px] px-4">
             <button
               onClick={handleBack}
               aria-label="Kembali"

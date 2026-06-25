@@ -12,12 +12,23 @@ import { GridColorIcon } from "./GridColorIcon";
 const iconPathMap: Record<string, string> = {
   elektronik: "/icons/elektronik.png",
   fashion: "/icons/fashion.png",
-  perabotan: "/icons/rumah tangga.png",
-  kesehatan: "/icons/kesehatan kecantikan.png",
-  hiburan: "/icons/hiburan.png",
-  game: "/icons/game.png",
-  produktivitas: "/icons/produktivitas.png",
+  rumah: "/icons/rumah.png",
+  kecantikan: "/icons/kecantikan.png",
+  makanan: "/icons/makanan.png",
+  hobi: "/icons/hobi.png",
   otomotif: "/icons/otomotif.png",
+  olahraga: "/icons/olah raga.png",
+};
+
+const iconClassMap: Record<string, string> = {
+  elektronik: "scale-100",
+  fashion: "scale-100",
+  rumah: "scale-100",
+  kecantikan: "scale-90",
+  makanan: "scale-100",
+  hobi: "scale-95",
+  otomotif: "scale-100",
+  olahraga: "scale-100",
 };
 
 interface CategoryGridProps {
@@ -27,7 +38,7 @@ interface CategoryGridProps {
 function CategorySkeleton() {
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 gap-x-3 gap-y-1">
+      <div className="grid grid-cols-4 place-items-center gap-y-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -57,35 +68,40 @@ function CategoryItem({
     <button
       onClick={onClick}
       className="
-      flex flex-col items-center
-      justify-start
-      pt-1.5 pb-1.5
-      gap-1.5
-      transition-all
-      active:scale-95
-      "
+    flex flex-col items-center
+    w-[64px]
+    pt-1.5 pb-1
+    active:scale-95
+    transition-transform
+  "
     >
-      <div
-        className={`
-          transition-all duration-200
-          ${isActive ? "scale-105 opacity-100" : "opacity-90"}
-        `}
-      >
-        {icon}
+      {/* ICON AREA */}
+      <div className="w-7 h-7 flex items-center justify-center">
+        <div
+          className={`
+        transition-all duration-200
+        ${isActive ? "scale-105 opacity-100" : "opacity-90"}
+      `}
+        >
+          {icon}
+        </div>
       </div>
 
-      <span
-        className={`
-      text-center
-      transition-colors
-      max-w-[72px]
-      leading-[1.1]
-      ${label.length > 14 ? "text-[10px]" : "text-[11px]"}
-      ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
+      {/* LABEL AREA */}
+      <div className="mt-1.5 flex items-start justify-center">
+        <span
+          className={`
+        text-center
+        leading-[1.1]
+        max-w-[72px]
+        break-words
+        ${label.length > 14 ? "text-[10px]" : "text-[11px]"}
+        ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
       `}
-      >
-        {label}
-      </span>
+        >
+          {label}
+        </span>
+      </div>
     </button>
   );
 }
@@ -158,7 +174,7 @@ export default function CategoryGrid({
 
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 gap-x-3 gap-y-1">
+      <div className="grid grid-cols-4 place-items-center gap-y-4">
         {/* 8 categories: 2 rows x 4 columns */}
         {categories.map((cat) => (
           <CategoryItem
@@ -174,7 +190,10 @@ export default function CategoryGrid({
                 alt={cat.name}
                 width={32}
                 height={32}
-                className="w-7 h-7 object-contain"
+                className={`
+                  w-7 h-7 object-contain transition-transform
+                  ${iconClassMap[cat.name.toLowerCase()] || "scale-100"}
+                `}
                 priority={false}
               />
             }
