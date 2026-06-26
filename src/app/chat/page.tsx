@@ -9,6 +9,14 @@ import { getGreetingMessage } from "@/lib/chat/mockMessages";
 import { generateAgentReply } from "@/lib/chat/generateAgentReply";
 import { products } from "@/lib/data";
 
+import {
+  ChevronLeft,
+  Search,
+  SlidersHorizontal,
+  X,
+  Headset,
+} from "lucide-react";
+
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatEmptyState from "@/components/chat/ChatEmptyState";
 import ChatMessageBubble from "@/components/chat/ChatMessageBubble";
@@ -36,6 +44,47 @@ function todayLabel(): string {
   });
 }
 
+const MOCK_SELLERS = [
+  {
+    id: "s1",
+    name: "Astro Store",
+    avatar: "AS",
+    lastMessage: "Pesanan Anda sedang diproses ya kak.",
+    time: "10:30",
+    unread: 2,
+    isOnline: true,
+  },
+  {
+    id: "s2",
+    name: "Tech Gadget",
+    avatar: "TG",
+    lastMessage: "Terima kasih telah berbelanja.",
+    time: "Kemarin",
+    unread: 0,
+    isOnline: false,
+  },
+  {
+    id: "s3",
+    name: "Fashion Hub",
+    avatar: "FH",
+    lastMessage: "Warna hitam ready kak.",
+    time: "Kemarin",
+    unread: 0,
+    isOnline: true,
+  },
+  {
+    id: "s4",
+    name: "Home Living",
+    avatar: "HL",
+    lastMessage: "Apakah barang ini masih ada?",
+    time: "Selasa",
+    unread: 0,
+    isOnline: false,
+  },
+];
+
+const CHAT_CHIPS = ["Semua", "Pesanan", "Belum dibaca"];
+
 // ── Inner component that uses useSearchParams ──
 function ChatPageInner() {
   const router = useRouter();
@@ -48,6 +97,28 @@ function ChatPageInner() {
   const source = sourceParam || "profile";
   const productSlug = searchParams.get("productSlug");
   const orderId = searchParams.get("orderId");
+
+  const [selectedSeller, setSelectedSeller] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [activeChip, setActiveChip] = useState("Semua");
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    if (!filterOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [filterOpen]);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
@@ -63,9 +134,11 @@ function ChatPageInner() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const greetingShownRef = useRef(false);
 
+  const isCSChat = selectedSeller?.id === "cs";
   const userMessageCount = messages.filter((m) => m.role === "user").length;
-  const showQuickReplies = userMessageCount === 0;
-  const showCollapsedQuick = userMessageCount === 1 || userMessageCount === 2;
+  const showQuickReplies = isCSChat && userMessageCount === 0;
+  const showCollapsedQuick =
+    isCSChat && (userMessageCount === 1 || userMessageCount === 2);
 
   // Read optional orderStatus / total / images passed via query params
   const orderStatusParam =
@@ -86,14 +159,34 @@ function ChatPageInner() {
     orderStatusParam ?? undefined,
   );
 
+  /* ── Scroll listener for sticky header shadow ── */
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      setIsScrolled(el.scrollTop > 10);
+    };
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   /* ── Back handler with fallback ── */
   const handleBack = useCallback(() => {
-    if (window.history.length > 1) {
+    if (selectedSeller) {
+      setSelectedSeller(null);
+    } else if (window.history.length > 1) {
       router.back();
     } else {
       router.push("/profile");
     }
-  }, [router]);
+  }, [router, selectedSeller]);
 
   /* ── Scroll to bottom with threshold ── */
   const scrollToBottom = useCallback((force = false) => {
@@ -232,6 +325,267 @@ function ChatPageInner() {
     inputRef.current?.focus();
   };
 
+  // If no seller selected, render Chat List
+  if (!selectedSeller) {
+    const displaySellers = MOCK_SELLERS.filter((s) => {
+      if (activeChip === "Belum dibaca" && s.unread === 0) return false;
+      if (
+        searchQuery &&
+        !s.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+        return false;
+      return true;
+    });
+
+    return (
+      <div className="min-h-screen bg-white">
+        {/* ── Sticky Header (Like CategorySlug) ── */}
+        <div
+          className="sticky top-0 z-50 bg-[#048750] transition-shadow duration-300"
+          style={{
+            boxShadow: isScrolled
+              ? "0 2px 10px rgba(0,0,0,0.06)"
+              : "0 1px 0 rgba(0,0,0,0.06)",
+            paddingTop: "env(safe-area-inset-top)",
+          }}
+        >
+          {/* Back row */}
+          <div className="flex items-center gap-2 px-4 pt-2.5 pb-1.5">
+            <button
+              onClick={handleBack}
+              className="
+              -ml-1.5
+              flex items-center justify-center
+              w-8 h-8
+              text-white/90
+              active:scale-90
+              transition-all duration-150
+              flex-shrink-0
+            "
+              aria-label="Kembali"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+
+            <div className="flex-1 min-w-0 -ml-2">
+              <h1 className="text-[15px] font-semibold text-white tracking-tight capitalize truncate">
+                Percakapan
+              </h1>
+            </div>
+
+            <button
+              onClick={() =>
+                setSelectedSeller({
+                  id: "cs",
+                  name: "Customer Service",
+                })
+              }
+              className="
+                flex items-center justify-center
+                w-8 h-8
+                text-white/80
+hover:text-white
+hover:bg-white/10
+                active:scale-90
+                transition-all duration-150
+                flex-shrink-0
+              "
+              aria-label="Customer Service"
+            >
+              <Headset size={19} strokeWidth={2} />
+            </button>
+          </div>
+
+          {/* Search + Sort Dropdown */}
+          <div className="px-4 mt-1 pb-2.5">
+            <div className="flex items-center gap-2">
+              {/* Search Box */}
+              <div className="flex-1 relative group">
+                <Search
+                  size={16}
+                  strokeWidth={2.2}
+                  className={`absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none transition-all duration-300 group-focus-within:opacity-0 group-focus-within:scale-75 group-focus-within:-translate-x-2 ${
+                    searchQuery
+                      ? "opacity-0 scale-75 -translate-x-2"
+                      : "opacity-100 scale-100"
+                  }`}
+                />
+                <input
+                  type="text"
+                  placeholder="Cari nama toko atau pesan"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`
+                    w-full h-9
+                    pr-8
+                    rounded-lg
+                    bg-gray-50
+                    border border-gray-200
+                    text-gray-800
+                    placeholder:text-gray-400
+                    focus:placeholder-transparent
+                    text-[12px]
+                    font-medium
+                    outline-none
+                    transition-all duration-300
+                    focus:bg-white
+                    focus:border-gray-300
+                    ${searchQuery ? "pl-3" : "pl-9 group-focus-within:pl-3"}
+                  `}
+                />
+              </div>
+
+              {/* Filter Dropdown Button */}
+              <div className="relative" ref={filterRef}>
+                <button
+                  onClick={() => setFilterOpen(!filterOpen)}
+                  className={`
+          h-9 w-9
+          rounded-lg
+          flex items-center justify-center
+          border
+          transition-colors duration-200
+          ${
+            filterOpen || activeChip !== "Semua"
+              ? "bg-gray-100 border-gray-300 text-gray-700"
+              : "bg-gray-50 border-gray-200 text-gray-600"
+          }
+        `}
+                >
+                  <SlidersHorizontal size={16} strokeWidth={2.2} />
+                </button>
+
+                {/* Dropdown */}
+                {filterOpen && (
+                  <div className="absolute right-0 top-full mt-1.5 w-36 bg-white rounded-lg border border-gray-200 shadow-[0_8px_24px_rgba(15,23,42,0.08)] overflow-hidden z-50">
+                    {CHAT_CHIPS.map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => {
+                          setActiveChip(option);
+                          setFilterOpen(false);
+                        }}
+                        className={`
+                w-full px-4 py-2.5 text-left text-[13px] font-semibold transition-colors
+                ${
+                  option === activeChip
+                    ? "text-emerald-700 bg-emerald-50"
+                    : "text-gray-700 hover:bg-gray-50"
+                }
+              `}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Seller List ── */}
+        <div className="py-2 pb-20">
+          <div className="overflow-hidden bg-white">
+            {displaySellers.map((seller, index) => (
+              <div key={seller.id}>
+                <div
+                  onClick={() =>
+                    setSelectedSeller({ id: seller.id, name: seller.name })
+                  }
+                  className="
+                    relative
+                    flex items-start gap-3
+                    px-4 py-2.5
+                    cursor-pointer
+                    transition-colors
+                    active:bg-gray-50
+                  "
+                >
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-[12px] border border-emerald-50">
+                      {seller.avatar}
+                    </div>
+
+                    {seller.isOnline && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative flex-1 min-w-0 pr-9">
+                    {/* Timestamp */}
+                    <span
+                      className="
+                        absolute
+                        top-0 right-0
+                        text-[10.5px]
+                        font-medium
+                        text-gray-500
+                      "
+                    >
+                      {seller.time}
+                    </span>
+
+                    {/* Seller Name */}
+                    <h3 className="truncate pr-10 text-[14px] font-semibold leading-5 text-gray-900">
+                      {seller.name}
+                    </h3>
+
+                    {/* Last Message */}
+                    <p
+                      className="
+                      mt-1.5
+                      truncate
+                      pr-1
+                      text-[11.5px]
+                      font-normal
+                      leading-5
+                      text-gray-500
+                    "
+                    >
+                      {seller.lastMessage}
+                    </p>
+
+                    {/* Unread Badge */}
+                    {seller.unread > 0 && (
+                      <div className="absolute right-0 bottom-0.5">
+                        <div className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-[9px] font-semibold text-white">
+                          {seller.unread}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Divider */}
+                {index !== displaySellers.length - 1 ? (
+                  <div className="ml-[76px] h-px bg-gray-200/80" />
+                ) : (
+                  <div className="h-px bg-gray-200/80" />
+                )}
+              </div>
+            ))}
+
+            {/* Empty State */}
+            {displaySellers.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                  <Search size={24} className="text-gray-400" />
+                </div>
+
+                <p className="text-sm font-medium text-gray-500">
+                  Tidak ada chat.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50/70 z-50">
       {/* Hidden file input */}
@@ -244,7 +598,12 @@ function ChatPageInner() {
       />
 
       {/* ── STICKY HEADER ── */}
-      <ChatHeader onBack={handleBack} isOnline />
+      <ChatHeader
+        onBack={handleBack}
+        isOnline={true}
+        name={selectedSeller.name}
+        isOfficial={selectedSeller.id === "cs"}
+      />
 
       {/* ── MESSAGE LIST ── */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
@@ -269,12 +628,14 @@ function ChatPageInner() {
 
       {/* ── BOTTOM COMPOSER ── */}
       <div className="flex-shrink-0 bg-white">
-        <ChatQuickReplies
-          replies={dynamicQuickReplies}
-          showFull={showQuickReplies}
-          showCollapsed={showCollapsedQuick}
-          onSelect={handleQuickReplySelect}
-        />
+        {isCSChat && (
+          <ChatQuickReplies
+            replies={dynamicQuickReplies}
+            showFull={showQuickReplies}
+            showCollapsed={showCollapsedQuick}
+            onSelect={handleQuickReplySelect}
+          />
+        )}
         <ChatInputBar
           inputText={inputText}
           onInputChange={handleInputChange}
