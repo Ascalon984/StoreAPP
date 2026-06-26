@@ -254,20 +254,34 @@ function HighlightCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[212px] group"
+      className="block flex-shrink-0 w-[198px] group"
     >
       {/* Remaining time */}
       <div className="absolute top-1 right-2 z-10">
-        {/* Perbaikan: Mengubah rounded-tr-2xl menjadi rounded-tr-md agar kelengkungan kanan atas lebih proporsional */}
-        <span className="bg-orange-600/80 text-white text-[10px] font-bold px-1.5 py-[4px] rounded-bl-xl rounded-tr-lg leading-none block">
+        <span
+          className="
+      block
+      rounded-bl-xl
+      rounded-tr-lg
+      px-1.5
+      py-[4px]
+      text-[10px]
+      font-bold
+      leading-none
+      text-white
+      bg-gradient-to-l
+      from-orange-600
+      to-amber-500
+    "
+        >
           3 Hari Lagi
         </span>
       </div>
 
       {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
-      <article className="bg-white rounded-xl shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px]">
+      <article className="bg-white rounded-lg shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px]">
         {/* Gambar full-bleed kiri */}
-        <div className="w-[76px] flex-shrink-0 self-stretch bg-gray-50">
+        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
           <ProductImage
             category={product.category}
             name={product.name}
@@ -279,7 +293,7 @@ function HighlightCard({
         </div>
 
         {/* Konten kanan */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between px-2.5 py-2">
+        <div className="flex-1 min-w-0 flex flex-col justify-between px-2 py-2">
           {/* Nama — min-h agar konsisten 1 atau 2 baris */}
           <div className="min-h-[28px]">
             <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
@@ -319,8 +333,8 @@ function HighlightSection({
 
   return (
     <section className="mb-1">
-      {/* ── Header emerald: judul + countdown saja ── */}
-      <div className="mx-2 rounded-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-3 relative overflow-hidden">
+      {/* ── Header emerald ── */}
+      <div className="mx-2 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-2.5 relative overflow-hidden">
         {/* decorative blobs */}
         <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.04]" />
         <div className="absolute bottom-0 right-8 w-16 h-16 rounded-full bg-emerald-300/10" />
@@ -335,7 +349,7 @@ function HighlightSection({
       </div>
 
       {/* ── Cards: scroll bebas, background transparan ── */}
-      <div className="mt-1 px-2">
+      <div className="mt-0.5 px-2">
         {isLoading ? (
           <div className="flex gap-2.5 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -345,12 +359,12 @@ function HighlightSection({
         ) : displayProducts.length > 0 ? (
           <div
             ref={scrollRef}
-            className="flex gap-1.5 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+            className="flex gap-1 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
           >
             {displayProducts.map((product, i) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 snap-start w-[213px]"
+                className="flex-shrink-0 snap-start w-[198px]"
               >
                 <HighlightCard product={product} index={i} />
               </div>
