@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { ChevronLeft, Search, SlidersHorizontal, Store, Headset } from "lucide-react";
+import {
+  ChevronLeft,
+  Search,
+  SlidersHorizontal,
+  Store,
+  Headset,
+} from "lucide-react";
 import { Seller } from "@/lib/types";
 import { MOCK_SELLERS } from "@/lib/mockSellers";
 
@@ -42,7 +48,10 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
 
   const displaySellers = MOCK_SELLERS.filter((s) => {
     if (activeChip === "Belum dibaca" && s.unread === 0) return false;
-    if (searchQuery && !s.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    if (
+      searchQuery &&
+      !s.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
       return false;
     return true;
   });
@@ -77,7 +86,9 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
           </div>
 
           <button
-            onClick={() => onSelectSeller({ id: "cs", name: "Customer Service" })}
+            onClick={() =>
+              onSelectSeller({ id: "cs", name: "Customer Service" })
+            }
             className="flex items-center justify-center w-8 h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 flex-shrink-0"
             aria-label="Customer Service"
           >
@@ -93,7 +104,9 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
                 size={16}
                 strokeWidth={2.2}
                 className={`absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none transition-all duration-300 group-focus-within:opacity-0 group-focus-within:scale-75 group-focus-within:-translate-x-2 ${
-                  searchQuery ? "opacity-0 scale-75 -translate-x-2" : "opacity-100 scale-100"
+                  searchQuery
+                    ? "opacity-0 scale-75 -translate-x-2"
+                    : "opacity-100 scale-100"
                 }`}
               />
               <input
@@ -124,7 +137,10 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
                   {CHAT_CHIPS.map((option) => (
                     <button
                       key={option}
-                      onClick={() => { setActiveChip(option); setFilterOpen(false); }}
+                      onClick={() => {
+                        setActiveChip(option);
+                        setFilterOpen(false);
+                      }}
                       className={`w-full px-4 py-2.5 text-left text-[13px] font-semibold transition-colors ${
                         option === activeChip
                           ? "text-emerald-700 bg-emerald-50"
@@ -147,23 +163,37 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
           {displaySellers.map((seller, index) => (
             <div key={seller.id}>
               <div
-                onClick={() => onSelectSeller({ id: seller.id, name: seller.name })}
+                onClick={() =>
+                  onSelectSeller({ id: seller.id, name: seller.name })
+                }
                 className="relative flex items-center gap-2.5 px-4 py-2 cursor-pointer transition-colors active:bg-gray-50"
               >
                 {/* Avatar */}
-                <div className="relative flex-shrink-0">
-                  <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center border border-gray-100 overflow-hidden">
+                <div className="flex-shrink-0">
+                  <div
+                    className={`
+                w-9 h-9 rounded-full bg-gray-100 border
+                flex items-center justify-center overflow-hidden
+                transition-all duration-300
+                ${
+                  seller.isOnline
+                    ? "border-emerald-500/70 ring-1 ring-emerald-500/20"
+                    : "border-gray-200"
+                }
+              `}
+                  >
                     {seller.avatar ? (
                       <span className="text-emerald-700 font-semibold text-[12px]">
                         {seller.avatar}
                       </span>
                     ) : (
-                      <Store size={19} strokeWidth={1.8} className="text-gray-500" />
+                      <Store
+                        size={19}
+                        strokeWidth={1.8}
+                        className="text-gray-500"
+                      />
                     )}
                   </div>
-                  {seller.isOnline && (
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
-                  )}
                 </div>
 
                 {/* Content */}
@@ -201,7 +231,9 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
               <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                 <Search size={24} className="text-gray-400" />
               </div>
-              <p className="text-sm font-medium text-gray-500">Tidak ada chat.</p>
+              <p className="text-sm font-medium text-gray-500">
+                Tidak ada chat.
+              </p>
             </div>
           )}
         </div>

@@ -153,13 +153,19 @@ export default function ProductReviews({
     Number.isFinite(liveRating) && liveRating > 0 ? liveRating : 0;
 
   return (
-    <div className="bg-white px-4 py-3 mt-1">
-      <h2 className="text-sm font-semibold text-gray-500 tracking-tight">
-        Ulasan Pembeli ({allReviews.length})
-      </h2>
+    <div className="bg-white px-4 py-2.5 mt-1">
+      <div className="flex items-center gap-2">
+        <h2 className="text-sm font-semibold text-gray-500 tracking-tight">
+          Ulasan Pembeli
+        </h2>
+
+        <span className="px-1.5 py-0.5 rounded-full bg-gray-100 text-[10px] font-medium text-gray-500 leading-none">
+          {allReviews.length}
+        </span>
+      </div>
 
       {/* Gauge + Bar Distribution */}
-      <div className="relative rounded-xl p-4 mb-4 mt-2 bg-white shadow-layer-xs overflow-hidden">
+      <div className="relative rounded-xl p-2 mb-3 mt-0.5 bg-white shadow-layer-xs overflow-hidden">
         <div className="absolute inset-x-4 top-0 h-px bg-white/60" />
         <div className="flex items-center gap-0">
           {/* Gauge — 40% */}
@@ -230,7 +236,7 @@ export default function ProductReviews({
                 transform={
                   safeRating > 0
                     ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
-                    : `rotate(-90, 55, 54)`
+                    : `rotate(0, 55, 54)`
                 }
               >
                 {/* batang jarum */}
@@ -252,9 +258,9 @@ export default function ProductReviews({
               <circle cx="55" cy="54" r="3" fill="#374151" />
             </svg>
 
-            <span className="text-[17px] font-semibold text-gray-400 leading-none -mt-0.7">
+            <span className="text-[17px] font-semibold text-gray-500 leading-none -mt-0.7">
               {safeRating === 0
-                ? "-"
+                ? "-.-"
                 : safeRating % 1 === 0
                   ? safeRating
                   : safeRating.toFixed(1)}
@@ -306,7 +312,7 @@ export default function ProductReviews({
 
       <div className="space-y-0 px-1">
         {displayedReviews.map((review: Review, index: number) => (
-          <div key={review.id} className="py-2.5">
+          <div key={review.id} className="py-2">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-3">
                 <div
@@ -316,7 +322,7 @@ export default function ProductReviews({
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <p className="text-[12px] font-medium text-gray-500 tracking-tight leading-none truncate">
+                    <p className="text-[12px] font-medium text-gray-600 tracking-tight leading-none truncate">
                       {maskName(review.name)}
                     </p>
                   </div>
@@ -335,8 +341,8 @@ export default function ProductReviews({
               </div>
             </div>
 
-            <div className="pl-[48px] flex items-end justify-between gap-4">
-              <p className="text-[11.5px] text-gray-500 leading-[1.45] flex-1 break-words min-w-0">
+            <div className="pl-[48px] flex items-end justify-between gap-3">
+              <p className="text-[11.5px] text-gray-600 leading-[1.45] flex-1 break-words min-w-0">
                 {review.comment}
               </p>
 
@@ -349,36 +355,32 @@ export default function ProductReviews({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleVote(review.id, "like")}
-                      className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === "like" ? "text-emerald-700 scale-110" : "text-gray-500"}`}
+                      className={`flex items-center gap-1 transition-all duration-300 ${
+                        votedType[review.id] === "like"
+                          ? "text-gray-700 scale-105"
+                          : "text-gray-400"
+                      }`}
                     >
                       <ThumbsUp
-                        size={13}
-                        className={`${votedType[review.id] === "like" ? "fill-emerald-500/20" : "fill-none"}`}
+                        size={14}
+                        className={
+                          votedType[review.id] === "like"
+                            ? "fill-gray-500 text-white"
+                            : "fill-none text-gray-400"
+                        }
                         strokeWidth={
-                          votedType[review.id] === "like" ? 2.5 : 1.8
+                          votedType[review.id] === "like" ? 2.2 : 1.8
                         }
                       />
+
                       <span
-                        className={`text-[10px] font-medium ${votedType[review.id] === "like" ? "text-emerald-700" : "text-gray-600"}`}
+                        className={`text-[10px] font-medium ${
+                          votedType[review.id] === "like"
+                            ? "text-gray-700"
+                            : "text-gray-500"
+                        }`}
                       >
                         {review.likes || 0}
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => handleVote(review.id, "dislike")}
-                      className={`flex items-center gap-1 transition-all duration-300 ${votedType[review.id] === "dislike" ? "text-rose-700 scale-110" : "text-gray-500"}`}
-                    >
-                      <ThumbsDown
-                        size={13}
-                        className={`${votedType[review.id] === "dislike" ? "fill-rose-500/20" : "fill-none"}`}
-                        strokeWidth={
-                          votedType[review.id] === "dislike" ? 2.5 : 1.5
-                        }
-                      />
-                      <span
-                        className={`text-[10px] font-medium ${votedType[review.id] === "dislike" ? "text-rose-700" : "text-gray-600"}`}
-                      >
-                        {review.dislikes || 0}
                       </span>
                     </button>
                   </div>
@@ -408,7 +410,7 @@ export default function ProductReviews({
                 </div>
 
                 {/* content */}
-                <p className="text-[11px] text-gray-500 leading-[1.45]">
+                <p className="text-[11px] text-gray-600 leading-[1.35]">
                   {review.reply.comment}
                 </p>
               </div>

@@ -200,6 +200,18 @@ export default function ProductDetailContent({
   const isPriceRange =
     hasVariants && !selectedVariant && (product.variants?.length ?? 0) > 1;
 
+  const formatCompactNumber = (num: number) => {
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1)}jt`;
+    }
+
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(num % 1000 === 0 ? 0 : 1)}rb`;
+    }
+
+    return num.toString();
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -267,7 +279,7 @@ export default function ProductDetailContent({
         {/* Info Section */}
         <div className="px-3 pt-2 pb-1.5">
           <div className="flex justify-between items-start gap-3 mb-2">
-            <h1 className="text-base md:text-sm font-medium text-gray-600 leading-snug flex-1">
+            <h1 className="text-[15px] font-medium text-gray-700 leading-snug flex-1">
               {product.name}
             </h1>
             <div className="text-right flex-shrink-0">
@@ -276,8 +288,10 @@ export default function ProductDetailContent({
                   size={14}
                   className="text-orange-500 fill-orange-400/80"
                 />
-                <span className="font-semibold text-gray-600 text-[13px]">
-                  {Math.max(product.sold, product.sold || 0)}
+                <span className="font-semibold text-gray-700 text-[13px]">
+                  {formatCompactNumber(
+                    Math.max(product.sold, product.sold || 0),
+                  )}
                 </span>
               </div>
               <p className="text-[10px] text-gray-400">Terjual</p>
@@ -293,7 +307,7 @@ export default function ProductDetailContent({
               )}
 
               <p
-                className={`font-semibold text-gray-600 tracking-tight ${
+                className={`font-medium text-gray-700 tracking-tight ${
                   isPriceRange ? "text-[16px]" : "text-[20px]"
                 }`}
               >
@@ -301,29 +315,18 @@ export default function ProductDetailContent({
               </p>
             </div>
 
-            <div
-              className={`text-right ${
-                product.category?.toLowerCase().includes("produktivitas")
-                  ? ""
-                  : "pb-1"
-              }`}
-            >
-              {product.category?.toLowerCase().includes("produktivitas") ? (
-                <>
-                  <p className="text-[13px] font-semibold text-gray-600">
-                    {product.stock}
-                  </p>
-                  <p className="text-[10px] text-gray-400">Sisa Stok</p>
-                </>
-              ) : (
-                <p
-                  className={`text-[13px] font-semibold ${
-                    product.stock > 0 ? "text-gray-500" : "text-red-300"
-                  }`}
-                >
-                  {product.stock > 0 ? "Tersedia" : "Gangguan"}
-                </p>
-              )}
+            <div className="text-right pb-0.5">
+              <p className="text-[10px] text-gray-400 leading-none mb-0.5">
+                Stok
+              </p>
+
+              <p
+                className={`text-[14px] font-semibold tabular-nums leading-none ${
+                  product.stock > 0 ? "text-gray-600" : "text-rose-400"
+                }`}
+              >
+                {formatCompactNumber(product.stock)}
+              </p>
             </div>
           </div>
         </div>
@@ -337,7 +340,7 @@ export default function ProductDetailContent({
             className="w-full flex items-center justify-between py-1 group"
           >
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-semibold text-gray-600 tracking-tight">
+              <h2 className="text-sm font-semibold text-gray-700 tracking-tight">
                 Variasi
               </h2>
               {selectedVariant && !isVariantOpen && (
@@ -414,7 +417,7 @@ export default function ProductDetailContent({
           >
             <p
               ref={descriptionRef}
-              className="text-[13px] text-gray-500 leading-relaxed whitespace-pre-wrap relative"
+              className="text-[13px] text-gray-600 leading-relaxed whitespace-pre-wrap relative"
             >
               {product.description}
             </p>
@@ -456,18 +459,26 @@ export default function ProductDetailContent({
       <div className="bg-white px-4 py-2 mt-1">
         <div className="flex items-center gap-2.5">
           {/* Avatar */}
-          <div className="relative flex-shrink-0">
-            <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+          <div className="flex-shrink-0">
+            <div
+              className={`
+          w-8 h-8 rounded-full bg-gray-100 border
+          flex items-center justify-center overflow-hidden
+          transition-all duration-300
+          ${
+            seller.isOnline
+              ? "border-emerald-500/70 ring-1 ring-emerald-500/20"
+              : "border-gray-200"
+          }
+        `}
+            >
               <Store size={16} strokeWidth={1.8} className="text-gray-400" />
             </div>
-            {seller.isOnline && (
-              <div className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border-2 border-white rounded-full" />
-            )}
           </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium text-gray-600 leading-tight truncate">
+            <p className="text-[11px] font-medium text-gray-700 leading-tight truncate">
               {seller.name}
             </p>
             <div className="flex items-center gap-1 mt-1">
@@ -482,7 +493,7 @@ export default function ProductDetailContent({
                 <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-[2.5px] h-[2.5px] rounded-full bg-white" />
               </div>
 
-              <p className="text-[11px] text-gray-500 truncate leading-tight mt-[2px]">
+              <p className="text-[10px] text-gray-600 truncate leading-tight mt-[2px]">
                 {seller.kabupaten}, {seller.provinsi}
               </p>
             </div>
@@ -505,19 +516,20 @@ export default function ProductDetailContent({
       <ProductReviews allReviews={allReviews} liveRating={liveRating} />
 
       {/* Sticky Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-gray-100 px-4 pt-1.5 pb-5 shadow-[0_-6px_20px_rgba(0,0,0,0.04)]">
-        <div className="max-w-[500px] mx-auto flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-gray-100 px-4 pt-1.5 pb-4 shadow-[0_-4px_16px_rgba(0,0,0,0.035)]">
+        <div className="max-w-[500px] mx-auto flex gap-2.5">
           <button
             onClick={handleAddToCart}
-            className="flex-1 py-3.5 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-bold hover:bg-emerald-50 transition-all active:scale-[0.96] text-sm whitespace-nowrap"
+            className="flex-1 py-3 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-semibold hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
           >
             + Keranjang
           </button>
+
           <button
             onClick={handleBuyNow}
-            className="flex-[2] py-3.5 px-4 rounded-xl bg-[#048750] text-white font-bold hover:bg-emerald-800 transition-all active:scale-[0.96] shadow-[0_4px_12px_rgba(5,150,105,0.2)] flex items-center justify-center gap-2 text-sm"
+            className="flex-[2] py-3 px-4 rounded-xl bg-[#048750] text-white font-semibold hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
           >
-            <Send size={18} strokeWidth={2.5} className="rotate-[-10deg]" />
+            <Send size={16} strokeWidth={2.5} className="rotate-[-10deg]" />
             Pesan Sekarang
           </button>
         </div>
@@ -527,15 +539,15 @@ export default function ProductDetailContent({
       <button
         onClick={scrollToTop}
         aria-label="Kembali ke atas"
-        className={`fixed bottom-24 right-6 z-50 w-11 h-11 rounded-full bg-emerald-500 text-white shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center transition-all duration-500 hover:bg-emerald-600 hover:scale-110 active:scale-90 ${
+        className={`fixed bottom-20 right-5 z-50 w-9 h-9 rounded-full bg-emerald-500 text-white shadow-[0_6px_18px_rgba(16,185,129,0.24)] flex items-center justify-center transition-all duration-500 hover:bg-emerald-600 hover:scale-110 active:scale-90 ${
           showBackToTop
             ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-10 scale-50 pointer-events-none"
+            : "opacity-0 translate-y-10 scale-75 pointer-events-none"
         }`}
       >
         <svg
-          width="22"
-          height="22"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
