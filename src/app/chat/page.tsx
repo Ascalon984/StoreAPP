@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
   X,
   Headset,
+  Store,
 } from "lucide-react";
 
 import ChatHeader from "@/components/chat/ChatHeader";
@@ -48,7 +49,7 @@ const MOCK_SELLERS = [
   {
     id: "s1",
     name: "Astro Store",
-    avatar: "AS",
+    avatar: null,
     lastMessage: "Pesanan Anda sedang diproses ya kak.",
     time: "10:30",
     unread: 2,
@@ -57,7 +58,7 @@ const MOCK_SELLERS = [
   {
     id: "s2",
     name: "Tech Gadget",
-    avatar: "TG",
+    avatar: null,
     lastMessage: "Terima kasih telah berbelanja.",
     time: "Kemarin",
     unread: 0,
@@ -66,7 +67,7 @@ const MOCK_SELLERS = [
   {
     id: "s3",
     name: "Fashion Hub",
-    avatar: "FH",
+    avatar: null,
     lastMessage: "Warna hitam ready kak.",
     time: "Kemarin",
     unread: 0,
@@ -75,7 +76,7 @@ const MOCK_SELLERS = [
   {
     id: "s4",
     name: "Home Living",
-    avatar: "HL",
+    avatar: null,
     lastMessage: "Apakah barang ini masih ada?",
     time: "Selasa",
     unread: 0,
@@ -495,8 +496,8 @@ hover:bg-white/10
                   }
                   className="
                     relative
-                    flex items-start gap-3
-                    px-4 py-2.5
+                    flex items-center gap-2.5
+                    px-4 py-2
                     cursor-pointer
                     transition-colors
                     active:bg-gray-50
@@ -504,8 +505,26 @@ hover:bg-white/10
                 >
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-[12px] border border-emerald-50">
-                      {seller.avatar}
+                    <div
+                      className="
+      w-9 h-9 rounded-full
+      bg-gray-200
+      flex items-center justify-center
+      border border-gray-100
+      overflow-hidden
+    "
+                    >
+                      {seller.avatar ? (
+                        <span className="text-emerald-700 font-semibold text-[12px]">
+                          {seller.avatar}
+                        </span>
+                      ) : (
+                        <Store
+                          size={19}
+                          strokeWidth={1.8}
+                          className="text-gray-500"
+                        />
+                      )}
                     </div>
 
                     {seller.isOnline && (
@@ -520,7 +539,7 @@ hover:bg-white/10
                       className="
                         absolute
                         top-0 right-0
-                        text-[10.5px]
+                        text-[10px]
                         font-medium
                         text-gray-500
                       "
@@ -529,19 +548,19 @@ hover:bg-white/10
                     </span>
 
                     {/* Seller Name */}
-                    <h3 className="truncate pr-10 text-[14px] font-semibold leading-5 text-gray-900">
+                    <h3 className="truncate pr-10 text-[13px] font-semibold leading-4.5 text-gray-600">
                       {seller.name}
                     </h3>
 
                     {/* Last Message */}
                     <p
                       className="
-                      mt-1.5
+                      mt-0.5
                       truncate
                       pr-1
-                      text-[11.5px]
+                      text-[11px]
                       font-normal
-                      leading-5
+                      leading-4
                       text-gray-500
                     "
                     >
@@ -551,7 +570,7 @@ hover:bg-white/10
                     {/* Unread Badge */}
                     {seller.unread > 0 && (
                       <div className="absolute right-0 bottom-0.5">
-                        <div className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-[9px] font-semibold text-white">
+                        <div className="flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-rose-600 px-1 text-[8.5px] font-semibold text-white">
                           {seller.unread}
                         </div>
                       </div>

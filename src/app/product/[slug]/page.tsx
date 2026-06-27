@@ -595,7 +595,7 @@ export default function ProductDetailPage({
             </div>
           </div>
 
-          {/* Hubungi Penjual Non aktif sementara
+          {/* Hubungi Penjual Non aktif sementara */}
           <div className="bg-white px-4 py-2.5 mt-1 flex items-center justify-between">
             <p className="text-[12px] text-gray-500 font-medium">
               Ada pertanyaan?
@@ -609,7 +609,7 @@ export default function ProductDetailPage({
               <MessageCircle size={13} strokeWidth={2.2} />
               Hubungi Penjual
             </button>
-          </div> */}
+          </div>
 
           {/* Review Section */}
           <ProductReviews allReviews={allReviews} liveRating={liveRating} />
