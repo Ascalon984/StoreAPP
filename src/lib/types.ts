@@ -93,6 +93,18 @@ export interface Order {
   address: string;
 }
 
+export interface Seller {
+  id: string;
+  name: string;
+  avatar: string | null;
+  kabupaten: string;
+  provinsi: string;
+  lastMessage: string;
+  time: string;
+  unread: number;
+  isOnline: boolean;
+}
+
 export type NotifType = "activity" | "promo";
 
 export interface Notification {

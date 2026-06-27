@@ -154,7 +154,7 @@ export default function ProductReviews({
 
   return (
     <div className="bg-white px-4 py-3 mt-1">
-      <h2 className="text-sm font-bold text-gray-800 tracking-tight">
+      <h2 className="text-sm font-semibold text-gray-500 tracking-tight">
         Ulasan Pembeli ({allReviews.length})
       </h2>
 
@@ -174,21 +174,7 @@ export default function ProductReviews({
               role="img"
               aria-label={`Rating ${liveRating} dari 5`}
             >
-              <defs>
-                <linearGradient
-                  id="gaugeGrad"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
-                  <stop offset="0%" stopColor="#ef4444" /> {/* 1★ */}
-                  <stop offset="25%" stopColor="#fb923c" /> {/* 2★ */}
-                  <stop offset="50%" stopColor="#facc15" /> {/* 3★ */}
-                  <stop offset="75%" stopColor="#4ade80" /> {/* 4★ */}
-                  <stop offset="100%" stopColor="#10b981" /> {/* 5★ */}
-                </linearGradient>
-              </defs>
+              {/* Background track */}
               <path
                 d="M5,54 A50,50 0 0,1 105,54"
                 fill="none"
@@ -196,36 +182,82 @@ export default function ProductReviews({
                 strokeWidth="8"
                 strokeLinecap="round"
               />
-              <path
-                d="M5,54 A50,50 0 0,1 105,54"
-                fill="none"
-                stroke="url(#gaugeGrad)"
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray="157.08"
-                strokeDashoffset={
-                  safeRating > 0 ? 157.08 * (1 - (safeRating - 1) / 4) : 157.08
-                }
-              />
-              <circle cx="55" cy="54" r="3" fill="#374151" />
-              <line
-                x1="55"
-                y1="54"
-                x2="55"
-                y2="18"
-                stroke="#374151"
-                strokeWidth="1.8"
-                strokeLinecap="round"
+
+              {/* Gauge Segments */}
+              {[
+                {
+                  color: "#ef4444",
+                  dash: "39.27 157.08",
+                  offset: 0,
+                  cap: "round", // kiri rounded
+                },
+                {
+                  color: "#fb923c",
+                  dash: "39.27 157.08",
+                  offset: 39.27,
+                  cap: "butt",
+                },
+                {
+                  color: "#facc15",
+                  dash: "39.27 157.08",
+                  offset: 78.54,
+                  cap: "butt",
+                },
+                {
+                  color: "#4ade80",
+                  dash: "39.27 157.08",
+                  offset: 117.81,
+                  cap: "butt", // emerald kiri flat
+                },
+              ].map(({ color, dash, offset, cap }, i) => (
+                <path
+                  key={i}
+                  d="M5,54 A50,50 0 0,1 105,54"
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="8"
+                  strokeLinecap={cap as CanvasLineCap}
+                  strokeDasharray={dash}
+                  strokeDashoffset={-offset}
+                />
+              ))}
+
+              {/* Rounded kanan emerald manual */}
+              <circle cx="105" cy="54" r="4" fill="#4ade80" />
+
+              {/* Jarum Arrow */}
+              <g
                 transform={
                   safeRating > 0
                     ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
                     : `rotate(-90, 55, 54)`
                 }
-              />
+              >
+                {/* batang jarum */}
+                <line
+                  x1="55"
+                  y1="54"
+                  x2="55"
+                  y2="24"
+                  stroke="#374151"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+
+                {/* kepala arrow kecil */}
+                <polygon points="55,18 52.5,24 57.5,24" fill="#374151" />
+              </g>
+
+              {/* Center circle */}
+              <circle cx="55" cy="54" r="3" fill="#374151" />
             </svg>
 
-            <span className="text-xl font-extrabold text-gray-800 leading-none -mt-0.5">
-              {(safeRating || 0).toFixed(1)}
+            <span className="text-[17px] font-semibold text-gray-400 leading-none -mt-0.7">
+              {safeRating === 0
+                ? "-"
+                : safeRating % 1 === 0
+                  ? safeRating
+                  : safeRating.toFixed(1)}
             </span>
             <div className="flex gap-0.5 my-0.5">
               {hasReview &&
@@ -262,7 +294,7 @@ export default function ProductReviews({
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-[9px] text-gray-400 tabular-nums min-w-[26px] text-right">
+                  <span className="text-[8.5px] text-gray-400 tabular-nums min-w-[26px] text-right">
                     {pct}%
                   </span>
                 </div>
@@ -284,7 +316,7 @@ export default function ProductReviews({
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <p className="text-[13px] font-bold text-gray-800 tracking-tight leading-none truncate">
+                    <p className="text-[12px] font-medium text-gray-500 tracking-tight leading-none truncate">
                       {maskName(review.name)}
                     </p>
                   </div>
@@ -295,16 +327,16 @@ export default function ProductReviews({
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-gray-600 flex-shrink-0 mt-0.5">
+              <div className="flex items-center gap-1 text-gray-400 flex-shrink-0 mt-0.5">
                 <Clock size={10} strokeWidth={1.5} />
-                <span className="text-[11px] font-medium">
+                <span className="text-[10px] font-normal">
                   <TimeAgo date={review.createdAt} />
                 </span>
               </div>
             </div>
 
             <div className="pl-[48px] flex items-end justify-between gap-4">
-              <p className="text-[13px] text-gray-600 leading-snug flex-1 break-words min-w-0">
+              <p className="text-[11.5px] text-gray-500 leading-[1.45] flex-1 break-words min-w-0">
                 {review.comment}
               </p>
 
@@ -327,7 +359,7 @@ export default function ProductReviews({
                         }
                       />
                       <span
-                        className={`text-[11px] font-bold ${votedType[review.id] === "like" ? "text-emerald-700" : "text-gray-600"}`}
+                        className={`text-[10px] font-medium ${votedType[review.id] === "like" ? "text-emerald-700" : "text-gray-600"}`}
                       >
                         {review.likes || 0}
                       </span>
@@ -344,7 +376,7 @@ export default function ProductReviews({
                         }
                       />
                       <span
-                        className={`text-[11px] font-bold ${votedType[review.id] === "dislike" ? "text-rose-700" : "text-gray-600"}`}
+                        className={`text-[10px] font-medium ${votedType[review.id] === "dislike" ? "text-rose-700" : "text-gray-600"}`}
                       >
                         {review.dislikes || 0}
                       </span>
@@ -364,7 +396,7 @@ export default function ProductReviews({
                     </div>
 
                     <div className="min-w-0">
-                      <span className="block text-[11px] font-bold text-gray-800 truncate">
+                      <span className="block text-[10px] font-semibold text-gray-600 truncate">
                         {review.reply.adminName}
                       </span>
                     </div>
@@ -376,7 +408,7 @@ export default function ProductReviews({
                 </div>
 
                 {/* content */}
-                <p className="text-[12px] text-gray-600 leading-snug">
+                <p className="text-[11px] text-gray-500 leading-[1.45]">
                   {review.reply.comment}
                 </p>
               </div>
