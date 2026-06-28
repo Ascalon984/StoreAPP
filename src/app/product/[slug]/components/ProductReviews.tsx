@@ -193,35 +193,35 @@ export default function ProductReviews({
               {[
                 {
                   color: "#ef4444",
-                  dash: "39.27 157.08",
+                  dash: "36.9 147.6",
                   offset: 0,
-                  cap: "round", // kiri rounded
+                  cap: "round",
                 },
                 {
                   color: "#fb923c",
-                  dash: "39.27 157.08",
-                  offset: 39.27,
+                  dash: "36.9 147.6",
+                  offset: 36.9,
                   cap: "butt",
                 },
                 {
                   color: "#facc15",
-                  dash: "39.27 157.08",
-                  offset: 78.54,
+                  dash: "36.9 147.6",
+                  offset: 73.8,
                   cap: "butt",
                 },
                 {
                   color: "#4ade80",
-                  dash: "39.27 157.08",
-                  offset: 117.81,
-                  cap: "butt", // emerald kiri flat
+                  dash: "36.9 147.6",
+                  offset: 110.7,
+                  cap: "butt",
                 },
               ].map(({ color, dash, offset, cap }, i) => (
                 <path
                   key={i}
-                  d="M5,54 A50,50 0 0,1 105,54"
+                  d="M8,54 A47,47 0 0,1 102,54"
                   fill="none"
                   stroke={color}
-                  strokeWidth="8"
+                  strokeWidth="10"
                   strokeLinecap={cap as CanvasLineCap}
                   strokeDasharray={dash}
                   strokeDashoffset={-offset}
@@ -229,9 +229,9 @@ export default function ProductReviews({
               ))}
 
               {/* Rounded kanan emerald manual */}
-              <circle cx="105" cy="54" r="4" fill="#4ade80" />
+              <circle cx="102" cy="54" r="5" fill="#4ade80" />
 
-              {/* Jarum Arrow */}
+              {/* Jarum Needle Runcing */}
               <g
                 transform={
                   safeRating > 0
@@ -239,23 +239,20 @@ export default function ProductReviews({
                     : `rotate(0, 55, 54)`
                 }
               >
-                {/* batang jarum */}
-                <line
-                  x1="55"
-                  y1="54"
-                  x2="55"
-                  y2="24"
-                  stroke="#374151"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
+                <path
+                  d="
+                    M55 2
+                    L52.8 54
+                    Q55 50 57.2 54
+                    Z
+                  "
+                  fill="#374151"
+                  opacity="0.95"
                 />
-
-                {/* kepala arrow kecil */}
-                <polygon points="55,18 52.5,24 57.5,24" fill="#374151" />
               </g>
 
               {/* Center circle */}
-              <circle cx="55" cy="54" r="3" fill="#374151" />
+              <circle cx="55" cy="54" r="3.5" fill="#374151" />
             </svg>
 
             <span className="text-[17px] font-semibold text-gray-500 leading-none -mt-0.7">

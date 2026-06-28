@@ -125,7 +125,7 @@ export default function ProductCard({
     bg-white rounded-xl 
     shadow-layer-xs 
     transition-all duration-200 overflow-hidden 
-    active:scale-[0.96] 
+    active:scale-[0.985] 
     flex flex-col relative
   "
       >

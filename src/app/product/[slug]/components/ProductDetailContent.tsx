@@ -456,46 +456,50 @@ export default function ProductDetailContent({
       </div>
 
       {/* Seller Card */}
-      <div className="bg-white px-4 py-2 mt-1">
-        <div className="flex items-center gap-2.5">
-          {/* Avatar */}
-          <div className="flex-shrink-0">
-            <div
-              className={`
-          w-8 h-8 rounded-full bg-gray-100 border
-          flex items-center justify-center overflow-hidden
-          transition-all duration-300
-          ${
-            seller.isOnline
-              ? "border-emerald-500/70 ring-1 ring-emerald-500/20"
-              : "border-gray-200"
-          }
-        `}
-            >
-              <Store size={16} strokeWidth={1.8} className="text-gray-400" />
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-medium text-gray-700 leading-tight truncate">
-              {seller.name}
-            </p>
-            <div className="flex items-center gap-1 mt-1">
-              <div className="relative w-[10px] h-[10px] flex-shrink-0">
-                <MapPin
-                  size={10}
-                  strokeWidth={2.2}
-                  className="text-rose-500"
-                  fill="currentColor"
-                />
-
-                <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-[2.5px] h-[2.5px] rounded-full bg-white" />
+      <div className="bg-white px-4 py-2.5 mt-1">
+        <div className="flex items-center justify-between gap-3">
+          {/* Left */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            {/* Avatar */}
+            <div className="flex-shrink-0">
+              <div
+                className={`
+        w-8 h-8 rounded-full bg-gray-100 border
+        flex items-center justify-center overflow-hidden
+        transition-all duration-300
+        ${
+          seller.isOnline
+            ? "border-emerald-500/70 ring-1 ring-emerald-500/20"
+            : "border-gray-200"
+        }
+      `}
+              >
+                <Store size={16} strokeWidth={1.8} className="text-gray-400" />
               </div>
+            </div>
 
-              <p className="text-[10px] text-gray-600 truncate leading-tight mt-[2px]">
-                {seller.kabupaten}, {seller.provinsi}
+            {/* Info */}
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-gray-700 leading-tight truncate">
+                {seller.name}
               </p>
+
+              <div className="flex items-center gap-1 mt-1">
+                <div className="relative w-[10px] h-[10px] flex-shrink-0">
+                  <MapPin
+                    size={10}
+                    strokeWidth={2.2}
+                    className="text-rose-500"
+                    fill="currentColor"
+                  />
+
+                  <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-[2.5px] h-[2.5px] rounded-full bg-white" />
+                </div>
+
+                <p className="text-[10px] text-gray-600 truncate leading-none">
+                  {seller.kabupaten}, {seller.provinsi}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -504,9 +508,9 @@ export default function ProductDetailContent({
             onClick={() =>
               router.push(`/chat?source=product&productSlug=${product.slug}`)
             }
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-emerald-700 text-[12px] font-bold hover:bg-emerald-50 active:scale-95 transition-all flex-shrink-0"
+            className="h-7 flex items-center gap-1 px-2 rounded-lg border border-gray-200 bg-gray-50 text-emerald-700 text-[11px] font-semibold hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0 self-center"
           >
-            <MessageCircle size={13} strokeWidth={2.2} />
+            <MessageCircle size={11.5} strokeWidth={2.3} />
             Chat
           </button>
         </div>

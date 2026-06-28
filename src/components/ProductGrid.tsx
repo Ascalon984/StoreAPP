@@ -476,7 +476,7 @@ export default function ProductGrid() {
       : arr;
 
   const popularToShow = filteredQuery(
-    (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 8),
+    (popularProducts.length > 0 ? popularProducts : allProducts).slice(0, 6),
   );
 
   const filteredAll = applySort(filteredQuery(allProducts), "popular");
@@ -511,13 +511,13 @@ export default function ProductGrid() {
           </div>
         </div>
         {isLoadingPopular ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {Array.from({ length: 6 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
           </div>
         ) : popularToShow.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {popularToShow.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
             ))}
@@ -539,13 +539,13 @@ export default function ProductGrid() {
 
         <div>
           {isLoadingAll ? (
-            <div className="flex items-start gap-3">
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
+            <div className="flex items-start gap-2.5">
+              <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`left-${i}`} isTall={i === 1} />
                 ))}
               </div>
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
+              <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`right-${i}`} isTall={false} />
                 ))}
@@ -554,9 +554,9 @@ export default function ProductGrid() {
           ) : filteredAll.length === 0 ? (
             <EmptyState message="Coba cek kata kunci pencarianmu." />
           ) : (
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2.5">
               {/* Kolom Kiri */}
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
+              <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 {filteredAll
                   .filter((_, i) => i % 2 === 0)
                   .map((product, idx) => {
@@ -574,7 +574,7 @@ export default function ProductGrid() {
               </div>
 
               {/* Kolom Kanan */}
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
+              <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 {filteredAll
                   .filter((_, i) => i % 2 === 1)
                   .map((product, idx) => {
