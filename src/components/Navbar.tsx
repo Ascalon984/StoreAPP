@@ -253,8 +253,8 @@ export default function Navbar() {
 
           {/* ── Search Row ── */}
           <div
-            className={`flex items-center gap-1 pb-2.5 transition-[padding] duration-300 ease-in-out ${
-              isScrolled ? "pt-2.5" : "pt-0"
+            className={`flex items-center gap-1 pb-2.5 transition-all duration-300 ease-in-out ${
+              isScrolled ? "pt-2.5 translate-y-0" : "pt-0 translate-y-[1.5px]"
             }`}
           >
             {/* Search Bar */}

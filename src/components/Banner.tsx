@@ -109,8 +109,6 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
     };
   }, [banners.length, startAutoPlay]);
 
-  // Snap the clone back to its real counterpart. Same treatment (rAF) for
-  // both directions so the browser never "fights" momentum scroll with a
   // forced scrollLeft — this is what caused the jump on manual swipe.
   const settleClonePosition = useCallback(
     (el: HTMLDivElement) => {
@@ -205,7 +203,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-2.5 pt-4 pb-0 -mt-px">
+    <section className="px-2 pt-4 pb-0 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
       <div className="relative aspect-[2.4/1] overflow-visible">
         <div
@@ -240,21 +238,21 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                 key={`${banner.id}-${index}`}
                 className="
           flex-shrink-0
-          w-[96.5%]
+          w-[96%]
           snap-center snap-always
           transition-all duration-700 ease-out
         "
               >
                 <div
                   className={`
-            relative overflow-hidden aspect-[2.6/1]
-            rounded-2xl
+            relative overflow-hidden aspect-[2.65/1]
+            rounded-xl
             shadow-md
             transition-all duration-500
             ${
               isActive
                 ? "scale-100 opacity-100 shadow-lg"
-                : "scale-[0.965] opacity-55 shadow-sm"
+                : "scale-[0.970] opacity-55 shadow-sm"
             }
           `}
                 >
