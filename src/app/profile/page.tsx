@@ -204,35 +204,6 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-
-          {/* RIGHT: LIVE CHAT */}
-          <div className="flex-shrink-0 -mt-0.5">
-            <button
-              onClick={() => router.push("/chat?source=profile")}
-              aria-label="Buka Live Chat"
-              className="relative w-8 h-8 flex items-center justify-center text-white active:scale-90 transition-transform"
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="drop-shadow-sm"
-              >
-                <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                  fill="white"
-                  stroke="white"
-                  strokeWidth="2"
-                />
-                <circle cx="9" cy="12" r="1" fill="#111" />
-                <circle cx="12" cy="12" r="1" fill="#111" />
-                <circle cx="15" cy="12" r="1" fill="#111" />
-              </svg>
-
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500" />
-            </button>
-          </div>
         </div>
 
         {/* spacing bawah agar overlap card tetap enak */}

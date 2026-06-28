@@ -138,8 +138,8 @@ export default function Navbar() {
     <div
       className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "21px",
-        borderBottomRightRadius: isScrolled ? "0px" : "21px",
+        borderBottomLeftRadius: isScrolled ? "0px" : "16px",
+        borderBottomRightRadius: isScrolled ? "0px" : "16px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
@@ -202,14 +202,51 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* Bell (unscrolled) */}
-                <Link
-                  href="/notifications"
-                  className="relative p-1.5 active:scale-95 transition-transform flex-shrink-0"
-                >
-                  <Bell size={20} className="text-white" strokeWidth={2} />
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
-                </Link>
+                {/* Right Actions (unscrolled) */}
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  {/* Bell Button */}
+                  <Link
+                    href="/notifications"
+                    className="relative p-1.5 active:scale-95 transition-transform"
+                  >
+                    <Bell
+                      size={19}
+                      className="text-white/95"
+                      strokeWidth={1.9}
+                    />
+                    <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400" />
+                  </Link>
+
+                  {/* Chat Button */}
+                  <Link
+                    href="/chat"
+                    className="relative p-1.5 active:scale-95 transition-transform"
+                    aria-label="Chat"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="translate-y-[1px] text-white/95"
+                    >
+                      <path
+                        d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
+                        stroke="currentColor"
+                        strokeWidth="1.9"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                        stroke="currentColor"
+                        strokeWidth="1.9"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+
+                    <span className="absolute top-[5.5px] right-[5.5px] w-1.5 h-1.5 rounded-full bg-rose-400" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -221,7 +258,7 @@ export default function Navbar() {
             }`}
           >
             {/* Search Bar */}
-            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-xl px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
+            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
               <button
                 onClick={openSearch}
                 className="flex-1 flex items-center gap-2.5 min-w-0"
@@ -235,21 +272,53 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Bell (scrolled) */}
+            {/* Right Actions (scrolled)*/}
             <div
-              className={`flex-shrink-0 overflow-hidden transition-[width,opacity,transform] duration-300 ease-in-out ${
+              className={`flex-shrink-0 flex items-center justify-end gap-0.5 overflow-hidden transition-[width,opacity,transform] duration-300 ease-in-out ${
                 isScrolled
-                  ? "w-8 opacity-100 scale-100"
+                  ? "w-[72px] opacity-100 scale-100"
                   : "w-0 opacity-0 scale-75"
               }`}
             >
+              {/* Bell (scrolled)*/}
               <Link
                 href="/notifications"
                 className="relative p-1.5 flex active:scale-95 transition-transform"
                 tabIndex={isScrolled ? 0 : -1}
               >
-                <Bell size={20} className="text-white" strokeWidth={2} />
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-400" />
+                <Bell size={19} className="text-white/95" strokeWidth={1.9} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400" />
+              </Link>
+
+              {/* Chat (scrolled)*/}
+              <Link
+                href="/chat"
+                className="relative p-1.5 flex active:scale-95 transition-transform"
+                tabIndex={isScrolled ? 0 : -1}
+                aria-label="Chat"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="translate-y-[1px] text-white/95"
+                >
+                  <path
+                    d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                    fill="rgba(255,255,255,0.12)"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="absolute top-[5px] right-[5px] w-1.5 h-1.5 rounded-full bg-rose-400" />
               </Link>
             </div>
           </div>
