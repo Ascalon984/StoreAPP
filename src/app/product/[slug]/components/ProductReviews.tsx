@@ -151,6 +151,16 @@ export default function ProductReviews({
 
   const safeRating =
     Number.isFinite(liveRating) && liveRating > 0 ? liveRating : 0;
+  const activeZone =
+    safeRating === 0
+      ? 0
+      : safeRating >= 4
+        ? 4
+        : safeRating >= 3
+          ? 3
+          : safeRating >= 2
+            ? 2
+            : 1;
 
   return (
     <div className="bg-white px-4 py-2.5 mt-1">
@@ -185,54 +195,81 @@ export default function ProductReviews({
                 d="M5,54 A50,50 0 0,1 105,54"
                 fill="none"
                 stroke="#e5e7eb"
-                strokeWidth="8"
+                strokeWidth="8.5"
                 strokeLinecap="round"
               />
 
               {/* Gauge Segments */}
               {[
                 {
+                  zone: 1,
                   color: "#ef4444",
                   dash: "36.9 147.6",
                   offset: 0,
-                  cap: "round",
+                  cap: "butt",
                 },
                 {
-                  color: "#fb923c",
+                  zone: 2,
+                  color: "#f97316",
                   dash: "36.9 147.6",
                   offset: 36.9,
                   cap: "butt",
                 },
                 {
-                  color: "#facc15",
+                  zone: 3,
+                  color: "#eab308",
                   dash: "36.9 147.6",
                   offset: 73.8,
                   cap: "butt",
                 },
                 {
-                  color: "#4ade80",
+                  zone: 4,
+                  color: "#22c55e",
                   dash: "36.9 147.6",
                   offset: 110.7,
                   cap: "butt",
                 },
-              ].map(({ color, dash, offset, cap }, i) => (
-                <path
-                  key={i}
-                  d="M8,54 A47,47 0 0,1 102,54"
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="10"
-                  strokeLinecap={cap as CanvasLineCap}
-                  strokeDasharray={dash}
-                  strokeDashoffset={-offset}
-                />
-              ))}
+              ].map(({ zone, color, dash, offset, cap }, i) => {
+                return (
+                  <path
+                    key={i}
+                    d="M8,54 A47,47 0 0,1 102,54"
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="10"
+                    strokeLinecap={cap as CanvasLineCap}
+                    strokeDasharray={dash}
+                    strokeDashoffset={-offset}
+                    opacity={activeZone === zone ? 1 : 0.45}
+                    className="transition-all duration-500"
+                  />
+                );
+              })}
+
+              {/* Rounded kiri red manual */}
+              <circle
+                cx="8"
+                cy="54"
+                r="4.25"
+                fill="#ef4444"
+                opacity={activeZone === 1 ? 1 : 0.15}
+                className="transition-all duration-500"
+              />
 
               {/* Rounded kanan emerald manual */}
-              <circle cx="102" cy="54" r="5" fill="#4ade80" />
+              <circle
+                cx="102"
+                cy="54"
+                r="4.25"
+                fill="#22c55e"
+                opacity={activeZone === 4 ? 1 : 0.15}
+                className="transition-all duration-500"
+              />
 
               {/* Jarum Needle Runcing */}
               <g
+                opacity={safeRating === 0 ? 0.45 : 1}
+                className="transition-opacity duration-500"
                 transform={
                   safeRating > 0
                     ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
@@ -241,23 +278,36 @@ export default function ProductReviews({
               >
                 <path
                   d="
-                    M55 2
-                    L52.8 54
-                    Q55 50 57.2 54
-                    Z
-                  "
+      M55 2
+      L52.8 54
+      Q55 50 57.2 54
+      Z
+    "
                   fill="#374151"
                   opacity="0.95"
                 />
               </g>
 
               {/* Center circle */}
-              <circle cx="55" cy="54" r="3.5" fill="#374151" />
+              <circle
+                cx="55"
+                cy="54"
+                r="3.5"
+                fill="#374151"
+                opacity={safeRating === 0 ? 0.45 : 1}
+                className="transition-opacity duration-500"
+              />
             </svg>
 
-            <span className="text-[17px] font-semibold text-gray-500 leading-none -mt-0.7">
+            <span
+              className={`text-[17px] leading-none -mt-0.7${
+                safeRating === 0
+                  ? "font-medium text-gray-400"
+                  : "font-semibold text-gray-500"
+              }`}
+            >
               {safeRating === 0
-                ? "-.-"
+                ? "—"
                 : safeRating % 1 === 0
                   ? safeRating
                   : safeRating.toFixed(1)}

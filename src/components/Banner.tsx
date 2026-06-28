@@ -238,21 +238,21 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                 key={`${banner.id}-${index}`}
                 className="
           flex-shrink-0
-          w-[96%]
+          w-[96.5%]
           snap-center snap-always
           transition-all duration-700 ease-out
         "
               >
                 <div
                   className={`
-            relative overflow-hidden aspect-[2.65/1]
+            relative overflow-hidden aspect-[2.6/1]
             rounded-xl
             shadow-md
             transition-all duration-500
             ${
               isActive
                 ? "scale-100 opacity-100 shadow-lg"
-                : "scale-[0.970] opacity-55 shadow-sm"
+                : "scale-[0.965] opacity-50 shadow-sm"
             }
           `}
                 >

@@ -357,20 +357,39 @@ function HighlightSection({
             ))}
           </div>
         ) : displayProducts.length > 0 ? (
-          <div
-            ref={scrollRef}
-            className="flex gap-1 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
-          >
-            {displayProducts.map((product, i) => (
-              <div
-                key={product.id}
-                className="flex-shrink-0 snap-start w-[198px]"
-              >
-                <HighlightCard product={product} index={i} />
-              </div>
-            ))}
-            <div className="shrink-0 w-1" />
-          </div>
+          <>
+            <div
+              ref={scrollRef}
+              className="flex gap-1 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+            >
+              {displayProducts.map((product, i) => (
+                <div
+                  key={product.id}
+                  className="flex-shrink-0 snap-start w-[198px]"
+                >
+                  <HighlightCard product={product} index={i} />
+                </div>
+              ))}
+              <div className="shrink-0 w-1" />
+            </div>
+
+            {/* Fade peek kanan */}
+            <div
+              className="
+                absolute
+                right-2
+                top-[38px]
+                h-[84px]
+                w-8
+                pointer-events-none
+              "
+              style={{
+                background:
+                  "linear-gradient(to right, rgba(245,245,245,0), rgba(245,245,245,0.96))",
+                filter: "blur(0.2px)",
+              }}
+            />
+          </>
         ) : null}
       </div>
       <div className="mx-4 mt-2 h-px" />

@@ -417,7 +417,7 @@ export default function ProductDetailContent({
           >
             <p
               ref={descriptionRef}
-              className="text-[13px] text-gray-600 leading-relaxed whitespace-pre-wrap relative"
+              className="text-[12px] text-gray-600 leading-relaxed whitespace-pre-wrap relative"
             >
               {product.description}
             </p>
@@ -484,22 +484,9 @@ export default function ProductDetailContent({
                 {seller.name}
               </p>
 
-              <div className="flex items-center gap-1 mt-1">
-                <div className="relative w-[10px] h-[10px] flex-shrink-0">
-                  <MapPin
-                    size={10}
-                    strokeWidth={2.2}
-                    className="text-rose-500"
-                    fill="currentColor"
-                  />
-
-                  <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-[2.5px] h-[2.5px] rounded-full bg-white" />
-                </div>
-
-                <p className="text-[10px] text-gray-600 truncate leading-none">
-                  {seller.kabupaten}, {seller.provinsi}
-                </p>
-              </div>
+              <p className="text-[10px] text-gray-500 mt-1 truncate leading-none">
+                {seller.kabupaten}, {seller.provinsi}
+              </p>
             </div>
           </div>
 

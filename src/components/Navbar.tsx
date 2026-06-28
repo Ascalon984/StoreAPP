@@ -138,8 +138,8 @@ export default function Navbar() {
     <div
       className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "16px",
-        borderBottomRightRadius: isScrolled ? "0px" : "16px",
+        borderBottomLeftRadius: isScrolled ? "0px" : "15px",
+        borderBottomRightRadius: isScrolled ? "0px" : "15px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
@@ -210,11 +210,11 @@ export default function Navbar() {
                     className="relative p-1.5 active:scale-95 transition-transform"
                   >
                     <Bell
-                      size={19}
+                      size={20}
                       className="text-white/95"
                       strokeWidth={1.9}
                     />
-                    <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400" />
+                    <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
                   </Link>
 
                   {/* Chat Button */}
@@ -224,8 +224,8 @@ export default function Navbar() {
                     aria-label="Chat"
                   >
                     <svg
-                      width="20"
-                      height="20"
+                      width="21"
+                      height="21"
                       viewBox="0 0 24 24"
                       fill="none"
                       className="translate-y-[1px] text-white/95"
@@ -244,7 +244,7 @@ export default function Navbar() {
                       />
                     </svg>
 
-                    <span className="absolute top-[5.5px] right-[5.5px] w-1.5 h-1.5 rounded-full bg-rose-400" />
+                    <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
                   </Link>
                 </div>
               </div>
@@ -286,8 +286,8 @@ export default function Navbar() {
                 className="relative p-1.5 flex active:scale-95 transition-transform"
                 tabIndex={isScrolled ? 0 : -1}
               >
-                <Bell size={19} className="text-white/95" strokeWidth={1.9} />
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-400" />
+                <Bell size={20} className="text-white/95" strokeWidth={1.9} />
+                <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
               </Link>
 
               {/* Chat (scrolled)*/}
@@ -298,8 +298,8 @@ export default function Navbar() {
                 aria-label="Chat"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="21"
+                  height="21"
                   viewBox="0 0 24 24"
                   fill="none"
                   className="translate-y-[1px] text-white/95"
@@ -318,7 +318,7 @@ export default function Navbar() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="absolute top-[5px] right-[5px] w-1.5 h-1.5 rounded-full bg-rose-400" />
+                <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
               </Link>
             </div>
           </div>
