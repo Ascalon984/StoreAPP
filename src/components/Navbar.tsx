@@ -138,8 +138,8 @@ export default function Navbar() {
     <div
       className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "15px",
-        borderBottomRightRadius: isScrolled ? "0px" : "15px",
+        borderBottomLeftRadius: isScrolled ? "0px" : "16px",
+        borderBottomRightRadius: isScrolled ? "0px" : "16px",
         transition: "border-radius 250ms ease-in-out",
         willChange: "border-radius",
         boxShadow: isScrolled
@@ -193,7 +193,7 @@ export default function Navbar() {
                     </div>
                   </Link>
                   <div className="flex flex-col min-w-0">
-                    <p className="text-white/75 text-[10.5px] font-medium leading-none">
+                    <p className="text-white/75 text-[10px] font-medium leading-none">
                       {getGreeting()}
                     </p>
                     <p className="text-white text-sm font-semibold tracking-[-0.01em] truncate mt-0.5">

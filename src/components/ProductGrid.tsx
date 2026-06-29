@@ -70,7 +70,7 @@ const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
     reviewCount: 860,
     sold: 4100,
     description: "Sneakers casual nyaman untuk aktivitas harian",
-    stock: 80,
+    stock: 50,
   } as Product,
 
   {
@@ -85,7 +85,7 @@ const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
     reviewCount: 540,
     sold: 2300,
     description: "Cookware set lengkap untuk kebutuhan dapur modern",
-    stock: 45,
+    stock: 0,
   } as Product,
 
   {
@@ -235,86 +235,74 @@ function HighlightCard({
       .filter((i) => i && (i.startsWith("data:image") || i.startsWith("http")));
   }
 
-  const specificReviews = localReviews.filter(
-    (r) => r.productId === product.id,
-  );
-  const displayRating =
-    specificReviews.length > 0
-      ? Number(
-          (
-            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
-            specificReviews.length
-          ).toFixed(1),
-        )
-      : product.rating || 0;
-
   const hasDiscount =
     product.originalPrice && product.originalPrice > product.price;
+  const isHabis = product.stock === 0;
+
+  const cardContent = (
+    <article
+      className={`bg-white rounded-lg shadow-sm overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px] transition-transform duration-200 ${isHabis ? "opacity-60" : "active:scale-95"}`}
+    >
+      {/* Gambar full-bleed kiri */}
+      <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50 relative">
+        <ProductImage
+          category={product.category}
+          name={product.name}
+          variant={index}
+          src={productImages[0]}
+          className={`w-full h-full object-cover ${isHabis ? "grayscale" : ""}`}
+          style={{} as React.CSSProperties}
+        />
+        {isHabis && (
+          <img
+            src="/icons/habis.png"
+            alt="Habis"
+            className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 p-1"
+          />
+        )}
+      </div>
+
+      {/* Konten kanan */}
+      <div className="flex-1 min-w-0 flex flex-col justify-between px-2 py-2">
+        <div className="min-h-[28px]">
+          <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
+            {product.name}
+          </p>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          {hasDiscount && (
+            <p className="text-[9px] text-gray-400 line-through leading-none">
+              {formatRupiah(product.originalPrice!)}
+            </p>
+          )}
+          <p className="text-[12px] font-semibold text-gray-700 tracking-tight leading-none">
+            {formatRupiah(product.price)}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+
+  if (isHabis) {
+    return (
+      <div className="block flex-shrink-0 w-[188px] cursor-not-allowed select-none">
+        {cardContent}
+      </div>
+    );
+  }
 
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[198px] group"
+      className="block flex-shrink-0 w-[188px] group"
     >
-      {/* Remaining time */}
+      {/* Badge timer */}
       <div className="absolute top-1 right-2 z-10">
-        <span
-          className="
-      block
-      rounded-bl-xl
-      rounded-tr-lg
-      px-1.5
-      py-[4px]
-      text-[10px]
-      font-bold
-      leading-none
-      text-white
-      bg-gradient-to-l
-      from-orange-600
-      to-amber-500
-    "
-        >
+        <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[4px] text-[10px] font-bold leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
           3 Hari Lagi
         </span>
       </div>
-
-      {/* h-[104px] — cukup untuk nama 2 baris + harga coret + harga + progress bar */}
-      <article className="bg-white rounded-lg shadow-sm transition-transform duration-200 active:scale-95 overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px]">
-        {/* Gambar full-bleed kiri */}
-        <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50">
-          <ProductImage
-            category={product.category}
-            name={product.name}
-            variant={index}
-            src={productImages[0]}
-            className="w-full h-full object-cover"
-            style={{} as React.CSSProperties}
-          />
-        </div>
-
-        {/* Konten kanan */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between px-2 py-2">
-          {/* Nama — min-h agar konsisten 1 atau 2 baris */}
-          <div className="min-h-[28px]">
-            <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
-              {product.name}
-            </p>
-          </div>
-
-          {/* Harga & progress */}
-          <div className="flex flex-col gap-0.5">
-            {hasDiscount && (
-              <p className="text-[9px] text-gray-400 line-through leading-none">
-                {formatRupiah(product.originalPrice!)}
-              </p>
-            )}
-
-            <p className="text-[12px] font-semibold text-gray-700 tracking-tight leading-none">
-              {formatRupiah(product.price)}
-            </p>
-          </div>
-        </div>
-      </article>
+      {cardContent}
     </Link>
   );
 }
@@ -365,7 +353,7 @@ function HighlightSection({
               {displayProducts.map((product, i) => (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 snap-start w-[198px]"
+                  className="flex-shrink-0 snap-start w-[188px]"
                 >
                   <HighlightCard product={product} index={i} />
                 </div>

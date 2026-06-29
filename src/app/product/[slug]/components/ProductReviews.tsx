@@ -194,77 +194,53 @@ export default function ProductReviews({
               <path
                 d="M5,54 A50,50 0 0,1 105,54"
                 fill="none"
-                stroke="#e5e7eb"
+                stroke="#d1d5db"
                 strokeWidth="8.5"
                 strokeLinecap="round"
               />
-
               {/* Gauge Segments */}
               {[
                 {
                   zone: 1,
-                  color: "#ef4444",
+                  color: "#f87171", // soft red
                   dash: "36.9 147.6",
                   offset: 0,
-                  cap: "butt",
                 },
                 {
                   zone: 2,
-                  color: "#f97316",
+                  color: "#fb923c", // soft orange
                   dash: "36.9 147.6",
                   offset: 36.9,
-                  cap: "butt",
                 },
                 {
                   zone: 3,
-                  color: "#eab308",
+                  color: "#facc15", // muted yellow
                   dash: "36.9 147.6",
                   offset: 73.8,
-                  cap: "butt",
                 },
                 {
                   zone: 4,
-                  color: "#22c55e",
+                  color: "#4ade80", // soft green
                   dash: "36.9 147.6",
                   offset: 110.7,
-                  cap: "butt",
                 },
-              ].map(({ zone, color, dash, offset, cap }, i) => {
-                return (
-                  <path
-                    key={i}
-                    d="M8,54 A47,47 0 0,1 102,54"
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="10"
-                    strokeLinecap={cap as CanvasLineCap}
-                    strokeDasharray={dash}
-                    strokeDashoffset={-offset}
-                    opacity={activeZone === zone ? 1 : 0.45}
-                    className="transition-all duration-500"
-                  />
-                );
-              })}
+              ].map(({ color, dash, offset }, i) => (
+                <path
+                  key={i}
+                  d="M8,54 A47,47 0 0,1 102,54"
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="8.5"
+                  strokeLinecap="butt"
+                  strokeDasharray={dash}
+                  strokeDashoffset={-offset}
+                  className="transition-all duration-500"
+                />
+              ))}
 
-              {/* Rounded kiri red manual */}
-              <circle
-                cx="8"
-                cy="54"
-                r="4.25"
-                fill="#ef4444"
-                opacity={activeZone === 1 ? 1 : 0.15}
-                className="transition-all duration-500"
-              />
+              <circle cx="8" cy="54" r="4.25" fill="#f87171" />
 
-              {/* Rounded kanan emerald manual */}
-              <circle
-                cx="102"
-                cy="54"
-                r="4.25"
-                fill="#22c55e"
-                opacity={activeZone === 4 ? 1 : 0.15}
-                className="transition-all duration-500"
-              />
+              <circle cx="102" cy="54" r="4.25" fill="#4ade80" />
 
               {/* Jarum Needle Runcing */}
               <g

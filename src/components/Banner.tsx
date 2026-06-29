@@ -238,7 +238,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
                 key={`${banner.id}-${index}`}
                 className="
           flex-shrink-0
-          w-[96.5%]
+          w-[95%]
           snap-center snap-always
           transition-all duration-700 ease-out
         "
