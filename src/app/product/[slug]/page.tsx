@@ -13,9 +13,12 @@ export default function ProductDetailPage({
 }) {
   const { slug } = params;
 
-  const { getReviewsForProduct, fetchReviews, refreshVersion } = useReviewStore();
+  const { getReviewsForProduct, fetchReviews, refreshVersion } =
+    useReviewStore();
 
-  const [product, setProduct] = useState<(Product & { reviews?: Review[] }) | null>(null);
+  const [product, setProduct] = useState<
+    (Product & { reviews?: Review[] }) | null
+  >(null);
   const [loading, setLoading] = useState(true);
   const loaderStartTimeRef = useRef<number | null>(null);
 
@@ -38,7 +41,10 @@ export default function ProductDetailPage({
       .then((data) => {
         const elapsed = Date.now() - (loaderStartTimeRef.current || Date.now());
         if (elapsed < MIN_DISPLAY_TIME) {
-          setTimeout(() => { setProduct(data); setLoading(false); }, MIN_DISPLAY_TIME - elapsed);
+          setTimeout(() => {
+            setProduct(data);
+            setLoading(false);
+          }, MIN_DISPLAY_TIME - elapsed);
         } else {
           setProduct(data);
           setLoading(false);
@@ -75,7 +81,10 @@ export default function ProductDetailPage({
   const liveRating =
     liveReviewCount > 0
       ? Number(
-          (specificReviews.reduce((acc, r) => acc + r.rating, 0) / specificReviews.length).toFixed(1),
+          (
+            specificReviews.reduce((acc, r) => acc + r.rating, 0) /
+            specificReviews.length
+          ).toFixed(1),
         )
       : serverRating;
 
@@ -87,16 +96,24 @@ export default function ProductDetailPage({
     if (Array.isArray(rawImages)) {
       productImages = rawImages.flatMap((img) => {
         if (!img || typeof img !== "string") return [];
-        if (img.startsWith("data:image") || img.startsWith("http")) return [img];
-        return img.split("|").filter(
-          (i) => i?.trim()?.startsWith("data:image") || i?.trim()?.startsWith("http"),
-        );
+        if (img.startsWith("data:image") || img.startsWith("http"))
+          return [img];
+        return img
+          .split("|")
+          .filter(
+            (i) =>
+              i?.trim()?.startsWith("data:image") ||
+              i?.trim()?.startsWith("http"),
+          );
       });
     } else if (typeof rawImages === "string") {
       productImages = rawImages
         .split("|")
         .map((img) => img?.trim())
-        .filter((img) => img && (img.startsWith("data:image") || img.startsWith("http")));
+        .filter(
+          (img) =>
+            img && (img.startsWith("data:image") || img.startsWith("http")),
+        );
     }
   }
 
@@ -118,7 +135,8 @@ export default function ProductDetailPage({
               Produk tidak ditemukan
             </h2>
             <p className="mt-1 text-sm text-gray-500 max-w-[280px] leading-relaxed">
-              Produk mungkin sudah dihapus atau tautan yang Anda buka tidak tersedia.
+              Produk mungkin sudah dihapus atau tautan yang Anda buka tidak
+              tersedia.
             </p>
             <button
               onClick={() => window.history.back()}
@@ -134,6 +152,7 @@ export default function ProductDetailPage({
           allReviews={allReviews}
           liveRating={liveRating}
           productImages={productImages}
+          sellerId={product.sellerId}
         />
       ) : null}
     </div>

@@ -27,8 +27,7 @@ const SORT_OPTIONS = [
 const CATEGORY_CHIPS: Record<string, string[]> = {
   elektronik: ["Semua", "Smartphone", "Laptop", "Audio", "Gaming", "Aksesoris"],
   fashion: ["Semua", "Pria", "Wanita", "Sepatu", "Tas", "Aksesoris"],
-
-  perabotan: [
+  rumah: [
     "Semua",
     "Dapur",
     "Dekorasi",
@@ -36,35 +35,18 @@ const CATEGORY_CHIPS: Record<string, string[]> = {
     "Penyimpanan",
     "Peralatan",
   ],
-
-  kesehatan: [
+  kecantikan: [
     "Semua",
     "Skincare",
     "Makeup",
-    "Vitamin",
     "Parfum",
     "Perawatan Tubuh",
+    "Body Care",
   ],
-
-  hiburan: ["Semua", "Streaming", "Musik", "Film", "Anime", "Subscription"],
-
-  game: [
-    "Semua",
-    "Mobile Legends",
-    "Free Fire",
-    "PUBG Mobile",
-    "Genshin Impact",
-    "Valorant",
-  ],
-  produktivitas: ["Semua", "Office", "Desain", "Meeting", "Cloud", "AI Tools"],
-  otomotif: [
-    "Semua",
-    "Suku Cadang",
-    "Aksesoris",
-    "Perawatan",
-    "Riding Gear",
-    "Tools",
-  ],
+  makanan: ["Semua", "Minuman", "Mie Instan", "Biskuit", "Susu", "Kopi & Teh"],
+  hobi: ["Semua", "Lukis", "Musik", "Fotografi", "Origami", "Kerajinan"],
+  otomotif: ["Semua", "Oli", "Ban", "Aki", "Filter", "Lampu"],
+  olahraga: ["Semua", "Lari", "Badminton", "Sepak Bola", "Yoga", "Fitness"],
 };
 
 function applySort(products: Product[], sort: string): Product[] {
@@ -205,8 +187,8 @@ export default function CategoryProductPage({
   const filteredByChip =
     activeChip === "Semua"
       ? filteredBySearch
-      : filteredBySearch.filter((p) =>
-          p.name.toLowerCase().includes(activeChip.toLowerCase()),
+      : filteredBySearch.filter(
+          (p) => p.subCategory?.toLowerCase() === activeChip.toLowerCase(),
         );
 
   const sorted = applySort(filteredByChip, sort);
@@ -311,51 +293,52 @@ export default function CategoryProductPage({
                 <button
                   onClick={() => setShowSortMenu(!showSortMenu)}
                   className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all
-                  ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
+      ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
                 >
                   <SlidersHorizontal size={18} strokeWidth={2.2} />
                 </button>
               </div>
 
-              {showSortMenu && (
-                <div
-                  className="
-        absolute right-0 top-full mt-1.5 z-50
-        bg-white rounded-xl overflow-hidden min-w-[148px]
-        shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]
-      "
-                >
-                  {SORT_OPTIONS.map((opt) => {
-                    const isActive = sort === opt.id;
-
-                    return (
-                      <button
-                        key={opt.id}
-                        onClick={() => {
-                          setSort(opt.id);
-                          setShowSortMenu(false);
-                        }}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold text-gray-600 hover:bg-gray-50"
+              <div
+                className={`
+      absolute right-0 top-full mt-1.5 z-50
+      bg-white rounded-xl overflow-hidden min-w-[148px]
+      shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]
+      origin-top-right
+      transition-all duration-200 ease-out
+      ${
+        showSortMenu
+          ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+          : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+      }
+    `}
+              >
+                {SORT_OPTIONS.map((opt) => {
+                  const isActive = sort === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => {
+                        setSort(opt.id);
+                        setShowSortMenu(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold text-gray-600 hover:bg-gray-50"
+                    >
+                      <div
+                        className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors
+            ${
+              isActive
+                ? "bg-emerald-600 text-white"
+                : "bg-gray-100 text-gray-400"
+            }`}
                       >
-                        {/* ICON BOX (ACTIVE STATE VISUAL) */}
-                        <div
-                          className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors
-                ${
-                  isActive
-                    ? "bg-emerald-600 text-white"
-                    : "bg-gray-100 text-gray-400"
-                }`}
-                        >
-                          <opt.Icon size={14} strokeWidth={2} />
-                        </div>
-
-                        {/* LABEL */}
-                        <span>{opt.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+                        <opt.Icon size={14} strokeWidth={2} />
+                      </div>
+                      <span>{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
@@ -376,13 +359,13 @@ export default function CategoryProductPage({
       {/* ── Product Grid ── */}
       <div className="px-2 pt-3 pb-28">
         {isLoading ? (
-          <div className="flex items-start gap-3">
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
+          <div className="flex items-start gap-2">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               {Array.from({ length: 4 }).map((_, i) => (
                 <CardSkeleton key={`left-${i}`} isTall={i === 1} />
               ))}
             </div>
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               {Array.from({ length: 4 }).map((_, i) => (
                 <CardSkeleton key={`right-${i}`} />
               ))}
@@ -393,9 +376,9 @@ export default function CategoryProductPage({
             category={activeChip === "Semua" ? categoryName : activeChip}
           />
         ) : (
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2">
             {/* Kolom Kiri */}
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               {sorted
                 .filter((_, i) => i % 2 === 0)
                 .map((product, idx) => {
@@ -413,7 +396,7 @@ export default function CategoryProductPage({
             </div>
 
             {/* Kolom Kanan */}
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               {sorted
                 .filter((_, i) => i % 2 === 1)
                 .map((product, idx) => {

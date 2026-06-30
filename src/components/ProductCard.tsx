@@ -102,10 +102,10 @@ export default function ProductCard({
 
   const titleSize =
     product.name.length > 50
-      ? "text-[11px] leading-[1.15]"
+      ? "text-[11px]"
       : product.name.length > 35
-        ? "text-[11.5px] leading-[1.15]"
-        : "text-[12px] leading-[1.18]";
+        ? "text-[11.5px]"
+        : "text-[12px]";
 
   const priceLength = displayPrice.length;
 
@@ -122,7 +122,7 @@ export default function ProductCard({
     <Link href={`/product/${product.slug}`} className="block group">
       <article
         className="
-    bg-white rounded-xl 
+    bg-white rounded-[11px]
     shadow-layer-xs 
     transition-all duration-200 overflow-hidden 
     active:scale-[0.985] 
@@ -137,9 +137,9 @@ export default function ProductCard({
             absolute top-0 right-0 z-30
             px-2.5 py-1
             bg-gradient-to-l from-rose-600 to-rose-500
-            text-white text-[10px] font-bold
-            rounded-tr-xl rounded-bl-2xl
-            shadow-layer-md tracking-tight
+            text-white text-[10px] font-semibold
+            rounded-tr-[11px] rounded-bl-xl
+            shadow-layer-sm tracking-tight
           "
           >
             -{discount}%
@@ -161,12 +161,12 @@ export default function ProductCard({
 
         <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-1 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
-            className={`text-gray-800 line-clamp-2 font-normal transition-colors duration-200 min-h-[1.4rem] tracking-tight ${titleSize}`}
+            className={`text-gray-800 line-clamp-2 font-normal leading-[1.12] min-h-[2.2em] tracking-tight ${titleSize}`}
           >
             {product.name}
           </h3>
 
-          <div className="flex items-baseline gap-1.5 w-full overflow-hidden whitespace-nowrap">
+          <div className="flex items-baseline gap-1 w-full overflow-hidden whitespace-nowrap">
             <span
               className={`
                 ${priceSize}
@@ -197,7 +197,7 @@ export default function ProductCard({
               )}
           </div>
 
-          <div className="flex items-end justify-between mt-auto pt-1 relative z-20">
+          <div className="flex items-end justify-between mt-auto pt-0.5 relative z-20">
             {/* LEFT: Rating */}
             <div className="flex items-center gap-0.5 text-[10.5px] font-bold text-gray-600">
               <Star size={10} strokeWidth={0} fill="#FBBF24" />

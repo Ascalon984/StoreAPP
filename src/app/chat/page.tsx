@@ -1,26 +1,46 @@
 "use client";
 
 import { useState, useCallback, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ChatList from "./components/ChatList";
 import ChatWindow from "./components/ChatWindow";
+import { MOCK_SELLERS } from "@/lib/mockSellers";
 
 function ChatPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sellerIdParam = searchParams.get("sellerId");
+
   const [selectedSeller, setSelectedSeller] = useState<{
     id: string;
     name: string;
-  } | null>(null);
+  } | null>(() => {
+    if (sellerIdParam) {
+      const seller = MOCK_SELLERS.find((s) => s.id === sellerIdParam);
+      if (seller) {
+        return { id: seller.id, name: seller.name };
+      }
+    }
+    return null;
+  });
 
   const handleBack = useCallback(() => {
     if (selectedSeller) {
-      setSelectedSeller(null);
+      if (sellerIdParam) {
+        if (window.history.length > 1) {
+          router.back();
+        } else {
+          router.push("/");
+        }
+      } else {
+        setSelectedSeller(null);
+      }
     } else if (window.history.length > 1) {
       router.back();
     } else {
       router.push("/profile");
     }
-  }, [router, selectedSeller]);
+  }, [router, selectedSeller, sellerIdParam]);
 
   if (!selectedSeller) {
     return (

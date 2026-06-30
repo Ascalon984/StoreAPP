@@ -493,7 +493,7 @@ export default function ProductDetailContent({
           {/* Chat Button */}
           <button
             onClick={() =>
-              router.push(`/chat?source=product&productSlug=${product.slug}`)
+              router.push(`/chat?source=product&productSlug=${product.slug}&sellerId=${seller.id}`)
             }
             className="h-7 flex items-center gap-1 px-2 rounded-lg border border-gray-200 bg-gray-50 text-emerald-700 text-[11px] font-semibold hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0 self-center"
           >

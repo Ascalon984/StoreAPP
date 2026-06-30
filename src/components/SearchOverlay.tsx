@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Search, X, Clock, ArrowRight } from "lucide-react";
+import ProductImage from "./ProductImage";
 import { useSearchStore } from "@/store/useSearchStore";
 import Link from "next/link";
 
@@ -213,31 +214,44 @@ export default function SearchOverlay() {
           )}
 
           {!debouncedQuery.trim() && popularProducts.length > 0 && (
-            <div className="mt-5 pt-4 border-t border-gray-100">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-3">
+            <div
+              className={`${
+                recentSearches.length > 0
+                  ? "mt-5 pt-4 border-t border-gray-100"
+                  : "mt-1"
+              }`}
+            >
+              <span className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider block mb-3 -mt-2">
                 Lagi Banyak Dicari
               </span>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {popularProducts.map((product) => (
                   <Link
                     key={product.id}
                     href={`/product/${product.slug}`}
                     onClick={() => handleSelect(product.name)}
-                    className="flex flex-col gap-1.5 rounded-2xl bg-white border border-gray-100 p-2 group active:scale-[0.98] transition-all duration-200"
+                    className="flex flex-col gap-1 rounded-[11px] bg-white border border-gray-100 p-2 group active:scale-[0.98] transition-all duration-200"
                   >
-                    <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    <div className="aspect-square rounded-[11px] overflow-hidden bg-gray-100 relative">
+                      <ProductImage
+                        category={product.category}
+                        name={product.name}
+                        variant={0}
+                        src={product.images?.[0] || product.image}
+                        className="absolute inset-0 w-full h-full object-contain"
+                        style={{} as React.CSSProperties}
                       />
                     </div>
-                    <div className="min-h-[2rem]">
-                      <p className="text-[11px] text-gray-700 font-medium line-clamp-2 group-hover:text-primary transition-colors">
+
+                    {/* TITLE */}
+                    <div className="h-[2.2rem] overflow-hidden">
+                      <p className="text-[11px] leading-[1.1rem] text-gray-700 font-medium line-clamp-2 group-hover:text-primary transition-colors">
                         {product.name}
                       </p>
                     </div>
-                    <p className="text-[12px] font-extrabold text-emerald-700 tracking-tight">
+
+                    {/* PRICE */}
+                    <p className="text-[13px] font-semibold text-gray-700 tracking-tight">
                       Rp {product.price?.toLocaleString("id-ID")}
                     </p>
                   </Link>

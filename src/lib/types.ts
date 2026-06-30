@@ -31,6 +31,8 @@ export interface Product {
   variants?: ProductVariant[];
   variant?: string;
   targetType?: ProductTargetType;
+  sellerId?: string;
+  subCategory?: string;
 }
 
 export interface Category {
