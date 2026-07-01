@@ -11,6 +11,7 @@ import {
   XCircle,
   MessageCircle,
   Truck,
+  ArrowRight,
 } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
@@ -133,16 +134,16 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
           {/* ── Slide 0 — Overview ── */}
-          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-4">
+          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-2">
             <div className="flex flex-col items-center flex-shrink-0">
               <div className="flex items-center">
                 {items.slice(0, 3).map((item, i) => (
                   <div
                     key={item.productId}
-                    className="w-13.5 h-13.5 rounded-xl border-2 border-white shadow-sm
-                    overflow-hidden bg-gray-50 flex-shrink-0"
+                    className="w-15 h-15 rounded-lg border-2 border-white shadow-sm
+          overflow-hidden bg-gray-50 flex-shrink-0"
                     style={{
-                      marginLeft: i === 0 ? 0 : -16,
+                      marginLeft: i === 0 ? 0 : -18,
                       zIndex: 3 - i,
                     }}
                   >
@@ -154,11 +155,12 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
                     />
                   </div>
                 ))}
+
                 {items.length > 3 && (
                   <div
-                    className="w-13.5 h-13.5 rounded-xl border-2 border-white shadow-sm
-                    bg-gray-100 flex items-center justify-center
-                    flex-shrink-0 -ml-3.5"
+                    className="w-15 h-15 rounded-lg border-2 border-white shadow-sm
+          bg-gray-100 flex items-center justify-center
+          flex-shrink-0 -ml-4"
                     style={{ zIndex: 0 }}
                   >
                     <span className="text-[10px] font-semibold text-gray-500">
@@ -169,15 +171,27 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
               </div>
             </div>
 
-            <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
-                {items.length === 1
-                  ? items[0].name
-                  : `${items[0].name.split(" ").slice(0, 4).join(" ")} & ${items.length - 1} lainnya`}
-              </p>
-              <p className="text-[10px] text-gray-400 font-medium mt-1">
-                {items.length} produk
-              </p>
+            <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
+                  {items.length === 1
+                    ? items[0].name
+                    : `${items[0].name.split(" ").slice(0, 4).join(" ")} & ${items.length - 1} lainnya`}
+                </p>
+                <p className="text-[10px] text-gray-400 font-medium mt-1">
+                  {items.length} produk
+                </p>
+              </div>
+
+              {items.length > 1 && (
+                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <ArrowRight
+                    size={13}
+                    strokeWidth={2.2}
+                    className="text-gray-400"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -185,10 +199,10 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
           {items.map((item, idx) => (
             <div
               key={item.productId}
-              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-4"
+              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3"
             >
               <div className="flex flex-col items-center flex-shrink-0">
-                <div className="w-13.5 h-13.5 rounded-xl border border-gray-100 overflow-hidden bg-gray-50">
+                <div className="w-15 h-15 rounded-lg border border-gray-100 overflow-hidden bg-gray-50">
                   <ProductImage
                     category={item.category}
                     name={item.name}
@@ -202,15 +216,13 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
                 <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
                   {item.name}
                 </p>
+
                 <p className="text-[10px] text-gray-400 font-medium mt-1">
                   {item.quantity}× · {formatRupiah(item.price)}
                 </p>
               </div>
 
               <div className="text-right flex-shrink-0">
-                <p className="text-[12px] font-bold text-gray-700">
-                  {formatRupiah(item.price * item.quantity)}
-                </p>
                 <p className="text-[9px] text-gray-400 mt-0.5">
                   {idx + 1}/{items.length}
                 </p>
