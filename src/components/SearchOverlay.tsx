@@ -5,6 +5,7 @@ import { Search, X, Clock, ArrowRight } from "lucide-react";
 import ProductImage from "./ProductImage";
 import { useSearchStore } from "@/store/useSearchStore";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function SearchOverlay() {
   const {
@@ -22,13 +23,26 @@ export default function SearchOverlay() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const [popularProducts, setPopularProducts] = useState<any[]>([]);
+  const pathname = usePathname();
+
+  const pendingCloseRef = useRef(false);
+
+  useEffect(() => {
+    if (pendingCloseRef.current) {
+      closeSearch();
+      pendingCloseRef.current = false;
+    }
+  }, [pathname, closeSearch]);
 
   useEffect(() => {
     if (isOpen && products.length === 0) {
-      fetch(`/api/public/products?t=${Date.now()}`, { cache: "no-store" })
+      fetch(`/api/public/products?t=${Date.now()}`, {
+        cache: "no-store",
+      })
         .then((res) => res.json())
         .then((data) => {
           setProducts(data);
+
           // Ambil 6 produk pertama sebagai popular/suggested
           setPopularProducts(data.slice(0, 6));
         });
@@ -37,6 +51,7 @@ export default function SearchOverlay() {
 
   useEffect(() => {
     const saved = localStorage.getItem("recentSearches");
+
     if (saved) {
       try {
         setRecentSearches(JSON.parse(saved));
@@ -48,7 +63,9 @@ export default function SearchOverlay() {
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   }, [isOpen]);
 
@@ -56,6 +73,7 @@ export default function SearchOverlay() {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+
       return () => {
         document.body.style.overflow = "";
       };
@@ -63,7 +81,10 @@ export default function SearchOverlay() {
   }, [isOpen]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedQuery(query), 300);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
     return () => clearTimeout(timer);
   }, [query]);
 
@@ -77,24 +98,29 @@ export default function SearchOverlay() {
 
   const handleSelect = (productName: string) => {
     addRecentSearch(productName);
-    closeSearch();
+    // close setelah route berubah
+    pendingCloseRef.current = true;
   };
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (query.trim()) {
       addRecentSearch(query.trim());
+
       closeSearch();
     }
   };
 
   const highlightMatch = (text: string, q: string) => {
     if (!q.trim()) return text;
+
     const regex = new RegExp(
       `(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
       "gi",
     );
+
     const parts = text.split(regex);
+
     return parts.map((part, i) =>
       regex.test(part) ? (
         <span key={i} className="text-emerald-700 font-semibold">
@@ -152,7 +178,7 @@ export default function SearchOverlay() {
 
         <div
           ref={scrollContainerRef}
-          className="py-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-60px)] touch-action-pan-x"
+          className="pt-4 pb-20 overflow-y-auto hide-scrollbar max-h-[calc(100vh-60px)] touch-action-pan-x"
           onScroll={handleScrollContainer}
           onWheel={handleWheel}
           onTouchMove={handleTouchMove}
@@ -245,7 +271,7 @@ export default function SearchOverlay() {
 
                     {/* TITLE */}
                     <div className="h-[2.2rem] overflow-hidden">
-                      <p className="text-[11px] leading-[1.1rem] text-gray-700 font-medium line-clamp-2 group-hover:text-primary transition-colors">
+                      <p className="text-[11px] leading-[1.1rem] text-gray-700 font-medium line-clamp-2">
                         {product.name}
                       </p>
                     </div>

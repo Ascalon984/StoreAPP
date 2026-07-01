@@ -8,6 +8,7 @@ import { useFilterStore } from "@/store/useFilterStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mockUser, getGreeting } from "@/store/useUserStore";
+import { products } from "@/lib/data";
 
 const SORT_OPTIONS = [
   { id: "popular", label: "Terpopuler", Icon: Star },
@@ -15,45 +16,51 @@ const SORT_OPTIONS = [
   { id: "expensive", label: "Termahal", Icon: TrendingUp },
 ];
 
-const SEARCH_PLACEHOLDERS = [
-  "Cari produk favoritmu...",
-  "Cari kategori...",
-  "Cari merek terkenal...",
-  "Cari promo hari ini...",
-];
+const topProducts = [...products]
+  .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  .slice(0, 5)
+  .map((p) => {
+    const words = p.name.split(" ");
+
+    return words.slice(0, 3).join(" ");
+  });
+
+const SEARCH_PLACEHOLDERS = [...topProducts];
 
 function AnimatedPlaceholder() {
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [displayed, setDisplayed] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const current = SEARCH_PLACEHOLDERS[phraseIndex];
-    let timeout: ReturnType<typeof setTimeout>;
+    const interval = setInterval(() => {
+      setVisible(false);
 
-    if (!isDeleting && displayed.length < current.length) {
-      timeout = setTimeout(() => {
-        setDisplayed(current.slice(0, displayed.length + 1));
-      }, 60);
-    } else if (!isDeleting && displayed.length === current.length) {
-      timeout = setTimeout(() => setIsDeleting(true), 1800);
-    } else if (isDeleting && displayed.length > 0) {
-      timeout = setTimeout(() => {
-        setDisplayed(current.slice(0, displayed.length - 1));
-      }, 35);
-    } else if (isDeleting && displayed.length === 0) {
-      setIsDeleting(false);
-      setPhraseIndex((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
-    }
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % SEARCH_PLACEHOLDERS.length);
+        setVisible(true);
+      }, 180);
+    }, 2600);
 
-    return () => clearTimeout(timeout);
-  }, [displayed, isDeleting, phraseIndex]);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <span className="text-gray-400 text-[12px] font-normal tracking-[-0.01em]">
-      {displayed}
-      <span className="inline-block w-[1.5px] h-3 bg-gray-300 ml-[1px] align-middle animate-[blink_1s_step-end_infinite]" />
-    </span>
+    <div className="flex items-center text-[12px] tracking-[-0.01em] overflow-hidden">
+      {/* Animated keyword */}
+      <span
+        className={`
+          text-gray-400 font-normal whitespace-nowrap
+          transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${
+            visible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-[3px]"
+          }
+        `}
+      >
+        {SEARCH_PLACEHOLDERS[index]}
+      </span>
+    </div>
   );
 }
 
@@ -182,13 +189,11 @@ export default function Navbar() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-emerald-700 text-xs font-bold">
-                          {mockUser.name
-                            .split(" ")
-                            .map((n: any) => n[0])
-                            .join("")
-                            .slice(0, 2)}
-                        </span>
+                        <img
+                          src="/icons/avatar.png"
+                          alt="avatar"
+                          className="w-full h-full object-cover opacity-70"
+                        />
                       )}
                     </div>
                   </Link>
