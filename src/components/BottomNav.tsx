@@ -119,7 +119,8 @@ export default function BottomNav() {
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
-  if (isProductDetail || isCheckout || isNotifications || isProducts) return null;
+  if (isProductDetail || isCheckout || isNotifications || isProducts)
+    return null;
 
   return (
     <>
@@ -178,15 +179,17 @@ export default function BottomNav() {
             <div className="flex-1 flex justify-end pr-4 gap-5">
               <Link
                 href="/"
-                className={`group flex flex-col items-center gap-0.5 p-2 transition-[all] duration-300 active:scale-95 ${
-                  pathname === "/"
-                    ? "text-emerald-700 scale-105"
-                    : "text-gray-500"
+                className={`group flex flex-col items-center gap-0.5 p-2 transition-colors duration-200 active:scale-95 ${
+                  pathname === "/" ? "text-emerald-700" : "text-gray-400"
                 }`}
               >
                 <HomeIcon active={pathname === "/"} />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/" ? "font-bold" : "font-semibold"}`}
+                  className={`text-[10px] tracking-tight transition-colors ${
+                    pathname === "/"
+                      ? "text-gray-600 font-bold"
+                      : "text-gray-400 font-medium"
+                  }`}
                 >
                   Home
                 </span>
@@ -203,7 +206,9 @@ export default function BottomNav() {
                 <NotebookTextIcon active={pathname === "/orders"} />
                 <span
                   className={`text-[10px] tracking-tight transition-colors ${
-                    pathname === "/orders" ? "font-bold" : "font-semibold"
+                    pathname === "/orders"
+                      ? "text-gray-600 font-bold"
+                      : "text-gray-400 font-medium"
                   }`}
                 >
                   Pesanan
@@ -286,7 +291,11 @@ export default function BottomNav() {
                   fill={pathname === "/wishlist" ? "currentColor" : "none"}
                 />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/wishlist" ? "font-bold" : "font-semibold"}`}
+                  className={`text-[10px] tracking-tight transition-colors ${
+                    pathname === "/wishlist"
+                      ? "text-gray-600 font-bold"
+                      : "text-gray-400 font-medium"
+                  }`}
                 >
                   Favorit
                 </span>
@@ -306,7 +315,11 @@ export default function BottomNav() {
                   fill={pathname === "/profile" ? "currentColor" : "none"}
                 />
                 <span
-                  className={`text-[10px] tracking-tight transition-colors ${pathname === "/profile" ? "font-bold" : "font-semibold"}`}
+                  className={`text-[10px] tracking-tight transition-colors ${
+                    pathname === "/profile"
+                      ? "text-gray-600 font-bold"
+                      : "text-gray-400 font-medium"
+                  }`}
                 >
                   Profil
                 </span>
