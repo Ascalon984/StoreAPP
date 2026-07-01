@@ -17,7 +17,13 @@ import ProductImage from "@/components/ProductImage";
 import { products } from "@/lib/data";
 import { Order, OrderItem, OrderStatus } from "@/lib/types";
 
-export type FilterTab = "all" | "active" | "completed" | "cancelled";
+export type FilterTab =
+  | "all"
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "completed"
+  | "cancelled";
 
 export function getOrderGroupLabel(dateStr: string): string {
   const now = new Date();
@@ -80,11 +86,16 @@ export const STATUS_CONFIG: Record<
   },
 };
 
-export const FILTER_TABS: { key: FilterTab; label: string }[] = [
+export const FILTER_TABS: {
+  key: FilterTab;
+  label: string;
+}[] = [
   { key: "all", label: "Semua" },
-  { key: "active", label: "Aktif" },
-  { key: "completed", label: "Berhasil" },
-  { key: "cancelled", label: "Gagal" },
+  { key: "pending", label: "Menunggu" },
+  { key: "processing", label: "Diproses" },
+  { key: "shipped", label: "Dikirim" },
+  { key: "completed", label: "Selesai" },
+  { key: "cancelled", label: "Dibatalkan" },
 ];
 
 export function ProductCarousel({ items }: { items: OrderItem[] }) {
@@ -235,7 +246,7 @@ export function OrderCard({
           #{order.orderId}
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {(activeFilter === "all" || activeFilter === "active") && (
+          {activeFilter === "all" && (
             <div className="flex items-center gap-1">
               <StatusIcon size={13} strokeWidth={2.4} className={iconClass} />
               <span className={`text-[10px] font-semibold ${textClass}`}>
@@ -422,20 +433,30 @@ export function EmptyState({ filter }: { filter: FilterTab }) {
       title: "Belum ada pesanan",
       sub: "Yuk mulai belanja produk favoritmu!",
     },
-    active: {
+    pending: {
       Icon: Clock3,
-      title: "Tidak ada pesanan aktif",
-      sub: "Pesanan yang belum dibayar atau sedang diproses akan tampil di sini.",
+      title: "Tidak ada pesanan menunggu",
+      sub: "Pesanan yang belum dibayar akan tampil di sini.",
+    },
+    processing: {
+      Icon: ClockFading,
+      title: "Tidak ada pesanan diproses",
+      sub: "Pesanan yang sedang diproses akan tampil di sini.",
+    },
+    shipped: {
+      Icon: Truck,
+      title: "Tidak ada pesanan dikirim",
+      sub: "Pesanan yang sedang dikirim akan tampil di sini.",
     },
     completed: {
       Icon: CheckCircle,
-      title: "Belum ada transaksi berhasil",
-      sub: "Transaksi berhasil akan tampil di sini.",
+      title: "Belum ada transaksi selesai",
+      sub: "Transaksi selesai akan tampil di sini.",
     },
     cancelled: {
       Icon: XCircle,
-      title: "Tidak ada transaksi gagal",
-      sub: "Transaksi yang gagal akan tampil di sini.",
+      title: "Tidak ada transaksi dibatalkan",
+      sub: "Transaksi yang dibatalkan akan tampil di sini.",
     },
   };
   const { Icon, title, sub } = map[filter];
