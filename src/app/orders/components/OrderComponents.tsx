@@ -65,31 +65,35 @@ export const STATUS_CONFIG: Record<
     label: "Menunggu",
     icon: Clock3,
     iconClass: "text-amber-500",
-    textClass: "text-gray-500",
+    textClass: "text-amber-600",
   },
+
   processing: {
     label: "Diproses",
     icon: ClockFading,
-    iconClass: "text-yellow-500",
-    textClass: "text-gray-500",
+    iconClass: "text-violet-500",
+    textClass: "text-violet-600",
   },
+
   shipped: {
     label: "Dikirim",
     icon: Truck,
     iconClass: "text-sky-500",
-    textClass: "text-gray-500",
+    textClass: "text-sky-600",
   },
+
   completed: {
     label: "Berhasil",
     icon: CheckCircle2,
-    iconClass: "text-emerald-600",
-    textClass: "text-gray-500",
+    iconClass: "text-emerald-500",
+    textClass: "text-emerald-600",
   },
+
   cancelled: {
     label: "Gagal",
     icon: XCircle,
     iconClass: "text-rose-500",
-    textClass: "text-gray-500",
+    textClass: "text-rose-600",
   },
 };
 
@@ -256,7 +260,7 @@ export function OrderCard({
   } = STATUS_CONFIG[order.status];
 
   return (
-    <div className="bg-white overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-4 py-2 flex items-center justify-between">
         <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
@@ -268,7 +272,7 @@ export function OrderCard({
               <StatusIcon size={12.5} strokeWidth={2.3} className={iconClass} />
 
               <span
-                className={`text-[10px] font-semibold tracking-[-0.01em] ${textClass}`}
+                className={`text-[10px] font-medium tracking-[-0.01em] ${textClass}`}
               >
                 {label}
               </span>
@@ -287,8 +291,10 @@ export function OrderCard({
 
       {/* Footer */}
       <div className="px-4 py-2 flex items-center justify-between gap-2.5">
-        <div>
-          <p className="text-[13px] font-semibold text-gray-700 tracking-[-0.01em] leading-none">
+        <div className="leading-tight">
+          <p className="text-[9px] text-gray-500">Total</p>
+
+          <p className="text-[13px] font-semibold text-gray-700 tracking-[-0.01em]">
             {formatRupiah(order.total)}
           </p>
         </div>
@@ -339,7 +345,7 @@ export function OrderCard({
                 );
               }}
               className="
-  px-3 py-1.5 rounded-lg
+  px-3 py-1.5 rounded-[6px]
   bg-emerald-600
   text-white
   text-[11px] font-medium
@@ -355,9 +361,9 @@ export function OrderCard({
           {order.status === "shipped" && (
             <button
               className="
-        px-3 py-1.5 rounded-lg
+        px-3 py-1.5 rounded-[6px]
         bg-emerald-600
-        text-white text-[11px] font-semibold
+        text-white text-[11px] font-medium
         hover:bg-emerald-700
         active:scale-95
         transition-all
@@ -370,10 +376,10 @@ export function OrderCard({
           {order.status === "pending" && (
             <>
               <button
-                className="px-3 py-1.5 rounded-lg
+                className="px-3 py-1.5 rounded-[6px]
                 border border-gray-200
                 bg-white
-                text-[11px] font-semibold text-gray-700
+                text-[11px] font-medium text-gray-700
                 hover:bg-gray-50
                 active:scale-95
                 transition-all"
@@ -381,9 +387,9 @@ export function OrderCard({
                 Batalkan
               </button>
               <button
-                className="px-4 py-1.5 rounded-lg
+                className="px-4 py-1.5 rounded-[6px]
                 bg-emerald-600
-                text-white text-[11px] font-semibold
+                text-white text-[11px] font-medium
                 hover:bg-emerald-700
                 active:scale-95
                 transition-all"
@@ -396,9 +402,9 @@ export function OrderCard({
           {order.status === "cancelled" && (
             <button
               onClick={() => router.push("/")}
-              className="px-3 py-1.5 rounded-lg
+              className="px-3 py-1.5 rounded-[6px]
               bg-emerald-600
-              text-white text-[11px] font-semibold
+              text-white text-[11px] font-medium
               hover:bg-emerald-600
               active:scale-95
               transition-all"
@@ -414,7 +420,7 @@ export function OrderCard({
 
 export function SkeletonCard() {
   return (
-    <div className="bg-white overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       <div className="px-4 py-2.5 flex justify-between">
         <div className="h-3.5 w-28 bg-gray-100 rounded" />
         <div className="flex items-center gap-2">
@@ -452,50 +458,57 @@ export function SkeletonCard() {
 
 export function EmptyState({ filter }: { filter: FilterTab }) {
   const router = useRouter();
-  const map: Record<FilterTab, { Icon: any; title: string; sub: string }> = {
+  const map: Record<FilterTab, { title: string }> = {
     all: {
-      Icon: Package,
-      title: "Belum ada pesanan",
-      sub: "Yuk mulai belanja produk favoritmu!",
+      title: "Belum ada riwayat pesanan",
     },
+
     pending: {
-      Icon: Clock3,
-      title: "Tidak ada pesanan menunggu",
-      sub: "Pesanan yang belum dibayar akan tampil di sini.",
+      title: "Tidak ada pesanan yang menunggu pembayaran",
     },
+
     processing: {
-      Icon: ClockFading,
-      title: "Tidak ada pesanan diproses",
-      sub: "Pesanan yang sedang diproses akan tampil di sini.",
+      title: "Belum ada pesanan yang sedang diproses",
     },
+
     shipped: {
-      Icon: Truck,
-      title: "Tidak ada pesanan dikirim",
-      sub: "Pesanan yang sedang dikirim akan tampil di sini.",
+      title: "Belum ada pesanan dalam pengiriman",
     },
+
     completed: {
-      Icon: CheckCircle,
-      title: "Belum ada transaksi selesai",
-      sub: "Transaksi selesai akan tampil di sini.",
+      title: "Belum ada pesanan yang selesai",
     },
+
     cancelled: {
-      Icon: XCircle,
-      title: "Tidak ada transaksi dibatalkan",
-      sub: "Transaksi yang dibatalkan akan tampil di sini.",
+      title: "Tidak ada pesanan yang dibatalkan",
     },
   };
-  const { Icon, title, sub } = map[filter];
+  const { title } = map[filter];
   return (
     <div className="flex flex-col items-center py-16 px-6">
-      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4 text-gray-400">
-        <Icon size={32} strokeWidth={1.5} />
+      <div
+        className="
+    w-36 h-36 rounded-full
+    bg-gradient-to-b from-emerald-50 to-emerald-50/40
+    ring-1 ring-emerald-100/50
+    flex items-center justify-center
+    mb-4
+  "
+      >
+        <img
+          src="/illustrations/missing transactions.png"
+          alt="Kosong"
+          className="
+      w-34 h-34
+      object-contain
+      select-none
+      pointer-events-none
+    "
+        />
       </div>
-      <h3 className="text-[15px] font-bold text-gray-800 text-center">
+      <h3 className="text-[13px] font-semibold text-gray-600 text-center">
         {title}
       </h3>
-      <p className="text-[12px] text-gray-400 font-medium text-center mt-1.5 leading-relaxed">
-        {sub}
-      </p>
       {filter === "all" && (
         <button
           onClick={() => router.push("/")}

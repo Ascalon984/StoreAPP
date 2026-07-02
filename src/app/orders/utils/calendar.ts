@@ -13,16 +13,15 @@ export const MONTH_NAMES = [
   "Desember",
 ];
 
-export type QuickFilterKey = "1 Minggu" | "1 Bulan" | "3 Bulan" | "6 Bulan";
+export type QuickFilterKey = "1 Minggu Lalu" | "1 Bulan Lalu" | "3 Bulan Lalu";
 
 export const QUICK_FILTER_OFFSETS: Record<
   QuickFilterKey,
   { unit: "day" | "month"; amount: number }
 > = {
-  "1 Minggu": { unit: "day", amount: 7 },
-  "1 Bulan": { unit: "month", amount: 1 },
-  "3 Bulan": { unit: "month", amount: 3 },
-  "6 Bulan": { unit: "month", amount: 6 },
+  "1 Minggu Lalu": { unit: "day", amount: 7 },
+  "1 Bulan Lalu": { unit: "month", amount: 1 },
+  "3 Bulan Lalu": { unit: "month", amount: 3 },
 };
 
 export function getDaysInMonth(year: number, month: number): number {

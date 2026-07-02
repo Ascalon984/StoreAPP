@@ -104,7 +104,7 @@ export function CalendarFilterSheet({
       >
         {/* Header */}
         <div className="relative flex items-center justify-center">
-          <h3 className="text-[15px] font-bold tracking-[-0.01em] text-gray-700">
+          <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-gray-700">
             Filter Tanggal
           </h3>
 
@@ -127,18 +127,13 @@ export function CalendarFilterSheet({
         </div>
 
         {/* Quick Filter */}
-        <div
-          className="
-            flex items-center gap-2
-            overflow-x-auto mt-5
-            scrollbar-none
-            [-ms-overflow-style:none]
-            [scrollbar-width:none]
-            [&::-webkit-scrollbar]:hidden
-          "
-        >
+        <div className="flex items-center justify-center gap-2 mt-5">
           {(
-            ["1 Minggu", "1 Bulan", "3 Bulan", "6 Bulan"] as QuickFilterKey[]
+            [
+              "1 Minggu Lalu",
+              "1 Bulan Lalu",
+              "3 Bulan Lalu",
+            ] as QuickFilterKey[]
           ).map((item) => {
             const active = selectedQuickFilter === item;
 
@@ -149,22 +144,23 @@ export function CalendarFilterSheet({
                   setSelectedQuickFilter((prev) => (prev === item ? "" : item))
                 }
                 className={`
-                  h-7 px-4 rounded-xl
+                  h-7 px-3.5 rounded-xl
                   flex-shrink-0
-                  text-[11px] font-semibold
+                  text-[11px] font-medium
+                  tracking-[-0.01em]
                   transition-all active:scale-[0.98]
                   ${
                     active
                       ? `
-                        bg-emerald-600
-                        border border-emerald-600
-                        text-white
+                          bg-emerald-600
+                          border border-emerald-600
+                          text-white
                       `
                       : `
-                        bg-white
-                        border border-gray-200
-                        text-gray-600
-                        hover:bg-gray-50
+                          bg-white
+                          border border-gray-200
+                          text-gray-600
+                          hover:bg-gray-50
                       `
                   }
                 `}
@@ -177,7 +173,7 @@ export function CalendarFilterSheet({
 
         {/* Current Month */}
         <div className="mt-5 flex items-center justify-center">
-          <h4 className="text-[16px] font-bold tracking-[-0.01em] text-gray-700">
+          <h4 className="text-[16px] font-semibold tracking-[-0.01em] text-gray-700">
             {calendarMonthLabel}
           </h4>
         </div>

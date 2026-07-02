@@ -72,7 +72,7 @@ export default function OrdersPage() {
           }}
         >
           <div className="min-w-0">
-            <h1 className="text-[15px] font-bold tracking-[-0.01em] text-gray-700">
+            <h1 className="text-[15px] font-semibold tracking-[-0.01em] text-gray-700">
               Riwayat Transaksi
             </h1>
           </div>
@@ -95,7 +95,7 @@ export default function OrdersPage() {
                 }
               `}
             >
-              <CalendarDays size={18} strokeWidth={2.2} />
+              <CalendarDays size={20} strokeWidth={1.8} />
             </button>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function OrdersPage() {
                   key={tab.key}
                   onClick={() => setActiveFilter(tab.key)}
                   className={`
-            h-7 px-3 rounded-xl
+            h-7 px-3 rounded-[11px]
             border
             text-[10.5px] font-semibold tracking-[-0.01em]
             whitespace-nowrap
@@ -130,7 +130,6 @@ export default function OrdersPage() {
                   bg-emerald-600
                   border-emerald-600
                   text-white
-                  shadow-[0_1px_6px_rgba(5,150,105,0.16)]
                 `
                 : `
                   bg-white
@@ -164,7 +163,7 @@ export default function OrdersPage() {
           <div className="space-y-5">
             {groupOrders(orders).map((group) => (
               <div key={group.label} className="mb-4">
-                <p className="px-3 py-1 text-[11px] font-semibold text-gray-400 uppercase tracking-[0.08em]">
+                <p className="px-3 py-0.5 text-[11px] font-semibold text-gray-400 uppercase tracking-[0.08em]">
                   {group.label}
                 </p>
 
