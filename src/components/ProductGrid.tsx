@@ -264,7 +264,7 @@ function HighlightCard({
 
       {/* Konten kanan */}
       <div
-        className={`flex-1 min-w-0 flex flex-col justify-between px-2 py-2 ${isHabis ? "opacity-60" : ""}`}
+        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-2 py-2 ${isHabis ? "opacity-60" : ""}`}
       >
         <div className="min-h-[28px]">
           <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
@@ -277,7 +277,7 @@ function HighlightCard({
               {formatRupiah(product.originalPrice!)}
             </p>
           )}
-          <p className="text-[12px] font-semibold text-gray-700 tracking-tight leading-none">
+          <p className="text-[11.5px] font-semibold text-gray-700 tracking-tight leading-none">
             {formatRupiah(product.price)}
           </p>
         </div>
@@ -549,12 +549,12 @@ export default function ProductGrid() {
         <div>
           {isLoadingAll ? (
             <div className="flex items-start gap-2">
-              <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="flex flex-col gap-5 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`left-${i}`} isTall={i === 1} />
                 ))}
               </div>
-              <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`right-${i}`} isTall={false} />
                 ))}
@@ -565,7 +565,7 @@ export default function ProductGrid() {
           ) : (
             <div className="flex items-start gap-2">
               {/* Kolom Kiri */}
-              <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 {filteredAll
                   .filter((_, i) => i % 2 === 0)
                   .map((product, idx) => {
@@ -583,7 +583,7 @@ export default function ProductGrid() {
               </div>
 
               {/* Kolom Kanan */}
-              <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 {filteredAll
                   .filter((_, i) => i % 2 === 1)
                   .map((product, idx) => {

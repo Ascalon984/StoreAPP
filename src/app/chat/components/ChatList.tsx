@@ -166,7 +166,7 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
                 onClick={() =>
                   onSelectSeller({ id: seller.id, name: seller.name })
                 }
-                className="relative flex items-center gap-2.5 px-4 py-2 cursor-pointer transition-colors active:bg-gray-50"
+                className="relative flex items-center gap-2.5 px-4 py-2.5 cursor-pointer transition-colors active:bg-gray-50"
               >
                 {/* Avatar */}
                 <div className="flex-shrink-0">
@@ -209,7 +209,7 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
                   </p>
                   {seller.unread > 0 && (
                     <div className="absolute right-0 bottom-0.5">
-                      <div className="flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-rose-600 px-1 text-[8.5px] font-semibold text-white">
+                      <div className="flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-rose-600 px-1 text-[8.5px] leading-none font-medium text-white">
                         {seller.unread}
                       </div>
                     </div>
@@ -219,7 +219,7 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
 
               {/* Divider */}
               {index !== displaySellers.length - 1 ? (
-                <div className="ml-[76px] h-px bg-gray-200/80" />
+                <div className="ml-[62px] h-px bg-gray-200/80" />
               ) : (
                 <div className="h-px bg-gray-200/80" />
               )}

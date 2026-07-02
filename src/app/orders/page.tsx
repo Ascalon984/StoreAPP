@@ -68,13 +68,23 @@ export default function OrdersPage() {
           className="px-4 flex items-center justify-between"
           style={{
             paddingTop: "env(safe-area-inset-top)",
-            height: "52px",
+            height: "50px",
           }}
         >
           <div className="min-w-0">
-            <h1 className="text-[15px] font-semibold tracking-[-0.01em] text-gray-700">
-              Riwayat Transaksi
-            </h1>
+            <div className="inline-flex flex-col">
+              <h1 className="text-[15px] font-semibold tracking-[-0.01em] text-gray-700">
+                Riwayat Transaksi
+              </h1>
+
+              <div className="flex items-center gap-1">
+                {/* Primary strip */}
+                <div className="h-[2.5px] w-[60%] rounded-full bg-emerald-500/60" />
+
+                {/* Secondary strip */}
+                <div className="h-[2.5px] w-[25%] rounded-full bg-amber-400/80" />
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-5 flex-shrink-0">
@@ -101,7 +111,7 @@ export default function OrdersPage() {
         </div>
 
         {/* Tabs */}
-        <div className="px-3 pt-1.5 pb-3">
+        <div className="px-3 pt-1 pb-2">
           <div
             className="
                 flex items-center gap-1.5 overflow-x-auto

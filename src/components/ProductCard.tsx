@@ -147,7 +147,7 @@ export default function ProductCard({
         )}
 
         <div
-          className={`relative w-full ${isTall ? "aspect-[5/4]" : "aspect-[4/3]"} bg-white overflow-hidden flex-shrink-0 z-10`}
+          className={`relative w-full ${isTall ? "aspect-[4.4/4]" : "aspect-[5/4]"} bg-white overflow-hidden flex-shrink-0 z-10`}
         >
           <ProductImage
             category={product.category}
@@ -159,7 +159,7 @@ export default function ProductCard({
           />
         </div>
 
-        <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-1 z-10 relative bg-white/50 backdrop-blur-sm">
+        <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-[3px] z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
             className={`text-gray-800 line-clamp-2 font-normal leading-[1.12] min-h-[2.2em] tracking-tight ${titleSize}`}
           >
@@ -197,13 +197,11 @@ export default function ProductCard({
               )}
           </div>
 
-          <div className="flex items-end justify-between mt-auto pt-0.5 relative z-20">
+          <div className="flex items-end justify-between mt-auto pt-[0.5px] relative z-20">
             {/* LEFT: Rating */}
-            <div className="flex items-center gap-0.5 text-[10.5px] font-bold text-gray-600">
-              <Star size={10} strokeWidth={0} fill="#FBBF24" />
-              <span className="text-gray-700 font-semibold">
-                {displayRating}
-              </span>
+            <div className="flex items-center gap-0.5 text-[10px] font-medium text-gray-600">
+              <Star size={12} strokeWidth={0} fill="#EAB308" />
+              <span className="text-gray-600 font-medium">{displayRating}</span>
             </div>
 
             {/* RIGHT: Sold */}

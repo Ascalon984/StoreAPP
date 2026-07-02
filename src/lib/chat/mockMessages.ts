@@ -23,7 +23,7 @@ export function getGreetingMessage(
         id: "greeting-1",
         role: "agent",
         type: "text",
-        text: `${name} Kamu bertanya tentang **${productSnippet.name}**, ya? Silakan lanjutkan 😊`,
+        text: `Halo ${name}, ada yang ingin ditanyakan mengenai ${productSnippet.name}? Kami siap membantu 😊`,
         timestamp: new Date(),
       },
       {
