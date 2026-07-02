@@ -71,7 +71,12 @@ export interface Banner {
   image: string;
 }
 
-export type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
+export type OrderStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "completed"
+  | "cancelled";
 
 export interface OrderItem {
   productId: string;

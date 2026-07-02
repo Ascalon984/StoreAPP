@@ -11,7 +11,7 @@ import {
   XCircle,
   MessageCircle,
   Truck,
-  ArrowRight,
+  MoveRight,
 } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
@@ -71,6 +71,12 @@ export const STATUS_CONFIG: Record<
     label: "Diproses",
     icon: ClockFading,
     iconClass: "text-yellow-500",
+    textClass: "text-gray-500",
+  },
+  shipped: {
+    label: "Dikirim",
+    icon: Truck,
+    iconClass: "text-sky-500",
     textClass: "text-gray-500",
   },
   completed: {
@@ -134,16 +140,15 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
           style={{ transform: `translateX(-${active * 100}%)` }}
         >
           {/* ── Slide 0 — Overview ── */}
-          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-2">
+          <div className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-1.5">
             <div className="flex flex-col items-center flex-shrink-0">
               <div className="flex items-center">
                 {items.slice(0, 3).map((item, i) => (
                   <div
                     key={item.productId}
-                    className="w-15 h-15 rounded-lg border-2 border-white shadow-sm
-          overflow-hidden bg-gray-50 flex-shrink-0"
+                    className="w-16 h-16 rounded-lg border border-white/80 ring-1 ring-black/[0.04] shadow-sm overflow-hidden bg-gray-50 flex-shrink-0"
                     style={{
-                      marginLeft: i === 0 ? 0 : -18,
+                      marginLeft: i === 0 ? 0 : -22,
                       zIndex: 3 - i,
                     }}
                   >
@@ -173,7 +178,7 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
 
             <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
               <div className="min-w-0 flex-1 overflow-hidden">
-                <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
+                <p className="text-[12px] font-semibold text-gray-700 leading-[1.3] line-clamp-2 break-words">
                   {items.length === 1
                     ? items[0].name
                     : `${items[0].name.split(" ").slice(0, 4).join(" ")} & ${items.length - 1} lainnya`}
@@ -184,8 +189,8 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
               </div>
 
               {items.length > 1 && (
-                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                  <ArrowRight
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
+                  <MoveRight
                     size={13}
                     strokeWidth={2.2}
                     className="text-gray-400"
@@ -199,10 +204,10 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
           {items.map((item, idx) => (
             <div
               key={item.productId}
-              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-3"
+              className="w-full flex-shrink-0 flex items-center gap-3 px-4 py-2"
             >
               <div className="flex flex-col items-center flex-shrink-0">
-                <div className="w-15 h-15 rounded-lg border border-gray-100 overflow-hidden bg-gray-50">
+                <div className="w-16 h-16 rounded-lg border border-gray-100 overflow-hidden bg-gray-50">
                   <ProductImage
                     category={item.category}
                     name={item.name}
@@ -213,7 +218,7 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-gray-800 leading-[1.3] line-clamp-2 break-words">
+                <p className="text-[12px] font-medium text-gray-600 leading-[1.3] line-clamp-2 break-words">
                   {item.name}
                 </p>
 
@@ -253,15 +258,18 @@ export function OrderCard({
   return (
     <div className="bg-white overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-2.5 flex items-center justify-between">
+      <div className="px-4 py-2 flex items-center justify-between">
         <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
           #{order.orderId}
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
           {activeFilter === "all" && (
-            <div className="flex items-center gap-1">
-              <StatusIcon size={13} strokeWidth={2.4} className={iconClass} />
-              <span className={`text-[10px] font-semibold ${textClass}`}>
+            <div className="flex items-center gap-1.5">
+              <StatusIcon size={12.5} strokeWidth={2.3} className={iconClass} />
+
+              <span
+                className={`text-[10px] font-semibold tracking-[-0.01em] ${textClass}`}
+              >
                 {label}
               </span>
             </div>
@@ -280,7 +288,7 @@ export function OrderCard({
       {/* Footer */}
       <div className="px-4 py-2 flex items-center justify-between gap-2.5">
         <div>
-          <p className="text-[13px] font-bold text-gray-800 tracking-[-0.01em] leading-none">
+          <p className="text-[13px] font-semibold text-gray-700 tracking-[-0.01em] leading-none">
             {formatRupiah(order.total)}
           </p>
         </div>
@@ -314,44 +322,49 @@ export function OrderCard({
           )}
 
           {order.status === "processing" && (
-            <>
-              <button
-                onClick={() => {
-                  const imgs = order.items
-                    .map((it, i) => {
-                      const p = products.find((pp) => pp.id === it.productId);
-                      return p
-                        ? `/products/${p.id}.jpg`
-                        : `/products/${products[i % products.length].id}.jpg`;
-                    })
-                    .slice(0, 3)
-                    .join(",");
+            <button
+              onClick={() => {
+                const imgs = order.items
+                  .map((it, i) => {
+                    const p = products.find((pp) => pp.id === it.productId);
+                    return p
+                      ? `/products/${p.id}.jpg`
+                      : `/products/${products[i % products.length].id}.jpg`;
+                  })
+                  .slice(0, 3)
+                  .join(",");
 
-                  router.push(
-                    `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
-                  );
-                }}
-                className="p-1.5 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 active:scale-95 transition-all"
-                title="Hubungi Penjual"
-              >
-                <MessageCircle size={16} />
-              </button>
-              <button
-                className="
-px-3 py-1.5 rounded-lg
-border border-gray-200
-bg-white
-text-[11px] font-semibold text-gray-700
-hover:bg-gray-50
-active:scale-95
-transition-all
-flex items-center gap-1.5
+                router.push(
+                  `/chat?source=order&orderId=${encodeURIComponent(order.orderId)}&orderStatus=${encodeURIComponent(order.status)}&total=${order.total}&images=${encodeURIComponent(imgs)}`,
+                );
+              }}
+              className="
+  px-3 py-1.5 rounded-lg
+  bg-emerald-600
+  text-white
+  text-[11px] font-medium
+  hover:bg-emerald-700
+  active:scale-95
+  transition-all
 "
-              >
-                <Truck size={14} />
-                <span>Lacak</span>
-              </button>
-            </>
+            >
+              Hubungi Penjual
+            </button>
+          )}
+
+          {order.status === "shipped" && (
+            <button
+              className="
+        px-3 py-1.5 rounded-lg
+        bg-emerald-600
+        text-white text-[11px] font-semibold
+        hover:bg-emerald-700
+        active:scale-95
+        transition-all
+      "
+            >
+              Lacak
+            </button>
           )}
 
           {order.status === "pending" && (

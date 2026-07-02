@@ -104,7 +104,7 @@ export default function OrdersPage() {
         <div className="px-3 pt-1.5 pb-3">
           <div
             className="
-                flex items-center gap-1 overflow-x-auto
+                flex items-center gap-1.5 overflow-x-auto
                 scrollbar-none [-ms-overflow-style:none]
                 [scrollbar-width:none]
                 [&::-webkit-scrollbar]:hidden
@@ -118,9 +118,9 @@ export default function OrdersPage() {
                   key={tab.key}
                   onClick={() => setActiveFilter(tab.key)}
                   className={`
-            h-7 px-2.5 rounded-lg
+            h-7 px-3 rounded-xl
             border
-            text-[10px] font-semibold tracking-[-0.01em]
+            text-[10.5px] font-semibold tracking-[-0.01em]
             whitespace-nowrap
             transition-all duration-200
             active:scale-[0.97]
@@ -151,7 +151,7 @@ export default function OrdersPage() {
       </div>
 
       {/* List */}
-      <div className="pt-[22px]">
+      <div className="pt-[16px]">
         {isLoading ? (
           <div className="px-2 space-y-2">
             <SkeletonCard />
@@ -162,24 +162,19 @@ export default function OrdersPage() {
           <EmptyState filter={activeFilter} />
         ) : (
           <div className="space-y-5">
-            {groups.map((group) => (
-              <div key={group.label}>
-                {/* Group Label */}
-                <div className="px-3 pb-1.5">
-                  <h2 className="text-[11px] font-semibold text-gray-400 tracking-wide uppercase">
-                    {group.label}
-                  </h2>
-                </div>
+            {groupOrders(orders).map((group) => (
+              <div key={group.label} className="mb-4">
+                <p className="px-3 py-1 text-[11px] font-semibold text-gray-400 uppercase tracking-[0.08em]">
+                  {group.label}
+                </p>
 
-                {/* Cards */}
-                <div className="mx-2 bg-white rounded-xl overflow-hidden shadow-sm">
-                  {group.orders.map((order, idx) => (
-                    <div key={order.id}>
+                <div className="space-y-2 px-2">
+                  {group.orders.map((order) => (
+                    <div
+                      key={order.orderId}
+                      className="rounded-2xl border border-gray-100 bg-white shadow-sm"
+                    >
                       <OrderCard order={order} activeFilter={activeFilter} />
-
-                      {idx < group.orders.length - 1 && (
-                        <div className="border-t border-gray-200/90 mx-4" />
-                      )}
                     </div>
                   ))}
                 </div>
