@@ -136,7 +136,7 @@ export default function ProductCard({
             className="
             absolute top-0 right-0 z-30
             px-2.5 py-1
-            bg-gradient-to-l from-rose-600 to-rose-500
+            bg-gradient-to-l from-rose-500 to-rose-400
             text-white text-[10px] font-semibold
             rounded-tr-[11px] rounded-bl-xl
             shadow-layer-sm tracking-tight
@@ -157,6 +157,22 @@ export default function ProductCard({
             className="absolute inset-0 w-full h-full object-contain"
             style={{} as React.CSSProperties}
           />
+          {(product.sold || 0) === 0 && (
+            <div
+              className="
+  absolute left-0 bottom-0 z-30
+  px-2 py-0.5
+  rounded-tr-[10px]
+  bg-gradient-to-r from-emerald-500 to-emerald-400
+  text-white/95
+  text-[9.5px]
+  font-medium
+  tracking-tight
+"
+            >
+              Baru
+            </div>
+          )}
         </div>
 
         <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-[3px] z-10 relative bg-white/50 backdrop-blur-sm">
@@ -200,13 +216,15 @@ export default function ProductCard({
           <div className="flex items-end justify-between mt-auto pt-[0.5px] relative z-20">
             {/* LEFT: Rating */}
             <div className="flex items-center gap-0.5 text-[10px] font-medium text-gray-600">
-              <Star size={12} strokeWidth={0} fill="#EAB308" />
+              <Star size={11} strokeWidth={0} fill="#f3bc18ff" />
               <span className="text-gray-600 font-medium">{displayRating}</span>
             </div>
 
             {/* RIGHT: Sold */}
             <div className="text-[10px] text-gray-400 font-normal">
-              {formatSold(product.sold)} terjual
+              {(product.sold || 0) > 0
+                ? `${formatSold(product.sold)} terjual`
+                : "Belum terjual"}
             </div>
 
             {/* Quick cart button dihapus - user membuka product detail untuk lihat variasi */}

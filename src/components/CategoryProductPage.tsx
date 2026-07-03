@@ -262,7 +262,7 @@ export default function CategoryProductPage({
                       className={`
                         flex-shrink-0
                         h-7 px-3
-                        rounded-full
+                        rounded-[11px]
                         text-[10px]
                         font-semibold
                         tracking-tight
@@ -360,12 +360,12 @@ export default function CategoryProductPage({
       <div className="px-2 pt-3 pb-28">
         {isLoading ? (
           <div className="flex items-start gap-2">
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
               {Array.from({ length: 4 }).map((_, i) => (
                 <CardSkeleton key={`left-${i}`} isTall={i === 1} />
               ))}
             </div>
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
               {Array.from({ length: 4 }).map((_, i) => (
                 <CardSkeleton key={`right-${i}`} />
               ))}
@@ -378,7 +378,7 @@ export default function CategoryProductPage({
         ) : (
           <div className="flex items-start gap-2">
             {/* Kolom Kiri */}
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
               {sorted
                 .filter((_, i) => i % 2 === 0)
                 .map((product, idx) => {
@@ -396,7 +396,7 @@ export default function CategoryProductPage({
             </div>
 
             {/* Kolom Kanan */}
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
               {sorted
                 .filter((_, i) => i % 2 === 1)
                 .map((product, idx) => {

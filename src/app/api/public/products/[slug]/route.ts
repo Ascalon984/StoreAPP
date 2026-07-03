@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/lib/data';
+import { products, mockHighlightProducts } from '@/lib/data';
 
 // [DISABLED] Admin API Connection - Using mock data for local development
 // export const dynamic = 'force-dynamic';
@@ -31,7 +31,8 @@ export async function GET(
   // }
   
   // [LOCAL DEVELOPMENT] Returning mock data from data.ts
-  const product = products.find(p => p.slug === params.slug);
+  const allProducts = [...products, ...mockHighlightProducts];
+  const product = allProducts.find(p => p.slug === params.slug);
   
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 });

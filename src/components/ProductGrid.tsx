@@ -8,6 +8,7 @@ import { Product } from "@/lib/types";
 import ProductCard from "./ProductCard";
 import ProductImage from "./ProductImage";
 import { formatRupiah } from "@/lib/utils";
+import { mockHighlightProducts } from "@/lib/data";
 import {
   SlidersHorizontal,
   TrendingDown,
@@ -39,130 +40,6 @@ function applySort(products: Product[], sort: string): Product[] {
       return arr.sort((a, b) => (b.sold || 0) - (a.sold || 0));
   }
 }
-
-/* ── Mock Highlight Data ──────────────────────────── */
-// TODO: Ganti dengan fetch API saat endpoint sudah siap
-const MOCK_HIGHLIGHT_PRODUCTS: Product[] = [
-  {
-    id: "hl-1",
-    name: "Samsung Galaxy Buds FE",
-    slug: "samsung-galaxy-buds-fe",
-    price: 799000,
-    originalPrice: 899000,
-    category: "elektronik",
-    images: [],
-    rating: 4.8,
-    reviewCount: 1240,
-    sold: 5200,
-    description: "Wireless earbuds dengan ANC dan suara jernih",
-    stock: 120,
-  } as Product,
-
-  {
-    id: "hl-2",
-    name: "Sneakers Casual Pria Urban Flex",
-    slug: "sneakers-casual-pria-urban-flex",
-    price: 249000,
-    originalPrice: 329000,
-    category: "fashion",
-    images: [],
-    rating: 4.7,
-    reviewCount: 860,
-    sold: 4100,
-    description: "Sneakers casual nyaman untuk aktivitas harian",
-    stock: 50,
-  } as Product,
-
-  {
-    id: "hl-3",
-    name: "Set Peralatan Masak Anti Lengket",
-    slug: "set-peralatan-masak-anti-lengket",
-    price: 389000,
-    originalPrice: 459000,
-    category: "perabotan",
-    images: [],
-    rating: 4.9,
-    reviewCount: 540,
-    sold: 2300,
-    description: "Cookware set lengkap untuk kebutuhan dapur modern",
-    stock: 0,
-  } as Product,
-
-  {
-    id: "hl-4",
-    name: "Skincare Brightening Serum 30ml",
-    slug: "skincare-brightening-serum-30ml",
-    price: 129000,
-    originalPrice: 159000,
-    category: "kesehatan",
-    images: [],
-    rating: 4.8,
-    reviewCount: 2100,
-    sold: 9200,
-    description: "Serum wajah untuk mencerahkan dan melembapkan kulit",
-    stock: 150,
-  } as Product,
-
-  {
-    id: "hl-5",
-    name: "Netflix Premium 1 Bulan",
-    slug: "netflix-premium-1-bulan",
-    price: 65000,
-    originalPrice: 79000,
-    category: "hiburan",
-    images: [],
-    rating: 4.7,
-    reviewCount: 980,
-    sold: 6200,
-    description: "Langganan Netflix Premium resmi 1 bulan",
-    stock: 9999,
-  } as Product,
-
-  {
-    id: "hl-6",
-    name: "Mobile Legends 86 Diamonds",
-    slug: "mobile-legends-86-diamonds",
-    price: 21000,
-    originalPrice: 25000,
-    category: "game",
-    images: [],
-    rating: 4.9,
-    reviewCount: 3200,
-    sold: 18400,
-    description: "Top up diamond Mobile Legends instan dan resmi",
-    stock: 9999,
-  } as Product,
-
-  {
-    id: "hl-7",
-    name: "Microsoft 365 Personal",
-    slug: "microsoft-365-personal",
-    price: 149000,
-    originalPrice: 179000,
-    category: "produktivitas",
-    images: [],
-    rating: 4.8,
-    reviewCount: 1420,
-    sold: 7600,
-    description: "Lisensi Microsoft 365 Personal original",
-    stock: 9999,
-  } as Product,
-
-  {
-    id: "hl-8",
-    name: "Helm Full Face Touring Pro",
-    slug: "helm-full-face-touring-pro",
-    price: 599000,
-    originalPrice: 699000,
-    category: "otomotif",
-    images: [],
-    rating: 4.7,
-    reviewCount: 670,
-    sold: 1900,
-    description: "Helm full face nyaman untuk touring dan harian",
-    stock: 35,
-  } as Product,
-];
 
 /* ── Skeletons ────────────────────────────────────── */
 function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
@@ -264,7 +141,7 @@ function HighlightCard({
 
       {/* Konten kanan */}
       <div
-        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-2 py-2 ${isHabis ? "opacity-60" : ""}`}
+        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-1.5 py-2 ${isHabis ? "opacity-60" : ""}`}
       >
         <div className="min-h-[28px]">
           <p className="text-[10px] font-normal text-gray-800 line-clamp-2 leading-[1.15] tracking-tight">
@@ -442,7 +319,7 @@ export default function ProductGrid() {
     // Simulate network delay; replace with real API call later
     const timer = setTimeout(() => {
       // Filter hanya produk yang punya diskon
-      const discounted = MOCK_HIGHLIGHT_PRODUCTS.filter(
+      const discounted = mockHighlightProducts.filter(
         (p) => p.originalPrice && p.originalPrice > p.price,
       );
       setHighlightProducts(discounted);
@@ -549,7 +426,7 @@ export default function ProductGrid() {
         <div>
           {isLoadingAll ? (
             <div className="flex items-start gap-2">
-              <div className="flex flex-col gap-5 flex-1 min-w-0">
+              <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={`left-${i}`} isTall={i === 1} />
                 ))}

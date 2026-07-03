@@ -6,7 +6,7 @@ import { Message } from "@/lib/chat/types";
 import { getQuickReplies } from "@/lib/chat/quickReplies";
 import { getGreetingMessage } from "@/lib/chat/mockMessages";
 import { generateAgentReply } from "@/lib/chat/generateAgentReply";
-import { products } from "@/lib/data";
+import { products, mockHighlightProducts } from "@/lib/data";
 
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatEmptyState from "@/components/chat/ChatEmptyState";
@@ -93,7 +93,8 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
     const displayName = mockUser.displayName?.trim() || `@${mockUser.username}`;
 
     if (source === "product" && productSlug) {
-      const product = products.find((p) => p.slug === productSlug);
+      const allProducts = [...products, ...mockHighlightProducts];
+      const product = allProducts.find((p) => p.slug === productSlug);
       if (product) {
         const snippet: Message["productSnippet"] = {
           slug: product.slug,

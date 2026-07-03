@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
-import { products } from "@/lib/data";
+import { products, mockHighlightProducts } from "@/lib/data";
 import { Order, OrderItem, OrderStatus } from "@/lib/types";
 
 export type FilterTab =
@@ -182,7 +182,7 @@ export function ProductCarousel({ items }: { items: OrderItem[] }) {
 
             <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
               <div className="min-w-0 flex-1 overflow-hidden">
-                <p className="text-[12px] font-semibold text-gray-700 leading-[1.3] line-clamp-2 break-words">
+                <p className="text-[12px] font-medium text-gray-600 leading-[1.3] line-clamp-2 break-words">
                   {items.length === 1
                     ? items[0].name
                     : `${items[0].name.split(" ").slice(0, 4).join(" ")} & ${items.length - 1} lainnya`}
@@ -303,22 +303,22 @@ export function OrderCard({
           {order.status === "completed" && (
             <>
               <button
-                className="px-3 py-1.5 rounded-lg
+                className="px-3 py-[5.45px] rounded-[6px]
                 border border-gray-200
                 bg-white
-                text-[11px] font-semibold text-gray-600
+                text-[11px] font-medium text-gray-600
                 hover:border-gray-300 hover:bg-gray-50
                 active:scale-95
                 transition-all"
               >
-                Ulasan
+                Beri Ulasan
               </button>
               <button
                 onClick={() => router.push("/")}
-                className="px-3 py-1.5 rounded-lg
+                className="px-3 py-1.5 rounded-[6px]
                 bg-emerald-600
-                text-white text-[11px] font-semibold
-                hover:bg-emerald-600
+                text-white text-[11px] font-medium
+                hover:bg-emerald-700
                 active:scale-95
                 transition-all"
               >
@@ -332,7 +332,8 @@ export function OrderCard({
               onClick={() => {
                 const imgs = order.items
                   .map((it, i) => {
-                    const p = products.find((pp) => pp.id === it.productId);
+                    const allProducts = [...products, ...mockHighlightProducts];
+                    const p = allProducts.find((pp) => pp.id === it.productId);
                     return p
                       ? `/products/${p.id}.jpg`
                       : `/products/${products[i % products.length].id}.jpg`;
@@ -345,14 +346,14 @@ export function OrderCard({
                 );
               }}
               className="
-  px-3 py-1.5 rounded-[6px]
-  bg-emerald-600
-  text-white
-  text-[11px] font-medium
-  hover:bg-emerald-700
-  active:scale-95
-  transition-all
-"
+                px-3 py-1.5 rounded-[6px]
+                bg-emerald-600
+                text-white
+                text-[11px] font-medium
+                hover:bg-emerald-700
+                active:scale-95
+                transition-all
+              "
             >
               Hubungi Penjual
             </button>
@@ -361,22 +362,22 @@ export function OrderCard({
           {order.status === "shipped" && (
             <button
               className="
-        px-3 py-1.5 rounded-[6px]
-        bg-emerald-600
-        text-white text-[11px] font-medium
-        hover:bg-emerald-700
-        active:scale-95
-        transition-all
-      "
+                px-3 py-1.5 rounded-[6px]
+                bg-emerald-600
+                text-white text-[11px] font-medium
+                hover:bg-emerald-700
+                active:scale-95
+                transition-all
+              "
             >
-              Lacak
+              Lacak Paket
             </button>
           )}
 
           {order.status === "pending" && (
             <>
               <button
-                className="px-3 py-1.5 rounded-[6px]
+                className="px-3 py-[5.45px] rounded-[6px]
                 border border-gray-200
                 bg-white
                 text-[11px] font-medium text-gray-700

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/lib/data';
+import { products, mockHighlightProducts } from '@/lib/data';
 
 // [DISABLED] Admin API Connection - Using mock data for local development
 // export const revalidate = 0;
@@ -29,9 +29,11 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const category = url.searchParams.get('category') || 'all';
   
+  const allProducts = [...products, ...mockHighlightProducts];
+  
   const filtered = category === 'all' 
-    ? products 
-    : products.filter(p => p.category === category);
+    ? allProducts 
+    : allProducts.filter(p => p.category === category);
   
   return NextResponse.json(filtered, {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
