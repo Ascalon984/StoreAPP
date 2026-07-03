@@ -144,17 +144,18 @@ function HighlightCard({
         className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-1.5 py-2 ${isHabis ? "opacity-60" : ""}`}
       >
         <div className="min-h-[28px]">
-          <p className="text-[10px] font-normal text-gray-700 line-clamp-2 leading-[1.10] tracking-[0.010em]">
+          <p className="text-[10px] font-normal text-gray-700 line-clamp-2 leading-[1.10] tracking-[0.008em]">
             {product.name}
           </p>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           {hasDiscount && (
             <p className="text-[9px] text-gray-400 line-through leading-none tracking-[0.010em]">
               {formatRupiah(product.originalPrice!)}
             </p>
           )}
-          <p className="text-[11.5px] font-medium text-gray-700 tracking-[0.015em] leading-none">
+
+          <p className="mt-[1px] text-[11.5px] font-semibold text-gray-700 tracking-[0.015em] leading-none">
             {formatRupiah(product.price)}
           </p>
         </div>
@@ -177,7 +178,7 @@ function HighlightCard({
     >
       {/* Badge timer */}
       <div className="absolute top-1 right-2 z-10">
-        <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[4px] text-[10px] font-medium tracking-[0.010em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
+        <span className="block rounded-bl-xl rounded-tr-lg px-2 py-[4px] text-[10px] font-medium tracking-[0.010em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
           3 Hari Lagi
         </span>
       </div>

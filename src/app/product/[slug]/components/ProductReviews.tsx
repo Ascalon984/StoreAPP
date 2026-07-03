@@ -165,7 +165,7 @@ export default function ProductReviews({
   return (
     <div className="bg-white px-4 py-2.5 mt-1">
       <div className="flex items-center gap-2">
-        <h2 className="text-sm font-semibold text-gray-500 tracking-tight">
+        <h2 className="text-sm font-medium text-gray-600 tracking-[0.010em]">
           Ulasan Pembeli
         </h2>
 
@@ -175,18 +175,18 @@ export default function ProductReviews({
       </div>
 
       {/* Gauge + Bar Distribution */}
-      <div className="relative rounded-xl p-2 mb-3 mt-0.5 bg-white shadow-layer-xs overflow-hidden">
+      <div className="relative rounded-xl px-2 py-1.5 mb-2.5 mt-0.5 bg-white shadow-layer-xs overflow-hidden">
         <div className="absolute inset-x-4 top-0 h-px bg-white/60" />
         <div className="flex items-center gap-0">
           {/* Gauge — 40% */}
           <div
-            className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-3"
+            className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-3 pb-0.5"
             style={{ width: "40%" }}
           >
             <svg
               width="100"
-              height="54"
-              viewBox="0 0 110 62"
+              height="50"
+              viewBox="0 0 110 60"
               role="img"
               aria-label={`Rating ${liveRating} dari 5`}
             >
@@ -260,7 +260,7 @@ export default function ProductReviews({
       Z
     "
                   fill="#374151"
-                  opacity="0.95"
+                  opacity="0.90"
                 />
               </g>
 
@@ -276,10 +276,10 @@ export default function ProductReviews({
             </svg>
 
             <span
-              className={`text-[17px] leading-none -mt-0.7${
+              className={`text-[16.5px] leading-none -mt-0.7 ${
                 safeRating === 0
-                  ? "font-medium text-gray-400"
-                  : "font-semibold text-gray-500"
+                  ? "font-semibold text-gray-500"
+                  : "font-semibold text-gray-600"
               }`}
             >
               {safeRating === 0
@@ -288,22 +288,19 @@ export default function ProductReviews({
                   ? safeRating
                   : safeRating.toFixed(1)}
             </span>
-            <div className="flex gap-0.5 my-0.5">
+            <div className="flex gap-0.5 mt-[1px] mb-[1px]">
               {hasReview &&
                 [1, 2, 3, 4, 5].map((i) => renderStar(i, safeRating))}
             </div>
             <span
-              className={`text-[10px] font-bold ${getRatingColor(safeRating)}`}
+              className={`text-[10px] font-medium tracking-[0.010em] ${getRatingColor(safeRating)}`}
             >
               {hasReview ? getRatingLabel(safeRating) : "Belum ada ulasan"}
             </span>
           </div>
 
           {/* Bar Distribution — 60% */}
-          <div
-            className="flex flex-col gap-[5px] pl-3"
-            style={{ width: "60%" }}
-          >
+          <div className="flex flex-col gap-1 pl-3" style={{ width: "60%" }}>
             {[5, 4, 3, 2, 1].map((star) => {
               const pct =
                 distribution.percent[star as keyof typeof distribution.percent];

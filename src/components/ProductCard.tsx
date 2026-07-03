@@ -137,9 +137,9 @@ export default function ProductCard({
             absolute top-0 right-0 z-30
             px-2.5 py-1
             bg-gradient-to-l from-rose-500 to-rose-400
-            text-white text-[10px] font-semibold
+            text-white text-[10px] font-medium
             rounded-tr-[11px] rounded-bl-xl
-            shadow-layer-sm tracking-tight
+            shadow-layer-sm tracking-[0.015em]
           "
           >
             -{discount}%
@@ -167,7 +167,7 @@ export default function ProductCard({
   text-white/95
   text-[9.5px]
   font-medium
-  tracking-tight
+  tracking-[0.008em]
 "
             >
               Baru
@@ -186,7 +186,7 @@ export default function ProductCard({
             <span
               className={`
                 ${priceSize}
-                font-medium
+                font-semibold
                 tracking-[0.02em]
                 text-gray-700
                 truncate

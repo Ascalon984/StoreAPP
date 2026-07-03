@@ -581,7 +581,7 @@ export const products: Product[] = [
     name: "Biskuit Roma Kelapa",
     sellerId: "s2",
     price: 12000,
-    originalPrice: 12000,
+    originalPrice: 15000,
     category: "makanan",
     subCategory: "Biskuit",
     rating: 4.6,

@@ -298,16 +298,16 @@ export default function ProductDetailContent({
             </div>
           </div>
 
-          <div className="flex items-end justify-between mb-1.5">
+          <div className="flex items-end justify-between mb-1">
             <div>
               {displayOriginalPrice && (
-                <p className="text-[12px] text-gray-400 line-through mb-0.5">
+                <p className="text-[12px] text-gray-400 line-through mb-[1px] leading-none">
                   {displayOriginalPrice}
                 </p>
               )}
 
               <p
-                className={`font-medium text-gray-700 tracking-tight ${
+                className={`font-semibold leading-none text-gray-700 tracking-[0.010em] ${
                   isPriceRange ? "text-[16px]" : "text-[20px]"
                 }`}
               >
@@ -405,8 +405,8 @@ export default function ProductDetailContent({
       )}
 
       {/* Deskripsi */}
-      <div className="bg-white px-4 py-3 mt-1">
-        <h2 className="text-sm font-semibold text-gray-600 tracking-tight mb-2">
+      <div className="bg-white px-4 pt-2.5 pb-3 mt-1">
+        <h2 className="text-sm font-medium leading-none text-gray-700 tracking-[0.010em] mb-2.5">
           Deskripsi
         </h2>
         <div className="relative overflow-hidden">
@@ -417,7 +417,7 @@ export default function ProductDetailContent({
           >
             <p
               ref={descriptionRef}
-              className="text-[12px] text-gray-600 leading-relaxed whitespace-pre-wrap relative"
+              className="text-[12px] text-gray-600 tracking-[0.010em] leading-[1.55] whitespace-pre-wrap relative"
             >
               {product.description}
             </p>
@@ -493,7 +493,9 @@ export default function ProductDetailContent({
           {/* Chat Button */}
           <button
             onClick={() =>
-              router.push(`/chat?source=product&productSlug=${product.slug}&sellerId=${seller.id}`)
+              router.push(
+                `/chat?source=product&productSlug=${product.slug}&sellerId=${seller.id}`,
+              )
             }
             className="h-7 flex items-center gap-1 px-2 rounded-lg border border-gray-200 bg-gray-50 text-emerald-700 text-[11px] font-semibold hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0 self-center"
           >
@@ -508,19 +510,19 @@ export default function ProductDetailContent({
 
       {/* Sticky Bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-gray-100 px-4 pt-1.5 pb-4 shadow-[0_-4px_16px_rgba(0,0,0,0.035)]">
-        <div className="max-w-[500px] mx-auto flex gap-2.5">
+        <div className="max-w-[500px] mx-auto flex gap-2">
           <button
             onClick={handleAddToCart}
-            className="flex-1 py-3 px-4 rounded-xl border border-emerald-600/40 text-emerald-700 font-semibold hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
+            className="flex-1 py-3 px-4 rounded-[11px] border border-emerald-600/40 text-emerald-700 font-semibold tracking-[0.020em] hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
           >
             + Keranjang
           </button>
 
           <button
             onClick={handleBuyNow}
-            className="flex-[2] py-3 px-4 rounded-xl bg-[#048750] text-white font-semibold hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
+            className="flex-[2] py-3 px-4 rounded-[11px] bg-[#048750] text-white font-semibold tracking-[0.020em] hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
           >
-            <Send size={16} strokeWidth={2.5} className="rotate-[-10deg]" />
+            <Send size={16} strokeWidth={2.5} className="rotate-[-5deg]" />
             Pesan Sekarang
           </button>
         </div>
@@ -530,7 +532,7 @@ export default function ProductDetailContent({
       <button
         onClick={scrollToTop}
         aria-label="Kembali ke atas"
-        className={`fixed bottom-20 right-5 z-50 w-9 h-9 rounded-full bg-emerald-500 text-white shadow-[0_6px_18px_rgba(16,185,129,0.24)] flex items-center justify-center transition-all duration-500 hover:bg-emerald-600 hover:scale-110 active:scale-90 ${
+        className={`fixed bottom-20 right-5 z-50 w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center transition-all duration-500 hover:bg-emerald-600 hover:scale-110 active:scale-90 ${
           showBackToTop
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-10 scale-75 pointer-events-none"

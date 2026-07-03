@@ -43,7 +43,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
         <div className="pt-0 pb-0">
           <button
             onClick={handleBack}
-            className="absolute top-4 left-4 z-20 flex items-center justify-center w-[34px] h-[34px] rounded-full bg-white/65 backdrop-blur-md border border-gray-200/40 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:bg-white/80 transition-all duration-300 active:scale-90"
+            className="absolute top-3 left-3 z-20 flex items-center justify-center w-[34px] h-[34px] rounded-full bg-white/65 backdrop-blur-md border border-gray-200/40 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:bg-white/80 transition-all duration-300 active:scale-90"
             aria-label="Kembali"
           >
             <ChevronLeft
@@ -52,7 +52,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
               className="text-gray-900"
             />
           </button>
-          <div className="absolute top-4 right-4 z-20 flex items-center bg-white/50 backdrop-blur-md border border-gray-200/40 rounded-full px-1 h-[34px]">
+          <div className="absolute top-3 right-3 z-20 flex items-center bg-white/40 backdrop-blur-lg border border-white/40 rounded-full px-1 h-[32px]">
             <button
               onClick={handleShare}
               className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
@@ -63,7 +63,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
             <div className="w-px h-3.5 bg-black/30 mx-1" />
             <button
               onClick={() => toggleFavorite(product.id)}
-              className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+              className="p-1.5 rounded-full hover:bg-white-20 transition-all active:scale-90"
               aria-label="Favorit"
             >
               <Heart
@@ -95,7 +95,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
                       name={product.name}
                       variant={i}
                       src={src}
-                      className="w-full aspect-[11/7] sm:aspect-video"
+                      className="w-full aspect-[10/7] sm:aspect-video"
                     />
                   </div>
                 ))
@@ -105,7 +105,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
                     category={product.category}
                     name={product.name}
                     variant={0}
-                    className="w-full aspect-[11/7] sm:aspect-video"
+                    className="w-full aspect-[10/7] sm:aspect-video"
                   />
                 </div>
               )}
