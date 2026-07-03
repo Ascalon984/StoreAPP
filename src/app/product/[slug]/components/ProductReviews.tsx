@@ -364,12 +364,12 @@ export default function ProductReviews({
               </div>
             </div>
 
-            <div className="pl-[48px] flex items-end justify-between gap-3">
-              <p className="text-[11.5px] text-gray-600 leading-[1.45] flex-1 break-words min-w-0">
+            <div className="pl-[48px] flex items-end gap-1">
+              <p className="text-[11.5px] text-gray-600 leading-[1.6] break-words flex-1 min-w-0">
                 {review.comment}
               </p>
 
-              <div className="flex-shrink-0 mb-0.5 w-[76px] flex items-center justify-end">
+              <div className="flex items-center justify-end flex-shrink-0 mb-0.5">
                 {thankYouIds.includes(review.id) ? (
                   <span className="text-[10px] font-bold text-emerald-600 animate-pulse whitespace-nowrap">
                     Terima kasih!

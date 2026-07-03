@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const category = url.searchParams.get('category') || 'all';
   
-  const allProducts = [...products, ...mockHighlightProducts];
+  const allProducts = [...products];
   
   const filtered = category === 'all' 
     ? allProducts 

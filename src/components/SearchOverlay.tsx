@@ -338,15 +338,15 @@ export default function SearchOverlay() {
                 />
 
                 <div className="-mt-2">
-                  <h3 className="text-[16px] font-extrabold text-gray-800 leading-tight">
+                  <h3 className="text-[16px] font-semibold text-gray-700 leading-tight">
                     Produk tidak ditemukan
                   </h3>
 
                   <p className="mt-2 text-[13px] leading-snug text-gray-400 font-normal max-w-[250px]">
                     Kami belum menemukan hasil untuk
-                    <span className="font-semibold text-gray-600">
+                    <span className="font-medium text-gray-600">
                       {" "}
-                      "{debouncedQuery}"
+                      {debouncedQuery}
                     </span>
                   </p>
                 </div>

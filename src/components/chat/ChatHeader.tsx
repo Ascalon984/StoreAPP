@@ -43,14 +43,14 @@ export default function ChatHeader({
           }
         `}
       >
-        <ArrowLeft size={24} strokeWidth={2} />
+        <ArrowLeft size={24} strokeWidth={1.5} />
       </button>
 
       {/* Avatar */}
       <div className="relative flex-shrink-0">
         <div
           className={`
-            w-8 h-8 rounded-full flex items-center justify-center border
+            w-9 h-9 rounded-full flex items-center justify-center border
             ${
               isOfficial
                 ? "bg-emerald-100 border-white/20"
@@ -64,16 +64,16 @@ export default function ChatHeader({
         </div>
 
         {isOnline && (
-          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-white" />
+          <div className="absolute bottom-0 right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-white" />
         )}
       </div>
 
       {/* Name & Status */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pl-1">
         <p
           className={`
-            text-[12px] font-bold leading-none
-            ${isOfficial ? "text-white" : "text-gray-800"}
+            text-[12px] font-semibold tracking-[0.02em] leading-none
+            ${isOfficial ? "text-white" : "text-gray-700"}
           `}
         >
           {name}

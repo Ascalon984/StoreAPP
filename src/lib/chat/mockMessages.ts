@@ -21,16 +21,16 @@ export function getGreetingMessage(
     return [
       {
         id: "greeting-1",
-        role: "agent",
-        type: "text",
-        text: `Halo ${name}, ada yang ingin ditanyakan mengenai ${productSnippet.name}? Kami siap membantu 😊`,
+        role: "user",
+        type: "product",
+        productSnippet,
         timestamp: new Date(),
       },
       {
         id: "greeting-2",
-        role: "user",
-        type: "product",
-        productSnippet,
+        role: "agent",
+        type: "text",
+        text: `Halo ${name}, ada yang ingin ditanyakan mengenai ${productSnippet.name}? 😊`,
         timestamp: new Date(),
       },
     ];
@@ -40,16 +40,16 @@ export function getGreetingMessage(
     return [
       {
         id: "greeting-1",
-        role: "agent",
-        type: "text",
-        text: `Halo! Kami siap membantu terkait pesananmu 😊`,
+        role: "user",
+        type: "order",
+        orderSnippet,
         timestamp: new Date(),
       },
       {
         id: "greeting-2",
-        role: "user",
-        type: "order",
-        orderSnippet,
+        role: "agent",
+        type: "text",
+        text: `Halo ${name}, ada yang bisa kami bantu terkait pesanan ini? 😊`,
         timestamp: new Date(),
       },
     ];
@@ -60,7 +60,7 @@ export function getGreetingMessage(
       id: "greeting-1",
       role: "agent",
       type: "text",
-      text: `Halo, ${userName || "Kak"}! 👋\nAda yang bisa kami bantu hari ini?`,
+      text: `Halo ${name}, ada yang bisa kami bantu hari ini?`,
       timestamp: new Date(),
     },
   ];

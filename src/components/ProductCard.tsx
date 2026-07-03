@@ -177,7 +177,7 @@ export default function ProductCard({
 
         <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-[3px] z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
-            className={`text-gray-800 line-clamp-2 font-normal leading-[1.12] min-h-[2.2em] tracking-tight ${titleSize}`}
+            className={`text-gray-700 line-clamp-2 font-normal leading-[1.12] min-h-[2.2em] tracking-[0.01em] ${titleSize}`}
           >
             {product.name}
           </h3>
@@ -186,9 +186,9 @@ export default function ProductCard({
             <span
               className={`
                 ${priceSize}
-                font-semibold
+                font-medium
+                tracking-[0.02em]
                 text-gray-700
-                tracking-tight
                 truncate
                 flex-shrink-0
               `}
@@ -204,6 +204,7 @@ export default function ProductCard({
     text-gray-400
     line-through
     font-normal
+    tracking-[0.015em]
     truncate
     flex-shrink
   `}
@@ -216,12 +217,18 @@ export default function ProductCard({
           <div className="flex items-end justify-between mt-auto pt-[0.5px] relative z-20">
             {/* LEFT: Rating */}
             <div className="flex items-center gap-0.5 text-[10px] font-medium text-gray-600">
-              <Star size={11} strokeWidth={0} fill="#f3bc18ff" />
-              <span className="text-gray-600 font-medium">{displayRating}</span>
+              <Star
+                size={11}
+                strokeWidth={0}
+                fill={displayReviewCount > 0 ? "#f3bc18ff" : "#d1d5db"}
+              />
+              <span className="text-gray-600 font-medium">
+                {displayReviewCount > 0 ? displayRating : "-"}
+              </span>
             </div>
 
             {/* RIGHT: Sold */}
-            <div className="text-[10px] text-gray-400 font-normal">
+            <div className="text-[10px] text-gray-400 font-normal tracking-[0.015em]">
               {(product.sold || 0) > 0
                 ? `${formatSold(product.sold)} terjual`
                 : "Belum terjual"}

@@ -198,10 +198,10 @@ export default function Navbar() {
                     </div>
                   </Link>
                   <div className="flex flex-col min-w-0">
-                    <p className="text-white/75 text-[10px] font-medium leading-none">
+                    <p className="text-white/75 text-[10px] font-medium tracking-[0.010em] leading-none">
                       {getGreeting()}
                     </p>
-                    <p className="text-white text-sm font-semibold tracking-[-0.01em] truncate mt-0.5">
+                    <p className="text-white text-sm font-medium tracking-[0.015em] truncate mt-0.5">
                       {mockUser.name.split(" ")[0]}
                     </p>
                   </div>

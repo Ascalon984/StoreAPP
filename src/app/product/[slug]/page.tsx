@@ -79,7 +79,7 @@ export default function ProductDetailPage({
   const serverRating = product?.rating || 0;
   const liveReviewCount = Math.max(serverCount, specificReviews.length);
   const liveRating =
-    liveReviewCount > 0
+    specificReviews.length > 0
       ? Number(
           (
             specificReviews.reduce((acc, r) => acc + r.rating, 0) /
