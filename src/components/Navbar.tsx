@@ -19,7 +19,11 @@ const SORT_OPTIONS = [
 const topProducts = [...products]
   .sort((a, b) => (b.rating || 0) - (a.rating || 0))
   .slice(0, 5)
-  .map((p) => p.name.split(" ").slice(0, 3).join(" "));
+  .map((p) => {
+    const words = p.name.split(" ");
+
+    return words.slice(0, 3).join(" ");
+  });
 
 const SEARCH_PLACEHOLDERS = [...topProducts];
 
@@ -30,20 +34,29 @@ function AnimatedPlaceholder() {
   useEffect(() => {
     const interval = setInterval(() => {
       setVisible(false);
+
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % SEARCH_PLACEHOLDERS.length);
         setVisible(true);
       }, 180);
     }, 2600);
+
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="flex items-center text-[12px] tracking-[-0.01em] overflow-hidden">
+      {/* Animated keyword */}
       <span
-        className={`text-gray-400 font-normal whitespace-nowrap transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[3px]"
-        }`}
+        className={`
+          text-gray-400 font-normal whitespace-nowrap
+          transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${
+            visible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-[3px]"
+          }
+        `}
       >
         {SEARCH_PLACEHOLDERS[index]}
       </span>
@@ -68,6 +81,7 @@ export default function Navbar() {
 
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // ─── Scroll Handler (SIMPLIFIED & STABLE) ───
   useEffect(() => {
     let ticking = false;
 
@@ -75,11 +89,15 @@ export default function Navbar() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const y = window.scrollY;
+
           setIsScrolled((prev) => {
+            // Hysteresis: collapse di >50, expand hanya di <10
+            // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
             if (!prev && y > 60) return true;
             if (prev && y < 15) return false;
-            return prev;
+            return prev; // zona mati (10–50): pertahankan state
           });
+
           ticking = false;
         });
         ticking = true;
@@ -87,7 +105,7 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    handleScroll(); // cek posisi awal (misal browser restore scroll)
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -130,40 +148,32 @@ export default function Navbar() {
         borderBottomLeftRadius: isScrolled ? "0px" : "16px",
         borderBottomRightRadius: isScrolled ? "0px" : "16px",
         transition: "border-radius 250ms ease-in-out",
-        willChange: "border-radius, height",
+        willChange: "border-radius",
         boxShadow: isScrolled
           ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",
         paddingTop: "env(safe-area-inset-top)",
-        // Mencegah bounce scroll iOS merusak posisi
-        overscrollBehaviorY: "contain",
-        // Memaksa GPU merender Navbar di layer terpisah
-        isolation: "isolate",
       }}
     >
       <header className="w-full px-4 overflow-visible">
         <div className="max-w-container mx-auto">
-          {/* ── Greeting Row (Dikembalikan ke Height + Optimasi GPU) ── */}
+          {/* ── Greeting Row ── */}
           <div
             style={{
-              maxHeight: isScrolled ? "0px" : "52px",
+              height: isScrolled ? "0px" : "50px",
               overflow: "hidden",
-              transition: "max-height 260ms cubic-bezier(0.4,0,0.2,1)",
-              willChange: "max-height",
+              transition: "height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
             <div
               style={{
-                // Menggunakan translateY(-100%) agar penutupan konten dikerjakan GPU
-                // Ini mencegah teks "kepotong" laggy saat mengecil
-                transform: isScrolled ? "translateY(-100%)" : "translateY(0px)",
+                transform: isScrolled ? "translateY(-50px)" : "translateY(0px)",
                 opacity: isScrolled ? 0 : 1,
                 willChange: "transform, opacity",
                 transition:
-                  "transform 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 180ms ease",
+                  "transform 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease",
               }}
             >
-              {/* Kerapian UI kembali ke asal: h-[50px] pt-1 */}
               <div className="flex items-center justify-between h-[50px] pt-1">
                 {/* Avatar */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -199,6 +209,7 @@ export default function Navbar() {
 
                 {/* Right Actions (unscrolled) */}
                 <div className="flex items-center gap-0.5 flex-shrink-0">
+                  {/* Bell Button */}
                   <Link
                     href="/notifications"
                     className="relative p-1.5 active:scale-95 transition-transform"
@@ -210,6 +221,8 @@ export default function Navbar() {
                     />
                     <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
                   </Link>
+
+                  {/* Chat Button */}
                   <Link
                     href="/chat"
                     className="relative p-1.5 active:scale-95 transition-transform"
@@ -235,6 +248,7 @@ export default function Navbar() {
                         strokeLinejoin="round"
                       />
                     </svg>
+
                     <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
                   </Link>
                 </div>
@@ -242,7 +256,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* ── Search Row (Padding Dikembalikan ke Aslinya) ── */}
+          {/* ── Search Row ── */}
           <div
             className={`flex items-center gap-1 pb-2.5 transition-all duration-300 ease-in-out ${
               isScrolled ? "pt-2.5 translate-y-0" : "pt-0 translate-y-[1.5px]"
@@ -271,6 +285,7 @@ export default function Navbar() {
                   : "w-0 opacity-0 scale-75"
               }`}
             >
+              {/* Bell (scrolled)*/}
               <Link
                 href="/notifications"
                 className="relative p-1.5 flex active:scale-95 transition-transform"
@@ -280,6 +295,7 @@ export default function Navbar() {
                 <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
               </Link>
 
+              {/* Chat (scrolled)*/}
               <Link
                 href="/chat"
                 className="relative p-1.5 flex active:scale-95 transition-transform"
@@ -295,13 +311,13 @@ export default function Navbar() {
                 >
                   <path
                     d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
-                    fill="rgba(255,255,255,0.12)"
                     stroke="currentColor"
                     strokeWidth="1.9"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                    fill="rgba(255,255,255,0.12)"
                     stroke="currentColor"
                     strokeWidth="1.9"
                     strokeLinejoin="round"

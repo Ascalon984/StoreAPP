@@ -118,7 +118,7 @@ function HighlightCard({
 
   const cardContent = (
     <article
-      className={`bg-white rounded-lg shadow-sm overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px] transition-transform duration-200 ${isHabis ? "" : "active:scale-97"}`}
+      className={`bg-white rounded-lg border border-black/[0.04] overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px] transition-transform duration-200 ${isHabis ? "" : "active:scale-97"}`}
     >
       {/* Gambar full-bleed kiri */}
       <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50 relative">
@@ -165,7 +165,7 @@ function HighlightCard({
 
   if (isHabis) {
     return (
-      <div className="block flex-shrink-0 w-[177px] cursor-not-allowed select-none">
+      <div className="block flex-shrink-0 w-[176px] cursor-not-allowed select-none">
         {cardContent}
       </div>
     );
@@ -174,11 +174,11 @@ function HighlightCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[177px] group"
+      className="block flex-shrink-0 w-[176px] group"
     >
       {/* Badge timer */}
       <div className="absolute top-1 right-1.5 z-10">
-        <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[4px] text-[10px] font-medium tracking-[0.010em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
+        <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[4px] text-[9.5px] font-medium tracking-[0.008em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
           3 Hari Lagi
         </span>
       </div>
@@ -252,20 +252,16 @@ function HighlightSection({
   return (
     <section className="mb-1">
       {/* ── Header emerald ── */}
-      <div className="mx-1.5 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2 pb-2 relative overflow-hidden">
-        {/* decorative blobs */}
-        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.04]" />
-        <div className="absolute bottom-0 right-8 w-16 h-16 rounded-full bg-emerald-300/10" />
-
+      <div className="mx-1.5 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-1.5 pb-1.5 relative overflow-hidden">
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[13.5px] font-semibold text-white tracking-tight leading-none">
-              Penawaran Terbatas
+            <h3 className="text-[11.5px] font-semibold uppercase tracking-[0.12em] text-white/95 leading-none">
+              Promo Terbatas
             </h3>
           </div>
 
-          <div className="h-[20px] flex items-end">
-            <div className="w-7 h-[3px] rounded-full bg-white/30 overflow-hidden relative flex-shrink-0">
+          <div className="h-[21px] flex items-end">
+            <div className="w-7 h-[2.5px] rounded-full bg-white/30 overflow-hidden relative flex-shrink-0">
               <div
                 className="absolute inset-y-0 rounded-full bg-white/85 transition-[left,width] duration-150"
                 style={{
@@ -290,12 +286,12 @@ function HighlightSection({
           <>
             <div
               ref={scrollRef}
-              className="flex gap-0.5 overflow-x-auto hide-scrollbar snap-x snap-proximity"
+              className="flex gap-1 overflow-x-auto hide-scrollbar snap-x snap-proximity"
             >
               {displayProducts.map((product, i) => (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 snap-start w-[177px]"
+                  className="flex-shrink-0 snap-start w-[176px]"
                 >
                   <HighlightCard product={product} index={i} />
                 </div>
@@ -308,9 +304,9 @@ function HighlightSection({
               className="
                 absolute
                 right-[4px]
-                top-[42.5px]
+                top-[40px]
                 h-[84px]
-                w-5
+                w-4
                 pointer-events-none
               "
               style={{
@@ -453,7 +449,7 @@ export default function ProductGrid() {
 
             <Link
               href="/products/popular"
-              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform"
+              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform -translate-x-1"
             >
               Lihat Semua
             </Link>

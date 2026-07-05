@@ -205,7 +205,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   return (
     <section className="px-1.5 pt-4 pb-0 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
-      <div className="relative aspect-[2.4/1] overflow-visible">
+      <div className="relative aspect-[2.5/1] overflow-visible">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -214,7 +214,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   gap-0.1
   snap-x snap-mandatory
   overflow-y-visible
-  px-2
+  px-3
 "
           style={{
             msOverflowStyle: "none",

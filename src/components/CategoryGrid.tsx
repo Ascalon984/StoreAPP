@@ -38,7 +38,7 @@ interface CategoryGridProps {
 function CategorySkeleton() {
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-3">
+      <div className="grid grid-cols-4 place-items-center gap-x-2 gap-y-3.5">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -79,13 +79,16 @@ function CategoryItem({
         className="
     relative
     h-[39px] min-w-[42px]
-    px-2.5
-    rounded-t-[13px]
-    rounded-b-[18px]
-    bg-[radial-gradient(140%_85%_at_50%_100%,rgba(255,255,255,0.96)_0%,rgba(255,255,255,0.72)_38%,rgba(0,0,0,0.022)_100%)]
+    px-3
+    rounded-[21px_21px_19px_19px]  // Lebih cembung di bagian atas
+
+    bg-[radial-gradient(145%_95%_at_50%_100%,rgba(255,255,255,1)_0%,rgba(250,250,250,0.95)_38%,rgba(236,236,236,0.82)_100%)]
+
+    border border-white/70
+
     flex items-center justify-center
-    transition-all duration-200
     overflow-hidden
+    transition-all duration-200
   "
       >
         <div className="absolute inset-x-1 top-0 h-px bg-white/65 rounded-full" />
@@ -188,7 +191,7 @@ export default function CategoryGrid({
 
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-3">
+      <div className="grid grid-cols-4 place-items-center gap-x-2 gap-y-3.5">
         {/* 8 categories: 2 rows x 4 columns */}
         {categories.map((cat) => (
           <CategoryItem
