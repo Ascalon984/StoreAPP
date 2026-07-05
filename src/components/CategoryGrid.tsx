@@ -78,9 +78,9 @@ function CategoryItem({
       <div
         className="
     relative
-    h-[39px] min-w-[42px]
+    h-[40px] min-w-[52px]
     px-3
-    rounded-[21px_21px_19px_19px]  // Lebih cembung di bagian atas
+    rounded-[28px_28px_19px_19px]
 
     bg-[radial-gradient(145%_95%_at_50%_100%,rgba(255,255,255,1)_0%,rgba(250,250,250,0.95)_38%,rgba(236,236,236,0.82)_100%)]
 
@@ -105,7 +105,7 @@ function CategoryItem({
       </div>
 
       {/* LABEL AREA */}
-      <div className="mt-[3px] flex items-start justify-center">
+      <div className="mt-[2px] flex items-start justify-center">
         <span
           className={`
         text-center

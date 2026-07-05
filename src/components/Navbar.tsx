@@ -50,7 +50,7 @@ function AnimatedPlaceholder() {
       <span
         className={`
           text-gray-400 font-normal whitespace-nowrap
-          transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]
+          transition-[opacity,transform] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]
           ${
             visible
               ? "opacity-100 translate-y-0"
@@ -80,27 +80,26 @@ export default function Navbar() {
   const { sort, setSort } = useFilterStore();
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const tickingRef = useRef(false);
 
   // ─── Scroll Handler (SIMPLIFIED & STABLE) ───
   useEffect(() => {
-    let ticking = false;
-
     const handleScroll = () => {
-      if (!ticking) {
+      if (!tickingRef.current) {
         window.requestAnimationFrame(() => {
           const y = window.scrollY;
 
           setIsScrolled((prev) => {
-            // Hysteresis: collapse di >50, expand hanya di <10
-            // Gap 40px mencegah jitter tanpa perlu skipExpandCheck
+            // Hysteresis: collapse di >60, expand hanya di <15
+            // Gap mencegah jitter tanpa perlu skipExpandCheck
             if (!prev && y > 60) return true;
             if (prev && y < 15) return false;
-            return prev; // zona mati (10–50): pertahankan state
+            return prev; // zona mati: pertahankan state
           });
 
-          ticking = false;
+          tickingRef.current = false;
         });
-        ticking = true;
+        tickingRef.current = true;
       }
     };
 
@@ -143,12 +142,11 @@ export default function Navbar() {
 
   return (
     <div
-      className="sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
+      className="gnb-shell sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
       style={{
         borderBottomLeftRadius: isScrolled ? "0px" : "16px",
         borderBottomRightRadius: isScrolled ? "0px" : "16px",
         transition: "border-radius 250ms ease-in-out",
-        willChange: "border-radius",
         boxShadow: isScrolled
           ? "0 1px 4px rgba(0,0,0,0.04)"
           : "0 2px 8px rgba(0,0,0,0.06)",
@@ -158,99 +156,102 @@ export default function Navbar() {
       <header className="w-full px-4 overflow-visible">
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
+          {/* Ukuran baris dikontrol lewat grid-template-rows (1fr <-> 0fr),
+              bukan height px. Ini menghindari browser harus menghitung ulang
+              tinggi konten (reflow) tiap frame — cukup 1x saat grid track
+              berubah, sisanya murni transform+opacity yang jalan di GPU. */}
           <div
-            style={{
-              height: isScrolled ? "0px" : "50px",
-              overflow: "hidden",
-              transition: "height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
-            }}
+            className="grid overflow-hidden transition-[grid-template-rows] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+            style={{ gridTemplateRows: isScrolled ? "0fr" : "1fr" }}
           >
-            <div
-              style={{
-                transform: isScrolled ? "translateY(-50px)" : "translateY(0px)",
-                opacity: isScrolled ? 0 : 1,
-                willChange: "transform, opacity",
-                transition:
-                  "transform 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease",
-              }}
-            >
-              <div className="flex items-center justify-between h-[50px] pt-1">
-                {/* Avatar */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <Link
-                    href="/profile"
-                    className="active:scale-95 transition-transform flex-shrink-0"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center">
-                      {mockUser.avatar ? (
-                        <img
-                          src={mockUser.avatar}
-                          alt={mockUser.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <img
-                          src="/icons/avatar.png"
-                          alt="avatar"
-                          className="w-full h-full object-cover opacity-70"
-                        />
-                      )}
-                    </div>
-                  </Link>
-                  <div className="flex flex-col min-w-0">
-                    <p className="text-white/75 text-[10px] font-medium tracking-[0.010em] leading-none">
-                      {getGreeting()}
-                    </p>
-                    <p className="text-white text-sm font-medium tracking-[0.015em] truncate mt-0.5">
-                      {mockUser.name.split(" ")[0]}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right Actions (unscrolled) */}
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                  {/* Bell Button */}
-                  <Link
-                    href="/notifications"
-                    className="relative p-1.5 active:scale-95 transition-transform"
-                  >
-                    <Bell
-                      size={20}
-                      className="text-white/95"
-                      strokeWidth={1.9}
-                    />
-                    <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
-                  </Link>
-
-                  {/* Chat Button */}
-                  <Link
-                    href="/chat"
-                    className="relative p-1.5 active:scale-95 transition-transform"
-                    aria-label="Chat"
-                  >
-                    <svg
-                      width="21"
-                      height="21"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      className="translate-y-[1px] text-white/95"
+            <div className="min-h-0 overflow-hidden">
+              <div
+                className="gnb-fade"
+                style={{
+                  transform: isScrolled
+                    ? "translateY(-50px)"
+                    : "translateY(0px)",
+                  opacity: isScrolled ? 0 : 1,
+                }}
+              >
+                <div className="flex items-center justify-between h-[50px] pt-1">
+                  {/* Avatar */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Link
+                      href="/profile"
+                      className="active:scale-95 transition-transform flex-shrink-0"
                     >
-                      <path
-                        d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
-                        stroke="currentColor"
-                        strokeWidth="1.9"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
-                        stroke="currentColor"
-                        strokeWidth="1.9"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                      <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center">
+                        {mockUser.avatar ? (
+                          <img
+                            src={mockUser.avatar}
+                            alt={mockUser.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src="/icons/avatar.png"
+                            alt="avatar"
+                            className="w-full h-full object-cover opacity-70"
+                          />
+                        )}
+                      </div>
+                    </Link>
+                    <div className="flex flex-col min-w-0">
+                      <p className="text-white/75 text-[10px] font-medium tracking-[0.010em] leading-none">
+                        {getGreeting()}
+                      </p>
+                      <p className="text-white text-sm font-medium tracking-[0.015em] truncate mt-0.5">
+                        {mockUser.name.split(" ")[0]}
+                      </p>
+                    </div>
+                  </div>
 
-                    <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
-                  </Link>
+                  {/* Right Actions (unscrolled) */}
+                  <div className="flex items-center gap-0.5 flex-shrink-0">
+                    {/* Bell Button */}
+                    <Link
+                      href="/notifications"
+                      className="relative p-1.5 active:scale-95 transition-transform"
+                    >
+                      <Bell
+                        size={20}
+                        className="text-white/95"
+                        strokeWidth={1.9}
+                      />
+                      <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
+                    </Link>
+
+                    {/* Chat Button */}
+                    <Link
+                      href="/chat"
+                      className="relative p-1.5 active:scale-95 transition-transform"
+                      aria-label="Chat"
+                    >
+                      <svg
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="translate-y-[1px] text-white/95"
+                      >
+                        <path
+                          d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
+                          stroke="currentColor"
+                          strokeWidth="1.9"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                          stroke="currentColor"
+                          strokeWidth="1.9"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+
+                      <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,12 +259,12 @@ export default function Navbar() {
 
           {/* ── Search Row ── */}
           <div
-            className={`flex items-center gap-1 pb-2.5 transition-all duration-300 ease-in-out ${
+            className={`flex items-center gap-1 pb-2.5 transition-[padding-top,transform] duration-300 ease-in-out ${
               isScrolled ? "pt-2.5 translate-y-0" : "pt-0 translate-y-[1.5px]"
             }`}
           >
             {/* Search Bar */}
-            <div className="flex-1 bg-white/95 backdrop-blur-sm rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
+            <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
               <button
                 onClick={openSearch}
                 className="flex-1 flex items-center gap-2.5 min-w-0"
@@ -330,10 +331,25 @@ export default function Navbar() {
         </div>
       </header>
 
-      <style>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
+      <style jsx>{`
+        .gnb-shell {
+          contain: paint style;
+          will-change: transform;
+        }
+
+        .gnb-fade {
+          transition:
+            transform 260ms cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 200ms ease;
+          will-change: transform, opacity;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .gnb-shell,
+          .gnb-shell * {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+          }
         }
       `}</style>
     </div>

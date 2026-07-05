@@ -141,7 +141,7 @@ function HighlightCard({
 
       {/* Konten kanan */}
       <div
-        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-2 py-2 ${isHabis ? "opacity-60" : ""}`}
+        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-1 py-2 ${isHabis ? "opacity-60" : ""}`}
       >
         <div className="min-h-[28px]">
           <p className="text-[10px] font-normal text-gray-700 line-clamp-2 leading-[1.10] tracking-[0.005em]">
@@ -255,7 +255,7 @@ function HighlightSection({
       <div className="mx-1.5 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-1.5 pb-1.5 relative overflow-hidden">
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[11.5px] font-semibold uppercase tracking-[0.12em] text-white/95 leading-none">
+            <h3 className="text-[11.5px] font-bold uppercase tracking-[0.08em] text-white/95 leading-none">
               Promo Terbatas
             </h3>
           </div>

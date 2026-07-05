@@ -95,7 +95,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
                       name={product.name}
                       variant={i}
                       src={src}
-                      className="w-full aspect-[10/7] sm:aspect-video"
+                      className="w-full aspect-[9/7] sm:aspect-video"
                     />
                   </div>
                 ))
@@ -105,7 +105,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
                     category={product.category}
                     name={product.name}
                     variant={0}
-                    className="w-full aspect-[10/7] sm:aspect-video"
+                    className="w-full aspect-[9/7] sm:aspect-video"
                   />
                 </div>
               )}

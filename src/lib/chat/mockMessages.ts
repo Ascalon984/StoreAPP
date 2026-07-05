@@ -15,7 +15,7 @@ export function getGreetingMessage(
         : hour < 18
           ? "Selamat sore"
           : "Selamat malam";
-  const name = userName ? `${timeGreeting}, ${userName}!` : `${timeGreeting}!`;
+  const name = userName ? `${timeGreeting}, ${userName}` : `${timeGreeting}`;
 
   if (source === "product" && productSnippet) {
     return [

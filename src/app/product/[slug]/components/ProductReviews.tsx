@@ -332,8 +332,11 @@ export default function ProductReviews({
 
       <div className="space-y-0 px-1">
         {displayedReviews.map((review: Review, index: number) => (
-          <div key={review.id} className="py-2">
-            <div className="flex items-start justify-between mb-2">
+          <div
+            key={review.id}
+            className={index === 0 ? "pt-2 pb-1.5" : "pt-1 pb-1"}
+          >
+            <div className="flex items-start justify-between mb-0.5">
               <div className="flex items-center gap-3">
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${getAvatarColor(review.name)} opacity-80 flex-shrink-0`}
@@ -342,11 +345,11 @@ export default function ProductReviews({
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <p className="text-[12px] font-medium text-gray-600 tracking-tight leading-none truncate">
-                      {maskName(review.name)}
+                    <p className="text-[11.5px] font-semibold text-gray-700 leading-none truncate">
+                      {review.name}
                     </p>
                   </div>
-                  <div className="flex items-center gap-0.5 mt-1">
+                  <div className="flex items-center gap-[1px] mt-[3px]">
                     {[1, 2, 3, 4, 5].map((star) =>
                       renderStar(star, review.rating),
                     )}
@@ -362,7 +365,7 @@ export default function ProductReviews({
             </div>
 
             <div className="pl-[48px] flex items-end gap-1">
-              <p className="text-[11.5px] text-gray-600 leading-[1.6] break-words flex-1 min-w-0">
+              <p className="text-[11.5px] font-medium text-gray-600 leading-[1.6] break-words flex-1 min-w-0">
                 {review.comment}
               </p>
 
@@ -409,7 +412,7 @@ export default function ProductReviews({
             </div>
 
             {review.reply && (
-              <div className="ml-[48px] mt-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <div className="ml-[46px] mt-2 bg-gray-50 rounded-lg p-1.5 border border-gray-100">
                 {/* header */}
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
@@ -438,7 +441,7 @@ export default function ProductReviews({
 
             {/* Divider skip area avatar */}
             {index < displayedReviews.length - 1 && (
-              <div className="ml-[48px] border-b border-gray-100 mt-2.5" />
+              <div className="ml-[48px] border-b border-gray-100 mt-2" />
             )}
           </div>
         ))}
