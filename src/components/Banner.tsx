@@ -203,7 +203,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
   if (isLoading) return <BannerSkeleton />;
 
   return (
-    <section className="px-2 pt-4 pb-0 -mt-px">
+    <section className="px-1.5 pt-4 pb-0 -mt-px">
       {/* Wrapper: no extra bg/blur/shadow — biarkan layer hijau di baliknya terlihat */}
       <div className="relative aspect-[2.4/1] overflow-visible">
         <div
@@ -211,7 +211,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
           onScroll={handleScroll}
           className="
   flex overflow-x-auto hide-scrollbar
-  gap-0.3
+  gap-0.1
   snap-x snap-mandatory
   overflow-y-visible
   px-2
@@ -251,7 +251,7 @@ export default function Banner({ initialBanners = [] }: BannerProps) {
             transition-all duration-500
             ${
               isActive
-                ? "scale-100 opacity-100 shadow-lg"
+                ? "scale-100 opacity-100 shadow-md"
                 : "scale-[0.965] opacity-50 shadow-sm"
             }
           `}

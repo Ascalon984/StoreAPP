@@ -118,7 +118,7 @@ function HighlightCard({
 
   const cardContent = (
     <article
-      className={`bg-white rounded-lg shadow-sm overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px] transition-transform duration-200 ${isHabis ? "" : "active:scale-95"}`}
+      className={`bg-white rounded-lg shadow-sm overflow-hidden relative flex flex-row items-stretch border border-gray-100/50 h-[82px] transition-transform duration-200 ${isHabis ? "" : "active:scale-97"}`}
     >
       {/* Gambar full-bleed kiri */}
       <div className="w-[72px] flex-shrink-0 self-stretch bg-gray-50 relative">
@@ -141,10 +141,10 @@ function HighlightCard({
 
       {/* Konten kanan */}
       <div
-        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-1.5 py-2 ${isHabis ? "opacity-60" : ""}`}
+        className={`flex-1 min-w-0 flex flex-col justify-between pl-1.5 pr-2 py-2 ${isHabis ? "opacity-60" : ""}`}
       >
         <div className="min-h-[28px]">
-          <p className="text-[10px] font-normal text-gray-700 line-clamp-2 leading-[1.10] tracking-[0.008em]">
+          <p className="text-[10px] font-normal text-gray-700 line-clamp-2 leading-[1.10] tracking-[0.005em]">
             {product.name}
           </p>
         </div>
@@ -165,7 +165,7 @@ function HighlightCard({
 
   if (isHabis) {
     return (
-      <div className="block flex-shrink-0 w-[188px] cursor-not-allowed select-none">
+      <div className="block flex-shrink-0 w-[177px] cursor-not-allowed select-none">
         {cardContent}
       </div>
     );
@@ -174,11 +174,11 @@ function HighlightCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[188px] group"
+      className="block flex-shrink-0 w-[177px] group"
     >
       {/* Badge timer */}
-      <div className="absolute top-1 right-2 z-10">
-        <span className="block rounded-bl-xl rounded-tr-lg px-2 py-[4px] text-[10px] font-medium tracking-[0.010em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
+      <div className="absolute top-1 right-1.5 z-10">
+        <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[4px] text-[10px] font-medium tracking-[0.010em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
           3 Hari Lagi
         </span>
       </div>
@@ -196,13 +196,63 @@ function HighlightSection({
   isLoading: boolean;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [thumbLeft, setThumbLeft] = useState(0);
+  const [thumbPixelWidth, setThumbPixelWidth] = useState(12);
+
   const maxItems = 20;
   const displayProducts = products.slice(0, maxItems);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const updateIndicator = () => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+
+      // track indicator width (w-7 = 28px)
+      const trackWidth = 28;
+
+      // tidak bisa discroll
+      if (maxScroll <= 0) {
+        setThumbLeft(0);
+        setThumbPixelWidth(trackWidth);
+        return;
+      }
+
+      // rasio area visible
+      const visibleRatio = el.clientWidth / el.scrollWidth;
+
+      // ukuran thumb minimum
+      const thumbWidth = Math.max(trackWidth * visibleRatio, 8);
+
+      // area gerak thumb
+      const movableArea = trackWidth - thumbWidth;
+
+      // progress scroll
+      const progress = el.scrollLeft / maxScroll;
+
+      // posisi real
+      const left = movableArea * progress;
+
+      setThumbPixelWidth(thumbWidth);
+      setThumbLeft(left);
+    };
+
+    updateIndicator();
+
+    el.addEventListener("scroll", updateIndicator, { passive: true });
+    window.addEventListener("resize", updateIndicator);
+
+    return () => {
+      el.removeEventListener("scroll", updateIndicator);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [displayProducts.length]);
 
   return (
     <section className="mb-1">
       {/* ── Header emerald ── */}
-      <div className="mx-2 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2.5 pb-2.5 relative overflow-hidden">
+      <div className="mx-1.5 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-2 pb-2 relative overflow-hidden">
         {/* decorative blobs */}
         <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-white/[0.04]" />
         <div className="absolute bottom-0 right-8 w-16 h-16 rounded-full bg-emerald-300/10" />
@@ -213,11 +263,23 @@ function HighlightSection({
               Penawaran Terbatas
             </h3>
           </div>
+
+          <div className="h-[20px] flex items-end">
+            <div className="w-7 h-[3px] rounded-full bg-white/30 overflow-hidden relative flex-shrink-0">
+              <div
+                className="absolute inset-y-0 rounded-full bg-white/85 transition-[left,width] duration-150"
+                style={{
+                  width: `${thumbPixelWidth}px`,
+                  left: `${thumbLeft}px`,
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* ── Cards: scroll bebas, background transparan ── */}
-      <div className="mt-0.5 px-2">
+      <div className="mt-0.5 px-1.5">
         {isLoading ? (
           <div className="flex gap-2.5 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -228,12 +290,12 @@ function HighlightSection({
           <>
             <div
               ref={scrollRef}
-              className="flex gap-1 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+              className="flex gap-0.5 overflow-x-auto hide-scrollbar snap-x snap-proximity"
             >
               {displayProducts.map((product, i) => (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 snap-start w-[188px]"
+                  className="flex-shrink-0 snap-start w-[177px]"
                 >
                   <HighlightCard product={product} index={i} />
                 </div>
@@ -245,16 +307,16 @@ function HighlightSection({
             <div
               className="
                 absolute
-                right-2
-                top-[38px]
+                right-[4px]
+                top-[42.5px]
                 h-[84px]
-                w-8
+                w-5
                 pointer-events-none
               "
               style={{
                 background:
                   "linear-gradient(to right, rgba(245,245,245,0), rgba(245,245,245,0.96))",
-                filter: "blur(0.2px)",
+                filter: "blur(0.1px)",
               }}
             />
           </>
@@ -382,7 +444,7 @@ export default function ProductGrid() {
       {/* ══════════════════════════════════════════
           SECTION 1 — Paling Dicari
           ══════════════════════════════════════════ */}
-      <section id="product-grid" className="px-2 pt-2 pb-4">
+      <section id="product-grid" className="px-1.5 pt-2 pb-4">
         <div className="pt-1 mb-2">
           <div className="flex items-center justify-between px-0.5">
             <h2 className="text-[13px] font-bold tracking-[0.03em] text-gray-700">
@@ -415,7 +477,7 @@ export default function ProductGrid() {
       {/* ══════════════════════════════════════════
           SECTION 2 — Semua Produk
           ══════════════════════════════════════════ */}
-      <section className="px-2 pb-3 min-h-[50vh]">
+      <section className="px-1.5 pb-3 min-h-[50vh]">
         <div className="pt-2 mb-2">
           <div className="flex items-center justify-between px-0.5 mb-1.5">
             <h2 className="text-[13px] font-bold tracking-[0.03em] text-gray-700">

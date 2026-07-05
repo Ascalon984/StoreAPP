@@ -38,7 +38,7 @@ interface CategoryGridProps {
 function CategorySkeleton() {
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-2">
+      <div className="grid grid-cols-4 place-items-center gap-y-3">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -75,20 +75,34 @@ function CategoryItem({
     transition-transform
   "
     >
-      {/* ICON AREA */}
-      <div className="w-7 h-7 flex items-center justify-center">
+      <div
+        className="
+    relative
+    h-[39px] min-w-[42px]
+    px-2.5
+    rounded-t-[13px]
+    rounded-b-[18px]
+    bg-[radial-gradient(140%_85%_at_50%_100%,rgba(255,255,255,0.96)_0%,rgba(255,255,255,0.72)_38%,rgba(0,0,0,0.022)_100%)]
+    flex items-center justify-center
+    transition-all duration-200
+    overflow-hidden
+  "
+      >
+        <div className="absolute inset-x-1 top-0 h-px bg-white/65 rounded-full" />
+
         <div
           className={`
-        transition-all duration-200
-        ${isActive ? "scale-105 opacity-100" : "opacity-90"}
-      `}
+      relative
+      transition-all duration-200
+      ${isActive ? "scale-[1.05] opacity-100" : "opacity-[0.88]"}
+    `}
         >
           {icon}
         </div>
       </div>
 
       {/* LABEL AREA */}
-      <div className="mt-1.5 flex items-start justify-center">
+      <div className="mt-[3px] flex items-start justify-center">
         <span
           className={`
         text-center
@@ -174,7 +188,7 @@ export default function CategoryGrid({
 
   return (
     <section className="px-4 pt-3 pb-3.5">
-      <div className="grid grid-cols-4 place-items-center gap-y-2">
+      <div className="grid grid-cols-4 place-items-center gap-y-3">
         {/* 8 categories: 2 rows x 4 columns */}
         {categories.map((cat) => (
           <CategoryItem
