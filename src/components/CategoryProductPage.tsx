@@ -15,19 +15,17 @@ import { Product, Category } from "@/lib/types";
 import { useReviewStore } from "@/store/useReviewStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import ProductCard from "./ProductCard";
-
-/* ── Sort ─────────────────────────────────────────── */
-const SORT_OPTIONS = [
-  { id: "popular", label: "Terpopuler", Icon: Star },
-  { id: "cheapest", label: "Termurah", Icon: TrendingDown },
-  { id: "expensive", label: "Termahal", Icon: TrendingUp },
-];
+import {
+  ProductFilterSheet,
+  FilterState,
+  defaultFilterState,
+} from "./ProductFilterSheet";
 
 /* ── Sub-Category Chips ───────────────────────────── */
 const CATEGORY_CHIPS: Record<string, string[]> = {
   elektronik: ["Semua", "Smartphone", "Laptop", "Audio", "Gaming", "Aksesoris"],
-  fashion: ["Semua", "Pria", "Wanita", "Sepatu", "Tas", "Aksesoris"],
-  rumah: [
+  pakaian: ["Semua", "Pria", "Wanita", "Sepatu", "Tas", "Aksesoris"],
+  "rumah-tangga": [
     "Semua",
     "Dapur",
     "Dekorasi",
@@ -49,13 +47,37 @@ const CATEGORY_CHIPS: Record<string, string[]> = {
   olahraga: ["Semua", "Lari", "Badminton", "Sepak Bola", "Yoga", "Fitness"],
 };
 
-function applySort(products: Product[], sort: string): Product[] {
-  const arr = [...products];
-  switch (sort) {
-    case "cheapest":
+function applyFiltersAndSort(
+  products: Product[],
+  filters: FilterState,
+): Product[] {
+  let arr = [...products];
+
+  // Apply filters
+  if (filters.minPrice) {
+    const min = parseInt(filters.minPrice);
+    if (!isNaN(min)) arr = arr.filter((p) => p.price >= min);
+  }
+  if (filters.maxPrice) {
+    const max = parseInt(filters.maxPrice);
+    if (!isNaN(max)) arr = arr.filter((p) => p.price <= max);
+  }
+  if (filters.activeFilters.includes("4.5★")) {
+    arr = arr.filter((p) => (p.rating || 0) >= 4.5);
+  }
+  if (filters.activeFilters.includes("<100rb")) {
+    arr = arr.filter((p) => p.price < 100000);
+  }
+
+  // Apply sort
+  switch (filters.sort) {
+    case "termurah":
       return arr.sort((a, b) => a.price - b.price);
-    case "expensive":
-      return arr.sort((a, b) => b.price - a.price);
+    case "terbaru":
+      return arr.reverse();
+    case "terbaik":
+      return arr.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    case "terlaris":
     default:
       return arr.sort((a, b) => (b.sold || 0) - (a.sold || 0));
   }
@@ -129,11 +151,12 @@ export default function CategoryProductPage({
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [sort, setSort] = useState("popular");
   const [activeChip, setActiveChip] = useState("Semua");
-  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(
+    null,
+  );
   const [isScrolled, setIsScrolled] = useState(false);
-  const sortMenuRef = useRef<HTMLDivElement>(null);
 
   // Resolve category name from slug
   const categoryName =
@@ -147,20 +170,6 @@ export default function CategoryProductPage({
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  /* ── Close sort menu on outside click ── */
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowSortMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   /* ── Fetch reviews once ── */
@@ -191,10 +200,17 @@ export default function CategoryProductPage({
           (p) => p.subCategory?.toLowerCase() === activeChip.toLowerCase(),
         );
 
-  const sorted = applySort(filteredByChip, sort);
+  const currentFilters = appliedFilters || defaultFilterState;
 
-  const activeSortOption =
-    SORT_OPTIONS.find((o) => o.id === sort) || SORT_OPTIONS[0];
+  const hasAppliedFilters =
+    appliedFilters &&
+    (appliedFilters.sort !== defaultFilterState.sort ||
+      appliedFilters.minPrice !== defaultFilterState.minPrice ||
+      appliedFilters.maxPrice !== defaultFilterState.maxPrice ||
+      appliedFilters.radius !== defaultFilterState.radius ||
+      appliedFilters.activeFilters.length > 0);
+
+  const sorted = applyFiltersAndSort(filteredByChip, currentFilters);
 
   /* ── Render ── */
   return (
@@ -287,57 +303,20 @@ export default function CategoryProductPage({
               <div className="flex-1" />
             )}
 
-            {/* Sort button */}
-            <div className="relative flex-shrink-0" ref={sortMenuRef}>
+            {/* Filter button */}
+            <div className="relative flex-shrink-0">
               <div className="bg-white rounded-xl">
                 <button
-                  onClick={() => setShowSortMenu(!showSortMenu)}
+                  onClick={() => setShowFilterSheet(true)}
                   className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all
-      ${showSortMenu ? "bg-emerald-600 text-white" : "text-gray-600"}`}
+                  ${
+                    hasAppliedFilters
+                      ? "bg-emerald-600 text-white shadow-sm"
+                      : "text-gray-600"
+                  }`}
                 >
                   <SlidersHorizontal size={18} strokeWidth={2.2} />
                 </button>
-              </div>
-
-              <div
-                className={`
-      absolute right-0 top-full mt-1.5 z-50
-      bg-white rounded-xl overflow-hidden min-w-[148px]
-      shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]
-      origin-top-right
-      transition-all duration-200 ease-out
-      ${
-        showSortMenu
-          ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-          : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
-      }
-    `}
-              >
-                {SORT_OPTIONS.map((opt) => {
-                  const isActive = sort === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => {
-                        setSort(opt.id);
-                        setShowSortMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] font-semibold text-gray-600 hover:bg-gray-50"
-                    >
-                      <div
-                        className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors
-            ${
-              isActive
-                ? "bg-emerald-600 text-white"
-                : "bg-gray-100 text-gray-400"
-            }`}
-                      >
-                        <opt.Icon size={14} strokeWidth={2} />
-                      </div>
-                      <span>{opt.label}</span>
-                    </button>
-                  );
-                })}
               </div>
             </div>
           </div>
@@ -414,6 +393,13 @@ export default function CategoryProductPage({
           </div>
         )}
       </div>
+
+      <ProductFilterSheet
+        show={showFilterSheet}
+        onClose={() => setShowFilterSheet(false)}
+        appliedFilters={appliedFilters}
+        onApply={setAppliedFilters}
+      />
     </div>
   );
 }
