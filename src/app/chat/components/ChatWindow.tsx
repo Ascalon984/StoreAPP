@@ -166,7 +166,6 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   };
 
   const clearAttachment = () => {
-    if (attachmentPreview) URL.revokeObjectURL(attachmentPreview);
     setAttachmentFile(null);
     setAttachmentPreview(null);
   };
@@ -175,12 +174,14 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   const handleSend = () => {
     if (!inputText.trim() && !attachmentPreview) return;
 
+    const imageUrl = attachmentPreview ?? undefined;
+
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
-      type: attachmentPreview ? "image" : "text",
+      type: imageUrl ? "image" : "text",
       text: inputText || undefined,
-      imageUrl: attachmentPreview || undefined,
+      imageUrl,
       timestamp: new Date(),
       status: "sending",
     };
@@ -216,21 +217,22 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col bg-gray-50 z-50"
+      className="fixed inset-0 flex flex-col z-50"
       style={{
         backgroundImage: `
       linear-gradient(
         to bottom,
-        rgba(249,250,251,0.96) 0%,
-        rgba(249,250,251,0.90) 12%,
-        rgba(249,250,251,0.78) 28%,
-        rgba(249,250,251,0.65) 55%
+        rgba(249,250,251,0.98) 0%,
+        rgba(249,250,251,0.85) 20%,
+        rgba(249,250,251,0.50) 50%,
+        rgba(249,250,251,0.20) 80%,
+        rgba(249,250,251,0.05) 100%
       ),
       url('/illustrations/seigaiha.png')
     `,
         backgroundRepeat: "repeat",
         backgroundAttachment: "fixed",
-        backgroundSize: "500px",
+        backgroundSize: "650px",
       }}
     >
       <input
@@ -265,6 +267,41 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
       </div>
 
       <div className="flex-shrink-0 bg-white">
+        {attachmentPreview && (
+          <div className="px-3 pt-2">
+            <div
+              className="
+          relative
+          w-[88px] h-[88px]
+          rounded-xl
+          overflow-hidden
+          border border-black/5
+          shadow-sm
+        "
+            >
+              <img
+                src={attachmentPreview}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+
+              <button
+                onClick={clearAttachment}
+                className="
+          absolute top-1 right-1
+          w-4 h-4 rounded-full
+          bg-rose-600/90 text-white
+          text-[10px]
+          flex items-center justify-center
+          shadow-sm
+        "
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         {isCSChat && (
           <ChatQuickReplies
             replies={dynamicQuickReplies}
@@ -273,12 +310,13 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
             onSelect={handleQuickReplySelect}
           />
         )}
+
         <ChatInputBar
           inputText={inputText}
           onInputChange={handleInputChange}
           onSend={handleSend}
           onPickAttachment={handlePickAttachment}
-          attachmentPreview={attachmentPreview}
+          attachmentPreview={null}
           onClearAttachment={clearAttachment}
           inputRef={inputRef}
         />

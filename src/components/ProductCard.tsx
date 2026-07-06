@@ -104,12 +104,19 @@ export default function ProductCard({
     displayPrice = formatRupiah(minPrice);
   }
 
-  const titleSize =
-    product.name.length > 50
-      ? "text-[11px]"
-      : product.name.length > 35
-        ? "text-[11.5px]"
-        : "text-[12px]";
+  // Ganti logika titleSize dengan pendekatan yang lebih granular
+  const getTitleSize = (name: string) => {
+    const length = name.length;
+
+    if (length > 60) return "text-[10px]"; // Sangat panjang
+    if (length > 50) return "text-[10.5px]"; // Panjang
+    if (length > 40) return "text-[11px]"; // Cukup panjang
+    if (length > 30) return "text-[11.5px]"; // Sedang
+    if (length > 20) return "text-[12px]"; // Pendek
+    return "text-[12.5px]"; // Sangat pendek
+  };
+
+  const titleSize = getTitleSize(product.name);
 
   const priceLength = displayPrice.length;
 
@@ -195,7 +202,8 @@ export default function ProductCard({
           </h3>
 
           {/* Seller Location */}
-          <div className="text-[9px] text-gray-400 truncate leading-none">
+          {/* Seller Location */}
+          <div className="text-[9px] text-gray-400 truncate leading-tight">
             {seller?.kabupaten}
           </div>
 

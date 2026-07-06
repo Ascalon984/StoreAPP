@@ -67,8 +67,8 @@ function CategoryItem({
   // Tentukan ukuran font berdasarkan panjang label
   const getFontSize = (text: string) => {
     if (text.length > 14) return "text-[9px]";
-    if (text.length > 11) return "text-[10px]";
-    return "text-[11px]";
+    if (text.length > 11) return "text-[9.5px]";
+    return "text-[10px]";
   };
 
   return (

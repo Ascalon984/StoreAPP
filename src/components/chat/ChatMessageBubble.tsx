@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Copy, Check, X } from "lucide-react";
 import { Message } from "@/lib/chat/types";
 import ChatProductSnippet from "./ChatProductSnippet";
 import ChatOrderSnippet from "./ChatOrderSnippet";
@@ -21,6 +21,7 @@ function formatTime(date: Date): string {
 export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
   const isUser = msg.role === "user";
   const [copied, setCopied] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
 
   async function handleCopy(text: string) {
     await navigator.clipboard.writeText(text);
@@ -70,42 +71,86 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
   /* ── Image bubble ── */
   if (msg.type === "image" && msg.imageUrl) {
     return (
-      <div
-        className={`flex ${isUser ? "justify-end" : "justify-start"} px-4 py-1`}
-      >
+      <>
         <div
-          className={`max-w-[70%] flex flex-col ${isUser ? "items-end" : "items-start"}`}
+          className={`flex ${isUser ? "justify-end" : "justify-start"} px-4 py-1`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={msg.imageUrl}
-            alt="Lampiran"
-            className={`rounded-2xl object-cover w-48 h-48 ${isUser ? "opacity-" + (msg.status === "sending" ? "70" : "100") : ""}`}
-          />
-          <span
-            className={`text-[10px] text-gray-400 mt-1 flex items-center gap-0.5 ${isUser ? "mr-1" : "ml-1"}`}
+          <div
+            className={`max-w-[70%] flex flex-col ${isUser ? "items-end" : "items-start"}`}
           >
-            {formatTime(msg.timestamp)}
-            {isUser && msg.status === "sent" && (
-              <svg
-                width="14"
-                height="10"
-                viewBox="0 0 16 11"
-                className="text-gray-400"
-              >
-                <path
-                  d="M1 5.5L5 9.5L15 1"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </span>
+            {/* Container fixes aspect ratio so image is never forced into a square crop */}
+            <button
+              type="button"
+              onClick={() => setZoomOpen(true)}
+              className="rounded-2xl overflow-hidden max-w-[156px] max-h-[216px] block focus:outline-none"
+              aria-label="Lihat gambar penuh"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={msg.imageUrl}
+                alt="Lampiran"
+                className={`block w-auto h-auto max-w-[156px] max-h-[216px] object-contain rounded-2xl ${
+                  isUser
+                    ? "opacity-" + (msg.status === "sending" ? "70" : "100")
+                    : ""
+                }`}
+              />
+            </button>
+            <span
+              className={`text-[10px] text-gray-400 mt-1 flex items-center gap-0.5 ${isUser ? "mr-1" : "ml-1"}`}
+            >
+              {formatTime(msg.timestamp)}
+              {isUser && msg.status === "sent" && (
+                <svg
+                  width="14"
+                  height="10"
+                  viewBox="0 0 16 11"
+                  className="text-gray-400"
+                >
+                  <path
+                    d="M1 5.5L5 9.5L15 1"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </span>
+          </div>
         </div>
-      </div>
+
+        {/* ── Full-screen zoom lightbox ── */}
+        {zoomOpen && (
+          <div
+            className={`
+              fixed inset-0 z-[100]
+              bg-black/80 backdrop-blur-sm
+              flex items-center justify-center px-4
+              transition-all duration-200
+              ${zoomOpen ? "opacity-100" : "opacity-0"}
+            `}
+            onClick={() => setZoomOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setZoomOpen(false)}
+              aria-label="Tutup"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+            >
+              <X size={18} />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={msg.imageUrl}
+              alt="Lampiran (perbesar)"
+              className="max-w-full max-h-full object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
+      </>
     );
   }
 

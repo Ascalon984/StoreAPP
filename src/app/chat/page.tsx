@@ -11,41 +11,46 @@ function ChatPageInner() {
   const searchParams = useSearchParams();
   const sellerIdParam = searchParams.get("sellerId");
 
-  const [selectedSeller, setSelectedSeller] = useState<{
-    id: string;
-    name: string;
-  } | null>(() => {
+  const selectedSeller = (() => {
     if (sellerIdParam) {
+      if (sellerIdParam === "cs") {
+        return { id: "cs", name: "Customer Service" };
+      }
       const seller = MOCK_SELLERS.find((s) => s.id === sellerIdParam);
       if (seller) {
         return { id: seller.id, name: seller.name };
       }
     }
     return null;
-  });
+  })();
+
+  const handleSelectSeller = useCallback(
+    (seller: { id: string; name: string }) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.set("sellerId", seller.id);
+      router.push(`/chat?${newSearchParams.toString()}`);
+    },
+    [router, searchParams]
+  );
 
   const handleBack = useCallback(() => {
     if (selectedSeller) {
-      if (sellerIdParam) {
-        if (window.history.length > 1) {
-          router.back();
-        } else {
-          router.push("/");
-        }
+      if (window.history.length > 1) {
+        router.back();
       } else {
-        setSelectedSeller(null);
+        router.push("/chat");
       }
     } else if (window.history.length > 1) {
       router.back();
     } else {
       router.push("/profile");
     }
-  }, [router, selectedSeller, sellerIdParam]);
+  }, [router, selectedSeller]);
 
   if (!selectedSeller) {
     return (
       <ChatList
-        onSelectSeller={setSelectedSeller}
+        onSelectSeller={handleSelectSeller}
         onBack={handleBack}
       />
     );
