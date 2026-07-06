@@ -11,8 +11,8 @@ import { GridColorIcon } from "./GridColorIcon";
 // Urutan: Pulsa, Paket Data, Listrik, E-Wallet, Voucher, Game, Hiburan, Produktivitas
 const iconPathMap: Record<string, string> = {
   elektronik: "/icons/elektronik.png",
-  fashion: "/icons/fashion.png",
-  rumah: "/icons/rumah.png",
+  pakaian: "/icons/fashion.png",
+  "rumah tangga": "/icons/rumah.png",
   kecantikan: "/icons/kecantikan.png",
   makanan: "/icons/makanan.png",
   hobi: "/icons/hobi.png",
@@ -22,8 +22,8 @@ const iconPathMap: Record<string, string> = {
 
 const iconClassMap: Record<string, string> = {
   elektronik: "scale-100",
-  fashion: "scale-100",
-  rumah: "scale-100",
+  pakaian: "scale-100",
+  "rumah tangga": "scale-100",
   kecantikan: "scale-90",
   makanan: "scale-100",
   hobi: "scale-95",
@@ -64,6 +64,13 @@ function CategoryItem({
   icon: React.ReactNode;
   onClick: () => void;
 }) {
+  // Tentukan ukuran font berdasarkan panjang label
+  const getFontSize = (text: string) => {
+    if (text.length > 14) return "text-[9px]";
+    if (text.length > 11) return "text-[10px]";
+    return "text-[11px]";
+  };
+
   return (
     <button
       onClick={onClick}
@@ -108,13 +115,13 @@ function CategoryItem({
       <div className="mt-[2px] flex items-start justify-center">
         <span
           className={`
-        text-center
-        leading-[1.1]
-        max-w-[72px]
-        break-words
-        ${label.length > 14 ? "text-[10px]" : "text-[11px]"}
-        ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
-      `}
+    text-center
+    leading-[1.1]
+    max-w-[72px]
+    truncate whitespace-nowrap
+    ${getFontSize(label)}
+    ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
+  `}
         >
           {label}
         </span>

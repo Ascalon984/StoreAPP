@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Product } from "@/lib/types";
-import { formatRupiah, formatSold } from "@/lib/utils";
+import { formatRupiah, formatSold, formatCompactNumber } from "@/lib/utils";
 import ProductImage from "./ProductImage";
 import { useReviewStore } from "@/store/useReviewStore";
+import { MOCK_SELLERS } from "@/lib/mockSellers";
+
 // import { useCartStore } from "@/store/useCartStore";
 // import { useToastStore } from "@/store/useToastStore";
 
@@ -19,6 +21,8 @@ export default function ProductCard({
   isTall,
 }: ProductCardProps) {
   const { getReviewsForProduct } = useReviewStore();
+  const seller =
+    MOCK_SELLERS.find((s) => s.id === product.sellerId) ?? MOCK_SELLERS[0];
   // Quick cart button dihapus - user harus membuka detail produk untuk melihat variasi
   // const { addItem } = useCartStore();
   // const { showToast } = useToastStore();
@@ -122,7 +126,7 @@ export default function ProductCard({
     <Link href={`/product/${product.slug}`} className="block group">
       <article
         className="
-    bg-white rounded-[11px]
+    bg-white rounded-[10px]
     shadow-layer-xs 
     transition-all duration-200 overflow-hidden 
     active:scale-[0.985] 
@@ -175,46 +179,60 @@ export default function ProductCard({
           )}
         </div>
 
-        <div className="px-2.5 pb-2 pt-1.5 flex flex-col flex-1 gap-[3px] z-10 relative bg-white/50 backdrop-blur-sm">
+        <div className="px-2.5 pb-1.5 pt-1.5 flex flex-col flex-1 gap-[1px] z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
-            className={`text-gray-700 line-clamp-2 font-normal leading-[1.12] min-h-[2.2em] tracking-[0.01em] ${titleSize}`}
+            className={`
+      text-gray-700
+      line-clamp-2
+      font-normal
+      leading-[1.06]
+      min-h-[2.02em]
+      tracking-[0.01em]
+      ${titleSize}
+    `}
           >
             {product.name}
           </h3>
 
+          {/* Seller Location */}
+          <div className="text-[9px] text-gray-400 truncate leading-none">
+            {seller?.kabupaten}
+          </div>
+
           <div className="flex items-baseline gap-1 w-full overflow-hidden whitespace-nowrap">
             <span
               className={`
-                ${priceSize}
-                font-semibold
-                tracking-[0.02em]
-                text-gray-700
-                truncate
-                flex-shrink-0
-              `}
+        ${priceSize}
+        font-semibold
+        tracking-[0.02em]
+        text-gray-700
+        truncate
+        flex-shrink-0
+      `}
             >
               {displayPrice}
             </span>
+
             {!hasVariants &&
               product.originalPrice &&
               product.originalPrice > product.price && (
                 <span
                   className={`
-    ${originalPriceSize}
-    text-gray-400
-    line-through
-    font-normal
-    tracking-[0.015em]
-    truncate
-    flex-shrink
-  `}
+            ${originalPriceSize}
+            text-gray-400
+            line-through
+            font-normal
+            tracking-[0.015em]
+            truncate
+            flex-shrink
+          `}
                 >
                   {formatRupiah(product.originalPrice)}
                 </span>
               )}
           </div>
 
-          <div className="flex items-end justify-between mt-auto pt-[0.5px] relative z-20">
+          <div className="flex items-end justify-between mt-auto relative z-20">
             {/* LEFT: Rating */}
             <div className="flex items-center gap-0.5 text-[10px] font-medium text-gray-600">
               <Star
@@ -230,20 +248,9 @@ export default function ProductCard({
             {/* RIGHT: Sold */}
             <div className="text-[10px] text-gray-400 font-normal tracking-[0.015em]">
               {(product.sold || 0) > 0
-                ? `${formatSold(product.sold)} terjual`
+                ? `${formatCompactNumber(product.sold)} terjual`
                 : "Belum terjual"}
             </div>
-
-            {/* Quick cart button dihapus - user membuka product detail untuk lihat variasi */}
-            {/* 
-            <button 
-              onClick={handleAddToCart}
-              className="w-7 h-7 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors active:scale-95 shadow-sm border border-emerald-100/50 relative z-30"
-              aria-label="Add to cart"
-            >
-              <ShoppingCart size={13} strokeWidth={2.5} />
-            </button>
-            */}
           </div>
         </div>
       </article>

@@ -172,7 +172,7 @@ export default function ChatList({ onSelectSeller, onBack }: ChatListProps) {
                 <div className="flex-shrink-0">
                   <div
                     className={`
-                w-9 h-9 rounded-full bg-gray-100 border
+                w-10 h-10 rounded-full bg-gray-100 border
                 flex items-center justify-center overflow-hidden
                 transition-all duration-300
                 ${

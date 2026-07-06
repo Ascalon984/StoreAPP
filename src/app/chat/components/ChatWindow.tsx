@@ -42,7 +42,11 @@ interface ChatWindowProps {
 
 export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   const searchParams = useSearchParams();
-  const sourceParam = searchParams.get("source") as "profile" | "product" | "order" | null;
+  const sourceParam = searchParams.get("source") as
+    | "profile"
+    | "product"
+    | "order"
+    | null;
   const source = sourceParam || "profile";
   const productSlug = searchParams.get("productSlug");
   const orderId = searchParams.get("orderId");
@@ -51,7 +55,9 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   const [inputText, setInputText] = useState("");
   const [isAgentTyping, setIsAgentTyping] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
-  const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
+  const [attachmentPreview, setAttachmentPreview] = useState<string | null>(
+    null,
+  );
 
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -62,10 +68,15 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   const isCSChat = seller.id === "cs";
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const showQuickReplies = isCSChat && userMessageCount === 0;
-  const showCollapsedQuick = isCSChat && (userMessageCount === 1 || userMessageCount === 2);
+  const showCollapsedQuick =
+    isCSChat && (userMessageCount === 1 || userMessageCount === 2);
 
   const orderStatusParam =
-    (searchParams.get("orderStatus") as "pending" | "processing" | "completed" | null) || null;
+    (searchParams.get("orderStatus") as
+      | "pending"
+      | "processing"
+      | "completed"
+      | null) || null;
   const totalParam = searchParams.get("total");
   const imagesParam = searchParams.get("images");
   const parsedImages = imagesParam
@@ -73,11 +84,15 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
     : [];
   const parsedTotal = totalParam ? Number(totalParam) : undefined;
 
-  const dynamicQuickReplies = getQuickReplies(source, orderStatusParam ?? undefined);
+  const dynamicQuickReplies = getQuickReplies(
+    source,
+    orderStatusParam ?? undefined,
+  );
 
   const scrollToBottom = useCallback((force = false) => {
     if (!scrollContainerRef.current) return;
-    const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
+    const { scrollHeight, scrollTop, clientHeight } =
+      scrollContainerRef.current;
     const isNearBottom = scrollHeight - scrollTop - clientHeight < 120;
     if (isNearBottom || force) {
       messagesEndRef.current?.scrollIntoView();
@@ -200,7 +215,24 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-gray-50/70 z-50">
+    <div
+      className="fixed inset-0 flex flex-col bg-gray-50 z-50"
+      style={{
+        backgroundImage: `
+      linear-gradient(
+        to bottom,
+        rgba(249,250,251,0.96) 0%,
+        rgba(249,250,251,0.90) 12%,
+        rgba(249,250,251,0.78) 28%,
+        rgba(249,250,251,0.65) 55%
+      ),
+      url('/illustrations/seigaiha.png')
+    `,
+        backgroundRepeat: "repeat",
+        backgroundAttachment: "fixed",
+        backgroundSize: "500px",
+      }}
+    >
       <input
         ref={fileInputRef}
         type="file"

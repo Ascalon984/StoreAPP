@@ -25,7 +25,7 @@ export default function ChatHeader({
         ${
           isOfficial
             ? "bg-[#048750] shadow-sm"
-            : "bg-white border-b border-gray-200"
+            : "bg-white border-b border-gray-100"
         }
       `}
     >

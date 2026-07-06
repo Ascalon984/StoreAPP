@@ -30,6 +30,17 @@ export function formatSold(count: number): string {
   return String(count);
 }
 
+// lib/utils.ts
+export const formatCompactNumber = (num: number): string => {
+  if (num >= 1000000) {
+    return `${(num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1)}jt`;
+  }
+  if (num >= 1000) {
+    return `${(num / 1000).toFixed(num % 1000 === 0 ? 0 : 1)}rb`;
+  }
+  return num.toString();
+};
+
 export function timeAgo(dateString: string): string {
   const now = new Date();
   const date = new Date(dateString);
