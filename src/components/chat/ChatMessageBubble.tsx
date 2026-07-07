@@ -5,6 +5,7 @@ import { Copy, Check, X } from "lucide-react";
 import { Message } from "@/lib/chat/types";
 import ChatProductSnippet from "./ChatProductSnippet";
 import ChatOrderSnippet from "./ChatOrderSnippet";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 interface ChatMessageBubbleProps {
   msg: Message;
@@ -124,30 +125,61 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
         {/* ── Full-screen zoom lightbox ── */}
         {zoomOpen && (
           <div
-            className={`
-              fixed inset-0 z-[100]
-              bg-black/80 backdrop-blur-sm
-              flex items-center justify-center px-4
-              transition-all duration-200
-              ${zoomOpen ? "opacity-100" : "opacity-0"}
-            `}
+            className="fixed inset-0 z-[100] bg-black/90"
             onClick={() => setZoomOpen(false)}
           >
+            {/* Close button */}
             <button
               type="button"
               onClick={() => setZoomOpen(false)}
               aria-label="Tutup"
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
             >
               <X size={18} />
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={msg.imageUrl}
-              alt="Lampiran (perbesar)"
-              className="max-w-full max-h-full object-contain rounded-lg"
+
+            {/* Zoom Area */}
+            <div
+              className="w-full h-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
-            />
+            >
+              <TransformWrapper
+                initialScale={1}
+                minScale={1}
+                maxScale={4}
+                centerOnInit
+                centerZoomedOut
+                limitToBounds
+                doubleClick={{
+                  disabled: true,
+                }}
+                wheel={{
+                  disabled: true,
+                }}
+                pinch={{
+                  disabled: false,
+                }}
+                panning={{
+                  disabled: false,
+                }}
+                velocityAnimation={{
+                  disabled: false,
+                }}
+              >
+                <TransformComponent
+                  wrapperClass="!w-screen !h-screen"
+                  contentClass="flex items-center justify-center"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={msg.imageUrl}
+                    alt="Lampiran"
+                    className="max-w-full max-h-full object-contain select-none"
+                    draggable={false}
+                  />
+                </TransformComponent>
+              </TransformWrapper>
+            </div>
           </div>
         )}
       </>
