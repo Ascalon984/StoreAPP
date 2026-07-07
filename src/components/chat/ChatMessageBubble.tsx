@@ -79,24 +79,55 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
           <div
             className={`max-w-[70%] flex flex-col ${isUser ? "items-end" : "items-start"}`}
           >
-            {/* Container fixes aspect ratio so image is never forced into a square crop */}
-            <button
-              type="button"
-              onClick={() => setZoomOpen(true)}
-              className="rounded-2xl overflow-hidden max-w-[156px] max-h-[216px] block focus:outline-none"
-              aria-label="Lihat gambar penuh"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={msg.imageUrl}
-                alt="Lampiran"
-                className={`block w-auto h-auto max-w-[156px] max-h-[216px] object-contain rounded-2xl ${
+            {/* Bubble wrapper: image + caption inside one rounded container */}
+            <div
+              className={`
+                rounded-2xl
+                overflow-hidden
+                p-1
+                ${
                   isUser
-                    ? "opacity-" + (msg.status === "sending" ? "70" : "100")
-                    : ""
-                }`}
-              />
-            </button>
+                    ? `bg-[#065F46] ${
+                        msg.status === "sending" ? "opacity-70" : "opacity-100"
+                      }`
+                    : "bg-white border border-gray-100 shadow-xs"
+                }
+              `}
+            >
+              <button
+                type="button"
+                onClick={() => setZoomOpen(true)}
+                className="block w-fit max-w-[220px] overflow-hidden rounded-xl focus:outline-none"
+                aria-label="Lihat gambar penuh"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={msg.imageUrl}
+                  alt="Lampiran"
+                  className="block w-auto h-auto max-w-[220px] max-h-[260px] object-contain"
+                />
+              </button>
+
+              {/* Caption, only if there's text */}
+              {msg.text && (
+                <div
+                  className={`
+                    border-t
+                    ${isUser ? "border-white/10" : "border-gray-100"}
+                    px-2 py-1.5
+                    text-[14px]
+                    leading-relaxed
+                    whitespace-pre-wrap
+                    break-words
+                    [overflow-wrap:anywhere]
+                    ${isUser ? "text-white" : "text-gray-800"}
+                  `}
+                >
+                  {msg.text}
+                </div>
+              )}
+            </div>
+
             <span
               className={`text-[10px] text-gray-400 mt-1 flex items-center gap-0.5 ${isUser ? "mr-1" : "ml-1"}`}
             >
@@ -197,7 +228,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
         {/* Bubble */}
         {isUser ? (
           <div
-            className={`bg-[#065F46] text-white px-3.5 py-2.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed break-words [overflow-wrap:anywhere] ${
+            className={`bg-[#065F46] text-white px-2 py-1.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed break-words [overflow-wrap:anywhere] ${
               msg.status === "sending" ? "opacity-70" : "opacity-100"
             }`}
           >
@@ -207,7 +238,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
             {msg.text}
           </div>
         ) : (
-          <div className="bg-white border border-gray-100 shadow-xs px-3.5 py-2.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere]">
+          <div className="bg-white border border-gray-100 shadow-xs px-2 py-1.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere]">
             {msg.text}
           </div>
         )}

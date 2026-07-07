@@ -25,44 +25,6 @@ export default function ChatInputBar({
 
   return (
     <div className="flex-shrink-0 bg-white border-t border-gray-100">
-      {/* ── Attachment Preview ── */}
-      {attachmentPreview && (
-        <div className="px-3 pt-2 pl-[44px]">
-          <div className="relative inline-block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={attachmentPreview}
-              alt="Preview"
-              className="
-                p-2
-                text-gray-500
-                hover:text-emerald-600
-                hover:bg-emerald-50
-                rounded-full
-                transition-all
-              "
-            />
-
-            <button
-              onClick={onClearAttachment}
-              aria-label="Hapus lampiran"
-              className="
-                absolute -top-1.5 -right-1.5
-                w-4.5 h-4.5
-                rounded-full
-                bg-red-500
-                text-white
-                text-[9px]
-                flex items-center justify-center
-                shadow-sm
-              "
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* ── Input Row ── */}
       <div className="flex items-end gap-1.5 px-3 py-2 pb-[calc(env(safe-area-inset-bottom)+8px)]">
         {/* Plus */}

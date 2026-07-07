@@ -316,7 +316,7 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
           onInputChange={handleInputChange}
           onSend={handleSend}
           onPickAttachment={handlePickAttachment}
-          attachmentPreview={null}
+          attachmentPreview={attachmentPreview}
           onClearAttachment={clearAttachment}
           inputRef={inputRef}
         />
