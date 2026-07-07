@@ -236,14 +236,15 @@ export default function CategoryProductPage({
             active:scale-90
             transition-all duration-150
             flex-shrink-0
+            -ml-1
           "
             aria-label="Kembali"
           >
             <ChevronLeft size={23} strokeWidth={2.5} />
           </button>
 
-          <div className="flex-1 min-w-0 -ml-1">
-            <h1 className="text-[15px] font-bold text-gray-800 tracking-tight capitalize truncate">
+          <div className="flex-1 min-w-0 -ml-2.5">
+            <h1 className="text-[15px] font-semibold text-gray-700 tracking-[0.008em] capitalize truncate">
               {categoryName}
             </h1>
           </div>

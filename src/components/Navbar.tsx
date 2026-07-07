@@ -156,10 +156,6 @@ export default function Navbar() {
       <header className="w-full px-4 overflow-visible">
         <div className="max-w-container mx-auto">
           {/* ── Greeting Row ── */}
-          {/* Ukuran baris dikontrol lewat grid-template-rows (1fr <-> 0fr),
-              bukan height px. Ini menghindari browser harus menghitung ulang
-              tinggi konten (reflow) tiap frame — cukup 1x saat grid track
-              berubah, sisanya murni transform+opacity yang jalan di GPU. */}
           <div
             className="grid overflow-hidden transition-[grid-template-rows] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
             style={{ gridTemplateRows: isScrolled ? "0fr" : "1fr" }}

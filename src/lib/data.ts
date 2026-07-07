@@ -907,7 +907,7 @@ export const mockOrders: Order[] = [
     id: "o3",
     orderId: "ORD-54321",
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    status: "shipped",
+    status: "processing",
     items: [
       {
         productId: "s1",
