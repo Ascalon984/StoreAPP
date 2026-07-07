@@ -31,16 +31,16 @@ export default function ChatInputBar({
         <button
           onClick={onPickAttachment}
           className="
-  p-2.5
-  text-gray-500
-  hover:text-gray-700
-  transition-colors
-  flex-shrink-0
-  self-end
-  mb-[2px]
-"
+            p-2.5
+            text-gray-500
+            hover:text-gray-700
+            transition-colors
+            flex-shrink-0
+            self-end
+            mb-[2px]
+          "
         >
-          <Plus size={20} strokeWidth={2} />
+          <Plus size={20} strokeWidth={2.2} />
         </button>
 
         {/* Composer */}
@@ -58,16 +58,16 @@ export default function ChatInputBar({
               placeholder="Ketik pesan..."
               rows={1}
               className="
-          w-full
-          resize-none
-          bg-transparent
-          text-[14px]
-          text-gray-800
-          placeholder:text-gray-400
-          outline-none
-          leading-snug
-          max-h-[96px]
-        "
+                w-full
+                resize-none
+                bg-transparent
+                text-[14px]
+                text-gray-800
+                placeholder:text-gray-400
+                outline-none
+                leading-snug
+                max-h-[96px]
+              "
               style={{ minHeight: "20px" }}
             />
           </div>
@@ -78,16 +78,16 @@ export default function ChatInputBar({
               onClick={onSend}
               disabled={!canSend}
               className={`
-          w-8 h-8
-          flex items-center justify-center
-          rounded-full
-          transition-all duration-200
-          ${
-            canSend
-              ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-90 shadow-sm"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }
-        `}
+                w-8 h-8
+                flex items-center justify-center
+                rounded-full
+                transition-all duration-200
+                ${
+                  canSend
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-90 shadow-sm"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }
+              `}
             >
               <SendHorizontal
                 size={16}

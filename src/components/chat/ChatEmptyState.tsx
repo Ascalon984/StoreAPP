@@ -20,13 +20,12 @@ export default function ChatEmptyState() {
       />
 
       <div className="-mt-2 text-center">
-        <h3 className="text-[17px] font-extrabold text-gray-800 leading-tight">
+        <h3 className="text-[16px] font-semibold text-gray-700 leading-tight">
           Ada yang bisa kami bantu?
         </h3>
 
-        <p className="mt-2 text-[13px] leading-snug text-gray-400 font-medium max-w-[240px]">
-          Mulai percakapan dengan Customer Service untuk bantuan pesanan atau
-          akunmu.
+        <p className="mt-2 text-[12.5px] leading-snug text-gray-400 font-normal max-w-[240px]">
+          Mulai percakapan untuk bantuan terkait pesananmu
         </p>
       </div>
     </div>

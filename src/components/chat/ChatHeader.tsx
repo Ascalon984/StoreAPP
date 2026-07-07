@@ -1,6 +1,15 @@
 "use client";
 
-import { ArrowLeft, MoreVertical, Store } from "lucide-react";
+import {
+  ArrowLeft,
+  MoreVertical,
+  Store,
+  Flag,
+  Star,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 interface ChatHeaderProps {
   onBack: () => void;
@@ -17,7 +26,35 @@ export default function ChatHeader({
   isOfficial = false,
   onMore,
 }: ChatHeaderProps) {
-  const avatarText = name.substring(0, 2).toUpperCase();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // buka menu
+  const openMenu = () => {
+    setIsMounted(true);
+  };
+
+  const closeMenu = () => setMenuOpen(false); // unmount ditangani onTransitionEnd
+
+  useEffect(() => {
+    if (!menuOpen && !isMounted) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen, isMounted]);
+
+  useLayoutEffect(() => {
+    if (isMounted) {
+      requestAnimationFrame(() => setMenuOpen(true));
+    }
+  }, [isMounted]);
 
   return (
     <div
@@ -45,7 +82,7 @@ export default function ChatHeader({
           }
         `}
       >
-        <ArrowLeft size={24} strokeWidth={1.5} />
+        <ArrowLeft size={25} strokeWidth={1.5} />
       </button>
 
       {/* Avatar */}
@@ -95,16 +132,114 @@ export default function ChatHeader({
 
       {/* More Button (Seller Only) */}
       {!isOfficial && (
-        <button
-          onClick={onMore}
-          aria-label="Lainnya"
-          className="
-            w-8 h-8 flex items-center justify-center rounded-full -mr-2
-            text-gray-700 hover:bg-gray-100 active:scale-90 transition-all
-          "
-        >
-          <MoreVertical size={21} strokeWidth={1.8} />
-        </button>
+        <div className="relative -mr-2" ref={menuRef}>
+          <button
+            onClick={() => (menuOpen ? closeMenu() : openMenu())}
+            aria-label="Lainnya"
+            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-700"
+          >
+            <MoreVertical size={21} strokeWidth={1.8} />
+          </button>
+
+          {isMounted && (
+            <div
+              onTransitionEnd={() => {
+                if (!menuOpen) setIsMounted(false);
+              }}
+              className={`
+                absolute -translate-x-2.5 right-0 top-[calc(100%+6px)]
+                w-40 overflow-hidden rounded-lg
+                border border-gray-100 bg-white shadow-layer-sm
+                origin-top-right
+                transition-all duration-120 ease-out
+                -mt-2
+                ${
+                  menuOpen
+                    ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+                    : "opacity-0 -translate-y-1.5 scale-95 pointer-events-none"
+                }
+                z-50
+              `}
+            >
+              <button
+                onClick={() => {
+                  setIsFollowing((v) => !v);
+                }}
+                className="
+                  flex w-full items-center gap-2.5
+                  px-3 py-2
+                  text-left
+                  text-[12.5px] font-medium
+                  text-gray-700
+                  transition-colors
+                  hover:bg-gray-50
+                  active:bg-gray-100
+                "
+              >
+                <Star
+                  size={16}
+                  strokeWidth={2}
+                  className={
+                    isFollowing
+                      ? "fill-amber-500 text-amber-500"
+                      : "text-gray-700"
+                  }
+                />
+
+                <span>{isFollowing ? "Mengikuti" : "Ikuti Toko"}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  closeMenu();
+                }}
+                className="
+  flex w-full items-center gap-2.5
+  px-3 py-2
+  text-left
+  text-[12.5px] font-medium
+  text-gray-700
+  transition-colors
+  hover:bg-gray-50
+  active:bg-gray-100
+"
+              >
+                <Flag size={16} strokeWidth={2} />
+                <span>Laporkan Penjual</span>
+              </button>
+
+              <div className="mx-4 h-px bg-gray-100" />
+
+              <button
+                onClick={() => {
+                  setIsBlocked((v) => !v);
+                }}
+                className="
+    flex w-full items-center gap-2.5
+    px-3 py-2
+    text-left
+    text-[12.5px] font-medium
+    text-gray-700
+    transition-colors
+    hover:bg-gray-50
+    active:bg-gray-100
+  "
+              >
+                {isBlocked ? (
+                  <VolumeX size={16} strokeWidth={2} className="text-red-600" />
+                ) : (
+                  <Volume2
+                    size={16}
+                    strokeWidth={2}
+                    className="text-gray-700"
+                  />
+                )}
+
+                <span>{isBlocked ? "Dibisukan" : "Bisukan"}</span>
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

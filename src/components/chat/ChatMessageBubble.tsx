@@ -82,9 +82,9 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
             {/* Bubble wrapper: image + caption inside one rounded container */}
             <div
               className={`
-                rounded-2xl
                 overflow-hidden
                 p-1
+                ${isUser ? "rounded-2xl rounded-br-[8px]" : "rounded-2xl rounded-bl-[8px]"}
                 ${
                   isUser
                     ? `bg-[#065F46] ${
@@ -114,7 +114,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
                   className={`
                     border-t
                     ${isUser ? "border-white/10" : "border-gray-100"}
-                    px-2 py-1.5
+                    px-2.5 py-1.5
                     text-[14px]
                     leading-relaxed
                     whitespace-pre-wrap
@@ -228,7 +228,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
         {/* Bubble */}
         {isUser ? (
           <div
-            className={`bg-[#065F46] text-white px-2 py-1.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed break-words [overflow-wrap:anywhere] ${
+            className={`bg-[#065F46] text-white px-2.5 py-1.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed break-words [overflow-wrap:anywhere] ${
               msg.status === "sending" ? "opacity-70" : "opacity-100"
             }`}
           >
@@ -238,7 +238,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
             {msg.text}
           </div>
         ) : (
-          <div className="bg-white border border-gray-100 shadow-xs px-2 py-1.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere]">
+          <div className="bg-white border border-gray-100 shadow-xs px-2.5 py-1.5 rounded-2xl rounded-bl-sm text-[14px] leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere]">
             {msg.text}
           </div>
         )}
@@ -255,7 +255,7 @@ export default function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
             <button
               onClick={() => handleCopy(msg.text ?? "")}
               aria-label="Salin pesan"
-              className="text-gray-400 hover:text-gray-600 active:scale-90 transition"
+              className="-translate-x-1 text-gray-400 hover:text-gray-600 active:scale-90 transition"
             >
               {copied ? (
                 <Check size={12} className="text-green-500" />
