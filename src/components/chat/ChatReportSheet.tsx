@@ -73,13 +73,13 @@ export function ChatReportSheet({
       {/* Sheet */}
       <div
         className="
-    fixed inset-x-0 bottom-0 z-[80]
-    h-[75vh]
-    bg-white rounded-t-[20px]
-    shadow-xl
-    animate-in slide-in-from-bottom duration-300
-    flex flex-col
-  "
+          fixed inset-x-0 bottom-0 z-[80]
+          h-[73.5vh]
+          bg-white rounded-t-[20px]
+          shadow-xl
+          animate-in slide-in-from-bottom duration-300
+          flex flex-col
+        "
       >
         {/* Header */}
         <div className="relative flex items-center justify-center px-5 pt-5">
@@ -125,7 +125,7 @@ export function ChatReportSheet({
                     flex-shrink-0
                     text-[12px] font-medium
                     tracking-[-0.01em]
-                    transition-all active:scale-[1]
+                    transition-all active:scale-[0.98]
                     ${
                       active
                         ? "bg-emerald-600 border border-emerald-600 text-white"
@@ -151,12 +151,12 @@ export function ChatReportSheet({
                   className={`
                     w-full rounded-lg border px-3 py-2
                     flex items-center justify-between
-                    text-left text-[13px] font-medium
+                    text-left text-[12.5px] font-medium
                     transition-all
                     ${
                       active
-                        ? "border-emerald-300 bg-white text-gray-700"
-                        : "border-gray-100 bg-white text-gray-600 hover:border-gray-200 hover:bg-gray-50"
+                        ? "border-emerald-400 bg-white text-gray-700"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-200 hover:bg-gray-50"
                     }
                   `}
                 >
@@ -174,9 +174,9 @@ export function ChatReportSheet({
 
           {/* Detail box */}
           <div className="mt-5">
-            <label className="flex items-center gap-1 text-[13px] font-medium text-gray-700">
+            <label className="flex items-center gap-1 text-[13px] font-semibold text-gray-700 tracking-[0.01em]">
               Detail laporan
-              <span className="text-[12px] font-normal text-gray-400">
+              <span className="text-[12px] font-normal text-gray-500">
                 (Opsional)
               </span>
             </label>
