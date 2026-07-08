@@ -1,7 +1,7 @@
 export interface Message {
   id: string;
-  role: 'user' | 'agent';
-  type: 'text' | 'image' | 'product' | 'order';
+  role: "user" | "agent";
+  type: "text" | "image" | "product" | "order";
   text?: string;
   imageUrl?: string;
   productSnippet?: {
@@ -12,15 +12,16 @@ export interface Message {
   };
   orderSnippet?: {
     orderId: string;
+    name: string;
     total: number;
     imageUrls?: string[];
   };
   timestamp: Date;
-  status?: 'sending' | 'sent';
+  status?: "sending" | "sent";
 }
 
 export interface QuickReply {
   id: string;
   text: string;
-  context?: 'order' | 'product' | 'payment' | 'complaint' | 'profile';
+  context?: "order" | "product" | "payment" | "complaint" | "profile";
 }

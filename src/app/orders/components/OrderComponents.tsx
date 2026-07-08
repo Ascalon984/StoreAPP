@@ -220,7 +220,9 @@ export function OrderCard({
                       order.status,
                     )}&total=${order.total}&images=${encodeURIComponent(
                       image,
-                    )}&sellerId=${encodeURIComponent(sellerId)}`,
+                    )}&sellerId=${encodeURIComponent(
+                      sellerId,
+                    )}&orderName=${encodeURIComponent(p?.name || "Pesanan")}`,
                   );
                 }}
                 className="px-3 py-1.5 rounded-[6px]

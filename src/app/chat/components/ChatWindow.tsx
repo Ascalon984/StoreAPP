@@ -121,9 +121,12 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
       }
     }
 
+    const orderNameParam = searchParams.get("orderName"); // atau sumber lain
+
     if (source === "order" && orderId) {
       const snippet: Message["orderSnippet"] = {
         orderId,
+        name: orderNameParam ? decodeURIComponent(orderNameParam) : "Pesanan",
         total: parsedTotal ?? 0,
         imageUrls:
           parsedImages.length > 0
@@ -205,7 +208,7 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
       setIsAgentTyping(false);
       const agentReply = generateAgentReply(userMsg.text ?? "", userMsg.type);
       setMessages((prev) => [...prev, agentReply]);
-      scrollToBottom(true);
+      scrollToBottom();
     }, delay);
   };
 
