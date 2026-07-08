@@ -10,6 +10,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { ChatReportSheet } from "./ChatReportSheet";
 
 interface ChatHeaderProps {
   onBack: () => void;
@@ -30,6 +31,7 @@ export default function ChatHeader({
   const [isMounted, setIsMounted] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [isReportSheetOpen, setIsReportSheetOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // buka menu
@@ -192,6 +194,7 @@ export default function ChatHeader({
               <button
                 onClick={() => {
                   closeMenu();
+                  setIsReportSheetOpen(true);
                 }}
                 className="
   flex w-full items-center gap-2.5
@@ -241,6 +244,12 @@ export default function ChatHeader({
           )}
         </div>
       )}
+
+      <ChatReportSheet
+        show={isReportSheetOpen}
+        onClose={() => setIsReportSheetOpen(false)}
+        sellerName={name}
+      />
     </div>
   );
 }

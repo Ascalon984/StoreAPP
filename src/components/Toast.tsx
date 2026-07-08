@@ -65,12 +65,12 @@ export default function Toast() {
 
   return (
     <div
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-[999] w-auto max-w-[80%] touch-none select-none ${animationClass}`}
+      className={`fixed left-1/2 top-1/2 z-[999] w-[80%] max-w-sm touch-none select-none ${animationClass}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{
-        transform: `translate(calc(-50% + ${dragX}px), 0)`,
+        transform: `translate(calc(-50% + ${dragX}px), -50%)`,
         opacity,
         transition: isDragging.current
           ? "none"
@@ -79,11 +79,12 @@ export default function Toast() {
     >
       <div
         className={`
-        px-4 py-2.5 rounded-2xl shadow-md cursor-grab active:cursor-grabbing
-        ${type === "error" ? "bg-red-500" : "bg-gray-700"}
-      `}
+    px-5 py-2 rounded-xl shadow-md
+    cursor-grab active:cursor-grabbing
+    ${type === "error" ? "bg-rose-500/90" : "bg-gray-600/90"}
+  `}
       >
-        <p className="text-[12px] font-medium text-white text-center leading-snug break-words line-clamp-2">
+        <p className="text-[12px] font-medium text-white text-left leading-5 break-words line-clamp-2">
           {message}
         </p>
       </div>

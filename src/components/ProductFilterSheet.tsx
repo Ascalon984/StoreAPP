@@ -114,7 +114,7 @@ export function ProductFilterSheet({
         className="
           fixed bottom-0 inset-x-0 z-[80]
           bg-white
-          rounded-t-[28px]
+          rounded-t-[20px]
           px-4 pt-3
           pb-[calc(env(safe-area-inset-bottom)+20px)]
           shadow-[0_-8px_40px_rgba(0,0,0,0.08)]
