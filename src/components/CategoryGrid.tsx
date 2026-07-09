@@ -120,6 +120,11 @@ function CategoryItem({
     max-w-[72px]
     truncate whitespace-nowrap
     ${getFontSize(label)}
+    ${
+      label === "Rumah Tangga" || label === "Kecantikan"
+        ? "translate-y-[1.5px]"
+        : ""
+    }
     ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}
   `}
         >

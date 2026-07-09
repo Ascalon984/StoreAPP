@@ -232,13 +232,18 @@ export default function HighlightSection({
       <div className="mx-1.5 rounded-t-lg bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] px-3 pt-1.5 pb-1.5 relative overflow-hidden">
         <div className="relative flex items-center justify-between">
           <div>
-            <h3 className="text-[11.5px] font-bold uppercase tracking-[0.08em] text-white/95 leading-none">
+            <h3
+              className="text-[12px] font-bold uppercase tracking-[0.06em] text-white leading-none"
+              style={{
+                textShadow: "0 1px 1px rgba(0,0,0,0.18)",
+              }}
+            >
               Promo Terbatas
             </h3>
           </div>
 
           <div className="absolute -top-[8px] -right-[11.5px] z-10">
-            <span className="block rounded-bl-xl rounded-tr-lg px-1.5 py-[5px] text-[9.5px] font-medium tracking-[0.008em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500">
+            <span className="block rounded-bl-xl rounded-tr-lg px-2 py-[5px] text-[9px] font-medium tracking-[0.008em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500 translate-x-[0.5px]">
               3 Hari Lagi
             </span>
           </div>
@@ -269,10 +274,6 @@ export default function HighlightSection({
           <>
             <div
               ref={scrollRef}
-              // PERUBAHAN UTAMA:
-              // 1. max-width-[356px] -> Memaksa container hanya muat 2 card (176*2 + 4 gap = 356px)
-              // 2. mx-auto -> Centered
-              // 3. snap-mandatory -> Memaksa snap tiap 1 card (terlihat geser 2 per 2)
               className={`flex gap-1 hide-scrollbar snap-x snap-mandatory max-w-[356px] mx-auto transition-opacity duration-300 ${
                 animateIn
                   ? "overflow-x-auto opacity-100"
@@ -282,7 +283,6 @@ export default function HighlightSection({
               {displayProducts.map((product, i) => (
                 <div
                   key={product.id}
-                  // w-[176px] disamahkan dengan max-w-[356px] agar pas 2 card
                   className={`flex-shrink-0 snap-start w-[175px] transition-[transform,opacity] duration-500 ease-out ${
                     animateIn
                       ? "translate-x-0 opacity-100"
@@ -298,12 +298,23 @@ export default function HighlightSection({
                 </div>
               ))}
               <div className="flex-shrink-0 w-[88px]">
-                <div className="h-[82px] rounded-lg border border-dashed border-gray-200 bg-white flex flex-col justify-center items-end px-2">
+                <div
+                  className="
+                    h-[82px]
+                    rounded-lg
+                    bg-gradient-to-br
+                    from-white
+                    to-gray-50
+                    shadow-layer-xs
+                    flex flex-col justify-center items-end
+                    px-2
+                    "
+                >
                   <img
                     src="/icons/closing deals.png"
                     alt=""
                     draggable={false}
-                    className="w-full h-[42px] object-contain opacity-95 pointer-events-none -mr-2"
+                    className="w-full h-[42px] object-contain opacity-95 pointer-events-none -mr-2 translate-y-[3px]"
                   />
 
                   <p className="mt-1.5 text-right leading-tight">

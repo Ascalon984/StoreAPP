@@ -155,6 +155,7 @@ export default function ProductCard({
           <div
             className="
             absolute top-0 right-0 z-30
+            translate-x-[1.5px]
             px-2.5 py-1
             bg-gradient-to-l from-rose-500 to-rose-400
             text-white text-[10px] font-medium
@@ -198,33 +199,33 @@ export default function ProductCard({
         <div className="px-2.5 py-1 flex flex-col flex-1 gap-0.5 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
             className={`
-      text-gray-700
-      line-clamp-2
-      font-normal
-      leading-[1.03]
-      min-h-[1.94em]
-      tracking-[0.01em]
-      ${titleSize}
-    `}
+              text-gray-700
+              line-clamp-2
+              font-normal
+              leading-[1.03]
+              min-h-[1.94em]
+              tracking-[0.01em]
+              ${titleSize}
+            `}
           >
             {product.name}
           </h3>
 
           {/* Seller Location */}
-          <div className="text-[9px] text-gray-400 truncate leading-tight">
+          <div className="text-[9px] text-gray-400 truncate leading-tight translate-y-[2px]">
             {normalizeLocation(seller?.kabupaten)}
           </div>
 
           <div className="flex items-baseline gap-1 w-full overflow-hidden whitespace-nowrap">
             <span
               className={`
-        ${priceSize}
-        font-semibold
-        tracking-[0.02em]
-        text-gray-700
-        truncate
-        flex-shrink-0
-      `}
+                ${priceSize}
+                font-semibold
+                tracking-[0.02em]
+                text-gray-700
+                truncate
+                flex-shrink-0
+              `}
             >
               {displayPrice}
             </span>
