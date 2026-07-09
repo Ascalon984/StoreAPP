@@ -112,7 +112,7 @@ function HighlightCard({
 
   if (isHabis) {
     return (
-      <div className="block flex-shrink-0 w-[176px] cursor-not-allowed select-none">
+      <div className="block flex-shrink-0 w-[175px] cursor-not-allowed select-none">
         {cardContent}
       </div>
     );
@@ -121,7 +121,7 @@ function HighlightCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="block flex-shrink-0 w-[176px] group"
+      className="block flex-shrink-0 w-[175px] group"
     >
       {cardContent}
     </Link>
@@ -214,7 +214,7 @@ export default function HighlightSection({
           timeout2 = setTimeout(() => {
             if (el) el.style.scrollBehavior = "auto";
           }, 1500);
-        }, 3000);
+        }, 2500);
       });
 
       return () => {
@@ -283,7 +283,7 @@ export default function HighlightSection({
                 <div
                   key={product.id}
                   // w-[176px] disamahkan dengan max-w-[356px] agar pas 2 card
-                  className={`flex-shrink-0 snap-start w-[176px] transition-[transform,opacity] duration-500 ease-out ${
+                  className={`flex-shrink-0 snap-start w-[175px] transition-[transform,opacity] duration-500 ease-out ${
                     animateIn
                       ? "translate-x-0 opacity-100"
                       : "translate-x-3 opacity-0"
@@ -297,7 +297,25 @@ export default function HighlightSection({
                   <HighlightCard product={product} index={i} />
                 </div>
               ))}
-              {/* Hilangkan spacer w-1 agar tidak menambah lebar scrub kontainer */}
+              <div className="flex-shrink-0 w-[88px]">
+                <div className="h-[82px] rounded-lg border border-dashed border-gray-200 bg-white flex flex-col justify-center items-end px-2">
+                  <img
+                    src="/icons/closing deals.png"
+                    alt=""
+                    draggable={false}
+                    className="w-full h-[42px] object-contain opacity-95 pointer-events-none -mr-2"
+                  />
+
+                  <p className="mt-1.5 text-right leading-tight">
+                    <span className="block text-[8px] font-medium text-gray-400">
+                      Selalu Ada
+                    </span>
+                    <span className="block text-[9px] font-semibold tracking-[0.01em] text-gray-600">
+                      Promo Terbaik
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Fade peek kanan (Posisi dipindah ke luar max-width) */}
@@ -307,7 +325,7 @@ export default function HighlightSection({
                 right-[4px]
                 top-0
                 h-full
-                w-4
+                w-3
                 pointer-events-none
                 transition-opacity duration-300
                 ${animateIn ? "opacity-100" : "opacity-0"}

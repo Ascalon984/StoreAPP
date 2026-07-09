@@ -8,11 +8,7 @@ import { Product } from "@/lib/types";
 import ProductCard from "./ProductCard";
 import { mockHighlightProducts } from "@/lib/data";
 import HighlightSection from "./HighlightSection";
-import {
-  TrendingDown,
-  TrendingUp,
-  Star,
-} from "lucide-react";
+import { TrendingDown, TrendingUp, Star } from "lucide-react";
 
 /* ── Sort ─────────────────────────────────────────── */
 const SORT_OPTIONS = [
@@ -61,8 +57,6 @@ function CardSkeleton({ isTall }: { isTall?: boolean } = {}) {
     </div>
   );
 }
-
-
 
 /* ── Empty State ──────────────────────────────────── */
 function EmptyState({ message }: { message: string }) {
@@ -190,7 +184,7 @@ export default function ProductGrid() {
 
             <Link
               href="/products/popular"
-              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform -translate-x-1"
+              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform -translate-x-1 translate-y-0.5"
             >
               Lihat Semua
             </Link>

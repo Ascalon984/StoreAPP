@@ -44,14 +44,25 @@ export interface Category {
 
 export interface Review {
   id: string;
+
+  // Relasi
   productId: string;
+  sellerId: string;
+
+  // Reviewer
   name: string;
+
+  // Isi ulasan
   rating: number;
   comment: string;
+
+  // Metadata
   createdAt: string;
   isVerified: boolean;
   likes?: number;
   dislikes?: number;
+
+  // Balasan penjual
   reply?: {
     adminName: string;
     comment: string;

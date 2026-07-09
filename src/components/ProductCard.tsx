@@ -15,6 +15,15 @@ interface ProductCardProps {
   isTall?: boolean;
 }
 
+const normalizeLocation = (location?: string) => {
+  if (!location) return "";
+
+  return location
+    .replace(/^Kabupaten\s+/i, "Kab. ")
+    .replace(/^Kab\s+/i, "Kab. ")
+    .replace(/^Kota\s+/i, "Kota ");
+};
+
 export default function ProductCard({
   product,
   index,
@@ -158,7 +167,7 @@ export default function ProductCard({
         )}
 
         <div
-          className={`relative w-full ${isTall ? "aspect-[4.4/4]" : "aspect-[5/4]"} bg-white overflow-hidden flex-shrink-0 z-10`}
+          className={`relative w-full ${isTall ? "aspect-[4.4/4]" : "aspect-[4.8/4]"} bg-white overflow-hidden flex-shrink-0 z-10`}
         >
           <ProductImage
             category={product.category}
@@ -186,14 +195,14 @@ export default function ProductCard({
           )}
         </div>
 
-        <div className="px-2.5 pb-1.5 pt-1.5 flex flex-col flex-1 gap-[1px] z-10 relative bg-white/50 backdrop-blur-sm">
+        <div className="px-2.5 py-1 flex flex-col flex-1 gap-0.5 z-10 relative bg-white/50 backdrop-blur-sm">
           <h3
             className={`
       text-gray-700
       line-clamp-2
       font-normal
-      leading-[1.06]
-      min-h-[2.02em]
+      leading-[1.03]
+      min-h-[1.94em]
       tracking-[0.01em]
       ${titleSize}
     `}
@@ -202,9 +211,8 @@ export default function ProductCard({
           </h3>
 
           {/* Seller Location */}
-          {/* Seller Location */}
           <div className="text-[9px] text-gray-400 truncate leading-tight">
-            {seller?.kabupaten}
+            {normalizeLocation(seller?.kabupaten)}
           </div>
 
           <div className="flex items-baseline gap-1 w-full overflow-hidden whitespace-nowrap">

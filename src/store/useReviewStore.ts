@@ -41,6 +41,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       const reviews: Review[] = reviewsArray.map((r: any) => ({
         id: r.id || `review-${Math.random()}`,
         productId: r.productId || r.product_id || 'all',
+        sellerId: r.sellerId || r.seller_id || undefined,
         name: r.user_name || r.name || r.userName,
         rating: Number(r.rating) || 5,
         comment: r.comment || '',

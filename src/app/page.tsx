@@ -52,8 +52,6 @@ export default async function Home() {
     <div className="min-h-screen bg-gray-50/80 pb-24 relative">
       {settings && <SettingsHydrator settings={settings} />}
       <CategoryBottomSheet allCategories={categories} />
-      {/* <CheckInButton /> */}
-
       <div className="bg-white relative z-0">
         <Banner initialBanners={banners} />
         <CategoryGrid initialCategories={categories} />
@@ -73,7 +71,7 @@ export default async function Home() {
   "
       >
         {/* Scrollable container for products */}
-        <div className="pb-24">
+        <div className="pb-2">
           <ProductGrid />
         </div>
       </div>

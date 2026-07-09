@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Review } from "@/lib/types";
+import { MOCK_SELLERS } from "@/lib/mockSellers";
 import TimeAgo from "@/components/TimeAgo";
 import { maskName } from "@/lib/utils";
 import { useReviewStore } from "@/store/useReviewStore";
@@ -417,12 +418,12 @@ export default function ProductReviews({
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">
-                      CS
+                      {MOCK_SELLERS.find(s => s.id === review.sellerId)?.name?.substring(0, 2).toUpperCase() || 'CS'}
                     </div>
 
                     <div className="min-w-0">
                       <span className="block text-[10px] font-semibold text-gray-600 truncate">
-                        {review.reply.adminName}
+                        {MOCK_SELLERS.find(s => s.id === review.sellerId)?.name || review.reply.adminName}
                       </span>
                     </div>
                   </div>

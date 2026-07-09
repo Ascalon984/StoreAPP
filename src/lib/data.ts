@@ -1066,10 +1066,11 @@ export const mockOrders: Order[] = [
 export const mockFavorites: Product[] = [products[0], products[1]];
 
 export const defaultReviews: Review[] = [
-  // ============ REVIEWS FOR iPhone 15 Pro Max (e2) ============
+  // ============ REVIEWS FOR iPhone 15 Pro Max (e2) - Sold by s5 ============
   {
     id: "rev-1",
     productId: "e2",
+    sellerId: "s5", // Seller yang menjual iPhone 15 Pro Max
     name: "Alex",
     rating: 5,
     comment: "Barang bagus, pengiriman sangat cepat. Sangat direkomendasikan!",
@@ -1085,6 +1086,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-2",
     productId: "e2",
+    sellerId: "s5", // Seller yang menjual iPhone 15 Pro Max
     name: "Sinta",
     rating: 4,
     comment: "Sesuai deskripsi, tapi dus sedikit penyok.",
@@ -1095,6 +1097,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-3",
     productId: "e2",
+    sellerId: "s5", // Seller yang menjual iPhone 15 Pro Max
     name: "Budi",
     rating: 5,
     comment: "Kamera luar biasa! Baterai tahan lama. Puas banget!",
@@ -1103,10 +1106,11 @@ export const defaultReviews: Review[] = [
     likes: 8,
   },
 
-  // ============ REVIEWS FOR Samsung Galaxy S24 (e1) ============
+  // ============ REVIEWS FOR Samsung Galaxy S24 (e1) - Sold by s2 ============
   {
     id: "rev-4",
     productId: "e1",
+    sellerId: "s2", // Seller yang menjual Samsung Galaxy S24
     name: "Rina",
     rating: 5,
     comment: "Layar sangat jernih, performa super cepat. Worth it!",
@@ -1122,6 +1126,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-5",
     productId: "e1",
+    sellerId: "s2", // Seller yang menjual Samsung Galaxy S24
     name: "Doni",
     rating: 4,
     comment: "Bagus cuma panas sedikit pas dipake gaming.",
@@ -1130,10 +1135,11 @@ export const defaultReviews: Review[] = [
     likes: 3,
   },
 
-  // ============ REVIEWS FOR Kaos Polo Ralph Lauren (f1) ============
+  // ============ REVIEWS FOR Kaos Polo Ralph Lauren (f1) - Sold by s3 ============
   {
     id: "rev-6",
     productId: "f1",
+    sellerId: "s3", // Seller yang menjual Kaos Polo Ralph Lauren
     name: "Maya",
     rating: 5,
     comment: "Bahannya adem, nyaman dipakai. Cocok untuk daily wear.",
@@ -1149,6 +1155,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-7",
     productId: "f1",
+    sellerId: "s3", // Seller yang menjual Kaos Polo Ralph Lauren
     name: "Tono",
     rating: 4,
     comment: "Size tepat, warna sesuai foto. Cuma agak mahal.",
@@ -1159,6 +1166,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-8",
     productId: "f1",
+    sellerId: "s3", // Seller yang menjual Kaos Polo Ralph Lauren
     name: "Sarah",
     rating: 5,
     comment: "Beli buat hadiah, orangnya suka banget!",
@@ -1167,10 +1175,11 @@ export const defaultReviews: Review[] = [
     likes: 7,
   },
 
-  // ============ REVIEWS FOR Philips Air Fryer (r2) ============
+  // ============ REVIEWS FOR Philips Air Fryer (r2) - Sold by s5 ============
   {
     id: "rev-9",
     productId: "r2",
+    sellerId: "s5", // Seller yang menjual Philips Air Fryer
     name: "Ibu Eni",
     rating: 5,
     comment: "Memasak jadi lebih praktis dan sehat. Anak-anak suka!",
@@ -1186,6 +1195,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-10",
     productId: "r2",
+    sellerId: "s5", // Seller yang menjual Philips Air Fryer
     name: "Fajar",
     rating: 4,
     comment: "Bagus tapi suaranya agak berisik. Tapi hasil masakan mantap.",
@@ -1194,10 +1204,11 @@ export const defaultReviews: Review[] = [
     likes: 4,
   },
 
-  // ============ REVIEWS FOR Parfum Chanel No.5 (c2) ============
+  // ============ REVIEWS FOR Parfum Chanel No.5 (c2) - Sold by s4 ============
   {
     id: "rev-11",
     productId: "c2",
+    sellerId: "s4", // Seller yang menjual Parfum Chanel No.5
     name: "Dewi",
     rating: 5,
     comment: "Wanginya elegan, tahan lama seharian. Favorite banget!",
@@ -1213,6 +1224,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-12",
     productId: "c2",
+    sellerId: "s4", // Seller yang menjual Parfum Chanel No.5
     name: "Rizky",
     rating: 5,
     comment: "Beli buat istri, dia suka banget. Wangi mewah.",
@@ -1223,6 +1235,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-13",
     productId: "c2",
+    sellerId: "s4", // Seller yang menjual Parfum Chanel No.5
     name: "Nina",
     rating: 4,
     comment: "Harganya agak mahal tapi worth it untuk wangi premium.",
@@ -1231,10 +1244,11 @@ export const defaultReviews: Review[] = [
     likes: 3,
   },
 
-  // ============ REVIEWS FOR Indomie Goreng (m3) ============
+  // ============ REVIEWS FOR Indomie Goreng (m3) - Sold by s3 ============
   {
     id: "rev-14",
     productId: "m3",
+    sellerId: "s3", // Seller yang menjual Indomie Goreng
     name: "Agus",
     rating: 5,
     comment: "Indomie emang juara! Cepat saji, enak, murah.",
@@ -1250,6 +1264,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-15",
     productId: "m3",
+    sellerId: "s3", // Seller yang menjual Indomie Goreng
     name: "Lina",
     rating: 5,
     comment: "Stok selalu ada, pengiriman cepet. Makasih admin!",
@@ -1258,10 +1273,11 @@ export const defaultReviews: Review[] = [
     likes: 12,
   },
 
-  // ============ REVIEWS FOR Gitar Akustik Yamaha (h3) ============
+  // ============ REVIEWS FOR Gitar Akustik Yamaha (h3) - Sold by s2 ============
   {
     id: "rev-16",
     productId: "h3",
+    sellerId: "s2", // Seller yang menjual Gitar Akustik Yamaha
     name: "Andi",
     rating: 5,
     comment: "Suara gitar bagus, cocok untuk pemula. Recommended!",
@@ -1277,6 +1293,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-17",
     productId: "h3",
+    sellerId: "s2", // Seller yang menjual Gitar Akustik Yamaha
     name: "Rudi",
     rating: 4,
     comment: "Kualitas ok, cuma senarnya agak keras. Tapi overall puas.",
@@ -1285,10 +1302,11 @@ export const defaultReviews: Review[] = [
     likes: 2,
   },
 
-  // ============ REVIEWS FOR Sepatu Lari Adidas Ultraboost (s1) ============
+  // ============ REVIEWS FOR Sepatu Lari Adidas Ultraboost (s1) - Sold by s2 ============
   {
     id: "rev-18",
     productId: "s1",
+    sellerId: "s2", // Seller yang menjual Sepatu Lari Adidas Ultraboost
     name: "Fani",
     rating: 5,
     comment: "Sepatu sangat nyaman dipakai lari. Bantalan empuk!",
@@ -1304,6 +1322,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-19",
     productId: "s1",
+    sellerId: "s2", // Seller yang menjual Sepatu Lari Adidas Ultraboost
     name: "Gilang",
     rating: 5,
     comment: "Sudah beli 2x, original dan awet. Puas banget!",
@@ -1314,6 +1333,7 @@ export const defaultReviews: Review[] = [
   {
     id: "rev-20",
     productId: "s1",
+    sellerId: "s2", // Seller yang menjual Sepatu Lari Adidas Ultraboost
     name: "Mira",
     rating: 4,
     comment: "Bagus cuma agak oversize. Tapi overall nyaman.",

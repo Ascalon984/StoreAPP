@@ -21,7 +21,6 @@ const topProducts = [...products]
   .slice(0, 5)
   .map((p) => {
     const words = p.name.split(" ");
-
     return words.slice(0, 3).join(" ");
   });
 
@@ -141,213 +140,239 @@ export default function Navbar() {
   }
 
   return (
-    <div
-      className="gnb-shell sticky top-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
-      style={{
-        borderBottomLeftRadius: isScrolled ? "0px" : "16px",
-        borderBottomRightRadius: isScrolled ? "0px" : "16px",
-        transition: "border-radius 250ms ease-in-out",
-        boxShadow: isScrolled
-          ? "0 1px 4px rgba(0,0,0,0.04)"
-          : "0 2px 8px rgba(0,0,0,0.06)",
-        paddingTop: "env(safe-area-inset-top)",
-      }}
-    >
-      <header className="w-full px-4 overflow-visible">
-        <div className="max-w-container mx-auto">
-          {/* ── Greeting Row ── */}
-          <div
-            className="grid overflow-hidden transition-[grid-template-rows] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-            style={{ gridTemplateRows: isScrolled ? "0fr" : "1fr" }}
-          >
-            <div className="min-h-0 overflow-hidden">
-              <div
-                className="gnb-fade"
-                style={{
-                  transform: isScrolled
-                    ? "translateY(-50px)"
-                    : "translateY(0px)",
-                  opacity: isScrolled ? 0 : 1,
-                }}
-              >
-                <div className="flex items-center justify-between h-[50px] pt-1">
-                  {/* Avatar */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Link
-                      href="/profile"
-                      className="active:scale-95 transition-transform flex-shrink-0"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center">
-                        {mockUser.avatar ? (
-                          <img
-                            src={mockUser.avatar}
-                            alt={mockUser.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <img
-                            src="/icons/avatar.png"
-                            alt="avatar"
-                            className="w-full h-full object-cover opacity-70"
-                          />
-                        )}
-                      </div>
-                    </Link>
-                    <div className="flex flex-col min-w-0">
-                      <p className="text-white/75 text-[10px] font-medium tracking-[0.010em] leading-none">
-                        {getGreeting()}
-                      </p>
-                      <p className="text-white text-sm font-medium tracking-[0.015em] truncate mt-0.5">
-                        {mockUser.name.split(" ")[0]}
-                      </p>
-                    </div>
-                  </div>
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none"
+        style={{
+          height: "calc(env(safe-area-inset-top) + 88px)",
+        }}
+      />
 
-                  {/* Right Actions (unscrolled) */}
-                  <div className="flex items-center gap-0.5 flex-shrink-0">
-                    {/* Bell Button */}
-                    <Link
-                      href="/notifications"
-                      className="relative p-1.5 active:scale-95 transition-transform"
-                    >
-                      <Bell
-                        size={20}
-                        className="text-white/95"
-                        strokeWidth={1.9}
-                      />
-                      <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
-                    </Link>
-
-                    {/* Chat Button */}
-                    <Link
-                      href="/chat"
-                      className="relative p-1.5 active:scale-95 transition-transform"
-                      aria-label="Chat"
-                    >
-                      <svg
-                        width="21"
-                        height="21"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="translate-y-[1px] text-white/95"
+      <div
+        className="gnb-shell fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46]"
+        style={{
+          borderBottomLeftRadius: isScrolled ? "0px" : "16px",
+          borderBottomRightRadius: isScrolled ? "0px" : "16px",
+          transition: "border-radius 250ms ease-in-out",
+          boxShadow: isScrolled
+            ? "0 1px 4px rgba(0,0,0,0.04)"
+            : "0 2px 8px rgba(0,0,0,0.06)",
+          paddingTop: "env(safe-area-inset-top)",
+        }}
+      >
+        <header className="w-full px-4 overflow-visible">
+          <div className="max-w-container mx-auto">
+            {/* ── Greeting Row ── 
+            Diubah dari grid-template-rows 1fr/0fr ke max-height. 
+            Transisi max-height jauh lebih ringan di mobile browser.
+          */}
+            <div
+              className="overflow-hidden transition-[max-height] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              style={{ maxHeight: isScrolled ? "0px" : "50px" }}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <div
+                  className="gnb-fade"
+                  style={{
+                    transform: isScrolled
+                      ? "translateY(-50px)"
+                      : "translateY(0px)",
+                    opacity: isScrolled ? 0 : 1,
+                  }}
+                >
+                  <div className="flex items-center justify-between h-[50px] pt-1">
+                    {/* Avatar */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Link
+                        href="/profile"
+                        className="active:scale-95 transition-transform flex-shrink-0"
                       >
-                        <path
-                          d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
-                          stroke="currentColor"
-                          strokeWidth="1.9"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
-                          stroke="currentColor"
-                          strokeWidth="1.9"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                        <div className="w-8 h-8 rounded-full bg-white overflow-hidden flex items-center justify-center">
+                          {mockUser.avatar ? (
+                            <img
+                              src={mockUser.avatar}
+                              alt={mockUser.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <img
+                              src="/icons/avatar.png"
+                              alt="avatar"
+                              className="w-full h-full object-cover opacity-70"
+                            />
+                          )}
+                        </div>
+                      </Link>
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-white/75 text-[10px] font-medium tracking-[0.010em] leading-none">
+                          {getGreeting()}
+                        </p>
+                        <p className="text-white text-sm font-medium tracking-[0.015em] truncate mt-0.5">
+                          {mockUser.name.split(" ")[0]}
+                        </p>
+                      </div>
+                    </div>
 
-                      <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
-                    </Link>
+                    {/* Right Actions (unscrolled) */}
+                    <div className="flex items-center gap-0.5 flex-shrink-0">
+                      {/* Bell Button */}
+                      <Link
+                        href="/notifications"
+                        className="relative p-1.5 active:scale-95 transition-transform"
+                      >
+                        <Bell
+                          size={20}
+                          className="text-white/95"
+                          strokeWidth={1.9}
+                        />
+                        <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
+                      </Link>
+
+                      {/* Chat Button */}
+                      <Link
+                        href="/chat"
+                        className="relative p-1.5 active:scale-95 transition-transform"
+                        aria-label="Chat"
+                      >
+                        <svg
+                          width="21"
+                          height="21"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          className="translate-y-[1px] text-white/95"
+                        >
+                          <path
+                            d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.9"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                            stroke="currentColor"
+                            strokeWidth="1.9"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+
+                        <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* ── Search Row ── */}
-          <div
-            className={`flex items-center gap-1 pb-2.5 transition-[padding-top,transform] duration-300 ease-in-out ${
-              isScrolled ? "pt-2.5 translate-y-0" : "pt-0 translate-y-[1.5px]"
-            }`}
-          >
-            {/* Search Bar */}
-            <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
-              <button
-                onClick={openSearch}
-                className="flex-1 flex items-center gap-2.5 min-w-0"
-              >
-                <Search
-                  size={16}
-                  className="text-gray-400 flex-shrink-0"
-                  strokeWidth={2}
-                />
-                <AnimatedPlaceholder />
-              </button>
-            </div>
-
-            {/* Right Actions (scrolled)*/}
+            {/* ── Search Row ── 
+            Dihapus translate-y-[1.5px] karena micro-transform sering bikin text blurry/jitter di mobile
+          */}
             <div
-              className={`flex-shrink-0 flex items-center justify-end gap-0.5 overflow-hidden transition-[width,opacity,transform] duration-300 ease-in-out ${
-                isScrolled
-                  ? "w-[72px] opacity-100 scale-100"
-                  : "w-0 opacity-0 scale-75"
+              className={`flex items-center gap-1 pb-2.5 transition-[padding-top] duration-300 ease-in-out ${
+                isScrolled ? "pt-2.5" : "pt-0"
               }`}
             >
-              {/* Bell (scrolled)*/}
-              <Link
-                href="/notifications"
-                className="relative p-1.5 flex active:scale-95 transition-transform"
-                tabIndex={isScrolled ? 0 : -1}
-              >
-                <Bell size={20} className="text-white/95" strokeWidth={1.9} />
-                <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
-              </Link>
-
-              {/* Chat (scrolled)*/}
-              <Link
-                href="/chat"
-                className="relative p-1.5 flex active:scale-95 transition-transform"
-                tabIndex={isScrolled ? 0 : -1}
-                aria-label="Chat"
-              >
-                <svg
-                  width="21"
-                  height="21"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="translate-y-[1px] text-white/95"
+              {/* Search Bar */}
+              <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
+                <button
+                  onClick={openSearch}
+                  className="flex-1 flex items-center gap-2.5 min-w-0"
                 >
-                  <path
-                    d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
-                    stroke="currentColor"
-                    strokeWidth="1.9"
-                    strokeLinejoin="round"
+                  <Search
+                    size={16}
+                    className="text-gray-400 flex-shrink-0"
+                    strokeWidth={2}
                   />
-                  <path
-                    d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
-                    fill="rgba(255,255,255,0.12)"
-                    stroke="currentColor"
-                    strokeWidth="1.9"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
-              </Link>
+                  <AnimatedPlaceholder />
+                </button>
+              </div>
+
+              {/* Right Actions (scrolled)*/}
+              {/* 
+              Ditambahkan min-w-0 inline style agar flexbox engine pada mobile 
+              tidak rewel saat width menyusut ke 0. 
+              Transition digabungkan di style agar pasti terbaca engine.
+            */}
+              <div
+                className="flex-shrink-0 min-w-0 flex items-center justify-end gap-0.5 overflow-hidden"
+                style={{
+                  width: isScrolled ? "72px" : "0px",
+                  opacity: isScrolled ? 1 : 0,
+                  transform: isScrolled ? "scale(1)" : "scale(0.75)",
+                  transition:
+                    "width 300ms ease-in-out, opacity 300ms ease-in-out, transform 300ms ease-in-out",
+                }}
+              >
+                {/* Bell (scrolled)*/}
+                <Link
+                  href="/notifications"
+                  className="relative p-1.5 flex active:scale-95 transition-transform"
+                  tabIndex={isScrolled ? 0 : -1}
+                >
+                  <Bell size={20} className="text-white/95" strokeWidth={1.9} />
+                  <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
+                </Link>
+
+                {/* Chat (scrolled)*/}
+                <Link
+                  href="/chat"
+                  className="relative p-1.5 flex active:scale-95 transition-transform"
+                  tabIndex={isScrolled ? 0 : -1}
+                  aria-label="Chat"
+                >
+                  <svg
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="translate-y-[1px] text-white/95"
+                  >
+                    <path
+                      d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8 14v1.5C8 16.88 9.12 18 10.5 18H15l4 3v-2.5c1.1-.42 2-1.38 2-2.5V11c0-1.38-1.12-2.5-2.5-2.5H18"
+                      fill="rgba(255,255,255,0.12)"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <style jsx>{`
-        .gnb-shell {
-          contain: paint style;
-          will-change: transform;
-        }
-
-        .gnb-fade {
-          transition:
-            transform 260ms cubic-bezier(0.4, 0, 0.2, 1),
-            opacity 200ms ease;
-          will-change: transform, opacity;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .gnb-shell,
-          .gnb-shell * {
-            transition-duration: 0.01ms !important;
-            animation-duration: 0.01ms !important;
+        <style jsx>{`
+          .gnb-shell {
+            /* Ubah dari 'paint style' ke 'layout paint' untuk mengisolasi perubahan width/max-height dari seluruh page */
+            contain: layout paint;
+            will-change: transform;
           }
-        }
-      `}</style>
-    </div>
+
+          .gnb-fade {
+            transition:
+              transform 260ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 200ms ease;
+            will-change: transform, opacity;
+            /* Paksa GPU layer agar transisi translateY mulus */
+            transform: translateZ(0);
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .gnb-shell,
+            .gnb-shell * {
+              transition-duration: 0.01ms !important;
+              animation-duration: 0.01ms !important;
+            }
+          }
+        `}</style>
+      </div>
+    </>
   );
 }
