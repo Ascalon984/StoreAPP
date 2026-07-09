@@ -308,6 +308,7 @@ export default function ReviewModal() {
             ...reviewBase,
             id: `r-${Date.now()}-${i}`,
             productId: p.id,
+            sellerId: p.sellerId || 'CS',
           });
         });
       } else if (productSlug === 'all' || !productSlug) {
@@ -315,6 +316,7 @@ export default function ReviewModal() {
           ...reviewBase,
           id: `r-${Date.now()}`,
           productId: 'all',
+          sellerId: 'CS',
         });
       }
 

@@ -310,6 +310,7 @@ export default function ReviewPage({ searchParams }: ReviewPageProps) {
       const reviewData = {
         id: `r-${Date.now()}`,
         productId: product?.id || 'all',
+        sellerId: product?.sellerId || 'CS',
         name: 'User',
         rating,
         comment,
