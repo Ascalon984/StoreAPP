@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, X, Plus, Minus, Trash2, ShoppingBag, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { useNavigationStore } from '@/store/useNavigationStore';
 import { formatRupiah } from '@/lib/utils';
 import ProductImage from './ProductImage';
 
 export default function MiniCart() {
   const router = useRouter();
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore();
+  const navStore = useNavigationStore();
 
   // Logic untuk Swipe to Close
   const [dragX, setDragX] = useState(0);
@@ -69,6 +71,7 @@ export default function MiniCart() {
   const handleCheckoutClick = () => {
     if (items.length === 0) return;
     closeCart();
+    navStore.setCheckoutSource('cart');
     router.push('/checkout');
   };
 

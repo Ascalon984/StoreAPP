@@ -33,6 +33,7 @@ import PaymentModal, { PaymentStep } from "@/components/PaymentModal";
 import OrderItemsList from "./components/OrderItemsList";
 import PaymentSummary from "./components/PaymentSummary";
 import PaymentMethodSelector from "./components/PaymentMethodSelector";
+import MultiCheckout from "./MultiCheckout";
 import {
   getEffectiveTargetType,
   isTargetValid,
@@ -54,6 +55,7 @@ export default function CheckoutPage() {
     removeItem,
     buyNowItem,
     setBuyNowItem,
+    hasHydrated,
   } = useCartStore();
   const { showToast } = useToastStore();
   const { openModal } = useReviewModalStore();
@@ -261,6 +263,14 @@ export default function CheckoutPage() {
     else router.push("/");
   }, [navStore, router]);
 
+  if (!hasHydrated) {
+    return (
+      <div className="min-h-screen bg-white" />
+      // atau skeleton
+    );
+  }
+
+  // ── Empty state ──
   if (displayItems.length === 0 && !isSubmitting) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
@@ -319,6 +329,16 @@ export default function CheckoutPage() {
         </div>
       </div>
     );
+  }
+
+  // ── Multi-cart view: tampilkan MultiCheckout jika source bukan "cart-confirmed" dan bukan "product" ──
+  // Jika di-refresh, source menjadi null, jadi akan fallback ke sini.
+  if (
+    navStore.checkoutSource !== "cart-confirmed" &&
+    !isBuyNow &&
+    items.length > 0
+  ) {
+    return <MultiCheckout />;
   }
 
   return (

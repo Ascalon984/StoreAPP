@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type CheckoutSource = 'product' | 'cart' | null;
+type CheckoutSource = 'product' | 'cart' | 'cart-confirmed' | null;
 
 interface NavigationState {
   isReturningFromDetail: boolean;

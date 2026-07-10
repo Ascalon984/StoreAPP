@@ -122,7 +122,7 @@ function CategoryItem({
     ${getFontSize(label)}
     ${
       label === "Rumah Tangga" || label === "Kecantikan"
-        ? "translate-y-[1.5px]"
+        ? "translate-y-[1.35px]"
         : ""
     }
     ${isActive ? "text-emerald-600 font-semibold" : "text-gray-600 font-medium"}

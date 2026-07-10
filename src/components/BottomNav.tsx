@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NotebookText, ShoppingCart, Bookmark, User } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
+import { useNavigationStore } from "@/store/useNavigationStore";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
@@ -108,6 +109,8 @@ function NotebookTextIcon({ active }: { active: boolean }) {
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const navStore = useNavigationStore();
 
   // Sembunyikan navbar di halaman detail produk dan checkout
   const isProductDetail = pathname?.startsWith("/product/");
@@ -218,8 +221,11 @@ export default function BottomNav() {
 
             {/* Tombol Tengah: Keranjang Floating */}
             <div className="w-[60px] flex-shrink-0 flex justify-center relative -top-[24px]">
-              <Link
-                href="/checkout"
+              <button
+                onClick={() => {
+                  navStore.setCheckoutSource('cart');
+                  router.push('/checkout');
+                }}
                 className="group relative w-[52px] h-[52px] rounded-full 
       bg-[#048750] text-white flex items-center justify-center 
       shadow-[0_4px_10px_rgba(6,95,70,0.25)]
@@ -272,7 +278,7 @@ export default function BottomNav() {
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
-              </Link>
+              </button>
             </div>
 
             {/* Sisi Kanan: Favorit & Profil */}
