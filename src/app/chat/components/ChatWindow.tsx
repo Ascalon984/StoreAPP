@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { AlertTriangle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Message } from "@/lib/chat/types";
 import { getQuickReplies } from "@/lib/chat/quickReplies";
@@ -18,6 +19,18 @@ import ChatInputBar from "@/components/chat/ChatInputBar";
 
 const REPLY_DELAY_MIN = 800;
 const REPLY_DELAY_MAX = 2200;
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(0)} KB`;
+  }
+
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
 
 function getRandomDelay(): number {
   return (
@@ -159,10 +172,6 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Ukuran gambar maksimal 5MB");
-      return;
-    }
     setAttachmentFile(file);
     setAttachmentPreview(URL.createObjectURL(file));
     e.target.value = "";
@@ -175,6 +184,7 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
 
   /* Send message */
   const handleSend = () => {
+    if (isAttachmentTooLarge) return;
     if (!inputText.trim() && !attachmentPreview) return;
 
     const imageUrl = attachmentPreview ?? undefined;
@@ -217,6 +227,11 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
     setInputText(text);
     inputRef.current?.focus();
   };
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+  const isAttachmentTooLarge =
+    attachmentFile != null && attachmentFile.size > MAX_FILE_SIZE;
 
   return (
     <div
@@ -271,16 +286,16 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
 
       <div className="flex-shrink-0 bg-white">
         {attachmentPreview && (
-          <div className="px-3 pt-2">
+          <div className="flex items-center gap-3 px-3 pt-2 translate-x-[8px] -translate-y-[4px]">
             <div
               className="
-          relative
-          w-[88px] h-[88px]
-          rounded-xl
-          overflow-hidden
-          border border-black/5
-          shadow-sm
-        "
+                relative
+                w-[88px] h-[88px]
+                rounded-lg
+                overflow-hidden
+                border border-black/5
+                shadow-sm
+              "
             >
               <img
                 src={attachmentPreview}
@@ -291,16 +306,55 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
               <button
                 onClick={clearAttachment}
                 className="
-          absolute top-1 right-1
-          w-4 h-4 rounded-full
-          bg-rose-600/90 text-white
-          text-[10px]
-          flex items-center justify-center
-          shadow-sm
-        "
+                  absolute top-0.5 right-0.5
+                  w-4 h-4 rounded-full
+                  bg-rose-600/90 text-white
+                  text-[10px]
+                  flex items-center justify-center
+                  shadow-sm
+                "
               >
                 ✕
               </button>
+            </div>
+
+            <div className="min-w-0 flex-1 pr-[15px] pt-0.5">
+              <p className="truncate text-[13px] font-medium text-gray-700">
+                {attachmentFile?.name}
+              </p>
+
+              <div className="mt-2">
+                <div className="flex justify-between">
+                  <p className="text-[11px] text-gray-500">Ukuran</p>
+                  <p className="text-[11px] text-gray-500">Maks. Ukuran</p>
+                </div>
+
+                <div className="mt-1 h-px bg-gray-200 w-full" />
+
+                <div className="mt-1 flex justify-between">
+                  <div className="flex items-center gap-1">
+                    <p
+                      className={`text-[12px] font-medium ${
+                        isAttachmentTooLarge
+                          ? "text-amber-600"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {attachmentFile && formatFileSize(attachmentFile.size)}
+                    </p>
+
+                    {isAttachmentTooLarge && (
+                      <AlertTriangle
+                        size={13}
+                        strokeWidth={2}
+                        className="text-amber-600"
+                      />
+                    )}
+                  </div>
+
+                  <p className="text-[12px] font-medium text-gray-600">5 MB</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -322,6 +376,7 @@ export default function ChatWindow({ seller, onBack }: ChatWindowProps) {
           attachmentPreview={attachmentPreview}
           onClearAttachment={clearAttachment}
           inputRef={inputRef}
+          isAttachmentTooLarge={isAttachmentTooLarge}
         />
       </div>
     </div>

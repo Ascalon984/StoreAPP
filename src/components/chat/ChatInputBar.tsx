@@ -10,6 +10,7 @@ interface ChatInputBarProps {
   attachmentPreview: string | null;
   onClearAttachment: () => void;
   inputRef: React.RefObject<HTMLTextAreaElement>;
+  isAttachmentTooLarge: boolean;
 }
 
 export default function ChatInputBar({
@@ -20,8 +21,10 @@ export default function ChatInputBar({
   attachmentPreview,
   onClearAttachment,
   inputRef,
+  isAttachmentTooLarge,
 }: ChatInputBarProps) {
-  const canSend = inputText.trim() || attachmentPreview;
+  const canSend =
+    (inputText.trim() || attachmentPreview) && !isAttachmentTooLarge;
 
   return (
     <div className="flex-shrink-0 bg-white border-t border-gray-100">

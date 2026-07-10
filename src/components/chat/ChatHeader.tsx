@@ -30,7 +30,7 @@ export default function ChatHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [isReportSheetOpen, setIsReportSheetOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -115,21 +115,42 @@ export default function ChatHeader({
       <div className="flex-1 min-w-0 pl-1">
         <p
           className={`
-            text-[13px] font-semibold tracking-[0.02em] leading-none
-            ${isOfficial ? "text-white" : "text-gray-700"}
-          `}
+      truncate
+      text-[13px] font-semibold tracking-[0.02em] leading-none
+      ${isOfficial ? "text-white" : "text-gray-700"}
+    `}
         >
           {name}
         </p>
 
-        <p
-          className={`
-            text-[10px] font-medium mt-1.5 leading-none
-            ${isOfficial ? "text-white/70" : "text-gray-500"}
-          `}
-        >
-          {isOnline ? "Online sekarang" : "Terakhir kali online baru saja"}
-        </p>
+        <div className="mt-1.5 h-[12px] flex items-center gap-1.5">
+          <p
+            className={`
+        text-[10px] font-medium leading-none
+        ${isOfficial ? "text-white/70" : "text-gray-500"}
+      `}
+          >
+            {isOnline ? "Online sekarang" : "Terakhir kali online baru saja"}
+          </p>
+
+          {isMuted && (
+            <>
+              <div
+                className={`h-2.5 w-px translate-y-[1px] ${
+                  isOfficial ? "bg-white/30" : "bg-gray-300"
+                }`}
+              />
+
+              <VolumeX
+                size={12}
+                strokeWidth={2}
+                className={`translate-y-[1px] ${
+                  isOfficial ? "text-white/70" : "text-gray-500"
+                }`}
+              />
+            </>
+          )}
+        </div>
       </div>
 
       {/* More Button (Seller Only) */}
@@ -140,7 +161,7 @@ export default function ChatHeader({
             aria-label="Lainnya"
             className="w-8 h-8 flex items-center justify-center rounded-full text-gray-700"
           >
-            <MoreVertical size={21} strokeWidth={1.8} />
+            <MoreVertical size={22} strokeWidth={1.8} />
           </button>
 
           {isMounted && (
@@ -163,6 +184,26 @@ export default function ChatHeader({
                 z-50
               `}
             >
+              <button
+                onClick={() => {
+                  closeMenu();
+                  // router.push(`/seller/${sellerId}`);
+                }}
+                className="
+                  flex w-full items-center gap-2.5
+                  px-3 py-2
+                  text-left
+                  text-[12.5px] font-medium
+                  text-gray-700
+                  transition-colors
+                  hover:bg-gray-50
+                  active:bg-gray-100
+                "
+              >
+                <Store size={16} strokeWidth={2} />
+                <span>Kunjungi Toko</span>
+              </button>
+
               <button
                 onClick={() => {
                   setIsFollowing((v) => !v);
@@ -191,6 +232,8 @@ export default function ChatHeader({
                 <span>{isFollowing ? "Mengikuti" : "Ikuti Toko"}</span>
               </button>
 
+              <div className="mx-4 h-px bg-gray-100" />
+
               <button
                 onClick={() => {
                   closeMenu();
@@ -211,11 +254,9 @@ export default function ChatHeader({
                 <span>Laporkan Penjual</span>
               </button>
 
-              <div className="mx-4 h-px bg-gray-100" />
-
               <button
                 onClick={() => {
-                  setIsBlocked((v) => !v);
+                  setIsMuted((v) => !v);
                 }}
                 className="
     flex w-full items-center gap-2.5
@@ -228,7 +269,7 @@ export default function ChatHeader({
     active:bg-gray-100
   "
               >
-                {isBlocked ? (
+                {isMuted ? (
                   <VolumeX size={16} strokeWidth={2} className="text-red-600" />
                 ) : (
                   <Volume2
@@ -238,7 +279,7 @@ export default function ChatHeader({
                   />
                 )}
 
-                <span>{isBlocked ? "Dibisukan" : "Bisukan"}</span>
+                <span>{isMuted ? "Dibisukan" : "Bisukan"}</span>
               </button>
             </div>
           )}

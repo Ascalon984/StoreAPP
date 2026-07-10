@@ -243,7 +243,7 @@ export default function HighlightSection({
           </div>
 
           <div className="absolute -top-[8px] -right-[11.5px] z-10">
-            <span className="block rounded-bl-xl rounded-tr-lg px-2 py-[5px] text-[9px] font-medium tracking-[0.008em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500 translate-x-[0.5px]">
+            <span className="block rounded-bl-xl rounded-tr-lg px-2 py-[5px] text-[9.5px] font-medium tracking-[0.008em] leading-none text-white bg-gradient-to-l from-orange-600 to-amber-500 translate-x-[3px]">
               3 Hari Lagi
             </span>
           </div>

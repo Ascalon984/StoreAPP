@@ -163,10 +163,7 @@ export default function Navbar() {
       >
         <header className="w-full px-4 overflow-visible">
           <div className="max-w-container mx-auto">
-            {/* ── Greeting Row ── 
-            Diubah dari grid-template-rows 1fr/0fr ke max-height. 
-            Transisi max-height jauh lebih ringan di mobile browser.
-          */}
+            {/* ── Greeting Row ── */}
             <div
               className="overflow-hidden transition-[max-height] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ maxHeight: isScrolled ? "0px" : "50px" }}
@@ -215,7 +212,7 @@ export default function Navbar() {
                     </div>
 
                     {/* Right Actions (unscrolled) */}
-                    <div className="flex items-center gap-0.5 flex-shrink-0">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       {/* Bell Button */}
                       <Link
                         href="/notifications"
@@ -226,7 +223,7 @@ export default function Navbar() {
                           className="text-white/95"
                           strokeWidth={1.9}
                         />
-                        <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
+                        <span className="absolute top-[6px] right-[6px] w-[7px] h-[7px] rounded-full bg-[#EB4363]" />
                       </Link>
 
                       {/* Chat Button */}
@@ -236,11 +233,11 @@ export default function Navbar() {
                         aria-label="Chat"
                       >
                         <svg
-                          width="21"
-                          height="21"
+                          width="22"
+                          height="22"
                           viewBox="0 0 24 24"
                           fill="none"
-                          className="translate-y-[1px] text-white/95"
+                          className="translate-y-[1px] text-white/90"
                         >
                           <path
                             d="M3 6.5C3 5.12 4.12 4 5.5 4h10C16.88 4 18 5.12 18 6.5v5C18 12.88 16.88 14 15.5 14H9l-4 3v-2.5C3.9 14.08 3 13.12 3 12V6.5Z"
@@ -256,7 +253,7 @@ export default function Navbar() {
                           />
                         </svg>
 
-                        <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
+                        <span className="absolute top-[8px] right-[6.5px] w-[7px] h-[7px] rounded-full bg-[#EB4363]" />
                       </Link>
                     </div>
                   </div>
@@ -273,7 +270,7 @@ export default function Navbar() {
               }`}
             >
               {/* Search Bar */}
-              <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
+              <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm translate-y-[1.5px]">
                 <button
                   onClick={openSearch}
                   className="flex-1 flex items-center gap-2.5 min-w-0"
@@ -288,13 +285,8 @@ export default function Navbar() {
               </div>
 
               {/* Right Actions (scrolled)*/}
-              {/* 
-              Ditambahkan min-w-0 inline style agar flexbox engine pada mobile 
-              tidak rewel saat width menyusut ke 0. 
-              Transition digabungkan di style agar pasti terbaca engine.
-            */}
               <div
-                className="flex-shrink-0 min-w-0 flex items-center justify-end gap-0.5 overflow-hidden"
+                className="flex-shrink-0 min-w-0 flex items-center justify-end gap-1 overflow-hidden"
                 style={{
                   width: isScrolled ? "72px" : "0px",
                   opacity: isScrolled ? 1 : 0,
@@ -310,7 +302,7 @@ export default function Navbar() {
                   tabIndex={isScrolled ? 0 : -1}
                 >
                   <Bell size={20} className="text-white/95" strokeWidth={1.9} />
-                  <span className="absolute top-[6px] right-[6px] w-1.5 h-1.5 rounded-full bg-red-500" />
+                  <span className="absolute top-[6px] right-[6px] w-[7px] h-[7px] rounded-full bg-[#EB4363]" />
                 </Link>
 
                 {/* Chat (scrolled)*/}
@@ -341,7 +333,7 @@ export default function Navbar() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="absolute top-[7px] right-[6.5px] w-1.5 h-1.5 rounded-full bg-rose-500" />
+                  <span className="absolute top-[7px] right-[6.5px] w-[7px] h-[7px] rounded-full bg-[#EB4363]" />
                 </Link>
               </div>
             </div>
