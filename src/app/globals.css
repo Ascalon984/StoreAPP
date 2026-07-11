@@ -384,3 +384,13 @@ select:-webkit-autofill {
     transform: translateY(-22px) scale(0.95);
   }
 }
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

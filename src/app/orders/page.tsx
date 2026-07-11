@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { mockOrders } from "@/lib/data";
 import { Order } from "@/lib/types";
@@ -24,6 +24,8 @@ export default function OrdersPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const loadOrders = useCallback(async () => {
     setIsLoading(true);
@@ -35,6 +37,16 @@ export default function OrdersPage() {
   useEffect(() => {
     loadOrders();
   }, [loadOrders]);
+
+  useEffect(() => {
+    const activeTab = tabRefs.current[activeFilter];
+
+    activeTab?.scrollIntoView({
+      behavior: "smooth",
+      inline: "nearest",
+      block: "nearest",
+    });
+  }, [activeFilter]);
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDateSheet, setShowDateSheet] = useState(false);
@@ -63,7 +75,7 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/80 pb-[88px]">
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200/80">
+      <div className="sticky top-0 z-50 border-b border-gray-200 bg-white">
         <div
           className="px-4 flex items-center justify-between"
           style={{
@@ -73,17 +85,9 @@ export default function OrdersPage() {
         >
           <div className="min-w-0">
             <div className="inline-flex flex-col">
-              <h1 className="text-[15px] font-semibold tracking-[-0.01em] text-gray-700">
-                Riwayat Transaksi
+              <h1 className="text-[17px] font-bold tracking-[-0.01em] text-gray-700">
+                Riwayat Pesanan
               </h1>
-
-              <div className="flex items-center gap-1">
-                {/* Primary strip */}
-                <div className="h-[2.5px] w-[60%] rounded-full bg-emerald-500/60" />
-
-                {/* Secondary strip */}
-                <div className="h-[2.5px] w-[25%] rounded-full bg-amber-400/80" />
-              </div>
             </div>
           </div>
 
@@ -99,8 +103,8 @@ export default function OrdersPage() {
                       text-emerald-600
                     `
                     : `
-                      text-gray-500
-                      hover:text-gray-700
+                      text-gray-600
+                      hover:text-gray-800
                     `
                 }
               `}
@@ -111,50 +115,44 @@ export default function OrdersPage() {
         </div>
 
         {/* Tabs */}
-        <div className="px-3 pt-1 pb-2">
-          <div
-            className="
-                flex items-center gap-1.5 overflow-x-auto
-                scrollbar-none [-ms-overflow-style:none]
-                [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden
-              "
-          >
-            {FILTER_TABS.map((tab) => {
-              const active = activeFilter === tab.key;
+        <div className="px-3 pt-1">
+          <div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
+            <div className="inline-flex min-w-max items-end px-1">
+              {FILTER_TABS.map((tab, index) => {
+                const isActive = tab.key === activeFilter;
 
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveFilter(tab.key)}
-                  className={`
-            h-7 px-3 rounded-[11px]
-            border
-            text-[10.5px] font-semibold tracking-[-0.01em]
-            whitespace-nowrap
-            transition-all duration-200
-            active:scale-[0.97]
-            ${
-              active
-                ? `
-                  bg-emerald-600
-                  border-emerald-600
-                  text-white
-                `
-                : `
-                  bg-white
-                  border-gray-200
-                  text-gray-500
-                  hover:bg-gray-50
-                  hover:border-gray-300
-                `
-            }
-          `}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
+                return (
+                  <div key={tab.key} className="flex items-center">
+                    <button
+                      ref={(el) => {
+                        tabRefs.current[tab.key] = el;
+                      }}
+                      onClick={() => setActiveFilter(tab.key)}
+                      className={`
+                        relative
+                        rounded-t-lg
+                        px-3 py-1.5
+                        text-[11.5px]
+                        font-medium
+                        whitespace-nowrap
+                        transition-colors
+                        ${
+                          isActive
+                            ? "bg-emerald-600 text-white"
+                            : "text-gray-500 hover:text-gray-700"
+                        }
+                      `}
+                    >
+                      {tab.label}
+                    </button>
+
+                    {!isActive && index !== FILTER_TABS.length - 1 && (
+                      <div className="mx-[0.5px] h-3 w-px bg-gray-200" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

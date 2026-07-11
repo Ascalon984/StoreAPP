@@ -223,8 +223,8 @@ export default function BottomNav() {
             <div className="w-[60px] flex-shrink-0 flex justify-center relative -top-[24px]">
               <button
                 onClick={() => {
-                  navStore.setCheckoutSource('cart');
-                  router.push('/checkout');
+                  navStore.setCheckoutSource("cart");
+                  router.push("/checkout");
                 }}
                 className="group relative w-[52px] h-[52px] rounded-full 
       bg-[#048750] text-white flex items-center justify-center 
@@ -274,7 +274,7 @@ export default function BottomNav() {
 
                 {/* Badge */}
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[9px] font-black min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white leading-none shadow-md z-20">
+                  <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[9px] font-semibold min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-[1.5px] border-white leading-none shadow-md z-20">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}

@@ -116,11 +116,11 @@ function SellerCard({
 
           {/* Name + location */}
           <div className="min-w-0 pt-[1px]">
-            <p className="text-[12px] font-medium text-gray-700 leading-tight truncate tracking-[0.005em]">
+            <p className="text-[11.5px] font-medium text-gray-700 leading-tight truncate tracking-[0.005em]">
               {sellerName}
             </p>
 
-            <p className="mt-[2px] text-[10px] text-gray-500 leading-tight truncate">
+            <p className="mt-[2px] text-[9.5px] text-gray-500 leading-tight truncate">
               {location}
             </p>
           </div>
@@ -188,7 +188,7 @@ function SellerCard({
                   category={product.category}
                   name={product.name}
                   src={cartImg}
-                  className="w-[70px] h-[70px] rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-gray-50"
+                  className="w-[75px] h-[75px] rounded-lg flex-shrink-0 border border-gray-100/50 object-cover bg-gray-50"
                 />
 
                 {/* Right content */}
@@ -217,18 +217,17 @@ function SellerCard({
                       {product.variant}
                     </p>
                   )}
-                  <p className="translate-y-[22px] text-[10px] text-gray-400">
-                    Jumlah:{" "}
-                    <span className="font-medium text-gray-500">{qty}</span>
+                  <p className="translate-y-[22px] text-[10px] text-gray-500">
+                    Jumlah
                   </p>
 
                   {/* Actions */}
                   <div className="relative flex justify-end -translate-y-[5px]">
-                    <div className="flex items-center overflow-hidden rounded-md border border-gray-200 shadow-[0_1px_1px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center overflow-hidden rounded-md border border-gray-300 shadow-[0_1px_1px_rgba(0,0,0,0.02)]">
                       <button
                         disabled={qty <= 1}
                         onClick={() => onUpdateQty(product.id, qty - 1)}
-                        className="flex h-7 w-7 items-center justify-center bg-gray-50 disabled:opacity-35 disabled:cursor-not-allowed"
+                        className="flex h-7 w-7 items-center justify-center bg-gray-50 active:bg-gray-200 transition-colors disabled:opacity-35 disabled:cursor-not-allowed"
                       >
                         <Minus
                           size={11}
@@ -237,13 +236,13 @@ function SellerCard({
                         />
                       </button>
 
-                      <span className="flex h-7 w-8 items-center justify-center border-x border-gray-200 bg-white text-[12px] font-medium text-gray-700">
+                      <span className="flex h-7 w-8 items-center justify-center border-x border-gray-300 bg-white text-[12px] font-medium text-gray-700">
                         {qty}
                       </span>
 
                       <button
                         onClick={() => onUpdateQty(product.id, qty + 1)}
-                        className="flex h-7 w-7 items-center justify-center bg-gray-50"
+                        className="flex h-7 w-7 items-center justify-center bg-gray-50 active:bg-gray-200 transition-colors"
                       >
                         <Plus
                           size={11}
@@ -261,7 +260,7 @@ function SellerCard({
       </div>
 
       {/* ── Subtotal per seller ── */}
-      <div className="flex items-center justify-between border-t border-dashed border-gray-200 bg-gray-50/40 px-3.5 py-2.5">
+      <div className="flex items-center justify-between border-t border-dashed border-gray-300 bg-white px-3.5 py-2.5">
         <span className="text-[12px] font-medium text-gray-600">Sub total</span>
         <span className="text-[13.5px] font-semibold text-gray-700 tracking-[0.005em]">
           {formatRupiah(
@@ -370,22 +369,24 @@ export default function MultiCheckout() {
         className="sticky top-0 z-50 bg-[#048750] shadow-layer-xs"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="flex items-center justify-between h-[48px] px-4">
+        <div className="flex items-center justify-between h-[52px] px-4">
           <button
             onClick={handleBack}
             aria-label="Kembali"
             className="flex items-center gap-1.5 active:opacity-70 transition-opacity"
           >
             <ChevronLeft size={23} strokeWidth={2.7} className="text-white" />
-            <h1 className="text-[14px] font-bold text-white -mt-[1px]">
+            <h1 className="text-[16px] font-bold text-white -mt-[1px]">
               Keranjang
             </h1>
           </button>
 
           <button
             onClick={handleHeaderAction}
-            className={`text-[12px] font-semibold ${
-              headerLabel === "Hapus" ? "text-rose-200" : "text-white/95"
+            className={`h-7 min-w-[62px] rounded-md px-3 text-[13px] font-semibold transition-all active:scale-95 translate-y-[3px] ${
+              headerLabel === "Hapus"
+                ? "bg-rose-600 text-white shadow-sm translate-x-[2px]"
+                : "text-white/95 translate-x-[10px]"
             }`}
           >
             {headerLabel}
@@ -395,7 +396,7 @@ export default function MultiCheckout() {
 
       {/* ── SCROLLABLE CONTENT ── */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-lg mx-auto px-3 py-3 space-y-3 pb-32">
+        <div className="max-w-lg mx-auto px-3 pt-4 pb-32 space-y-3">
           {Array.from(grouped.entries()).map(([sellerId, sellerItems]) => (
             <SellerCard
               key={sellerId}
@@ -415,16 +416,16 @@ export default function MultiCheckout() {
 
       {/* ── STICKY FOOTER ── */}
       <div
-        className="flex-shrink-0 bg-white border-t border-gray-100 px-4 pt-2.5 pb-3"
+        className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 px-4 pt-2.5 pb-3 shadow-[0_-6px_20px_rgba(0,0,0,0.08)]"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 16px)" }}
       >
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-gray-500 leading-none -translate-y-[3px]">
+              <p className="text-[10.5px] text-gray-600 leading-none -translate-y-[3px]">
                 Total Pembayaran
               </p>
-              <p className="text-[18px] font-bold text-gray-700 tracking-tight leading-tight mt-1">
+              <p className="text-[18px] font-bold text-gray-700 tracking-tight leading-tight mt-1 translate-y-[5px]">
                 {formatRupiah(grandTotal)}
               </p>
             </div>
@@ -432,7 +433,7 @@ export default function MultiCheckout() {
             {/* CTA */}
             <button
               onClick={handleProceedCheckout}
-              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.97] text-white font-semibold text-[13px] px-8 py-3 rounded-lg transition-all duration-150 tracking-[0.005em]"
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.97] text-white font-semibold text-[13px] px-9 py-3 rounded-lg transition-all duration-150 tracking-[0.005em]"
             >
               Lanjut Checkout
             </button>
