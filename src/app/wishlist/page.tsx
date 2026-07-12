@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingBag, ArrowRight, Heart } from "lucide-react";
+import { ShoppingBag, ArrowRight, Heart, Store } from "lucide-react";
 import ProductImage from "@/components/ProductImage";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useCartStore } from "@/store/useCartStore";
@@ -45,13 +45,11 @@ function EmptyState({ onExplore }: { onExplore: () => void }) {
 function ProductRow({
   product,
   index,
-  isFirst,
   onAddToCart,
   onRemoveFromWishlist,
 }: {
   product: Product;
   index: number;
-  isFirst: boolean;
   onAddToCart: (product: Product) => void;
   onRemoveFromWishlist: (id: string) => void;
 }) {
@@ -64,79 +62,53 @@ function ProductRow({
       : 0;
 
   return (
-    <>
-      {!isFirst && <div className="h-px bg-gray-100 ml-[92px] mr-4" />}
+    <div className="w-full overflow-hidden rounded-t-2xl rounded-b-lg border border-gray-100 bg-white shadow-sm">
+      <Link
+        href={`/product/${product.slug}`}
+        className="relative aspect-[1/0.9] bg-gray-50 block"
+      >
+        <ProductImage
+          category={product.category}
+          name={product.name}
+          variant={index}
+          src={product.images?.[0]}
+          className="w-full h-full object-contain p-3"
+        />
 
-      <div className="flex items-center gap-3 px-4 py-3">
-        {/* Image */}
-        <Link
-          href={`/product/${product.slug}`}
-          className="relative flex-shrink-0 w-[72px] h-[72px] rounded-xl bg-gray-50 overflow-hidden flex items-center justify-center border border-gray-100"
+        {/* Glass name */}
+        <div
+          className="absolute inset-x-0 bottom-0
+      bg-black/20 backdrop-blur-sm
+      px-3 py-1.5"
         >
-          <div className="w-full h-full p-1.5">
-            <ProductImage
-              category={product.category}
-              name={product.name}
-              variant={index}
-              src={product.images?.[0]}
-              className="w-full h-full object-contain"
-            />
-          </div>
-
-          {discount > 0 && (
-            <div className="absolute top-0 left-0 px-1.5 py-0.5 bg-rose-500 text-white text-[8px] font-bold rounded-br-lg z-10">
-              -{discount}%
-            </div>
-          )}
-        </Link>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <Link href={`/product/${product.slug}`} className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-gray-800 leading-tight line-clamp-2 tracking-tight">
-                {product.name}
-              </p>
-            </Link>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemoveFromWishlist(product.id);
-              }}
-              className="flex-shrink-0 w-7 h-7 flex items-start justify-center pt-0.5 text-red-400 active:scale-90 transition-transform"
-              aria-label="Hapus dari favorit"
-            >
-              <Heart size={18} strokeWidth={2} fill="currentColor" />
-            </button>
-          </div>
-
-          <div className="mt-2 flex items-end justify-between gap-2">
-            <div className="flex flex-col justify-end min-h-[32px]">
-              {product.originalPrice && (
-                <p className="mb-1 text-[11px] text-gray-400 line-through font-normal leading-none">
-                  {formatRupiah(product.originalPrice)}
-                </p>
-              )}
-              <p className="text-[15px] font-extrabold text-emerald-700 tracking-tight leading-none">
-                {formatRupiah(product.price)}
-              </p>
-            </div>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToCart(product);
-              }}
-              className="flex-shrink-0 p-1 text-emerald-700 active:scale-90 transition-transform"
-              aria-label="Tambah ke keranjang"
-            >
-              <ShoppingBag size={18} strokeWidth={2.3} />
-            </button>
-          </div>
+          <p className="truncate text-[10.5px] font-medium text-white tracking-[0.002em]">
+            {product.name}
+          </p>
         </div>
+
+        {discount > 0 && (
+          <div className="absolute top-0 left-0 px-2 py-1 rounded-br-xl bg-rose-500 text-[10px] font-bold text-white">
+            -{discount}%
+          </div>
+        )}
+      </Link>
+
+      <div className="flex items-center justify-between px-4 h-10 border-t">
+        <button
+          onClick={() => onRemoveFromWishlist(product.id)}
+          className="text-rose-500 active:scale-90 transition-transform"
+        >
+          <Heart size={18} fill="currentColor" />
+        </button>
+
+        <button
+          onClick={() => onAddToCart(product)}
+          className="text-emerald-700 active:scale-90 transition-transform"
+        >
+          <ShoppingBag size={18} strokeWidth={2.2} />
+        </button>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -208,20 +180,22 @@ export default function WishlistPage() {
         className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="flex items-center justify-center h-12">
-          <span className="text-[15px] font-bold tracking-tight text-white translate-y-[10px]">
-            Favorit Saya
-          </span>
+        <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
+          <h1 className="text-[17px] font-bold text-white">Favorit Saya</h1>
+
+          <p className="mt-0.5 text-[11px] text-white/65">
+            Produk dan toko yang kamu simpan
+          </p>
         </div>
       </div>
 
       {/* ── CONTENT LAYER ── */}
-      <div className="relative z-10 flex-1 mt-[65px] rounded-t-[26px] bg-[#F7F8FA] shadow-[0_-4px_18px_rgba(0,0,0,0.05)] overflow-hidden">
+      <div className="relative z-10 flex-1 mt-[85px] rounded-t-[24px] bg-[#F7F8FA] shadow-[0_-4px_18px_rgba(0,0,0,0.05)] overflow-hidden">
         {/* TAB HEADER */}
         <div className="flex h-12 border-b border-gray-100 bg-[#F7F8FA]">
           <button
             onClick={() => setActiveTab("produk")}
-            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700"
+            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700 tracking-[0.002em]"
           >
             Produk Favorit
             {activeTab === "produk" && (
@@ -234,9 +208,9 @@ export default function WishlistPage() {
 
           <button
             onClick={() => setActiveTab("toko")}
-            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700"
+            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700 tracking-[0.002em]"
           >
-            Toko Di Ikuti
+            Toko di Ikuti
             {activeTab === "toko" && (
               <span
                 className="absolute bottom-2 left-1/2 -translate-x-1/2 
@@ -254,13 +228,12 @@ export default function WishlistPage() {
             ) : items.length === 0 ? (
               <EmptyState onExplore={() => router.push("/")} />
             ) : (
-              <div className="pb-20">
+              <div className="grid grid-cols-2 gap-4 p-4 pb-20">
                 {items.map((product, i) => (
                   <ProductRow
                     key={product.id}
                     product={product}
                     index={i}
-                    isFirst={i === 0}
                     onAddToCart={handleAddToCart}
                     onRemoveFromWishlist={handleRemoveFromWishlist}
                   />
