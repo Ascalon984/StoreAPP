@@ -178,7 +178,7 @@ export default function ProductGrid() {
       <section id="product-grid" className="px-1.5 pt-2 pb-4">
         <div className="pt-1 mb-2">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-[13px] font-bold tracking-[0.03em] text-gray-700">
+            <h2 className="text-[13px] font-bold tracking-[0.0015em] text-gray-700">
               TERLARIS
             </h2>
 
@@ -211,7 +211,7 @@ export default function ProductGrid() {
       <section className="px-1.5 pb-3 min-h-[50vh]">
         <div className="pt-2 mb-2">
           <div className="flex items-center justify-between px-0.5 mb-1.5">
-            <h2 className="text-[13px] font-bold tracking-[0.03em] text-gray-700">
+            <h2 className="text-[13px] font-bold tracking-[0.0015em] text-gray-700">
               SEMUA PRODUK
             </h2>
           </div>

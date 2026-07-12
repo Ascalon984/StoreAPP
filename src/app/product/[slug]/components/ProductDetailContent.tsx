@@ -318,7 +318,7 @@ export default function ProductDetailContent({
               )}
 
               <p
-                className={`font-semibold leading-none text-gray-700${
+                className={`font-semibold leading-none text-gray-700 ${
                   isPriceRange ? "text-[16px]" : "text-[20px]"
                 }`}
               >
