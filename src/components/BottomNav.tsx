@@ -276,7 +276,7 @@ export default function BottomNav() {
                 {/* Badge */}
                 {totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 z-20 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border border-white bg-orange-600 text-[9px] font-semibold leading-none text-white shadow-md">
-                    <span className="translate-y-[0.07px]">
+                    <span className="translate-y-[0.08px]">
                       {totalItems > 99 ? "99+" : totalItems}
                     </span>
                   </span>

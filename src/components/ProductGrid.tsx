@@ -184,7 +184,7 @@ export default function ProductGrid() {
 
             <Link
               href="/products/popular"
-              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform -translate-x-1 translate-y-0.5"
+              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-emerald-700 active:scale-95 transition-transform -translate-x-1 translate-y-0.4"
             >
               Lihat Semua
             </Link>

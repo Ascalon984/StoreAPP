@@ -122,33 +122,29 @@ export default function OrdersPage() {
                 const isActive = tab.key === activeFilter;
 
                 return (
-                  <button
-                    key={tab.key}
-                    ref={(el) => {
-                      tabRefs.current[tab.key] = el;
-                    }}
-                    onClick={() => setActiveFilter(tab.key)}
-                    className={`
-                      relative
-                      rounded-t-lg
-                      px-3 py-1.5
-                      text-[11.5px]
-                      font-medium
-                      whitespace-nowrap
-                      transition-colors
-                      ${
-                        isActive
-                          ? "bg-emerald-600 text-white"
-                          : `
-                            text-gray-500
-                            hover:text-gray-700
-                            ${index !== 0 ? "border-l border-gray-200" : ""}
-                          `
-                      }
-                    `}
-                  >
-                    {tab.label}
-                  </button>
+                  <div key={tab.key} className="relative flex items-end">
+                    {index !== 0 && !isActive && (
+                      <span className="absolute left-0 top-1 bottom-1 w-px bg-gray-200" />
+                    )}
+                    <button
+                      ref={(el) => {
+                        tabRefs.current[tab.key] = el;
+                      }}
+                      onClick={() => setActiveFilter(tab.key)}
+                      className={`
+                        relative
+                        rounded-t-lg
+                        px-3 py-1.5
+                        text-[11.5px]
+                        font-medium
+                        whitespace-nowrap
+                        transition-colors
+                        ${isActive ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-700"}
+                      `}
+                    >
+                      {tab.label}
+                    </button>
+                  </div>
                 );
               })}
             </div>
