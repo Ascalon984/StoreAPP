@@ -19,6 +19,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 import { useToastStore } from "@/store/useToastStore";
 import { useNavigationStore } from "@/store/useNavigationStore";
+import { useSearchStore } from "@/store/useSearchStore";
 import { Product, Review } from "@/lib/types";
 import { MOCK_SELLERS } from "@/lib/mockSellers";
 import { formatRupiah } from "@/lib/utils";
@@ -47,6 +48,7 @@ export default function ProductDetailContent({
   const { addItem, setBuyNowItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
   const { showToast } = useToastStore();
+  const { openSearch } = useSearchStore();
 
   // State untuk Varian Produk
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
@@ -231,14 +233,23 @@ export default function ProductDetailContent({
             className="p-1.5 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
             aria-label="Kembali"
           >
-            <ChevronLeft size={26} strokeWidth={2} className="text-gray-700" />
+            <ChevronLeft
+              size={28}
+              strokeWidth={2}
+              className="text-gray-700 translate-y-[2px]"
+            />
           </button>
-          <div className="flex-1 flex items-center gap-2 bg-gray-100 rounded-xl px-3 h-8">
+          <button
+            type="button"
+            onClick={openSearch}
+            className="flex-1 flex items-center gap-2 h-8 px-3 bg-gray-100 rounded-lg ring-1 ring-gray-200 min-w-0 active:scale-[0.99] transition-transform"
+          >
             <Search size={14} className="text-gray-400 flex-shrink-0" />
-            <span className="text-[13px] text-gray-400 truncate">
-              Cari di Atheris...
+
+            <span className="flex-1 text-left text-[13px] text-gray-400 truncate">
+              Cari produk lainnya...
             </span>
-          </div>
+          </button>
           <button
             onClick={handleShare}
             className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
@@ -307,7 +318,7 @@ export default function ProductDetailContent({
               )}
 
               <p
-                className={`font-semibold leading-none text-gray-700 tracking-[0.010em] ${
+                className={`font-semibold leading-none text-gray-700${
                   isPriceRange ? "text-[16px]" : "text-[20px]"
                 }`}
               >
@@ -406,7 +417,7 @@ export default function ProductDetailContent({
 
       {/* Deskripsi */}
       <div className="bg-white px-4 pt-2.5 pb-3 mt-1">
-        <h2 className="text-sm font-medium leading-none text-gray-700 tracking-[0.010em] mb-2.5">
+        <h2 className="text-sm font-medium leading-none text-gray-700 mb-2.5">
           Deskripsi
         </h2>
         <div className="relative overflow-hidden">
@@ -417,7 +428,7 @@ export default function ProductDetailContent({
           >
             <p
               ref={descriptionRef}
-              className="text-[12px] text-gray-600 tracking-[0.010em] leading-[1.55] whitespace-pre-wrap relative"
+              className="text-[12px] text-gray-600 leading-[1.55] whitespace-pre-wrap relative"
             >
               {product.description}
             </p>
@@ -515,14 +526,14 @@ export default function ProductDetailContent({
         <div className="max-w-[500px] mx-auto flex gap-2">
           <button
             onClick={handleAddToCart}
-            className="flex-1 py-3 px-4 rounded-[11px] border border-emerald-600/40 text-emerald-700 font-semibold tracking-[0.020em] hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
+            className="flex-1 py-3 px-4 rounded-lg border border-emerald-600/40 text-emerald-700 font-semibold tracking-[0.020em] hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
           >
             + Keranjang
           </button>
 
           <button
             onClick={handleBuyNow}
-            className="flex-[2] py-3 px-4 rounded-[11px] bg-[#048750] text-white font-semibold tracking-[0.020em] hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
+            className="flex-[2] py-3 px-4 rounded-lg bg-[#048750] text-white font-semibold tracking-[0.020em] hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
           >
             <Send size={16} strokeWidth={2.5} className="rotate-[-5deg]" />
             Pesan Sekarang

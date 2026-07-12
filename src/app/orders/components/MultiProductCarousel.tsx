@@ -37,7 +37,11 @@ export function MultiProductCarousel({
   };
 
   return (
-    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} className="select-none">
+    <div
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      className="select-none"
+    >
       <div className="overflow-hidden">
         <div
           className="flex transition-transform duration-300 ease-out"
@@ -88,7 +92,11 @@ export function MultiProductCarousel({
               </div>
 
               <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
-                <MoveRight size={13} strokeWidth={2.2} className="text-gray-400" />
+                <MoveRight
+                  size={13}
+                  strokeWidth={2.2}
+                  className="text-gray-400"
+                />
               </div>
             </div>
           </div>
@@ -98,7 +106,8 @@ export function MultiProductCarousel({
             const allProducts = [...products, ...mockHighlightProducts];
             const p = allProducts.find((pp) => pp.id === item.productId);
             const sId = p?.sellerId || "s1";
-            const sellerName = MOCK_SELLERS.find((s) => s.id === sId)?.name || sId;
+            const sellerName =
+              MOCK_SELLERS.find((s) => s.id === sId)?.name || sId;
 
             return (
               <div
@@ -121,8 +130,10 @@ export function MultiProductCarousel({
                     {item.name}
                   </p>
 
-                  <p className="text-[10px] text-gray-400 font-medium mt-1">
-                    {item.quantity}× · {formatRupiah(item.price)}
+                  <p className="mt-1 text-[10px] text-gray-500">
+                    {item.quantity}{" "}
+                    <span className="inline-block translate-y-[0.2px]">×</span>{" "}
+                    {formatRupiah(item.price)}
                   </p>
 
                   <div className="mt-1 flex items-center gap-1">
@@ -131,7 +142,7 @@ export function MultiProductCarousel({
                         {sellerName.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-[9px] text-gray-500 font-medium">{sellerName}</p>
+                    <p className="text-[9px] text-gray-500">{sellerName}</p>
                   </div>
                 </div>
 

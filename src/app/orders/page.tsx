@@ -122,34 +122,33 @@ export default function OrdersPage() {
                 const isActive = tab.key === activeFilter;
 
                 return (
-                  <div key={tab.key} className="flex items-center">
-                    <button
-                      ref={(el) => {
-                        tabRefs.current[tab.key] = el;
-                      }}
-                      onClick={() => setActiveFilter(tab.key)}
-                      className={`
-                        relative
-                        rounded-t-lg
-                        px-3 py-1.5
-                        text-[11.5px]
-                        font-medium
-                        whitespace-nowrap
-                        transition-colors
-                        ${
-                          isActive
-                            ? "bg-emerald-600 text-white"
-                            : "text-gray-500 hover:text-gray-700"
-                        }
-                      `}
-                    >
-                      {tab.label}
-                    </button>
-
-                    {!isActive && index !== FILTER_TABS.length - 1 && (
-                      <div className="mx-[0.5px] h-3 w-px bg-gray-200" />
-                    )}
-                  </div>
+                  <button
+                    key={tab.key}
+                    ref={(el) => {
+                      tabRefs.current[tab.key] = el;
+                    }}
+                    onClick={() => setActiveFilter(tab.key)}
+                    className={`
+                      relative
+                      rounded-t-lg
+                      px-3 py-1.5
+                      text-[11.5px]
+                      font-medium
+                      whitespace-nowrap
+                      transition-colors
+                      ${
+                        isActive
+                          ? "bg-emerald-600 text-white"
+                          : `
+                            text-gray-500
+                            hover:text-gray-700
+                            ${index !== 0 ? "border-l border-gray-200" : ""}
+                          `
+                      }
+                    `}
+                  >
+                    {tab.label}
+                  </button>
                 );
               })}
             </div>
@@ -171,7 +170,7 @@ export default function OrdersPage() {
           <div className="space-y-5">
             {groupOrders(orders).map((group) => (
               <div key={group.label} className="mb-4">
-                <p className="px-3 py-0.5 text-[11px] font-semibold text-gray-400 uppercase tracking-[0.08em]">
+                <p className="pl-5 py-0.5 text-[10.5px] font-semibold text-gray-400 uppercase tracking-[0.08em]">
                   {group.label}
                 </p>
 

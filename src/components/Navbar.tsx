@@ -266,11 +266,11 @@ export default function Navbar() {
           */}
             <div
               className={`flex items-center gap-1 pb-2.5 transition-[padding-top] duration-300 ease-in-out ${
-                isScrolled ? "pt-2.5" : "pt-0"
+                isScrolled ? "pt-2.5" : "pt-0 translate-y-[1.5px]"
               }`}
             >
               {/* Search Bar */}
-              <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm translate-y-[1.5px]">
+              <div className="flex-1 bg-white/95 rounded-lg px-2 py-1.5 flex items-center gap-2.5 shadow-sm">
                 <button
                   onClick={openSearch}
                   className="flex-1 flex items-center gap-2.5 min-w-0"

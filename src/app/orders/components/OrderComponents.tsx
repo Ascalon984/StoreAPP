@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MoveRight } from "lucide-react";
 import { formatRupiah } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
 import { products, mockHighlightProducts } from "@/lib/data";
@@ -10,6 +9,7 @@ import { Order, OrderItem, OrderStatus } from "@/lib/types";
 import { MOCK_SELLERS } from "@/lib/mockSellers";
 import { SingleProductItem } from "./SingleProductItem";
 import { MultiProductCarousel } from "./MultiProductCarousel";
+import { getGroupLabel } from "@/utils/calendar";
 
 export type FilterTab =
   | "all"
@@ -18,23 +18,6 @@ export type FilterTab =
   | "shipped"
   | "completed"
   | "cancelled";
-
-export function getOrderGroupLabel(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const orderDate = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-  );
-  const diffDays = Math.floor(
-    (today.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
-  if (diffDays === 0) return "Hari Ini";
-  if (diffDays > 0 && diffDays <= 7) return "7 Hari Terakhir";
-  return date.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
-}
 
 export function formatDateTime(iso: string): string {
   const d = new Date(iso);
@@ -107,13 +90,13 @@ export function OrderCard({
     <div className="bg-white rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-4 py-2 flex items-center justify-between">
-        <p className="text-[11px] font-semibold text-gray-500 tracking-tight">
+        <p className="text-[11px] font-medium text-gray-500 tracking-tight">
           #{order.orderId}
         </p>
         <div className="flex items-center gap-1">
           {activeFilter === "all" && (
             <>
-              <span className={`text-[10px] font-medium ${textClass}`}>
+              <span className={`text-[10px] font-semibold ${textClass}`}>
                 {label}
               </span>
 
@@ -224,11 +207,11 @@ export function OrderCard({
                   );
                 }}
                 className="px-3 py-1.5 rounded-[6px]
-        bg-emerald-600
-        text-white text-[11px] font-medium
-        hover:bg-emerald-700
-        active:scale-95
-        transition-all"
+                  bg-emerald-600
+                  text-white text-[11px] font-medium
+                  hover:bg-emerald-700
+                  active:scale-95
+                  transition-all"
               >
                 Hubungi Penjual
               </button>
@@ -349,22 +332,22 @@ export function EmptyState({ filter }: { filter: FilterTab }) {
     <div className="flex flex-col items-center py-16 px-6">
       <div
         className="
-    w-36 h-36 rounded-full
-    bg-gradient-to-b from-emerald-50 to-emerald-50/40
-    ring-1 ring-emerald-100/50
-    flex items-center justify-center
-    mb-4
-  "
+          w-36 h-36 rounded-full
+          bg-gradient-to-b from-emerald-50 to-emerald-50/40
+          ring-1 ring-emerald-100/50
+          flex items-center justify-center
+          mb-4
+        "
       >
         <img
           src="/illustrations/missing transactions.png"
           alt="Kosong"
           className="
-      w-34 h-34
-      object-contain
-      select-none
-      pointer-events-none
-    "
+            w-34 h-34
+            object-contain
+            select-none
+            pointer-events-none
+          "
         />
       </div>
       <h3 className="text-[13px] font-semibold text-gray-600 text-center">
@@ -373,9 +356,9 @@ export function EmptyState({ filter }: { filter: FilterTab }) {
       {filter === "all" && (
         <button
           onClick={() => router.push("/")}
-          className="mt-5 px-5 py-2.5 rounded-xl bg-emerald-700 text-white
+          className="mt-5 px-5 py-2.5 rounded-xl bg-emerald-600 text-white
             text-[13px] font-bold hover:bg-emerald-800 active:scale-95
-            transition-all shadow-md shadow-emerald-700/20"
+            transition-all shadow-md"
         >
           Mulai Belanja
         </button>
@@ -396,7 +379,7 @@ export function groupOrders(orders: Order[]): OrderGroup[] {
   const groups: OrderGroup[] = [];
   let lastLabel = "";
   for (const order of sorted) {
-    const label = getOrderGroupLabel(order.createdAt);
+    const label = getGroupLabel(new Date(order.createdAt));
     if (label !== lastLabel) {
       groups.push({ label, orders: [order] });
       lastLabel = label;

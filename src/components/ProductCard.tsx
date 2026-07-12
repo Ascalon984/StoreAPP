@@ -188,7 +188,6 @@ export default function ProductCard({
   text-white/95
   text-[9.5px]
   font-medium
-  tracking-[0.008em]
 "
             >
               Baru
@@ -204,7 +203,7 @@ export default function ProductCard({
               font-normal
               leading-[1.03]
               min-h-[1.94em]
-              tracking-[0.01em]
+              tracking-[0.005em]
               ${titleSize}
             `}
           >
@@ -221,7 +220,6 @@ export default function ProductCard({
               className={`
                 ${priceSize}
                 font-semibold
-                tracking-[0.02em]
                 text-gray-700
                 truncate
                 flex-shrink-0
@@ -239,7 +237,7 @@ export default function ProductCard({
             text-gray-400
             line-through
             font-normal
-            tracking-[0.015em]
+            tracking-[0.005em]
             truncate
             flex-shrink
           `}
@@ -263,7 +261,7 @@ export default function ProductCard({
             </div>
 
             {/* RIGHT: Sold */}
-            <div className="text-[10px] text-gray-400 font-normal tracking-[0.015em]">
+            <div className="text-[10px] text-gray-400 font-normal tracking-[0.005em]">
               {(product.sold || 0) > 0
                 ? `${formatCompactNumber(product.sold)} terjual`
                 : "Belum terjual"}

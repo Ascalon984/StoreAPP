@@ -25,8 +25,10 @@ export function SingleProductItem({ item }: { item: OrderItem }) {
         <p className="text-[12px] font-medium text-gray-600 leading-[1.3] line-clamp-2 break-words">
           {item.name}
         </p>
-        <p className="text-[10px] text-gray-400 font-medium mt-1">
-          {item.quantity}× · {formatRupiah(item.price)}
+        <p className="mt-1 text-[10px] text-gray-500">
+          {item.quantity}{" "}
+          <span className="inline-block translate-y-[0.2px]">×</span>{" "}
+          {formatRupiah(item.price)}
         </p>
         <div className="mt-1 flex items-center gap-1">
           <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -34,7 +36,7 @@ export function SingleProductItem({ item }: { item: OrderItem }) {
               {sellerName.charAt(0).toUpperCase()}
             </span>
           </div>
-          <p className="text-[9px] text-gray-500 font-medium">{sellerName}</p>
+          <p className="text-[9px] text-gray-500">{sellerName}</p>
         </div>
       </div>
     </div>
