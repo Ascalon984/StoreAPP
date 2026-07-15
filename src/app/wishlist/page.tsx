@@ -3,7 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingBag, ArrowRight, Heart, Store } from "lucide-react";
+import {
+  ShoppingBag,
+  ArrowRight,
+  Heart,
+  Store,
+  MoreHorizontal,
+  ListFilter,
+} from "lucide-react";
 import ProductImage from "@/components/ProductImage";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useCartStore } from "@/store/useCartStore";
@@ -53,6 +60,7 @@ function ProductRow({
   onAddToCart: (product: Product) => void;
   onRemoveFromWishlist: (id: string) => void;
 }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const discount =
     product.originalPrice && product.originalPrice > product.price
       ? Math.round(
@@ -60,52 +68,152 @@ function ProductRow({
             100,
         )
       : 0;
-
   return (
-    <div className="w-full overflow-hidden rounded-t-2xl rounded-b-lg border border-gray-100 bg-white shadow-sm">
-      <Link
-        href={`/product/${product.slug}`}
-        className="relative aspect-[1/0.9] bg-gray-50 block"
-      >
-        <ProductImage
-          category={product.category}
-          name={product.name}
-          variant={index}
-          src={product.images?.[0]}
-          className="w-full h-full object-contain p-3"
-        />
+    <div className="w-full rounded-xl border border-gray-100 bg-white shadow-sm relative overflow-visible">
+      {/* IMAGE */}
+      <div className="relative aspect-[1/0.9] rounded-t-xl overflow-visible">
+        {/* Layer gambar */}
+        <div className="absolute inset-0 rounded-t-xl overflow-hidden bg-gray-50">
+          <Link
+            href={`/product/${product.slug}`}
+            className="block w-full h-full"
+          >
+            <ProductImage
+              category={product.category}
+              name={product.name}
+              variant={index}
+              src={product.images?.[0]}
+              className="w-full h-full object-contain p-3"
+            />
+          </Link>
 
-        {/* Glass name */}
-        <div
-          className="absolute inset-x-0 bottom-0
-      bg-black/20 backdrop-blur-sm
-      px-3 py-1.5"
-        >
-          <p className="truncate text-[10.5px] font-medium text-white tracking-[0.002em]">
-            {product.name}
-          </p>
+          {/* Overlay */}
+          <div
+            className={`
+      absolute inset-0
+      bg-black
+      transition-opacity duration-200
+      pointer-events-none
+      ${menuOpen ? "opacity-15" : "opacity-0"}
+    `}
+          />
+
+          {discount > 0 && (
+            <div className="absolute top-0 left-0 px-2 py-1 rounded-br-xl bg-rose-500 text-[10px] font-bold text-white">
+              -{discount}%
+            </div>
+          )}
         </div>
 
-        {discount > 0 && (
-          <div className="absolute top-0 left-0 px-2 py-1 rounded-br-xl bg-rose-500 text-[10px] font-bold text-white">
-            -{discount}%
-          </div>
-        )}
-      </Link>
-
-      <div className="flex items-center justify-between px-4 h-10 border-t">
+        {/* Tombol 3-dot */}
         <button
-          onClick={() => onRemoveFromWishlist(product.id)}
-          className="text-rose-500 active:scale-90 transition-transform"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setMenuOpen((v) => !v);
+          }}
+          className="absolute left-0 bottom-0 z-30
+          w-10 h-5
+          bg-white/95 backdrop-blur-sm
+          rounded-tr-xl
+          border-t border-r border-gray-100
+          shadow-sm
+          flex items-center justify-center"
         >
-          <Heart size={18} fill="currentColor" />
+          <MoreHorizontal size={17} className="text-gray-600" />
         </button>
+
+        {/* Overlay */}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setMenuOpen(false)}
+          />
+        )}
+
+        {/* Dropdown */}
+        <div
+          className={`
+            absolute
+            left-0
+            top-full
+            z-50
+            min-w-[170px]
+            overflow-hidden
+            rounded-lg
+            border border-gray-100
+            bg-white
+            shadow-sm
+
+            transition-all
+            duration-180
+            ease-out
+
+            ${
+              menuOpen
+                ? "opacity-100 translate-y-1 pointer-events-auto"
+                : "opacity-0 -translate-y-2 pointer-events-none"
+            }
+          `}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen(false);
+              onRemoveFromWishlist(product.id);
+            }}
+            className="w-full px-4 py-2 text-left text-[13px] text-gray-700 active:bg-gray-50"
+          >
+            Hapus dari Favorit
+          </button>
+
+          <div className="h-px bg-gray-100" />
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen(false);
+            }}
+            className="w-full px-4 py-1.5 text-left text-[13px] text-gray-700 active:bg-gray-50"
+          >
+            Batal
+          </button>
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="relative overflow-hidden rounded-b-lg px-3 pt-2.5 pb-2.5">
+        <p className="truncate text-[12px] font-medium text-gray-700 mb-1">
+          {product.name}
+        </p>
+
+        <p className="text-[14px] font-semibold text-gray-700 pr-12">
+          {formatRupiah(product.price)}
+        </p>
 
         <button
           onClick={() => onAddToCart(product)}
-          className="text-emerald-700 active:scale-90 transition-transform"
+          className="
+            absolute
+            -right-5
+            -bottom-5
+            w-14 h-14
+            rounded-full
+            bg-emerald-600
+            border border-emerald-700
+            shadow-md
+            flex
+            items-start
+            justify-start
+            pt-3
+            pl-3
+            text-white
+            active:scale-95
+            transition-all
+            duration-200
+          "
         >
-          <ShoppingBag size={18} strokeWidth={2.2} />
+          <ShoppingBag size={16} strokeWidth={2.2} />
         </button>
       </div>
     </div>
@@ -183,7 +291,7 @@ export default function WishlistPage() {
         <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
           <h1 className="text-[17px] font-bold text-white">Favorit Saya</h1>
 
-          <p className="mt-0.5 text-[11px] text-white/65">
+          <p className="mt-0.5 text-[12px] text-white/85">
             Produk dan toko yang kamu simpan
           </p>
         </div>
@@ -192,32 +300,54 @@ export default function WishlistPage() {
       {/* ── CONTENT LAYER ── */}
       <div className="relative z-10 flex-1 mt-[85px] rounded-t-[24px] bg-[#F7F8FA] shadow-[0_-4px_18px_rgba(0,0,0,0.05)] overflow-hidden">
         {/* TAB HEADER */}
-        <div className="flex h-12 border-b border-gray-100 bg-[#F7F8FA]">
+        <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-[#F7F8FA]">
+          {/* Produk */}
           <button
             onClick={() => setActiveTab("produk")}
-            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700 tracking-[0.002em]"
+            className={`flex items-center justify-center text-[13px] font-bold transition-colors ${
+              activeTab === "produk" ? "text-emerald-700" : "text-gray-700"
+            }`}
           >
             Produk Favorit
-            {activeTab === "produk" && (
-              <span
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 
-      w-28 h-[3px] rounded-full bg-emerald-600"
-              />
-            )}
           </button>
 
+          {/* Filter */}
+          <button
+            onClick={() => {
+              // buka filter
+            }}
+            className="flex items-center justify-center text-gray-600 active:text-emerald-600"
+          >
+            <ListFilter size={20} strokeWidth={2} />
+          </button>
+
+          {/* Toko */}
           <button
             onClick={() => setActiveTab("toko")}
-            className="relative flex-1 h-12 flex items-center justify-center text-[13px] font-bold text-gray-700 tracking-[0.002em]"
+            className={`flex items-center justify-center text-[13px] font-bold transition-colors ${
+              activeTab === "toko" ? "text-emerald-700" : "text-gray-700"
+            }`}
           >
             Toko di Ikuti
-            {activeTab === "toko" && (
-              <span
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 
-      w-28 h-[3px] rounded-full bg-emerald-600"
-              />
-            )}
           </button>
+
+          {/* Indicator Produk */}
+          <span
+            className={`absolute bottom-2 left-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
+              activeTab === "produk" ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span className="w-28 h-[3px] rounded-full bg-emerald-600" />
+          </span>
+
+          {/* Indicator Toko */}
+          <span
+            className={`absolute bottom-2 right-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
+              activeTab === "toko" ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span className="w-28 h-[3px] rounded-full bg-emerald-600" />
+          </span>
         </div>
 
         {/* CONTENT */}
@@ -228,7 +358,7 @@ export default function WishlistPage() {
             ) : items.length === 0 ? (
               <EmptyState onExplore={() => router.push("/")} />
             ) : (
-              <div className="grid grid-cols-2 gap-4 p-4 pb-20">
+              <div className="grid grid-cols-2 gap-3 px-3 pt-1 pb-20">
                 {items.map((product, i) => (
                   <ProductRow
                     key={product.id}
