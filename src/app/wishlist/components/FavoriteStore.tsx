@@ -49,7 +49,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
   return (
     <>
       {filterOpen && (
-        <div className="absolute -top-2 left-0 right-0 z-40 bg-white mt-1.5 shadow-sm">
+        <div className="absolute top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
               {filters.map((item) => {
@@ -86,15 +86,15 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           filterOpen ? "pointer-events-none" : ""
         }`}
       >
-        <div className="flex flex-col gap-3 px-4 pt-4 pb-24">
+        <div className="flex flex-col gap-3 px-4 pt-3 pb-24">
           {MOCK_SELLERS.map((store) => (
             <div
               key={store.id}
-              className="bg-white rounded-xl shadow-sm overflow-hidden relative flex items-stretch min-h-[100px]"
+              className="bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px]"
             >
               {/* LEFT (30%) */}
               <div
-                className={`relative z-10 w-[30%] shrink-0 rounded-tr-xl border-r shadow-[2px_0_8px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center px-2 py-3 ${
+                className={`relative z-10 w-[30%] shrink-0 rounded-l-xl rounded-tr-xl border-r shadow-[2px_0_8px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center px-2 py-3 ${
                   store.isActive
                     ? "bg-emerald-600 border-emerald-700/20"
                     : "bg-gray-400 border-gray-500/20"
@@ -145,7 +145,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                       onClick={() =>
                         setOpenMenuId(openMenuId === store.id ? null : store.id)
                       }
-                      className="absolute top-2.5 right-2 rounded-full p-1 text-gray-500 active:bg-gray-100"
+                      className="absolute top-2.5 right-1.5 rounded-full p-1 text-gray-500 active:bg-gray-100"
                     >
                       <MoreVertical size={16} />
                     </button>
@@ -170,7 +170,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     rounded-md
                     border border-gray-200
                     bg-white
-                    shadow-md
+                    shadow-sm
                     transition-all
                     duration-200
                     ease-out

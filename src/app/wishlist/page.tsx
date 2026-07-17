@@ -1,13 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ListFilter } from "lucide-react";
 import FavoriteProduct from "./components/FavoriteProduct";
 import FavoriteStore from "./components/FavoriteStore";
 
-export default function WishlistPage() {
+function WishlistContent() {
   const [activeTab, setActiveTab] = useState<"produk" | "toko">("produk");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("wishlist-tab");
+
+    if (saved === "produk" || saved === "toko") {
+      setActiveTab(saved);
+    }
+
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("wishlist-tab", activeTab);
+    }
+  }, [activeTab, mounted]);
+
+  const changeTab = (tab: "produk" | "toko") => {
+    setActiveTab(tab);
+    setFilterOpen(false);
+  };
+  if (!mounted) {
+    return <WishlistSkeleton />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative overflow-hidden">
@@ -45,10 +70,7 @@ export default function WishlistPage() {
           <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-white z-30">
             {/* Produk */}
             <button
-              onClick={() => {
-                setActiveTab("produk");
-                setFilterOpen(false);
-              }}
+              onClick={() => changeTab("produk")}
               className={`flex items-center justify-center text-[13px] font-bold transition-colors ${
                 activeTab === "produk" ? "text-emerald-700" : "text-gray-700"
               }`}
@@ -77,10 +99,7 @@ export default function WishlistPage() {
 
             {/* Toko */}
             <button
-              onClick={() => {
-                setActiveTab("toko");
-                setFilterOpen(false);
-              }}
+              onClick={() => changeTab("toko")}
               className={`flex items-center justify-center text-[13px] font-bold transition-colors ${
                 activeTab === "toko" ? "text-emerald-700" : "text-gray-700"
               }`}
@@ -127,4 +146,56 @@ export default function WishlistPage() {
       </div>
     </div>
   );
+}
+
+function WishlistSkeleton() {
+  return (
+    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative overflow-hidden">
+      <div
+        className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
+        <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
+          <h1 className="text-[17px] font-bold text-white">Favorit Saya</h1>
+          <p className="mt-0.5 text-[12px] text-white/85">
+            Produk dan toko yang kamu simpan
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="
+          relative
+          z-10
+          flex-1
+          mt-[85px]
+          flex
+          flex-col
+          rounded-t-[24px]
+          bg-[#F7F8FA]
+          shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
+          overflow-hidden
+        "
+      >
+        <div className="relative">
+          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-white z-30">
+            <div className="flex items-center justify-center text-[13px] font-bold text-gray-300">
+              Produk Favorit
+            </div>
+            <div className="flex items-center justify-center text-gray-300">
+              <ListFilter size={20} strokeWidth={2} />
+            </div>
+            <div className="flex items-center justify-center text-[13px] font-bold text-gray-300">
+              Toko di Ikuti
+            </div>
+          </div>
+        </div>
+
+        <div className="relative flex-1 overflow-hidden flex flex-col" />
+      </div>
+    </div>
+  );
+}
+export default function WishlistPage() {
+  return <WishlistContent />;
 }

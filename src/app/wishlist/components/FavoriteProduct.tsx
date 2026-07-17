@@ -309,7 +309,7 @@ export default function FavoriteProduct({
   return (
     <>
       {filterOpen && (
-        <div className="absolute -top-2 left-0 right-0 z-40 bg-white mt-1.5 shadow-sm">
+        <div className="absolute top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -387,7 +387,7 @@ export default function FavoriteProduct({
             Tidak ada produk yang cocok dengan filter ini
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 px-3 pt-1 pb-20">
+          <div className="grid grid-cols-2 gap-3 px-3 pt-3 pb-20">
             {sortedItems.map((product, i) => (
               <ProductRow
                 key={product.id}
