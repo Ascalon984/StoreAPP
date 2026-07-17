@@ -11,6 +11,7 @@ export const MOCK_SELLERS: Seller[] = [
     time: "10:30",
     unread: 2,
     isOnline: true,
+    isActive: true,
   },
   {
     id: "s2",
@@ -22,6 +23,7 @@ export const MOCK_SELLERS: Seller[] = [
     time: "Kemarin",
     unread: 0,
     isOnline: false,
+    isActive: false,
   },
   {
     id: "s3",
@@ -33,6 +35,7 @@ export const MOCK_SELLERS: Seller[] = [
     time: "Kemarin",
     unread: 0,
     isOnline: true,
+    isActive: true,
   },
   {
     id: "s4",
@@ -44,6 +47,7 @@ export const MOCK_SELLERS: Seller[] = [
     time: "Selasa",
     unread: 0,
     isOnline: false,
+    isActive: true,
   },
   {
     id: "s5",
@@ -55,6 +59,7 @@ export const MOCK_SELLERS: Seller[] = [
     time: "Senin",
     unread: 1,
     isOnline: true,
+    isActive: true,
   },
   {
     id: "s6",
@@ -66,5 +71,6 @@ export const MOCK_SELLERS: Seller[] = [
     time: "Minggu",
     unread: 0,
     isOnline: false,
+    isActive: false,
   },
 ];

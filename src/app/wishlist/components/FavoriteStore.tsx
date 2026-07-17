@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Store } from "lucide-react";
+import { Store, MapPin, Star, ChevronRight } from "lucide-react";
+import { MOCK_SELLERS } from "@/lib/mockSellers";
 
 export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
   type FilterType = "all" | "aktif" | "terlaris" | "rating";
@@ -48,22 +49,87 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           filterOpen ? "pointer-events-none" : ""
         }`}
       >
-        <div className="flex flex-col items-center justify-center h-64 text-center mt-10">
-          <div className="w-20 h-20 mb-4 rounded-full bg-emerald-600/10 flex items-center justify-center">
-            <Store
-              size={36}
-              strokeWidth={1.5}
-              className="text-emerald-600/50"
-            />
-          </div>
+        <div className="flex flex-col gap-3 px-4 pt-4 pb-24">
+          {MOCK_SELLERS.map((store) => (
+            <div
+              key={store.id}
+              className="bg-white rounded-xl overflow-hidden relative flex items-stretch min-h-[100px]"
+            >
+              {/* LEFT (30%) */}
+              <div className="w-[30%] bg-emerald-600 rounded-tr-2xl border-r border-emerald-700/20 flex flex-col items-center justify-center px-2 py-3">
+                <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                  {store.avatar ? (
+                    <img
+                      src={store.avatar}
+                      alt={store.name}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <Store size={26} strokeWidth={1.5} />
+                  )}
+                </div>
 
-          <h2 className="text-[16px] font-bold text-gray-800 tracking-tight mb-1">
-            Belum ada toko favorit
-          </h2>
+                <button className="mt-2.5 flex w-full items-center justify-center gap-0.5 text-[11px] font-semibold text-white transition-opacity hover:opacity-80 translate-x-[2px]">
+                  <span>Kunjungi</span>
+                  <ChevronRight size={14} strokeWidth={2.5} />
+                </button>
+              </div>
 
-          <p className="text-[13px] text-gray-500 max-w-[200px]">
-            Toko yang kamu ikuti akan muncul di sini.
-          </p>
+              {/* RIGHT (70%) */}
+              <div className="w-[70%] flex flex-col justify-between px-3 py-3">
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-[13px] font-semibold text-gray-800 line-clamp-1">
+                      {store.name}
+                    </h3>
+
+                    <span
+                      className={`text-[9px] px-2 py-0.5 rounded-md font-medium whitespace-nowrap ${
+                        store.isActive
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-gray-100 text-gray-500"
+                      }`}
+                    >
+                      {store.isActive ? "Aktif" : "Nonaktif"}
+                    </span>
+                  </div>
+
+                  <div className="mt-1 flex items-center gap-1 text-[11px] text-gray-600">
+                    <MapPin size={10} className="shrink-0" />
+                    <span className="truncate">{store.kabupaten}</span>
+                  </div>
+                </div>
+
+                {/* Statistik */}
+                <div className="grid grid-cols-3 border-t border-gray-200 pt-1.5 mt-1.5 translate-y-[5px]">
+                  <div className="flex flex-col items-center">
+                    <Star
+                      size={10}
+                      fill="currentColor"
+                      className="text-amber-500 mb-0.5"
+                    />
+                    <span className="text-[11px] font-medium text-gray-700">
+                      4.9
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-center border-x border-gray-100">
+                    <span className="text-[10px] text-gray-500">Produk</span>
+                    <span className="text-[11px] font-medium text-gray-700">
+                      58
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-[10px] text-gray-500">Terjual</span>
+                    <span className="text-[11px] font-medium text-gray-700">
+                      1.2k
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>

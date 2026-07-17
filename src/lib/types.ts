@@ -121,6 +121,7 @@ export interface Seller {
   time: string;
   unread: number;
   isOnline: boolean;
+  isActive?: boolean;
 }
 
 export type NotifType = "activity" | "promo";
