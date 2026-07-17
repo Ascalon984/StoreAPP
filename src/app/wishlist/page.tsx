@@ -42,7 +42,7 @@ export default function WishlistPage() {
       >
         {/* TAB HEADER */}
         <div className="relative">
-          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-[#F7F8FA] z-30">
+          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-white z-30">
             {/* Produk */}
             <button
               onClick={() => {
@@ -59,11 +59,20 @@ export default function WishlistPage() {
             {/* Filter */}
             <button
               onClick={() => setFilterOpen((v) => !v)}
-              className={`flex items-center justify-center transition-colors ${
-                filterOpen ? "text-emerald-600" : "text-gray-600 active:text-emerald-600"
-              }`}
+              className={`
+                flex items-center justify-center
+                transition-colors
+                ${filterOpen ? "text-emerald-600" : "text-gray-600 active:text-emerald-600"}
+              `}
             >
-              <ListFilter size={20} strokeWidth={2} />
+              <ListFilter
+                size={20}
+                strokeWidth={2}
+                className={`
+                  transition-transform duration-200
+                  ${filterOpen ? "scale-110" : "scale-100"}
+                `}
+              />
             </button>
 
             {/* Toko */}

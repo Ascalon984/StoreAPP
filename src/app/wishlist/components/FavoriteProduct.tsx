@@ -162,7 +162,7 @@ function ProductRow({
               setMenuOpen(false);
               onRemoveFromWishlist(product.id);
             }}
-            className="w-full px-4 py-1.5 text-left text-[12.5px] text-gray-700 active:bg-gray-50"
+            className="w-full px-4 py-1.5 text-left text-[12.5px] text-rose-600 active:bg-rose-50"
           >
             Hapus dari Favorit
           </button>
@@ -309,7 +309,7 @@ export default function FavoriteProduct({
   return (
     <>
       {filterOpen && (
-        <div className="absolute -top-2 left-0 right-0 z-40 bg-[#F7F8FA] border-t border-gray-100 shadow-sm">
+        <div className="absolute -top-2 left-0 right-0 z-40 bg-white mt-1.5 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
