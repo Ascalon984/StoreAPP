@@ -309,7 +309,7 @@ export default function FavoriteProduct({
   return (
     <>
       {filterOpen && (
-        <div className="absolute top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+        <div className="sticky top-12 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -374,7 +374,7 @@ export default function FavoriteProduct({
       )}
 
       <div
-        className={`relative flex-1 overflow-y-auto h-full w-full z-20 ${
+        className={`relative w-full z-20 ${
           filterOpen ? "pointer-events-none" : ""
         }`}
       >

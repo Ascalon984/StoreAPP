@@ -49,7 +49,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
   return (
     <>
       {filterOpen && (
-        <div className="absolute top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+        <div className="sticky top-12 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
               {filters.map((item) => {
@@ -82,7 +82,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
       )}
 
       <div
-        className={`relative flex-1 overflow-y-auto h-full w-full z-20 ${
+        className={`relative w-full z-20 ${
           filterOpen ? "pointer-events-none" : ""
         }`}
       >
@@ -90,7 +90,9 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           {MOCK_SELLERS.map((store) => (
             <div
               key={store.id}
-              className="bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px]"
+              className={`bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px] ${
+                openMenuId === store.id ? "z-50" : "z-0"
+              }`}
             >
               {/* LEFT (30%) */}
               <div
@@ -133,7 +135,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
               </div>
 
               {/* RIGHT (70%) */}
-              <div className="relative z-0 w-[70%] flex-1 flex flex-col justify-between px-3 py-3">
+              <div className="relative w-[70%] flex-1 flex flex-col justify-between px-3 py-3">
                 {/* Header */}
                 <div>
                   <div className="flex items-start justify-between gap-2">
@@ -142,9 +144,11 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     </h3>
 
                     <button
-                      onClick={() =>
-                        setOpenMenuId(openMenuId === store.id ? null : store.id)
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setOpenMenuId(openMenuId === store.id ? null : store.id);
+                      }}
                       className="absolute top-2.5 right-1.5 rounded-full p-1 text-gray-500 active:bg-gray-100"
                     >
                       <MoreVertical size={16} />
@@ -157,6 +161,17 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     </span>
                   </div>
                 </div>
+
+                {/* Overlay */}
+                {openMenuId === store.id && (
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(null);
+                    }}
+                  />
+                )}
 
                 {/* Dropdown */}
                 <div
@@ -182,7 +197,10 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                   `}
                 >
                   <button
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(null);
+                    }}
                     className="w-full px-4 py-2 text-left text-[12.5px] text-rose-600 active:bg-rose-50"
                   >
                     Hapus Toko dari Favorit
@@ -191,7 +209,10 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                   <div className="h-px bg-gray-100" />
 
                   <button
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(null);
+                    }}
                     className="w-full px-4 py-2 text-left text-[12.5px] text-gray-700 active:bg-gray-50"
                   >
                     Batal

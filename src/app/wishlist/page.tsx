@@ -35,7 +35,7 @@ function WishlistContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative">
       {/* ── HEADER BACKGROUND LAYER ── */}
       <div
         className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
@@ -55,19 +55,16 @@ function WishlistContent() {
         className="
           relative
           z-10
-          flex-1
           mt-[85px]
-          flex
-          flex-col
-          rounded-t-[24px]
+          min-h-[calc(100vh-85px)]
           bg-[#F7F8FA]
+          rounded-t-[24px]
           shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
-          overflow-hidden
         "
       >
         {/* TAB HEADER */}
-        <div className="relative">
-          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-white z-30">
+        <div className="sticky top-0 z-40 bg-white rounded-t-[24px] shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100">
             {/* Produk */}
             <button
               onClick={() => changeTab("produk")}
@@ -109,20 +106,20 @@ function WishlistContent() {
 
             {/* Indicator Produk */}
             <span
-              className={`absolute bottom-2 left-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
+              className={`absolute bottom-0 left-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
                 activeTab === "produk" ? "opacity-100" : "opacity-0"
               }`}
             >
-              <span className="w-28 h-[3px] rounded-full bg-emerald-600" />
+              <span className="w-28 h-[3px] rounded-t-full bg-emerald-600" />
             </span>
 
             {/* Indicator Toko */}
             <span
-              className={`absolute bottom-2 right-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
+              className={`absolute bottom-0 right-0 flex justify-center w-[calc((100%-44px)/2)] transition-opacity duration-200 ${
                 activeTab === "toko" ? "opacity-100" : "opacity-0"
               }`}
             >
-              <span className="w-28 h-[3px] rounded-full bg-emerald-600" />
+              <span className="w-28 h-[3px] rounded-t-full bg-emerald-600" />
             </span>
           </div>
         </div>
@@ -130,13 +127,13 @@ function WishlistContent() {
         {/* OVERLAY for filter */}
         {filterOpen && (
           <div
-            className="absolute inset-x-0 top-12 bottom-0 z-30 bg-black/15"
+            className="fixed inset-0 z-30 bg-black/15"
             onClick={() => setFilterOpen(false)}
           />
         )}
 
         {/* CONTENT */}
-        <div className="relative flex-1 overflow-hidden flex flex-col">
+        <div className="relative">
           {activeTab === "produk" ? (
             <FavoriteProduct filterOpen={filterOpen} />
           ) : (
@@ -150,7 +147,7 @@ function WishlistContent() {
 
 function WishlistSkeleton() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative">
       <div
         className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
@@ -167,18 +164,15 @@ function WishlistSkeleton() {
         className="
           relative
           z-10
-          flex-1
           mt-[85px]
-          flex
-          flex-col
-          rounded-t-[24px]
+          min-h-[calc(100vh-85px)]
           bg-[#F7F8FA]
+          rounded-t-[24px]
           shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
-          overflow-hidden
         "
       >
-        <div className="relative">
-          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100 bg-white z-30">
+        <div className="sticky top-0 z-40 bg-white rounded-t-[24px]">
+          <div className="relative grid grid-cols-[1fr_44px_1fr] h-12 border-b border-gray-100">
             <div className="flex items-center justify-center text-[13px] font-bold text-gray-300">
               Produk Favorit
             </div>
@@ -191,7 +185,7 @@ function WishlistSkeleton() {
           </div>
         </div>
 
-        <div className="relative flex-1 overflow-hidden flex flex-col" />
+        <div className="relative" />
       </div>
     </div>
   );
