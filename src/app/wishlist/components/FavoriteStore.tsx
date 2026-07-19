@@ -86,12 +86,23 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           filterOpen ? "pointer-events-none" : ""
         }`}
       >
+        {/* Global Overlay for Dropdown */}
+        {openMenuId && (
+          <div
+            className="fixed inset-0 z-30"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenuId(null);
+            }}
+          />
+        )}
+
         <div className="flex flex-col gap-3 px-4 pt-3 pb-24">
           {MOCK_SELLERS.map((store) => (
             <div
               key={store.id}
-              className={`bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px] ${
-                openMenuId === store.id ? "z-50" : "z-0"
+              className={`bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px] transform-gpu ${
+                openMenuId === store.id ? "z-40" : ""
               }`}
             >
               {/* LEFT (30%) */}
@@ -162,17 +173,6 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                   </div>
                 </div>
 
-                {/* Overlay */}
-                {openMenuId === store.id && (
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenMenuId(null);
-                    }}
-                  />
-                )}
-
                 {/* Dropdown */}
                 <div
                   className={`
@@ -191,8 +191,8 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     ease-out
                     ${
                       openMenuId === store.id
-                        ? "opacity-100 translate-y-0 pointer-events-auto"
-                        : "opacity-0 -translate-y-1 pointer-events-none"
+                        ? "opacity-100 translate-y-0 pointer-events-auto visible"
+                        : "opacity-0 -translate-y-1 pointer-events-none invisible"
                     }
                   `}
                 >
