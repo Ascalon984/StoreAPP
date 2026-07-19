@@ -214,7 +214,7 @@ export default function HighlightSection({
           timeout2 = setTimeout(() => {
             if (el) el.style.scrollBehavior = "auto";
           }, 1500);
-        }, 2500);
+        }, 2000);
       });
 
       return () => {

@@ -97,11 +97,11 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           />
         )}
 
-        <div className="flex flex-col gap-3 px-4 pt-3 pb-24">
+        <div className="flex flex-col gap-3 px-3 pt-3 pb-24">
           {MOCK_SELLERS.map((store) => (
             <div
               key={store.id}
-              className={`bg-white rounded-lg shadow-layer-sm overflow-visible relative flex items-stretch min-h-[100px] transform-gpu ${
+              className={`bg-white rounded-lg shadow-sm overflow-visible relative flex items-stretch min-h-[100px] transform-gpu ${
                 openMenuId === store.id ? "z-40" : ""
               }`}
             >
@@ -205,7 +205,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     }}
                     className="w-full px-4 py-1.5 text-left text-[12.5px] text-rose-600 active:bg-rose-50"
                   >
-                    Hapus Toko dari Favorit
+                    Berhenti Mengikuti Toko Ini
                   </button>
 
                   <div className="h-px bg-gray-100" />

@@ -44,7 +44,7 @@ function WishlistContent() {
         <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
           <h1 className="text-[17px] font-bold text-white">Favorit Saya</h1>
 
-          <p className="mt-0.5 text-[12px] text-white/85">
+          <p className="mt-0.5 text-[12px] text-white/90">
             Produk dan toko yang kamu simpan
           </p>
         </div>
@@ -59,7 +59,7 @@ function WishlistContent() {
           z-10
           -mt-[35px]
           bg-[#F7F8FA]
-          rounded-t-[24px]
+          rounded-t-[22px]
           shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
           overflow-y-auto
           no-scrollbar
