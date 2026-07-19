@@ -313,7 +313,7 @@ export default function FavoriteProduct({
         <div className="sticky top-12 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <button
                   onClick={() => setActiveFilter("all")}
                   className={`h-7 px-3 rounded-lg border text-[12px] font-medium ${

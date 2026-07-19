@@ -51,7 +51,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
       {filterOpen && (
         <div className="sticky top-12 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
           <div className="px-3 py-2">
-            <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
+            <div className="flex gap-1 overflow-x-auto no-scrollbar">
               {filters.map((item) => {
                 const isActive =
                   item.key === "all"
