@@ -101,13 +101,13 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
           {MOCK_SELLERS.map((store) => (
             <div
               key={store.id}
-              className={`bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-visible relative flex items-stretch min-h-[100px] transform-gpu ${
+              className={`bg-white rounded-lg shadow-layer-sm overflow-visible relative flex items-stretch min-h-[100px] transform-gpu ${
                 openMenuId === store.id ? "z-40" : ""
               }`}
             >
               {/* LEFT (30%) */}
               <div
-                className={`relative z-10 w-[30%] shrink-0 rounded-l-xl rounded-tr-xl border-r shadow-[2px_0_8px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center px-2 py-3 ${
+                className={`relative z-10 w-[30%] shrink-0 rounded-l-lg rounded-tr-3xl border-r shadow-[2px_0_8px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center px-2 py-3 ${
                   store.isActive
                     ? "bg-emerald-600 border-emerald-700/20"
                     : "bg-gray-400 border-gray-500/20"
@@ -158,7 +158,9 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        setOpenMenuId(openMenuId === store.id ? null : store.id);
+                        setOpenMenuId(
+                          openMenuId === store.id ? null : store.id,
+                        );
                       }}
                       className="absolute top-2.5 right-1.5 rounded-full p-1 text-gray-500 active:bg-gray-100"
                     >
@@ -179,11 +181,11 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                     absolute
                     left-0
                     right-0
-                    top-[38px]
+                    top-[40px]
                     z-50
                     overflow-hidden
                     rounded-md
-                    border border-gray-200
+                    border border-gray-100
                     bg-white
                     shadow-sm
                     transition-all
@@ -201,7 +203,7 @@ export default function FavoriteStore({ filterOpen }: { filterOpen: boolean }) {
                       e.stopPropagation();
                       setOpenMenuId(null);
                     }}
-                    className="w-full px-4 py-2 text-left text-[12.5px] text-rose-600 active:bg-rose-50"
+                    className="w-full px-4 py-1.5 text-left text-[12.5px] text-rose-600 active:bg-rose-50"
                   >
                     Hapus Toko dari Favorit
                   </button>

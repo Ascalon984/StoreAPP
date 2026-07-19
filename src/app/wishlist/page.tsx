@@ -35,10 +35,10 @@ function WishlistContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative">
+    <div className="h-[100dvh] flex flex-col bg-emerald-700 relative overflow-hidden">
       {/* ── HEADER BACKGROUND LAYER ── */}
       <div
-        className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
+        className="shrink-0 w-full h-[120px] bg-emerald-700"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
@@ -53,13 +53,16 @@ function WishlistContent() {
       {/* ── CONTENT LAYER ── */}
       <div
         className="
+          flex-1
+          w-full
           relative
           z-10
-          mt-[85px]
-          min-h-[calc(100vh-85px)]
+          -mt-[35px]
           bg-[#F7F8FA]
           rounded-t-[24px]
           shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
+          overflow-y-auto
+          no-scrollbar
         "
       >
         {/* TAB HEADER */}
@@ -147,9 +150,9 @@ function WishlistContent() {
 
 function WishlistSkeleton() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F8FA] relative">
+    <div className="h-[100dvh] flex flex-col bg-emerald-700 relative overflow-hidden">
       <div
-        className="absolute inset-x-0 top-0 h-[120px] bg-emerald-700"
+        className="shrink-0 w-full h-[120px] bg-emerald-700"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex flex-col items-center justify-center h-12 translate-y-[15px]">
@@ -162,13 +165,15 @@ function WishlistSkeleton() {
 
       <div
         className="
+          flex-1
+          w-full
           relative
           z-10
-          mt-[85px]
-          min-h-[calc(100vh-85px)]
+          -mt-[35px]
           bg-[#F7F8FA]
           rounded-t-[24px]
           shadow-[0_-4px_18px_rgba(0,0,0,0.05)]
+          overflow-y-hidden
         "
       >
         <div className="sticky top-0 z-40 bg-white rounded-t-[24px]">

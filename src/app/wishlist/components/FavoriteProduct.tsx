@@ -283,8 +283,8 @@ export default function FavoriteProduct({
     [items, removeItems, showToast],
   );
 
-  type FilterType = "available" | "outOfStock" | "discount" | null;
-  const [activeFilter, setActiveFilter] = useState<FilterType>(null);
+  type FilterType = "all" | "available" | "outOfStock" | "discount";
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [sortAsc, setSortAsc] = useState(true);
 
   const getDiscount = (product: Product) =>
@@ -296,6 +296,7 @@ export default function FavoriteProduct({
       : 0;
 
   const filteredItems = items.filter((product) => {
+    if (activeFilter === "all") return true;
     if (activeFilter === "available") return product.stock > 0;
     if (activeFilter === "outOfStock") return product.stock === 0;
     if (activeFilter === "discount") return getDiscount(product) > 0;
@@ -314,11 +315,17 @@ export default function FavoriteProduct({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <button
-                  onClick={() =>
-                    setActiveFilter(
-                      activeFilter === "available" ? null : "available",
-                    )
-                  }
+                  onClick={() => setActiveFilter("all")}
+                  className={`h-7 px-3 rounded-lg border text-[12px] font-medium ${
+                    activeFilter === "all"
+                      ? "bg-emerald-600 text-white border-emerald-600"
+                      : "bg-white text-gray-700 border-gray-200"
+                  }`}
+                >
+                  Semua
+                </button>
+                <button
+                  onClick={() => setActiveFilter("available")}
                   className={`h-7 px-3 rounded-lg border text-[12px] font-medium ${
                     activeFilter === "available"
                       ? "bg-emerald-600 text-white border-emerald-600"
@@ -328,11 +335,7 @@ export default function FavoriteProduct({
                   Tersedia
                 </button>
                 <button
-                  onClick={() =>
-                    setActiveFilter(
-                      activeFilter === "outOfStock" ? null : "outOfStock",
-                    )
-                  }
+                  onClick={() => setActiveFilter("outOfStock")}
                   className={`h-7 px-3 rounded-lg border text-[12px] font-medium ${
                     activeFilter === "outOfStock"
                       ? "bg-emerald-600 text-white border-emerald-600"
@@ -342,11 +345,7 @@ export default function FavoriteProduct({
                   Habis
                 </button>
                 <button
-                  onClick={() =>
-                    setActiveFilter(
-                      activeFilter === "discount" ? null : "discount",
-                    )
-                  }
+                  onClick={() => setActiveFilter("discount")}
                   className={`h-7 px-3 rounded-lg border text-[12px] font-medium ${
                     activeFilter === "discount"
                       ? "bg-emerald-600 text-white border-emerald-600"
@@ -359,13 +358,14 @@ export default function FavoriteProduct({
 
               <button
                 onClick={() => setSortAsc((v) => !v)}
-                className="flex items-center gap-1 text-[12px] font-medium text-gray-700"
+                className="flex items-center gap-1 text-[12px] font-medium text-emerald-700"
               >
-                <span>Urutkan</span>
+                <span>{sortAsc ? "A–Z" : "Z–A"}</span>
+
                 {sortAsc ? (
-                  <ArrowDownAZ size={15} />
+                  <ArrowDownAZ size={15} strokeWidth={2} />
                 ) : (
-                  <ArrowUpZA size={15} className="text-emerald-600" />
+                  <ArrowUpZA size={15} strokeWidth={2} />
                 )}
               </button>
             </div>
