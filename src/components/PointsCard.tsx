@@ -35,8 +35,6 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
   const [showFloating100, setShowFloating100] = useState(false);
-
-  // New state
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"diskon" | "ongkir">("diskon");
 
@@ -47,9 +45,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setDisplayTotal((prev) => {
         const diff = targetTotal - prev;
         const step = diff >= 100 ? 2 : 1;
-
         const next = prev + step;
-
         return next >= targetTotal ? targetTotal : next;
       });
     }, 60);
@@ -62,22 +58,19 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
     setFloating: (v: boolean) => void,
   ) => {
     setFloating(true);
-
     setTimeout(() => {
       setFloating(false);
-
       setTargetTotal((prev) => prev + reward);
     }, 1800);
   };
 
   const handleCheckin = () => {
-    const isDay7 = currentStreak === 6; // 0-indexed, streak ke-6 = hari ke-7
+    const isDay7 = currentStreak === 6;
 
     if (isDay7) {
       setAnimationFinished(false);
       setShowRewardModal(true);
     } else {
-      // Animasi +20 biasa
       playPointReward(20, setShowFloating);
       setCurrentStreak((prev) => prev + 1);
     }
@@ -85,121 +78,142 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
   return (
     <>
-      <div className="mx-4 mt-2">
-        <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100">
-          {/* TOP Grid */}
-          <div className="flex">
-            {/* Poin Saya */}
-            <div className="w-[40%] relative px-3.5 pt-3.5 pb-2 border-r border-gray-100 flex flex-col">
-              {/* Icon Question di pojok kanan atas */}
-              <button
-                onClick={onOpenInfo}
-                className="absolute top-2.5 right-2.5 p-0.5 active:scale-90 transition-transform"
-              >
-                <CircleQuestionMark
-                  size={13}
-                  className="text-gray-400"
-                  strokeWidth={2.5}
-                />
-              </button>
+      {/* Row 1: Dua kartu terpisah */}
+      <div className="mx-4 mt-2 flex gap-2">
+        {/* ─── Region Kiri: Poin Saya ─── */}
+        <div className="w-[40%] bg-white rounded-lg px-3.5 pt-3.5 pb-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100 relative shrink-0">
+          <button
+            onClick={onOpenInfo}
+            className="absolute top-3.5 right-2.5 p-0.5 active:scale-90 transition-transform"
+          >
+            <CircleQuestionMark
+              size={13}
+              className="text-gray-500"
+              strokeWidth={2.5}
+            />
+          </button>
 
-              <div>
-                <p className="text-[10px] font-bold text-gray-500 mb-2">
-                  POIN SAYA
-                </p>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <span className="text-[20px] font-bold text-gray-700 tabular-nums leading-none">
-                    {displayTotal.toLocaleString("id-ID")}
-                  </span>
-                  {/* ICON + FLOATING +20 */}
-                  <div className="relative mb-0 flex items-center">
-                    {showFloating && (
-                      <span
-                        className="absolute -top-3 -right-6 text-[11px] font-black text-emerald-500 pointer-events-none"
-                        style={{
-                          animation: "floatUp 1.8s ease-out forwards",
-                        }}
-                      >
-                        +10
-                      </span>
-                    )}
-                    {showFloating100 && (
-                      <span
-                        className="absolute -top-3 -right-8 text-[11px] font-black text-emerald-500 pointer-events-none"
-                        style={{ animation: "floatUp 1.8s ease-out forwards" }}
-                      >
-                        +50
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={onOpenInfo}
-                className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit active:opacity-70"
-              >
-                Riwayat <ChevronRight size={12} strokeWidth={2.5} />
-              </button>
-            </div>
+          <p className="text-[10px] font-bold text-gray-500 mb-2">POIN SAYA</p>
 
-            {/* Right Column: BONUS LAINNYA */}
-            <div className="flex-1 px-3.5 pt-3.5 pb-2 flex flex-col">
-              <div>
-                <p className="text-[10px] font-bold text-gray-500 mb-2">
-                  BONUS LAINNYA
-                </p>
-                <div className="flex items-start gap-1.5 mb-3">
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-gray-700 leading-tight">
-                      Check-in & Voucher
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowBonusModal(true)}
-                className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit active:opacity-70"
+          <div className="flex items-center gap-1.5 mb-2 relative">
+            <span className="text-[20px] font-bold text-gray-700 tabular-nums leading-none">
+              {displayTotal.toLocaleString("id-ID")}
+            </span>
+            {showFloating && (
+              <span
+                className="absolute -top-3 right-0 text-[11px] font-black text-emerald-500 pointer-events-none"
+                style={{ animation: "floatUp 1.8s ease-out forwards" }}
               >
-                Buka <ChevronRight size={12} strokeWidth={2.5} />
-              </button>
-            </div>
+                +10
+              </span>
+            )}
+            {showFloating100 && (
+              <span
+                className="absolute -top-3 right-0 text-[11px] font-black text-emerald-500 pointer-events-none"
+                style={{ animation: "floatUp 1.8s ease-out forwards" }}
+              >
+                +50
+              </span>
+            )}
           </div>
 
-          {/* BOTTOM: Voucher Saya */}
-          <div
-            className="border-t border-gray-100 px-3.5 pt-2 pb-3.5 flex items-center justify-between active:bg-gray-50 transition-colors"
-            onClick={() => setShowBonusModal(true)}
+          <button
+            onClick={onOpenInfo}
+            className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit active:opacity-70"
           >
-            <div className="flex items-center gap-2.5">
-              <Ticket
-                size={18}
-                strokeWidth={2}
-                className="text-emerald-600 shrink-0"
-              />
+            Riwayat <ChevronRight size={12} strokeWidth={2.5} />
+          </button>
+        </div>
 
-              <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-gray-700 leading-tight">
-                  Voucher Saya
-                </span>
-                <span className="text-[9px] font-medium text-gray-500 leading-tight mt-0.5">
-                  Diskon • Ongkir
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                8 Aktif
+        {/* ─── Region Kanan: Bonus Lainnya ─── */}
+        <div
+          onClick={() => setShowBonusModal(true)}
+          className="flex-1 bg-white rounded-lg px-3.5 pt-3.5 pb-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden active:bg-gray-50/50 transition-colors"
+        >
+          {/* Watermark */}
+          <img
+            src="/icons/reward_soft.png"
+            alt=""
+            aria-hidden="true"
+            className="absolute -right-7 -bottom-6 w-[104px] h-auto pointer-events-none select-none z-0"
+            style={{
+              transform: "rotate(5deg)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.8) 45%, rgba(0,0,0,.15) 80%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.8) 45%, rgba(0,0,0,.15) 80%, transparent 100%)",
+            }}
+          />
+
+          <div className="relative z-10">
+            <p className="text-[10px] font-bold text-gray-500 mb-2">
+              BONUS LAINNYA
+            </p>
+            <div className="flex items-start gap-1.5 mb-3">
+              <span className="text-[12px] font-bold text-gray-700 leading-tight">
+                Check-in & Voucher
               </span>
-              <ChevronRight
-                size={14}
-                strokeWidth={2.5}
-                className="text-gray-400"
-              />
             </div>
+            <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit">
+              Klaim Reward <ChevronRight size={12} strokeWidth={2.5} />
+            </span>
           </div>
         </div>
       </div>
 
+      {/* Row 2: Voucher Saya — dengan ticket notch (transparan asli) */}
+      <div className="mx-4 mt-2">
+        <div
+          onClick={() => setShowBonusModal(true)}
+          className="relative bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-stretch active:bg-gray-50/50 transition-colors"
+          style={{
+            // Posisi notch: left-[68%] (sesuaikan dgn lebar section kiri), radius 6px
+            WebkitMaskImage: `radial-gradient(circle 5px at 78% 0%, transparent 99%, black 100%),
+                         radial-gradient(circle 5px at 78% 100%, transparent 99%, black 100%)`,
+            maskImage: `radial-gradient(circle 5px at 78% 0%, transparent 99%, black 100%),
+                   radial-gradient(circle 5px at 78% 100%, transparent 99%, black 100%)`,
+            WebkitMaskComposite: "source-in",
+            maskComposite: "intersect",
+          }}
+        >
+          {/* Left: Icon + Label */}
+          <div className="flex items-center gap-2.5 px-3.5 py-3 flex-1">
+            <Ticket
+              size={18}
+              strokeWidth={2}
+              className="text-emerald-600 shrink-0"
+            />
+            <div className="flex flex-col">
+              <span className="text-[12px] font-bold text-gray-700 leading-tight">
+                Voucher Saya
+              </span>
+            </div>
+          </div>
+
+          {/* Garis putus-putus */}
+          <div
+            className="absolute inset-y-1 border-l border-dashed border-gray-300"
+            style={{
+              left: "78%",
+              transform: "translateX(-0.5px)",
+            }}
+          />
+
+          {/* Right: Badge + Chevron */}
+          <div className="relative z-10 flex items-center justify-center gap-[1px] w-[22%]">
+            <span className="text-[10px] font-bold text-emerald-600">
+              8 Aktif
+            </span>
+            <ChevronRight
+              size={15}
+              strokeWidth={2.5}
+              className="text-emerald-600"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Modal: Bonus & Voucher ─── */}
       {showBonusModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-bottom-full duration-300">
@@ -217,7 +231,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             </div>
 
             <div className="flex-1 overflow-y-auto pb-20">
-              {/* Check-in Harian Section */}
+              {/* Check-in Harian */}
               <div className="bg-white p-4 mb-2 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
@@ -229,9 +243,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                     </p>
                   </div>
 
-                  {/* Wrapper dibuat relative untuk menampung animasi */}
                   <div className="relative flex items-center gap-1.5">
-                    {/* Animasi Floating +20 (Muncul di kiri icon) */}
                     {showFloating && (
                       <span
                         className="absolute -left-8 -top-1 text-[14px] font-black text-emerald-500 pointer-events-none z-20"
@@ -240,7 +252,6 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         +20
                       </span>
                     )}
-
                     {showFloating100 && (
                       <span
                         className="absolute -left-10 -top-1 text-[14px] font-black text-emerald-500 pointer-events-none z-20"
@@ -249,7 +260,6 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         +100
                       </span>
                     )}
-
                     <img
                       src="/icons/stack_poin.svg"
                       alt="Poin"
@@ -261,7 +271,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                   </div>
                 </div>
 
-                {/* DAYS */}
+                {/* Days */}
                 <div className="flex items-center justify-between">
                   {Array.from({ length: 7 }).map((_, i) => {
                     const completed = i < currentStreak;
@@ -272,8 +282,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         key={i}
                         className="flex flex-col items-center gap-1.5"
                       >
-                        {completed ? (
-                          <div className="w-7 h-7 flex items-center justify-center">
+                        <div className="w-7 h-7 flex items-center justify-center">
+                          {completed ? (
                             <div className="w-[24px] h-[24px] rounded-full bg-emerald-500 flex items-center justify-center shadow-inner">
                               <Check
                                 size={14}
@@ -281,26 +291,22 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                                 className="text-white"
                               />
                             </div>
-                          </div>
-                        ) : (
-                          <div className="w-7 h-7 flex items-center justify-center">
-                            {isRewardDay ? (
-                              <img
-                                src="/icons/gift.png"
-                                alt="Reward"
-                                className="w-[22px] h-auto object-contain drop-shadow-sm"
+                          ) : isRewardDay ? (
+                            <img
+                              src="/icons/gift.png"
+                              alt="Reward"
+                              className="w-[22px] h-auto object-contain drop-shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-[24px] h-[24px] rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
+                              <CalendarCheck
+                                size={12}
+                                strokeWidth={2.5}
+                                className="text-gray-400"
                               />
-                            ) : (
-                              <div className="w-[24px] h-[24px] rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
-                                <CalendarCheck
-                                  size={12}
-                                  strokeWidth={2.5}
-                                  className="text-gray-400"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        )}
+                            </div>
+                          )}
+                        </div>
                         <span className="text-[9px] font-bold text-gray-500 leading-none">
                           Hari {i + 1}
                         </span>
@@ -317,21 +323,22 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                 </button>
               </div>
 
-              {/* Voucher Tabs Section */}
+              {/* Voucher Tabs */}
               <div className="bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03)] min-h-[400px]">
                 <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10">
-                  <button
-                    className={`flex-1 py-3 text-[11px] font-bold border-b-2 transition-colors ${activeTab === "diskon" ? "border-emerald-500 text-emerald-600" : "border-transparent text-gray-500"}`}
-                    onClick={() => setActiveTab("diskon")}
-                  >
-                    Voucher Diskon
-                  </button>
-                  <button
-                    className={`flex-1 py-3 text-[11px] font-bold border-b-2 transition-colors ${activeTab === "ongkir" ? "border-emerald-500 text-emerald-600" : "border-transparent text-gray-500"}`}
-                    onClick={() => setActiveTab("ongkir")}
-                  >
-                    Voucher Ongkir
-                  </button>
+                  {(["diskon", "ongkir"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      className={`flex-1 py-3 text-[11px] font-bold border-b-2 transition-colors ${
+                        activeTab === tab
+                          ? "border-emerald-500 text-emerald-600"
+                          : "border-transparent text-gray-500"
+                      }`}
+                      onClick={() => setActiveTab(tab)}
+                    >
+                      Voucher {tab === "diskon" ? "Diskon" : "Ongkir"}
+                    </button>
+                  ))}
                 </div>
 
                 <div className="p-4 flex flex-col items-center justify-center py-16">
@@ -351,15 +358,15 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           document.body,
         )}
 
+      {/* ─── Modal: Reward ─── */}
       {showRewardModal &&
         createPortal(
           <div
             onClick={() => {
               if (!animationFinished) return;
-
               setShowRewardModal(false);
               playPointReward(100, setShowFloating100);
-              setCurrentStreak(0); // Reset ke 0 setelah reward hari ke-7
+              setCurrentStreak(0);
             }}
             className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center px-6"
           >
@@ -369,20 +376,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               muted
               playsInline
               className="w-[180px] h-auto pointer-events-none"
-              onEnded={() => {
-                setAnimationFinished(true); // hanya trigger reveal teks, count up tidak di sini
-              }}
+              onEnded={() => setAnimationFinished(true)}
             />
-
-            {/* Muncul SEJAK AWAL modal terbuka, tidak perlu tunggu animationFinished */}
             <p className="mt-4 text-center text-white/70 text-[13px]">
               Selamat, Kamu mendapatkan
             </p>
             <p className="mt-1 text-center text-3xl font-bold text-emerald-400 tracking-tight">
               +100 Poin
             </p>
-
-            {/* Muncul SETELAH video selesai */}
             {animationFinished && (
               <p className="mt-8 text-[11px] text-white/50 animate-pulse">
                 Tap di mana saja untuk melanjutkan

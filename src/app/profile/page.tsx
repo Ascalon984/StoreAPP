@@ -166,20 +166,20 @@ export default function ProfilePage() {
       {/* ── CONVEX HERO HEADER ── */}
       <div className="relative">
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div 
-          className="absolute top-0 left-0 w-full z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[18px]"
-          style={{ height: "calc(158px + env(safe-area-inset-top))" }}
+        <div
+          className="absolute top-0 left-0 w-full z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[12px]"
+          style={{ height: "calc(237px + env(safe-area-inset-top))" }}
         />
 
         {/* CONTENT */}
-        <div 
+        <div
           className="relative z-10 px-4 pb-0 flex items-start justify-between"
           style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
         >
           {/* LEFT: AVATAR + NAME */}
           <div className="flex items-start gap-3.5">
             <div className="relative flex-shrink-0">
-              <AvatarCircle name={user.name} src={avatarPreview} size={46} />
+              <AvatarCircle name={user.name} src={avatarPreview} size={48} />
               <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white-500 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
                 <Pencil
                   size={9}
@@ -196,7 +196,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col leading-tight">
-              <h1 className="text-[16px] font-black text-white tracking-tight">
+              <h1 className="text-[16px] font-bold text-white tracking-tight">
                 {user.name || "Pengguna"}
               </h1>
               <p className="text-[11px] text-white/70 font-medium tracking-wide mt-1.5">
@@ -217,10 +217,49 @@ export default function ProfilePage() {
           onOpenInfo={() => setPointsInfoOpen(true)}
         />
 
-        {/* ── SINGLE SETTINGS CARD ── */}
-        <div ref={pengaturanRef} className="mt-7" />
+        {/* ── QUICK ACCESS ROW ── */}
+        <div className="mx-2 mt-3 bg-white rounded-lg shadow-sm flex translate-y-[10px]">
+          {[
+            { label: "Alamat Saya", icon: "/icons/adress.png" },
+            { label: "Metode Pembayaran", icon: "/icons/payment.png" },
+            { label: "Terakhir Dilihat", icon: "/icons/last_seen.png" },
+          ].map(({ label, icon }) => (
+            <button
+              key={label}
+              className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2 active:bg-gray-50 transition-colors"
+            >
+              <img
+                src={icon}
+                alt={label}
+                className="w-[24px] h-[24px] object-contain"
+              />
+              <span
+                className="text-[9.5px] font-semibold text-white tracking-[0.02em]"
+                style={{
+                  WebkitTextStroke: "1.8px black",
+                  paintOrder: "stroke fill",
+                }}
+              >
+                {label}
+              </span>
+            </button>
+          ))}
+        </div>
 
-        <div className="mx-3 bg-white rounded-xl overflow-hidden">
+        {/* ── SINGLE SETTINGS CARD ── */}
+        <div
+          ref={pengaturanRef}
+          className="mx-2 mt-5 bg-white rounded-lg overflow-hidden scroll-mt-4"
+        >
+          {/* ── Label Pengaturan (di dalam wrapper) ── */}
+          <div className="px-4 pt-3.5 pb-1">
+            <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">
+              Pengaturan
+            </p>
+          </div>
+        </div>
+
+        <div className="mx-2 bg-white rounded-lg overflow-hidden">
           {/* ── Data Pribadi ── */}
           <button
             onClick={() => {
