@@ -20,6 +20,8 @@ import {
   User,
   ArrowRight,
   ShieldCheck,
+  Camera,
+  Store,
 } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
 import { AvatarCircle, Toggle, FieldRow } from "@/components/ProfileComponents";
@@ -168,7 +170,7 @@ export default function ProfilePage() {
         {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
         <div
           className="absolute top-0 left-0 w-full z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[12px]"
-          style={{ height: "calc(237px + env(safe-area-inset-top))" }}
+          style={{ height: "calc(238px + env(safe-area-inset-top))" }}
         />
 
         {/* CONTENT */}
@@ -180,12 +182,21 @@ export default function ProfilePage() {
           <div className="flex items-start gap-3.5">
             <div className="relative flex-shrink-0">
               <AvatarCircle name={user.name} src={avatarPreview} size={48} />
-              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white-500 flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
-                <Pencil
-                  size={9}
-                  strokeWidth={2.5}
-                  className="text-emerald-700"
-                />
+              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
+                {avatarPreview ? (
+                  <Pencil
+                    size={10.5}
+                    strokeWidth={2.5}
+                    className="text-gray-700"
+                  />
+                ) : (
+                  <Camera
+                    size={10.5}
+                    strokeWidth={2.5}
+                    className="text-gray-700"
+                  />
+                )}
+
                 <input
                   type="file"
                   accept="image/*"
@@ -199,11 +210,37 @@ export default function ProfilePage() {
               <h1 className="text-[16px] font-bold text-white tracking-tight">
                 {user.name || "Pengguna"}
               </h1>
-              <p className="text-[11px] text-white/70 font-medium tracking-wide mt-1.5">
+              <p className="text-[11px] text-white/85 font-medium tracking-wide mt-1.5">
                 @{user.username}
               </p>
             </div>
           </div>
+          {/* RIGHT */}
+          <button
+            className="
+              shrink-0
+              h-7
+              px-2.5
+              rounded-[12px]
+              bg-gradient-to-r
+              from-amber-300
+              to-orange-400
+              active:scale-95
+              transition-all
+              flex items-center gap-1
+            "
+          >
+            <span
+              className="text-[10.5px] font-semibold text-white tracking-[0.01em]"
+              style={{
+                WebkitTextStroke: "0.9px black",
+                paintOrder: "stroke fill",
+                textShadow: "0 1px 1px rgba(0,0,0,.25)",
+              }}
+            >
+              Buka Toko
+            </span>
+          </button>
         </div>
 
         {/* spacing bawah agar overlap card tetap enak */}
@@ -226,12 +263,12 @@ export default function ProfilePage() {
           ].map(({ label, icon }) => (
             <button
               key={label}
-              className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2 active:bg-gray-50 transition-colors"
+              className="flex-1 flex flex-col items-center justify-center gap-2 py-2 active:bg-gray-50 transition-colors"
             >
               <img
                 src={icon}
                 alt={label}
-                className="w-[24px] h-[24px] object-contain"
+                className="w-[28px] h-[28px] object-contain"
               />
               <span
                 className="text-[9.5px] font-semibold text-white tracking-[0.02em]"

@@ -179,9 +179,9 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-2.5 px-3.5 py-3 flex-1">
             <Ticket
-              size={18}
-              strokeWidth={2}
-              className="text-emerald-600 shrink-0"
+              size={19}
+              strokeWidth={1.5}
+              className="text-gray-900 shrink-0"
             />
             <div className="flex flex-col">
               <span className="text-[12px] font-bold text-gray-700 leading-tight">
