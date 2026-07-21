@@ -7,27 +7,13 @@ import ReactCrop, {
   centerCrop,
   makeAspectCrop,
 } from "react-image-crop";
-import {
-  ChevronRight,
-  ChevronDown,
-  Pencil,
-  X,
-  Bell,
-  Info,
-  LogOut,
-  Phone,
-  Mail,
-  User,
-  ArrowRight,
-  ShieldCheck,
-  Camera,
-  Store,
-} from "lucide-react";
-import PointsCard from "@/components/PointsCard";
-import { AvatarCircle, Toggle, FieldRow } from "@/components/ProfileComponents";
+import { X } from "lucide-react";
+
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileContent, { type UserProfile } from "./components/ProfileContent";
 
 // ── Mock data ──
-const mockUser = {
+const mockUser: UserProfile = {
   name: "Pengguna",
   username: "pengguna1",
   email: "user_1@email.com",
@@ -35,7 +21,6 @@ const mockUser = {
   avatar: null,
 };
 
-const mockNotifPrefs = { orderUpdates: true, promoOffers: false };
 const mockPoints = {
   total: 12450,
   transactionPoints: 11250,
@@ -45,27 +30,11 @@ const mockPoints = {
   rewardStreakPoints: 100,
 };
 
-// ── Helper ──
-function getInitials(name: string): string {
-  if (!name.trim()) return "?";
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
-}
-
 // ── Main Page ──
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(mockUser);
-  const [notifPrefs, setNotifPrefs] = useState(mockNotifPrefs);
-  const [dataPribadiOpen, setDataPribadiOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
   const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar,
   );
@@ -73,7 +42,6 @@ export default function ProfilePage() {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<Crop>();
   const imgRef = useRef<HTMLImageElement>(null);
-  const pengaturanRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (cropSrc) {
@@ -85,13 +53,6 @@ export default function ProfilePage() {
       document.body.style.overflow = "";
     };
   }, [cropSrc]);
-
-  // ── Hitung kelengkapan profil (shared logic) ──
-  const isProfileComplete =
-    !!user.name.trim() &&
-    !!user.email.trim() &&
-    !!user.phone.trim() &&
-    !!avatarPreview;
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -140,360 +101,20 @@ export default function ProfilePage() {
     );
   };
 
-  const handleEditStart = (key: string, val: string) => {
-    setEditingField(key);
-    setEditValue(val);
-  };
-  const handleEditCancel = () => {
-    setEditingField(null);
-    setEditValue("");
-  };
-  const handleEditSave = (key: string) => {
-    setUser((prev) => ({ ...prev, [key]: editValue }));
-    handleEditCancel();
-  };
-
-  const handleLengkapi = () => {
-    setDataPribadiOpen(true);
-    setTimeout(() => {
-      pengaturanRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 80);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50/80 pb-24">
-      {/* ── CONVEX HERO HEADER ── */}
-      <div className="relative">
-        {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
-        <div
-          className="absolute top-0 left-0 w-full z-0 bg-gradient-to-br from-[#0E9F6E] via-[#047857] to-[#065F46] rounded-b-[12px]"
-          style={{ height: "calc(238px + env(safe-area-inset-top))" }}
-        />
+      <ProfileHeader
+        user={user}
+        avatarPreview={avatarPreview}
+        onAvatarChange={handleAvatarChange}
+      />
 
-        {/* CONTENT */}
-        <div
-          className="relative z-10 px-4 pb-0 flex items-start justify-between"
-          style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
-        >
-          {/* LEFT: AVATAR + NAME */}
-          <div className="flex items-start gap-3.5">
-            <div className="relative flex-shrink-0">
-              <AvatarCircle name={user.name} src={avatarPreview} size={48} />
-              <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
-                {avatarPreview ? (
-                  <Pencil
-                    size={10.5}
-                    strokeWidth={2.5}
-                    className="text-gray-700"
-                  />
-                ) : (
-                  <Camera
-                    size={10.5}
-                    strokeWidth={2.5}
-                    className="text-gray-700"
-                  />
-                )}
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange}
-                />
-              </label>
-            </div>
-
-            <div className="flex flex-col leading-tight">
-              <h1 className="text-[16px] font-bold text-white tracking-tight">
-                {user.name || "Pengguna"}
-              </h1>
-              <p className="text-[11px] text-white/85 font-medium tracking-wide mt-1.5">
-                @{user.username}
-              </p>
-            </div>
-          </div>
-          {/* RIGHT */}
-          <button
-            className="
-              shrink-0
-              h-7
-              px-2.5
-              rounded-[12px]
-              bg-gradient-to-r
-              from-amber-300
-              to-orange-400
-              active:scale-95
-              transition-all
-              flex items-center gap-1
-            "
-          >
-            <span
-              className="text-[10.5px] font-semibold text-white tracking-[0.01em]"
-              style={{
-                WebkitTextStroke: "0.9px black",
-                paintOrder: "stroke fill",
-                textShadow: "0 1px 1px rgba(0,0,0,.25)",
-              }}
-            >
-              Buka Toko
-            </span>
-          </button>
-        </div>
-
-        {/* spacing bawah agar overlap card tetap enak */}
-        <div className="h-[55px]" />
-      </div>
-
-      {/* ── SCROLLABLE BODY ── */}
-      <div className="relative z-10 -mt-[45px]">
-        <PointsCard
-          points={mockPoints}
-          onOpenInfo={() => setPointsInfoOpen(true)}
-        />
-
-        {/* ── QUICK ACCESS ROW ── */}
-        <div className="mx-2 mt-3 bg-white rounded-lg shadow-sm flex translate-y-[10px]">
-          {[
-            { label: "Alamat Saya", icon: "/icons/adress.png" },
-            { label: "Metode Pembayaran", icon: "/icons/payment.png" },
-            { label: "Terakhir Dilihat", icon: "/icons/last_seen.png" },
-          ].map(({ label, icon }) => (
-            <button
-              key={label}
-              className="flex-1 flex flex-col items-center justify-center gap-2 py-2 active:bg-gray-50 transition-colors"
-            >
-              <img
-                src={icon}
-                alt={label}
-                className="w-[28px] h-[28px] object-contain"
-              />
-              <span
-                className="text-[9.5px] font-semibold text-white tracking-[0.02em]"
-                style={{
-                  WebkitTextStroke: "1.8px black",
-                  paintOrder: "stroke fill",
-                }}
-              >
-                {label}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* ── SINGLE SETTINGS CARD ── */}
-        <div
-          ref={pengaturanRef}
-          className="mx-2 mt-5 bg-white rounded-lg overflow-hidden scroll-mt-4"
-        >
-          {/* ── Label Pengaturan (di dalam wrapper) ── */}
-          <div className="px-4 pt-3.5 pb-1">
-            <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">
-              Pengaturan
-            </p>
-          </div>
-        </div>
-
-        <div className="mx-2 bg-white rounded-lg overflow-hidden">
-          {/* ── Data Pribadi ── */}
-          <button
-            onClick={() => {
-              setDataPribadiOpen((p) => !p);
-              setEditingField(null);
-            }}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-                <User size={15} className="text-gray-500" strokeWidth={2.5} />
-              </div>
-              <div className="text-left">
-                <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                  Data Pribadi
-                </p>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                  Nama, email, no telepon
-                </p>
-              </div>
-            </div>
-            {dataPribadiOpen ? (
-              <ChevronDown size={20} className="text-gray-400" />
-            ) : (
-              <ChevronRight size={20} className="text-gray-400" />
-            )}
-          </button>
-
-          <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
-            style={{
-              maxHeight: dataPribadiOpen ? "500px" : "0px",
-              opacity: dataPribadiOpen ? 1 : 0,
-            }}
-          >
-            <div className="border-t border-gray-100 divide-y divide-gray-100/60">
-              <FieldRow
-                label="Nama Lengkap"
-                fieldKey="name"
-                value={user.name}
-                icon={<User size={14} />}
-                inputType="text"
-                editingField={editingField}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                onEditStart={handleEditStart}
-                onEditCancel={handleEditCancel}
-                onEditSave={handleEditSave}
-              />
-              <FieldRow
-                label="Email"
-                fieldKey="email"
-                value={user.email}
-                icon={<Mail size={15} />}
-                inputType="email"
-                editingField={editingField}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                onEditStart={handleEditStart}
-                onEditCancel={handleEditCancel}
-                onEditSave={handleEditSave}
-              />
-              <FieldRow
-                label="Nomor Telepon"
-                fieldKey="phone"
-                value={user.phone}
-                icon={<Phone size={15} />}
-                inputType="tel"
-                editingField={editingField}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                onEditStart={handleEditStart}
-                onEditCancel={handleEditCancel}
-                onEditSave={handleEditSave}
-              />
-            </div>
-          </div>
-
-          <div className="ml-[60px] border-t border-gray-100/80" />
-
-          {/* ── Notifikasi ── */}
-          <button
-            onClick={() => setNotifOpen((p) => !p)}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-                <Bell size={15} className="text-gray-500" strokeWidth={2.5} />
-              </div>
-              <div className="text-left">
-                <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                  Preferensi Notifikasi
-                </p>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                  Atur notifikasi yang kamu terima
-                </p>
-              </div>
-            </div>
-            {notifOpen ? (
-              <ChevronDown size={20} className="text-gray-400" />
-            ) : (
-              <ChevronRight size={20} className="text-gray-400" />
-            )}
-          </button>
-
-          <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
-            style={{
-              maxHeight: notifOpen ? "300px" : "0px",
-              opacity: notifOpen ? 1 : 0,
-            }}
-          >
-            <div className="border-t border-gray-100 divide-y divide-gray-100/60">
-              <div className="px-4 py-3 flex items-center gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                    Update Pesanan
-                  </p>
-                  <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                    Info status pemesanan real-time
-                  </p>
-                </div>
-                <Toggle
-                  on={notifPrefs.orderUpdates}
-                  onToggle={() =>
-                    setNotifPrefs((p) => ({
-                      ...p,
-                      orderUpdates: !p.orderUpdates,
-                    }))
-                  }
-                />
-              </div>
-              <div className="px-4 py-3 flex items-center gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                    Promo & Penawaran
-                  </p>
-                  <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                    Diskon dan voucher eksklusif
-                  </p>
-                </div>
-                <Toggle
-                  on={notifPrefs.promoOffers}
-                  onToggle={() =>
-                    setNotifPrefs((p) => ({
-                      ...p,
-                      promoOffers: !p.promoOffers,
-                    }))
-                  }
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="ml-[60px] border-t border-gray-100/80" />
-
-          {/* ── Kebijakan & Privasi ── */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-              <ShieldCheck
-                size={15}
-                className="text-gray-500"
-                strokeWidth={2.5}
-              />
-            </div>
-            <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
-              Kebijakan & Privasi
-            </span>
-            <ArrowRight size={16} className="text-gray-300" />
-          </button>
-
-          {/* ── Tentang Aplikasi ── */}
-          <button className="w-full flex items-center gap-3 px-4 pt-3 pb-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-              <Info size={17} className="text-gray-500" strokeWidth={2.5} />
-            </div>
-            <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
-              Tentang Aplikasi
-            </span>
-            <ArrowRight size={16} className="text-gray-300" />
-          </button>
-        </div>
-
-        {/* ── CTA Logout ── */}
-        <div className="mx-3 mt-4 mb-2">
-          <button className="group w-full py-3.5 px-4 rounded-xl border border-red-200 hover:border-red-400 hover:bg-red-500 active:scale-[0.96] transition-all duration-200 flex items-center justify-center gap-2">
-            <LogOut
-              size={15}
-              strokeWidth={2}
-              className="text-red-400 group-hover:text-white transition-colors duration-200"
-            />
-            <span className="font-semibold text-[13px] text-red-400 group-hover:text-white transition-colors duration-200">
-              Keluar Akun
-            </span>
-          </button>
-        </div>
-      </div>
+      <ProfileContent
+        user={user}
+        setUser={setUser}
+        points={mockPoints}
+        onOpenPointsInfo={() => setPointsInfoOpen(true)}
+      />
 
       {/* Modal Crop */}
       {cropSrc && (
