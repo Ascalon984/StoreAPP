@@ -11,6 +11,9 @@ import { X } from "lucide-react";
 
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileContent, { type UserProfile } from "./components/ProfileContent";
+import AddressPage from "./components/AddressPage";
+import PaymentMethodPage from "./components/PaymentMethodPage";
+import LastSeenPage from "./components/LastSeenPage";
 
 // ── Mock data ──
 const mockUser: UserProfile = {
@@ -35,6 +38,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(mockUser);
   const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
+  const [activeSubPage, setActiveSubPage] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar,
   );
@@ -114,6 +118,7 @@ export default function ProfilePage() {
         setUser={setUser}
         points={mockPoints}
         onOpenPointsInfo={() => setPointsInfoOpen(true)}
+        onOpenSubPage={setActiveSubPage}
       />
 
       {/* Modal Crop */}
@@ -240,6 +245,17 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── SUB PAGES ── */}
+      {activeSubPage === "alamat" && (
+        <AddressPage onClose={() => setActiveSubPage(null)} />
+      )}
+      {activeSubPage === "pembayaran" && (
+        <PaymentMethodPage onClose={() => setActiveSubPage(null)} />
+      )}
+      {activeSubPage === "terakhir" && (
+        <LastSeenPage onClose={() => setActiveSubPage(null)} />
       )}
     </div>
   );

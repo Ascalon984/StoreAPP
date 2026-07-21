@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
 import { Toggle, FieldRow } from "@/components/ProfileComponents";
+import ProfileQuickActions from "./ProfileQuickActions";
 
 export interface UserProfile {
   name: string;
@@ -27,10 +28,20 @@ interface ProfileContentProps {
   setUser: React.Dispatch<React.SetStateAction<UserProfile>>;
   points: any;
   onOpenPointsInfo: () => void;
+  onOpenSubPage: (page: string) => void;
 }
 
-export default function ProfileContent({ user, setUser, points, onOpenPointsInfo }: ProfileContentProps) {
-  const [notifPrefs, setNotifPrefs] = useState({ orderUpdates: true, promoOffers: false });
+export default function ProfileContent({
+  user,
+  setUser,
+  points,
+  onOpenPointsInfo,
+  onOpenSubPage,
+}: ProfileContentProps) {
+  const [notifPrefs, setNotifPrefs] = useState({
+    orderUpdates: true,
+    promoOffers: false,
+  });
   const [dataPribadiOpen, setDataPribadiOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -41,12 +52,12 @@ export default function ProfileContent({ user, setUser, points, onOpenPointsInfo
     setEditingField(key);
     setEditValue(val);
   };
-  
+
   const handleEditCancel = () => {
     setEditingField(null);
     setEditValue("");
   };
-  
+
   const handleEditSave = (key: string) => {
     setUser((prev) => ({ ...prev, [key]: editValue }));
     handleEditCancel();
@@ -54,39 +65,10 @@ export default function ProfileContent({ user, setUser, points, onOpenPointsInfo
 
   return (
     <div className="relative z-10 -mt-[45px]">
-      <PointsCard
-        points={points}
-        onOpenInfo={onOpenPointsInfo}
-      />
+      <PointsCard points={points} onOpenInfo={onOpenPointsInfo} />
 
       {/* ── QUICK ACCESS ROW ── */}
-      <div className="mx-2 mt-3 bg-white rounded-lg shadow-sm flex translate-y-[10px]">
-        {[
-          { label: "Alamat Saya", icon: "/icons/adress.png" },
-          { label: "Metode Pembayaran", icon: "/icons/payment.png" },
-          { label: "Terakhir Dilihat", icon: "/icons/last_seen.png" },
-        ].map(({ label, icon }) => (
-          <button
-            key={label}
-            className="flex-1 flex flex-col items-center justify-center gap-2 py-2 active:bg-gray-50 transition-colors"
-          >
-            <img
-              src={icon}
-              alt={label}
-              className="w-[28px] h-[28px] object-contain"
-            />
-            <span
-              className="text-[9.5px] font-semibold text-white tracking-[0.02em]"
-              style={{
-                WebkitTextStroke: "1.8px black",
-                paintOrder: "stroke fill",
-              }}
-            >
-              {label}
-            </span>
-          </button>
-        ))}
-      </div>
+      <ProfileQuickActions onActionClick={onOpenSubPage} />
 
       {/* ── SINGLE SETTINGS CARD ── */}
       <div
