@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+"use client";
+
+import React, { useState, useEffect, useMemo } from "react";
 import {
   ArrowLeft,
-  MapPin,
   ChevronDown,
   Search,
   X,
   Check,
   Loader2,
-  Plus,
-  Minus,
-  LocateFixed,
+  MapPin,
 } from "lucide-react";
-import type { Map as LeafletMap, Marker, LatLngExpression } from "leaflet";
-import "leaflet/dist/leaflet.css";
+import type { LatLngExpression } from "leaflet";
+import AddressMap from "./AddressMap";
 
 interface AddressPageProps {
   onClose: () => void;
@@ -27,7 +26,6 @@ type PickerLevel = "provinsi" | "kota" | "kecamatan" | null;
 
 const WILAYAH_BASE = "https://www.emsifa.com/api-wilayah-indonesia/api";
 const DEFAULT_COORDS: LatLngExpression = { lat: -6.2088, lng: 106.8456 };
-const DEFAULT_ZOOM = 15;
 
 export default function AddressPage({ onClose }: AddressPageProps) {
   const [form, setForm] = useState({
@@ -56,13 +54,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   const [coords, setCoords] = useState<LatLngExpression>(DEFAULT_COORDS);
   const [geocoding, setGeocoding] = useState(false);
   const [geocodeError, setGeocodeError] = useState("");
-
-  const homeCoordsRef = useRef<LatLngExpression>(DEFAULT_COORDS);
   const [locating, setLocating] = useState(false);
-
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<LeafletMap | null>(null);
-  const markerRef = useRef<Marker | null>(null);
 
   const showMap = Boolean(form.provinsi && form.kota && form.kecamatan);
   const canInputAddress = Boolean(form.kecamatan);
@@ -160,7 +152,6 @@ export default function AddressPage({ onClose }: AddressPageProps) {
           const lon = parseFloat(data[0].lon);
           const newCoords: LatLngExpression = { lat, lng: lon };
           setCoords(newCoords);
-          homeCoordsRef.current = newCoords;
         } else {
           setGeocodeError("Lokasi tidak ditemukan, silakan geser peta manual.");
         }
@@ -175,84 +166,32 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     return () => controller.abort();
   }, [form.provinsi, form.kota, form.kecamatan]);
 
-  /* ===================== init peta (sekali) ===================== */
-  useEffect(() => {
-    if (!showMap) return;
-    if (!mapContainerRef.current) return;
-    if (mapRef.current) return;
-
-    let isMounted = true;
-
-    import("leaflet").then((leaflet) => {
-      if (!isMounted) return;
-      const L = leaflet.default || leaflet;
-
-      const markerIcon = L.icon({
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        iconRetinaUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        shadowUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-      });
-
-      const map = L.map(mapContainerRef.current!, {
-        center: coords,
-        zoom: DEFAULT_ZOOM,
-        zoomControl: false,
-        attributionControl: false,
-        dragging: true,
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        touchZoom: true,
-        boxZoom: false,
-        keyboard: false,
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-      }).addTo(map);
-
-      const marker = L.marker(coords, {
-        icon: markerIcon,
-        draggable: false,
-      }).addTo(map);
-
-      mapRef.current = map;
-      markerRef.current = marker;
-
-      setTimeout(() => map.invalidateSize(), 200);
-    });
-
-    return () => {
-      isMounted = false;
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-        markerRef.current = null;
-      }
-    };
-  }, [showMap]);
-
-  /* ===================== update posisi peta ===================== */
-  useEffect(() => {
-    if (mapRef.current && markerRef.current) {
-      mapRef.current.setView(coords, mapRef.current.getZoom());
-      markerRef.current.setLatLng(coords);
+  function handleUseMyLocation() {
+    if (!navigator.geolocation) {
+      alert("Perangkat tidak mendukung GPS.");
+      return;
     }
-  }, [coords]);
 
-  /* ===================== handler tombol locate ===================== */
-  function handleLocate() {
-    if (!mapRef.current) return;
     setLocating(true);
-    mapRef.current.flyTo(homeCoordsRef.current, DEFAULT_ZOOM, {
-      duration: 0.6,
-    });
-    setTimeout(() => setLocating(false), 600);
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: gps }) => {
+        setCoords({
+          lat: gps.latitude,
+          lng: gps.longitude,
+        });
+
+        setLocating(false);
+      },
+      () => {
+        setLocating(false);
+        alert("Silakan aktifkan izin lokasi untuk menggunakan fitur ini.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      },
+    );
   }
 
   /* ===================== render ===================== */
@@ -450,76 +389,49 @@ export default function AddressPage({ onClose }: AddressPageProps) {
               </div>
             </div>
 
-            {/* ===================== PETA ===================== */}
             {showMap && (
-              <div className="mt-4 px-1 pb-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="w-full h-[220px] bg-gray-100 rounded-lg border border-gray-200 overflow-hidden relative">
-                  <div ref={mapContainerRef} className="absolute inset-0 z-0" />
+              <>
+                <div className="mt-2 mb-1 px-2 flex items-center justify-between">
+                  <h3 className="text-[13px] font-semibold text-gray-800">
+                    Titik Alamat
+                  </h3>
 
-                  {geocoding && (
-                    <div className="absolute inset-0 z-10 bg-white/70 flex flex-col items-center justify-center gap-2">
-                      <Loader2
-                        size={20}
-                        className="animate-spin text-emerald-600"
-                      />
-                      <span className="text-[11px] text-gray-500">
-                        Mencari lokasi...
-                      </span>
-                    </div>
-                  )}
-
-                  {geocodeError && !geocoding && (
-                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 px-6 text-center">
-                      <MapPin size={18} className="text-amber-500" />
-                      <span className="text-[11px] text-amber-600 font-medium">
-                        {geocodeError}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Tombol kontrol peta */}
-                  <div className="absolute bottom-2 right-2 z-20 flex flex-col items-center overflow-hidden rounded-[8px] bg-white shadow-md border border-gray-200">
-                    <button
-                      type="button"
-                      onClick={() => mapRef.current?.zoomIn()}
-                      className="flex h-8 w-8 items-center justify-center active:bg-gray-100 transition-colors"
-                      aria-label="Zoom in"
-                    >
-                      <Plus size={14} strokeWidth={2.6} />
-                    </button>
-                    <div className="w-full h-px bg-gray-200" />
-                    <button
-                      type="button"
-                      onClick={() => mapRef.current?.zoomOut()}
-                      className="flex h-8 w-8 items-center justify-center active:bg-gray-100 transition-colors"
-                      aria-label="Zoom out"
-                    >
-                      <Minus size={14} strokeWidth={2.6} />
-                    </button>
-                    <div className="w-full h-px bg-gray-200" />
-                    <button
-                      type="button"
-                      onClick={handleLocate}
-                      className={`flex h-8 w-8 items-center justify-center transition-colors ${
-                        locating
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "active:bg-gray-100"
-                      }`}
-                      aria-label="Kembali ke lokasi alamat"
-                    >
-                      {locating ? (
-                        <Loader2
-                          size={14}
-                          strokeWidth={2.6}
-                          className="animate-spin"
-                        />
-                      ) : (
-                        <LocateFixed size={14} strokeWidth={2.6} />
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleUseMyLocation}
+                    disabled={locating}
+                    className="
+    inline-flex items-center gap-1
+    px-1 py-1
+    text-[11px]
+    font-semibold
+    text-emerald-700
+    disabled:text-gray-400
+    disabled:cursor-default
+    active:opacity-70
+    transition-colors
+  "
+                  >
+                    {locating ? (
+                      <>
+                        <Loader2 size={13} className="animate-spin" />
+                        <span>Memuat Alamat...</span>
+                      </>
+                    ) : (
+                      <>
+                        <MapPin size={13} strokeWidth={2.2} />
+                        <span>Gunakan Lokasi Saya</span>
+                      </>
+                    )}
+                  </button>
                 </div>
-              </div>
+
+                <AddressMap
+                  coords={coords}
+                  geocoding={geocoding}
+                  geocodeError={geocodeError}
+                />
+              </>
             )}
           </div>
         </div>
@@ -529,7 +441,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-10 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
         <button
           disabled={!isFormComplete}
-          className={`w-full py-3 rounded-xl text-[13px] font-bold transition-all ${
+          className={`w-full py-3 rounded-lg text-[13px] font-bold transition-all ${
             isFormComplete
               ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
