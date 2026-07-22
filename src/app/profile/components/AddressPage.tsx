@@ -12,26 +12,7 @@ interface AddressPageProps {
 
 const DEFAULT_COORDS: LatLngExpression = { lat: -6.2088, lng: 106.8456 };
 
-export function formatPhoneNumber(value: string) {
-  const digits = value.replace(/\D/g, "");
-  if (!digits) return "";
-
-  // Normalisasi ke bentuk tersimpan: selalu diawali 62
-  let stored = digits;
-  if (stored.startsWith("08")) {
-    stored = "62" + stored.slice(1);
-  }
-  if (!stored.startsWith("62")) return digits;
-
-  const local = stored.slice(2); // digit setelah kode negara
-
-  if (local.length === 0) return "62";
-
-  // Tampilkan konsisten sebagai (+62) grup-grup, tanpa mengubah jadi "0..."
-  if (local.length <= 3) return `(+62) ${local}`;
-  if (local.length <= 7) return `(+62) ${local.slice(0, 3)}-${local.slice(3)}`;
-  return `(+62) ${local.slice(0, 3)}-${local.slice(3, 7)}-${local.slice(7, 11)}${local.length > 11 ? local.slice(11) : ""}`;
-}
+import { formatPhoneNumber, parsePhoneInput } from "@/utils/phone";
 
 export default function AddressPage({ onClose }: AddressPageProps) {
   const [form, setForm] = useState({
@@ -161,36 +142,8 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   }
 
   function handlePhoneChange(raw: string) {
-    let digits = raw.replace(/\D/g, "");
-
-    if (!digits) {
-      setForm((f) => ({ ...f, noHp: "" }));
-      return;
-    }
-
-    // Validasi awalan — kalau salah, JANGAN return kosong, tapi abaikan karakter baru
-    let valid = true;
-    if (digits.startsWith("0")) {
-      if (digits.length >= 2 && digits[1] !== "8") valid = false;
-    } else if (digits.startsWith("6")) {
-      if (digits.length >= 2 && digits[1] !== "2") valid = false;
-    } else {
-      valid = false;
-    }
-
-    if (!valid) {
-      // tetap sync ulang state agar DOM tidak "menggantung" dengan value yang belum di-commit
-      setForm((f) => ({ ...f, noHp: f.noHp }));
-      return;
-    }
-
-    let normalized = digits;
-    if (normalized.startsWith("08")) {
-      normalized = "62" + normalized.slice(1);
-    }
-    normalized = normalized.slice(0, 14);
-
-    setForm((f) => ({ ...f, noHp: normalized }));
+    const newValue = parsePhoneInput(raw, form.noHp);
+    setForm((f) => ({ ...f, noHp: newValue }));
   }
 
   const wilayahSummaryPrimary = form.kecamatan;
@@ -211,15 +164,17 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   return (
     <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-3 shadow-sm z-30 sticky top-0">
+      <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
         <button
           onClick={onClose}
-          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -translate-x-[5px]"
         >
-          <ArrowLeft size={20} className="text-gray-700" />
+          <ArrowLeft size={22} className="text-gray-700" />
         </button>
 
-        <h1 className="text-[15px] font-bold text-gray-800">Tambah Alamat</h1>
+        <h1 className="text-[15px] font-bold text-gray-700 -translate-x-[2px]">
+          Tambah Alamat
+        </h1>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-20">
@@ -227,10 +182,10 @@ export default function AddressPage({ onClose }: AddressPageProps) {
           {/* ─── Layer 1: Form Card ─── */}
           <div className="bg-white overflow-hidden">
             <div className="px-4 py-4">
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* Nama Lengkap */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-semibold text-gray-500">
+                  <label className="text-[11px] font-semibold text-gray-700">
                     Nama Lengkap
                   </label>
 
@@ -253,7 +208,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
 
                 {/* Nomor HP */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-semibold text-gray-500">
+                  <label className="text-[11px] font-semibold text-gray-700">
                     Nomor HP
                   </label>
 
@@ -278,7 +233,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
                   className="w-full flex items-center justify-between py-1.5 border-b border-gray-100 text-left"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-semibold text-gray-500">
+                    <p className="text-[11px] font-semibold text-gray-700">
                       Wilayah
                     </p>
 
@@ -309,7 +264,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
                 <div className="grid grid-cols-[1fr_90px] gap-3">
                   {/* Nama Jalan */}
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-semibold text-gray-500">
+                    <label className="text-[11px] font-semibold text-gray-700">
                       Nama Jalan & No. Rumah
                     </label>
 
@@ -347,7 +302,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
 
                   {/* RT / RW */}
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-semibold text-gray-500">
+                    <label className="text-[11px] font-semibold text-gray-700">
                       RT / RW
                     </label>
 
@@ -478,7 +433,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
         <button
           disabled={!isFormComplete}
-          className={`w-full py-3 rounded-lg text-[13px] font-bold transition-all ${
+          className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
             isFormComplete
               ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"

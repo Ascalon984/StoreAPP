@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { ArrowLeft, Search, X, Check, Loader2 } from "lucide-react";
+import { Search, Check, Loader2 } from "lucide-react";
 
 export interface SelectedRegion {
   provinsiId: string;
@@ -52,20 +52,29 @@ export default function AddressWizard({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [retryTick, setRetryTick] = useState(0);
 
   /* ===================== fetch wilayah sesuai step wizard ===================== */
+  const fetchParentId =
+    wizardStep === 1
+      ? staged.provinsiId
+      : wizardStep === 2
+        ? staged.kotaId
+        : null;
+
   useEffect(() => {
     let url = "";
     if (wizardStep === 0) {
       url = `${WILAYAH_BASE}/provinces.json`;
     } else if (wizardStep === 1) {
-      if (!staged.provinsiId) return;
-      url = `${WILAYAH_BASE}/regencies/${staged.provinsiId}.json`;
+      if (!fetchParentId) return;
+      url = `${WILAYAH_BASE}/regencies/${fetchParentId}.json`;
     } else if (wizardStep === 2) {
-      if (!staged.kotaId) return;
-      url = `${WILAYAH_BASE}/districts/${staged.kotaId}.json`;
+      if (!fetchParentId) return;
+      url = `${WILAYAH_BASE}/districts/${fetchParentId}.json`;
     }
 
+    let cancelled = false;
     setLoading(true);
     setError("");
     setSearch("");
@@ -76,14 +85,22 @@ export default function AddressWizard({
         return res.json();
       })
       .then((data: any[]) => {
+        if (cancelled) return;
         setOptions(data.map((d) => ({ id: d.id, name: d.name })));
       })
       .catch(() => {
+        if (cancelled) return;
         setError("Gagal memuat data. Periksa koneksi internet lalu coba lagi.");
         setOptions([]);
       })
-      .finally(() => setLoading(false));
-  }, [wizardStep, staged.provinsiId, staged.kotaId]);
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true; // guards against a stale response overwriting a newer one
+    };
+  }, [wizardStep, fetchParentId, retryTick]);
 
   const filteredOptions = useMemo(() => {
     if (!search.trim()) return options;
@@ -106,8 +123,6 @@ export default function AddressWizard({
         kecamatanId: "",
         kecamatan: "",
       }));
-
-      setWizardStep(1);
       return;
     }
 
@@ -119,8 +134,6 @@ export default function AddressWizard({
         kecamatanId: "",
         kecamatan: "",
       }));
-
-      setWizardStep(2);
       return;
     }
 
@@ -162,47 +175,34 @@ export default function AddressWizard({
   return (
     <div className="fixed inset-0 z-[200] bg-white flex flex-col animate-in slide-in-from-right duration-300">
       {/* Wizard header */}
-      <div className="px-4 py-3 flex items-center gap-3 shadow-sm sticky top-0 bg-white z-10">
-        <button
-          onClick={wizardStep === 0 ? onClose : handleBack}
-          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors shrink-0"
-        >
-          {wizardStep === 0 ? (
-            <X size={18} className="text-gray-700" />
-          ) : (
-            <ArrowLeft size={18} className="text-gray-700" />
-          )}
-        </button>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <h1 className="text-[14px] font-bold text-gray-800">
-              {currentStepLabel}
-            </h1>
+      <div className="px-4 py-4 sticky top-0 bg-white z-10">
+        <div className="flex items-center justify-between">
+          <h1 className="text-[14px] font-bold text-gray-700">
+            {currentStepLabel}
+          </h1>
 
-            <span className="text-[11px] font-semibold text-gray-400">
-              {wizardStep + 1}/3
-            </span>
-          </div>
+          <span className="text-[11px] font-semibold text-gray-400">
+            {wizardStep + 1}/3
+          </span>
+        </div>
 
-          <div className="flex items-center gap-1 mt-1.5">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className={`h-1 flex-1 rounded-full transition-colors ${
-                  i <= wizardStep ? "bg-emerald-600" : "bg-gray-200"
-                }`}
-              />
-            ))}
-          </div>
+        <div className="flex items-center gap-1 mt-1.5">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className={`h-1 flex-1 rounded-full ${
+                i <= wizardStep ? "bg-emerald-600" : "bg-gray-200"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
       {/* Search */}
-      <div className="px-4 py-2.5 border-b border-gray-100">
+      <div className="px-4 pt-0.5 pb-2.5 border-b border-gray-100">
         <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
           <Search size={14} className="text-gray-400" />
           <input
-            autoFocus
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={`Cari ${currentStepLabel.toLowerCase()}...`}
@@ -224,7 +224,7 @@ export default function AddressWizard({
           <div className="flex flex-col items-center justify-center gap-2 px-6 text-center py-16">
             <span className="text-[12px] text-red-500">{error}</span>
             <button
-              onClick={() => setWizardStep(wizardStep)}
+              onClick={() => setRetryTick((t) => t + 1)}
               className="text-[12px] font-semibold text-emerald-600"
             >
               Coba lagi
@@ -271,39 +271,69 @@ export default function AddressWizard({
       {/* Wizard footer CTA */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
         <div className="flex gap-2">
-          {wizardStep > 0 && (
-            <button
-              onClick={handleBack}
-              className="flex-1 py-3 rounded-lg text-[13px] font-bold border border-gray-200 text-gray-700 active:bg-gray-50 transition-colors"
-            >
-              Kembali
-            </button>
-          )}
+          {wizardStep === 0 ? (
+            <>
+              <button
+                onClick={onClose}
+                className="flex-1 py-3 rounded-lg text-[13px] font-bold border border-gray-200 text-gray-700 active:bg-gray-50 transition-colors"
+              >
+                Batal
+              </button>
 
-          {wizardStep < 2 ? (
-            <button
-              onClick={handleNext}
-              disabled={!canGoNext}
-              className={`flex-1 py-3 rounded-lg text-[13px] font-bold transition-all ${
-                canGoNext
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700 active:opacity-90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Selanjutnya
-            </button>
+              <button
+                onClick={handleNext}
+                disabled={!canGoNext}
+                className={`flex-1 py-3 rounded-lg text-[13px] font-bold transition-all ${
+                  canGoNext
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700 active:opacity-90"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Selanjutnya
+              </button>
+            </>
+          ) : wizardStep === 1 ? (
+            <>
+              <button
+                onClick={handleBack}
+                className="flex-1 py-3 rounded-lg text-[13px] font-bold border border-gray-200 text-gray-700 active:bg-gray-50 transition-colors"
+              >
+                Kembali
+              </button>
+
+              <button
+                onClick={handleNext}
+                disabled={!canGoNext}
+                className={`flex-1 py-3 rounded-lg text-[13px] font-bold transition-all ${
+                  canGoNext
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700 active:opacity-90"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Selanjutnya
+              </button>
+            </>
           ) : (
-            <button
-              onClick={handleApply}
-              disabled={!canApply}
-              className={`flex-1 py-3 rounded-lg text-[13px] font-bold transition-all ${
-                canApply
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700 active:opacity-90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Terapkan
-            </button>
+            <>
+              <button
+                onClick={handleBack}
+                className="flex-1 py-3 rounded-lg text-[13px] font-bold border border-gray-200 text-gray-700 active:bg-gray-50 transition-colors"
+              >
+                Kembali
+              </button>
+
+              <button
+                onClick={handleApply}
+                disabled={!canApply}
+                className={`flex-1 py-3 rounded-lg text-[13px] font-bold transition-all ${
+                  canApply
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700 active:opacity-90"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Terapkan
+              </button>
+            </>
           )}
         </div>
       </div>
