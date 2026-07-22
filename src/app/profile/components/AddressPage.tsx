@@ -1,7 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ChevronRight, Loader2, MapPin, Phone } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Loader2,
+  MapPin,
+  Phone,
+  Plus,
+  Home,
+  Building2,
+  MapPinned,
+} from "lucide-react";
 import type { LatLngExpression } from "leaflet";
 import AddressMap from "./AddressMap";
 import AddressWizard, { SelectedRegion, toTitleCase } from "./AddressWizard";
@@ -15,6 +25,52 @@ const DEFAULT_COORDS: LatLngExpression = { lat: -6.2088, lng: 106.8456 };
 import { formatPhoneNumber, parsePhoneInput } from "@/utils/phone";
 
 export default function AddressPage({ onClose }: AddressPageProps) {
+  const [addresses, setAddresses] = useState<any[]>([
+    {
+      id: "1",
+      label: "rumah",
+      isPrimary: true,
+      namaLengkap: "Budi Santoso",
+      noHp: "081234567890",
+      provinsi: "DKI Jakarta",
+      kota: "Jakarta Selatan",
+      kecamatan: "Tebet",
+      alamat: "Jl. Casablanca Raya No.88",
+      rt: "001",
+      rw: "002",
+    },
+    {
+      id: "2",
+      label: "kantor",
+      isPrimary: false,
+      namaLengkap: "Budi Santoso",
+      noHp: "081234567891",
+      provinsi: "DKI Jakarta",
+      kota: "Jakarta Selatan",
+      kecamatan: "Setiabudi",
+      alamat: "Jl. HR Rasuna Said Kav. 5",
+      rt: "003",
+      rw: "004",
+    },
+    {
+      id: "3",
+      label: "lainnya",
+      isPrimary: false,
+      namaLengkap: "Budi Santoso",
+      noHp: "081234567892",
+      provinsi: "DKI Jakarta",
+      kota: "Jakarta Timur",
+      kecamatan: "Cakung",
+      alamat: "Ruko Sentra Niaga Blok A No.12",
+      rt: "005",
+      rw: "006",
+    },
+  ]);
+
+  const [view, setView] = useState<"list" | "form">(
+    addresses.length > 0 ? "list" : "form",
+  );
+
   const [form, setForm] = useState({
     namaLengkap: "",
     noHp: "",
@@ -146,6 +202,15 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     setForm((f) => ({ ...f, noHp: newValue }));
   }
 
+  function handleSetPrimary(id: string) {
+    setAddresses((prev) =>
+      prev.map((addr) => ({
+        ...addr,
+        isPrimary: addr.id === id,
+      })),
+    );
+  }
+
   const wilayahSummaryPrimary = form.kecamatan;
 
   const wilayahSummarySecondary =
@@ -161,12 +226,114 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   };
 
   /* ===================== render ===================== */
+  if (view === "list") {
+    return (
+      <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
+        {/* Header */}
+        <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -translate-x-[5px]"
+          >
+            <ArrowLeft size={22} className="text-gray-700" />
+          </button>
+
+          <h1 className="text-[15px] font-bold text-gray-700 -translate-x-[2px]">
+            Alamat Saya
+          </h1>
+        </div>
+
+        {/* List */}
+        <div className="flex-1 overflow-y-auto pb-24">
+          <div className="mt-4 bg-white">
+            {addresses.map((addr, index) => (
+              <React.Fragment key={addr.id}>
+                <div
+                  onClick={() => {
+                    if (!addr.isPrimary) {
+                      handleSetPrimary(addr.id);
+                    }
+                  }}
+                  className="relative px-4 py-4"
+                >
+                  {/* Badge */}
+                  {addr.isPrimary && (
+                    <span className="absolute top-4 right-4 h-7 px-2.5 rounded-md border border-emerald-600 bg-white text-[10px] font-semibold text-emerald-700 flex items-center">
+                      Utama
+                    </span>
+                  )}
+
+                  {/* Header */}
+                  <div className="flex items-start gap-2 mb-2">
+                    {addr.label === "rumah" ? (
+                      <Home
+                        size={15}
+                        className="shrink-0 text-gray-600 mt-0.5"
+                      />
+                    ) : addr.label === "kantor" ? (
+                      <Building2
+                        size={15}
+                        className="shrink-0 text-gray-600 mt-0.5"
+                      />
+                    ) : (
+                      <MapPinned
+                        size={15}
+                        className="shrink-0 text-gray-600 mt-0.5"
+                      />
+                    )}
+
+                    <h3
+                      className={`min-w-0 flex-1 truncate text-[14px] font-semibold text-gray-800 ${
+                        addr.isPrimary ? "pr-20" : ""
+                      }`}
+                    >
+                      {addr.namaLengkap}
+                    </h3>
+                  </div>
+
+                  <p className="text-[12px] font-semibold text-gray-700 mb-1">
+                    {formatPhoneNumber(addr.noHp)}
+                  </p>
+
+                  <p className="text-[12px] leading-relaxed text-gray-700">
+                    {addr.alamat}, RT {addr.rt} / RW {addr.rw}
+                    <br />
+                    Kec. {addr.kecamatan}, {addr.kota}, {addr.provinsi}
+                  </p>
+                </div>
+
+                {index !== addresses.length - 1 && (
+                  <div className="mx-4 h-px bg-gray-100" />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer CTA */}
+        {addresses.length < 3 && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
+            <button
+              onClick={() => setView("form")}
+              className="w-full py-3.5 rounded-lg bg-emerald-600 text-[13.5px] font-bold text-white transition-all hover:bg-emerald-700 active:scale-[0.98]"
+            >
+              Tambah Alamat Baru
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
         <button
-          onClick={onClose}
+          onClick={() => {
+            if (addresses.length > 0) setView("list");
+            else onClose();
+          }}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -translate-x-[5px]"
         >
           <ArrowLeft size={22} className="text-gray-700" />
