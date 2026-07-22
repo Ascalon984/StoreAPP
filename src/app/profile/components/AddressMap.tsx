@@ -10,8 +10,6 @@ import type {
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Strip Leaflet's default div-icon chrome (white box + border) so our
-// custom emerald pin renders as a plain, transparent SVG marker.
 const PIN_STYLE_ID = "address-map-pin-style";
 function ensurePinStyles() {
   if (typeof document === "undefined") return;
@@ -33,15 +31,8 @@ interface AddressMapProps {
   geocodeError: string;
 }
 
-const DEFAULT_ZOOM = 14.8;
+const DEFAULT_ZOOM = 15.3;
 const LOCATE_FLY_DURATION_MS = 600;
-
-// CSS-only "3D tilt" trick: perspective + rotateX on the map container.
-// This is purely visual — Leaflet still thinks the container is flat and
-// rectangular, so drag/click positions stay accurate (transform is applied
-// to a wrapper *around* the map, not to Leaflet's internal panes).
-const TILT_DEG = 8;
-const TILT_SCALE = 1.14; // compensates for the letterboxing rotateX introduces
 
 export default function AddressMap({
   coords,
@@ -61,7 +52,6 @@ export default function AddressMap({
     homeCoordsRef.current = coords;
   }, [coords]);
 
-  // --- Map initialization (runs once) ---
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (mapRef.current) return;
@@ -151,7 +141,6 @@ export default function AddressMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Sync marker/view when coords prop changes ---
   useEffect(() => {
     if (mapRef.current && markerRef.current) {
       mapRef.current.setView(coords, mapRef.current.getZoom());
@@ -183,24 +172,8 @@ export default function AddressMap({
   return (
     <div className="mt-1 px-1 pb-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="w-full aspect-[16/9] min-h-[190px] bg-gray-100 rounded-lg border border-gray-200 overflow-hidden relative">
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            perspective: "1000px",
-            perspectiveOrigin: "center bottom",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              transform: `rotateX(${TILT_DEG}deg) scale(${TILT_SCALE})`,
-              transformOrigin: "center bottom",
-            }}
-          >
-            <div ref={mapContainerRef} className="absolute inset-0" />
-          </div>
-        </div>
+        {/* Map langsung tanpa wrapper 3D tilt — render 1:1 native, tajam di semua ukuran layar */}
+        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
 
         {geocoding && (
           <div className="absolute inset-0 z-10 bg-white/70 flex flex-col items-center justify-center gap-2">
@@ -226,35 +199,49 @@ export default function AddressMap({
           </div>
         )}
 
-        <div className="absolute bottom-2 right-2 z-20 flex flex-col items-center overflow-hidden rounded-[8px] bg-white shadow-md border border-gray-200">
+        {/* Zoom Controls (kanan bawah) */}
+        <div className="absolute bottom-2 right-2 z-20 flex flex-col overflow-hidden rounded-[8px] bg-white border border-gray-200 shadow-sm">
           <button
             type="button"
             onClick={handleZoomIn}
-            className="flex h-8 w-8 items-center justify-center active:bg-gray-100 transition-colors"
+            className="flex h-7 w-7 items-center justify-center active:bg-gray-100 transition-colors"
             aria-label="Zoom in"
           >
-            <Plus size={14} strokeWidth={2.6} />
+            <Plus size={14} strokeWidth={2} />
           </button>
-          <div className="w-full h-px bg-gray-200" />
+
+          <div className="h-px bg-gray-200" />
+
           <button
             type="button"
             onClick={handleZoomOut}
-            className="flex h-8 w-8 items-center justify-center active:bg-gray-100 transition-colors"
+            className="flex h-7 w-7 items-center justify-center active:bg-gray-100 transition-colors"
             aria-label="Zoom out"
           >
-            <Minus size={14} strokeWidth={2.6} />
+            <Minus size={14} strokeWidth={2} />
           </button>
-          <div className="w-full h-px bg-gray-200" />
+        </div>
+
+        {/* Locate Button (kiri bawah) */}
+        <div className="absolute bottom-2 left-2 z-20">
           <button
             type="button"
             onClick={handleLocate}
-            className={`flex h-8 w-8 items-center justify-center transition-colors ${
+            className={`
+            flex h-7 w-7 items-center justify-center
+            rounded-[8px]
+            bg-white
+            border border-gray-200
+            shadow-sm
+            transition-colors
+            ${
               locating ? "bg-emerald-50 text-emerald-600" : "active:bg-gray-100"
-            }`}
+            }
+          `}
             aria-label="Kembali ke lokasi alamat"
           >
             {locating ? (
-              <Loader2 size={14} strokeWidth={2.6} className="animate-spin" />
+              <Loader2 size={14} strokeWidth={2} className="animate-spin" />
             ) : (
               <LocateFixed size={14} strokeWidth={2.6} />
             )}
