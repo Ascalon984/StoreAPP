@@ -31,10 +31,30 @@ import {
 
 export default function AddressPage({ onClose }: AddressPageProps) {
   const [addresses, setAddresses] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [view, setView] = useState<"list" | "form">(
-    addresses.length > 0 ? "list" : "form",
-  );
+  const [view, setView] = useState<"list" | "form">("list");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("user_addresses");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setAddresses(parsed);
+          setView("list");
+        } else {
+          setView("form");
+        }
+      } catch (e) {
+        setView("form");
+      }
+    } else {
+      setView("form");
+    }
+    setIsLoaded(true);
+  }, []);
 
   const [form, setForm] = useState({
     namaLengkap: "",
@@ -236,12 +256,14 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   }
 
   function handleSetPrimary(id: string) {
-    setAddresses((prev) =>
-      prev.map((addr) => ({
+    setAddresses((prev) => {
+      const newAddresses = prev.map((addr) => ({
         ...addr,
         isPrimary: addr.id === id,
-      })),
-    );
+      }));
+      localStorage.setItem("user_addresses", JSON.stringify(newAddresses));
+      return newAddresses;
+    });
   }
 
   function handleEditAddress(addr: any) {
@@ -256,9 +278,50 @@ export default function AddressPage({ onClose }: AddressPageProps) {
       rw: addr.rw,
     });
     setAddressLabel(addr.label);
+    setEditingId(addr.id);
+    if (addr.coords) setCoords(addr.coords);
+    
     // ✅ FIX 5: Clear error saat edit
     setGeocodeError("");
     setView("form");
+  }
+
+  function handleSaveAddress() {
+    setAddresses((prev) => {
+      let newAddresses;
+      if (editingId) {
+        newAddresses = prev.map((addr) =>
+          addr.id === editingId
+            ? { ...addr, ...form, label: addressLabel, coords }
+            : addr
+        );
+      } else {
+        const newAddr = {
+          id: Date.now().toString(),
+          ...form,
+          label: addressLabel,
+          isPrimary: prev.length === 0,
+          coords,
+        };
+        newAddresses = [...prev, newAddr];
+      }
+      localStorage.setItem("user_addresses", JSON.stringify(newAddresses));
+      return newAddresses;
+    });
+
+    setForm({
+      namaLengkap: "",
+      noHp: "",
+      provinsi: "",
+      kota: "",
+      kecamatan: "",
+      alamat: "",
+      rt: "",
+      rw: "",
+    });
+    setAddressLabel(null);
+    setEditingId(null);
+    setView("list");
   }
 
   const wilayahSummaryPrimary = form.kecamatan;
@@ -276,6 +339,8 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   };
 
   /* ===================== render ===================== */
+  if (!isLoaded) return null; // Prevent hydration mismatch
+
   if (view === "list") {
     return (
       <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
@@ -365,6 +430,18 @@ export default function AddressPage({ onClose }: AddressPageProps) {
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
             <button
               onClick={() => {
+                setForm({
+                  namaLengkap: "",
+                  noHp: "",
+                  provinsi: "",
+                  kota: "",
+                  kecamatan: "",
+                  alamat: "",
+                  rt: "",
+                  rw: "",
+                });
+                setAddressLabel(null);
+                setEditingId(null);
                 setGeocodeError(""); // ✅ Clear error
                 setView("form");
               }}
@@ -649,9 +726,9 @@ export default function AddressPage({ onClose }: AddressPageProps) {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
         <button
+          onClick={handleSaveAddress}
           disabled={!isFormComplete}
           className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
             isFormComplete
