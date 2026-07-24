@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft,
   ChevronRight,
@@ -23,49 +23,14 @@ interface AddressPageProps {
 const DEFAULT_COORDS: LatLngExpression = { lat: -6.2088, lng: 106.8456 };
 
 import { formatPhoneNumber, parsePhoneInput } from "@/utils/phone";
+import {
+  geocodeRegion,
+  geocodePrecise,
+  reverseGeocode,
+} from "@/utils/geocoding";
 
 export default function AddressPage({ onClose }: AddressPageProps) {
-  const [addresses, setAddresses] = useState<any[]>([
-    {
-      id: "1",
-      label: "rumah",
-      isPrimary: true,
-      namaLengkap: "Budi Santoso",
-      noHp: "081234567890",
-      provinsi: "DKI Jakarta",
-      kota: "Jakarta Selatan",
-      kecamatan: "Tebet",
-      alamat: "Jl. Casablanca Raya No.88",
-      rt: "001",
-      rw: "002",
-    },
-    {
-      id: "2",
-      label: "kantor",
-      isPrimary: false,
-      namaLengkap: "Budi Santoso",
-      noHp: "081234567891",
-      provinsi: "DKI Jakarta",
-      kota: "Jakarta Selatan",
-      kecamatan: "Setiabudi",
-      alamat: "Jl. HR Rasuna Said Kav. 5",
-      rt: "003",
-      rw: "004",
-    },
-    {
-      id: "3",
-      label: "lainnya",
-      isPrimary: false,
-      namaLengkap: "Budi Santoso",
-      noHp: "081234567892",
-      provinsi: "DKI Jakarta",
-      kota: "Jakarta Timur",
-      kecamatan: "Cakung",
-      alamat: "Ruko Sentra Niaga Blok A No.12",
-      rt: "005",
-      rw: "006",
-    },
-  ]);
+  const [addresses, setAddresses] = useState<any[]>([]);
 
   const [view, setView] = useState<"list" | "form">(
     addresses.length > 0 ? "list" : "form",
@@ -96,6 +61,8 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   const [geocoding, setGeocoding] = useState(false);
   const [geocodeError, setGeocodeError] = useState("");
   const [locating, setLocating] = useState(false);
+  const isRegionFromGPS = useRef(false);
+  const regionCoordsRef = useRef<LatLngExpression>(DEFAULT_COORDS);
 
   const [addressLabel, setAddressLabel] = useState<
     "rumah" | "kantor" | "lainnya" | null
@@ -123,6 +90,12 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   }
 
   function handleApplyWizard(selected: SelectedRegion) {
+    isRegionFromGPS.current = false;
+
+    // ✅ FIX 1: Clear error state saat wizard selesai
+    setGeocodeError("");
+    setGeocoding(false);
+
     setForm((f) => ({
       ...f,
       provinsi: toTitleCase(selected.provinsi),
@@ -142,6 +115,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   /* ===================== geocoding ===================== */
   useEffect(() => {
     if (!showMap) return;
+    if (isRegionFromGPS.current) return;
 
     const query = `${form.kecamatan}, ${form.kota}, ${form.provinsi}, Indonesia`;
     setGeocoding(true);
@@ -149,25 +123,18 @@ export default function AddressPage({ onClose }: AddressPageProps) {
 
     const controller = new AbortController();
 
-    fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`,
-      { signal: controller.signal, headers: { Accept: "application/json" } },
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Gagal mencari lokasi");
-        return res.json();
-      })
-      .then((data: any[]) => {
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-          setCoords({ lat, lng: lon });
+    geocodeRegion(query, controller.signal)
+      .then((result) => {
+        if (result) {
+          setCoords({ lat: result.lat, lng: result.lng });
+          regionCoordsRef.current = { lat: result.lat, lng: result.lng };
         } else {
           setGeocodeError("Lokasi tidak ditemukan, silakan geser peta manual.");
         }
       })
       .catch((err) => {
         if (err.name !== "AbortError") {
+          console.error("Geocoding error:", err);
           setGeocodeError("Gagal memuat peta lokasi.");
         }
       })
@@ -176,7 +143,41 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     return () => controller.abort();
   }, [form.provinsi, form.kota, form.kecamatan, showMap]);
 
-  function handleUseMyLocation() {
+  /* ===================== geocoding presisi (nama jalan) ===================== */
+  useEffect(() => {
+    if (!showMap) return;
+    if (isRegionFromGPS.current) return;
+    if (form.alamat.trim().length < 5) return;
+
+    const controller = new AbortController();
+
+    const timer = setTimeout(() => {
+      const preciseQuery = `${form.alamat}, ${form.kecamatan}, ${form.kota}, ${form.provinsi}, Indonesia`;
+      setGeocoding(true);
+
+      const center = regionCoordsRef.current as { lat: number; lng: number };
+
+      geocodePrecise(preciseQuery, center, controller.signal)
+        .then((result) => {
+          if (result) {
+            setCoords({ lat: result.lat, lng: result.lng });
+            setGeocodeError("");
+          }
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError")
+            console.error("Precise geocoding error:", err);
+        })
+        .finally(() => setGeocoding(false));
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [form.alamat, form.kecamatan, form.kota, form.provinsi, showMap]);
+
+  async function handleUseMyLocation() {
     if (!navigator.geolocation) {
       alert("Perangkat tidak mendukung GPS.");
       return;
@@ -185,15 +186,47 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     setLocating(true);
 
     navigator.geolocation.getCurrentPosition(
-      ({ coords: gps }) => {
-        setCoords({ lat: gps.latitude, lng: gps.longitude });
-        setLocating(false);
+      async ({ coords: gps }) => {
+        isRegionFromGPS.current = true;
+
+        setGeocodeError("");
+        setGeocoding(false);
+
+        const lat = gps.latitude;
+        const lng = gps.longitude;
+
+        setCoords({ lat, lng });
+
+        try {
+          const result = await reverseGeocode(lat, lng);
+
+          setForm((f) => ({
+            ...f,
+            provinsi: toTitleCase(result.provinsi ?? f.provinsi),
+            kota: toTitleCase(result.kota ?? f.kota),
+            kecamatan: toTitleCase(result.kecamatan ?? f.kecamatan),
+            alamat:
+              [result.street, result.houseNumber]
+                .filter(Boolean)
+                .join(" ")
+                .trim() || f.alamat,
+          }));
+        } catch (err) {
+          console.error(err);
+          alert("Gagal mengambil lokasi.");
+        } finally {
+          setLocating(false);
+        }
       },
       () => {
         setLocating(false);
         alert("Silakan aktifkan izin lokasi untuk menggunakan fitur ini.");
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
     );
   }
 
@@ -209,6 +242,23 @@ export default function AddressPage({ onClose }: AddressPageProps) {
         isPrimary: addr.id === id,
       })),
     );
+  }
+
+  function handleEditAddress(addr: any) {
+    setForm({
+      namaLengkap: addr.namaLengkap,
+      noHp: addr.noHp,
+      provinsi: addr.provinsi,
+      kota: addr.kota,
+      kecamatan: addr.kecamatan,
+      alamat: addr.alamat,
+      rt: addr.rt,
+      rw: addr.rw,
+    });
+    setAddressLabel(addr.label);
+    // ✅ FIX 5: Clear error saat edit
+    setGeocodeError("");
+    setView("form");
   }
 
   const wilayahSummaryPrimary = form.kecamatan;
@@ -249,21 +299,26 @@ export default function AddressPage({ onClose }: AddressPageProps) {
             {addresses.map((addr, index) => (
               <React.Fragment key={addr.id}>
                 <div
-                  onClick={() => {
-                    if (!addr.isPrimary) {
-                      handleSetPrimary(addr.id);
-                    }
-                  }}
-                  className="relative px-4 py-4"
+                  onClick={() => handleEditAddress(addr)}
+                  className="relative px-4 py-4 cursor-pointer active:bg-gray-50 transition-colors"
                 >
-                  {/* Badge */}
-                  {addr.isPrimary && (
+                  {addr.isPrimary ? (
                     <span className="absolute top-4 right-4 h-7 px-2.5 rounded-md border border-emerald-600 bg-white text-[10px] font-semibold text-emerald-700 flex items-center">
                       Utama
                     </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSetPrimary(addr.id);
+                      }}
+                      className="absolute top-4 right-4 text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 active:opacity-60 translate-y-[2px]"
+                    >
+                      Jadikan Utama
+                    </button>
                   )}
 
-                  {/* Header */}
                   <div className="flex items-start gap-2 mb-2">
                     {addr.label === "rumah" ? (
                       <Home
@@ -282,11 +337,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
                       />
                     )}
 
-                    <h3
-                      className={`min-w-0 flex-1 truncate text-[14px] font-semibold text-gray-800 ${
-                        addr.isPrimary ? "pr-20" : ""
-                      }`}
-                    >
+                    <h3 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-gray-800 pr-24">
                       {addr.namaLengkap}
                     </h3>
                   </div>
@@ -310,11 +361,13 @@ export default function AddressPage({ onClose }: AddressPageProps) {
           </div>
         </div>
 
-        {/* Footer CTA */}
         {addresses.length < 3 && (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
             <button
-              onClick={() => setView("form")}
+              onClick={() => {
+                setGeocodeError(""); // ✅ Clear error
+                setView("form");
+              }}
               className="w-full py-3.5 rounded-lg bg-emerald-600 text-[13.5px] font-bold text-white transition-all hover:bg-emerald-700 active:scale-[0.98]"
             >
               Tambah Alamat Baru
