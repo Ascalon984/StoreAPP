@@ -10,6 +10,7 @@ import type {
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+/* ─── Pin style injection ─── */
 const PIN_STYLE_ID = "address-map-pin-style";
 function ensurePinStyles() {
   if (typeof document === "undefined") return;
@@ -21,6 +22,22 @@ function ensurePinStyles() {
       background: transparent !important;
       border: none !important;
     }
+    .osm-enhanced {
+      filter: saturate(1.12) contrast(1.03) brightness(1.005);
+    }
+    .osm-vignette::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      box-shadow:
+        inset 0  1px 4px rgba(0,0,0,.06),
+        inset 0 -1px 4px rgba(0,0,0,.04),
+        inset 1px  0 3px rgba(0,0,0,.03),
+        inset -1px 0 3px rgba(0,0,0,.03);
+      border-radius: inherit;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -31,7 +48,7 @@ interface AddressMapProps {
   geocodeError: string;
 }
 
-const DEFAULT_ZOOM = 15.3;
+const DEFAULT_ZOOM = 16;
 const LOCATE_FLY_DURATION_MS = 600;
 
 export default function AddressMap({
@@ -67,9 +84,9 @@ export default function AddressMap({
       const markerIcon = L.divIcon({
         className: "custom-emerald-pin",
         html: `
-          <div style="width:24px;height:42px;display:flex;flex-direction:column;align-items:center;">
-            <svg width="24" height="38" viewBox="0 0 24 38" xmlns="http://www.w3.org/2000/svg"
-                 style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));">
+          <div style="width:26px;height:44px;display:flex;flex-direction:column;align-items:center;">
+            <svg width="26" height="40" viewBox="0 0 24 38" xmlns="http://www.w3.org/2000/svg"
+                 style="filter:drop-shadow(0 2px 4px rgba(0,0,0,.22));">
               <defs>
                 <linearGradient id="pinGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stop-color="#10B981" />
@@ -78,14 +95,14 @@ export default function AddressMap({
               </defs>
               <path d="M12 0C5.4 0 0 5.4 0 12C0 21 12 38 12 38C12 38 24 21 24 12C24 5.4 18.6 0 12 0"
                     fill="url(#pinGrad)" />
-              <circle cx="12" cy="12" r="4" fill="white" />
+              <circle cx="12" cy="12" r="4" fill="white" opacity=".95" />
             </svg>
-            <div style="width:11px;height:3px;margin-top:-1px;border-radius:50%;
-                        background:rgba(0,0,0,.25);filter:blur(1px);"></div>
+            <div style="width:12px;height:3px;margin-top:-1px;border-radius:50%;
+                        background:rgba(0,0,0,.22);filter:blur(1.2px);"></div>
           </div>
         `,
-        iconSize: [24, 42],
-        iconAnchor: [12, 40],
+        iconSize: [26, 44],
+        iconAnchor: [13, 42],
       });
       markerIconRef.current = markerIcon;
 
@@ -100,11 +117,19 @@ export default function AddressMap({
         touchZoom: true,
         boxZoom: false,
         keyboard: false,
+        preferCanvas: true,
+        zoomAnimation: true,
+        zoomAnimationThreshold: 4,
+        fadeAnimation: true,
+        markerZoomAnimation: true,
       });
 
       const tileLayer = L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        { maxZoom: 19 },
+        {
+          maxZoom: 19,
+          tileSize: 256,
+        },
       );
       tileLayer.on("tileerror", () => {
         if (isMounted) setTileError(true);
@@ -142,10 +167,23 @@ export default function AddressMap({
   }, []);
 
   useEffect(() => {
-    if (mapRef.current && markerRef.current) {
-      mapRef.current.setView(coords, mapRef.current.getZoom());
-      markerRef.current.setLatLng(coords);
+    if (!mapRef.current || !markerRef.current) return;
+
+    const next = coords as { lat: number; lng: number };
+
+    const current = mapRef.current.getCenter();
+
+    const moved =
+      Math.abs(current.lat - next.lat) > 0.00001 ||
+      Math.abs(current.lng - next.lng) > 0.00001;
+
+    if (moved) {
+      mapRef.current.setView(next, mapRef.current.getZoom(), {
+        animate: false,
+      });
     }
+
+    markerRef.current.setLatLng(next);
   }, [coords]);
 
   const handleLocate = useCallback(() => {
@@ -171,9 +209,12 @@ export default function AddressMap({
 
   return (
     <div className="mt-1 px-1 pb-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="w-full aspect-[16/9] min-h-[190px] bg-gray-100 rounded-lg border border-gray-200 overflow-hidden relative">
-        {/* Map langsung tanpa wrapper 3D tilt — render 1:1 native, tajam di semua ukuran layar */}
-        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
+      <div className="w-full aspect-[16/9] min-h-[190px] rounded-lg border border-gray-200 overflow-hidden relative">
+        {/* Map container — filter saja, tanpa will-change */}
+        <div
+          ref={mapContainerRef}
+          className="absolute inset-0 z-0 osm-enhanced osm-vignette"
+        />
 
         {geocoding && (
           <div className="absolute inset-0 z-10 bg-white/70 flex flex-col items-center justify-center gap-2">
@@ -183,7 +224,7 @@ export default function AddressMap({
         )}
 
         {geocodeError && !geocoding && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 px-6 text-center">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 px-6 text-center bg-white/60">
             <MapPin size={18} className="text-amber-500" />
             <span className="text-[11px] text-amber-600 font-medium">
               {geocodeError}
@@ -199,53 +240,56 @@ export default function AddressMap({
           </div>
         )}
 
-        {/* Zoom Controls (kanan bawah) */}
-        <div className="absolute bottom-2 right-2 z-20 flex flex-col overflow-hidden rounded-[8px] bg-white border border-gray-200 shadow-sm">
+        {/* Zoom Controls */}
+        <div className="absolute bottom-2.5 right-2.5 z-20 flex flex-col overflow-hidden rounded-[8px] bg-white/95 border border-gray-200/70">
           <button
             type="button"
             onClick={handleZoomIn}
-            className="flex h-7 w-7 items-center justify-center active:bg-gray-100 transition-colors"
+            className="flex h-8 w-8 items-center justify-center text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             aria-label="Zoom in"
           >
-            <Plus size={14} strokeWidth={2} />
+            <Plus size={15} strokeWidth={2} />
           </button>
-
-          <div className="h-px bg-gray-200" />
-
+          <div className="h-px bg-gray-200/80" />
           <button
             type="button"
             onClick={handleZoomOut}
-            className="flex h-7 w-7 items-center justify-center active:bg-gray-100 transition-colors"
+            className="flex h-8 w-8 items-center justify-center text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             aria-label="Zoom out"
           >
-            <Minus size={14} strokeWidth={2} />
+            <Minus size={15} strokeWidth={2} />
           </button>
         </div>
 
-        {/* Locate Button (kiri bawah) */}
-        <div className="absolute bottom-2 left-2 z-20">
+        {/* Locate + Attribution */}
+        <div className="absolute bottom-2.5 left-2.5 z-20 flex items-center gap-2">
           <button
             type="button"
             onClick={handleLocate}
             className={`
-            flex h-7 w-7 items-center justify-center
-            rounded-[8px]
-            bg-white
-            border border-gray-200
-            shadow-sm
-            transition-colors
-            ${
-              locating ? "bg-emerald-50 text-emerald-600" : "active:bg-gray-100"
-            }
-          `}
+              flex h-8 w-8 items-center justify-center
+              rounded-[10px]
+              bg-white/95
+              border border-gray-200/70
+              transition-all duration-200
+              ${
+                locating
+                  ? "bg-emerald-50 text-emerald-600 border-emerald-200/60"
+                  : "text-gray-600 hover:bg-gray-50 active:bg-gray-100"
+              }
+            `}
             aria-label="Kembali ke lokasi alamat"
           >
             {locating ? (
-              <Loader2 size={14} strokeWidth={2} className="animate-spin" />
+              <Loader2 size={15} className="animate-spin" />
             ) : (
-              <LocateFixed size={14} strokeWidth={2.6} />
+              <LocateFixed size={15} strokeWidth={2.5} />
             )}
           </button>
+
+          <span className="text-[9px] font-medium text-gray-400 select-none translate-y-[7px]">
+            © OpenStreetMap
+          </span>
         </div>
       </div>
     </div>

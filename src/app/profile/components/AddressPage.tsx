@@ -83,6 +83,8 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   const [locating, setLocating] = useState(false);
   const isRegionFromGPS = useRef(false);
   const regionCoordsRef = useRef<LatLngExpression>(DEFAULT_COORDS);
+  const isEditingSavedLocation = useRef(false);
+  const originalDataRef = useRef("");
 
   const [addressLabel, setAddressLabel] = useState<
     "rumah" | "kantor" | "lainnya" | null
@@ -111,8 +113,8 @@ export default function AddressPage({ onClose }: AddressPageProps) {
 
   function handleApplyWizard(selected: SelectedRegion) {
     isRegionFromGPS.current = false;
+    isEditingSavedLocation.current = false;
 
-    // ✅ FIX 1: Clear error state saat wizard selesai
     setGeocodeError("");
     setGeocoding(false);
 
@@ -136,6 +138,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   useEffect(() => {
     if (!showMap) return;
     if (isRegionFromGPS.current) return;
+    if (isEditingSavedLocation.current) return;
 
     const query = `${form.kecamatan}, ${form.kota}, ${form.provinsi}, Indonesia`;
     setGeocoding(true);
@@ -167,6 +170,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   useEffect(() => {
     if (!showMap) return;
     if (isRegionFromGPS.current) return;
+    if (isEditingSavedLocation.current) return;
     if (form.alamat.trim().length < 5) return;
 
     const controller = new AbortController();
@@ -267,6 +271,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   }
 
   function handleEditAddress(addr: any) {
+    isRegionFromGPS.current = false;
     setForm({
       namaLengkap: addr.namaLengkap,
       noHp: addr.noHp,
@@ -279,9 +284,23 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     });
     setAddressLabel(addr.label);
     setEditingId(addr.id);
-    if (addr.coords) setCoords(addr.coords);
-    
-    // ✅ FIX 5: Clear error saat edit
+    originalDataRef.current = JSON.stringify({
+      namaLengkap: addr.namaLengkap,
+      noHp: addr.noHp,
+      provinsi: addr.provinsi,
+      kota: addr.kota,
+      kecamatan: addr.kecamatan,
+      alamat: addr.alamat,
+      rt: addr.rt,
+      rw: addr.rw,
+      label: addr.label,
+    });
+
+    if (addr.coords) {
+      isEditingSavedLocation.current = true;
+      setCoords(addr.coords);
+    }
+
     setGeocodeError("");
     setView("form");
   }
@@ -293,7 +312,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
         newAddresses = prev.map((addr) =>
           addr.id === editingId
             ? { ...addr, ...form, label: addressLabel, coords }
-            : addr
+            : addr,
         );
       } else {
         const newAddr = {
@@ -321,6 +340,9 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     });
     setAddressLabel(null);
     setEditingId(null);
+    originalDataRef.current = "";
+    isEditingSavedLocation.current = false;
+    isRegionFromGPS.current = false;
     setView("list");
   }
 
@@ -337,6 +359,22 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     kecamatanId: ids.kecamatanId,
     kecamatan: form.kecamatan,
   };
+
+  const currentData = JSON.stringify({
+    namaLengkap: form.namaLengkap,
+    noHp: form.noHp,
+    provinsi: form.provinsi,
+    kota: form.kota,
+    kecamatan: form.kecamatan,
+    alamat: form.alamat,
+    rt: form.rt,
+    rw: form.rw,
+    label: addressLabel,
+  });
+
+  const isChanged = !editingId || currentData !== originalDataRef.current;
+
+  const canSave = isFormComplete && isChanged;
 
   /* ===================== render ===================== */
   if (!isLoaded) return null; // Prevent hydration mismatch
@@ -442,7 +480,10 @@ export default function AddressPage({ onClose }: AddressPageProps) {
                 });
                 setAddressLabel(null);
                 setEditingId(null);
-                setGeocodeError(""); // ✅ Clear error
+                originalDataRef.current = "";
+                isEditingSavedLocation.current = false;
+                setCoords(DEFAULT_COORDS);
+                setGeocodeError("");
                 setView("form");
               }}
               className="w-full py-3.5 rounded-lg bg-emerald-600 text-[13.5px] font-bold text-white transition-all hover:bg-emerald-700 active:scale-[0.98]"
@@ -461,8 +502,13 @@ export default function AddressPage({ onClose }: AddressPageProps) {
       <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
         <button
           onClick={() => {
-            if (addresses.length > 0) setView("list");
-            else onClose();
+            if (addresses.length > 0) {
+              originalDataRef.current = "";
+              setEditingId(null);
+              setView("list");
+            } else {
+              onClose();
+            }
           }}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -translate-x-[5px]"
         >
@@ -470,7 +516,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
         </button>
 
         <h1 className="text-[15px] font-bold text-gray-700 -translate-x-[2px]">
-          Tambah Alamat
+          {editingId ? "Alamat Tersimpan" : "Tambah Alamat"}
         </h1>
       </div>
 
@@ -729,9 +775,9 @@ export default function AddressPage({ onClose }: AddressPageProps) {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
         <button
           onClick={handleSaveAddress}
-          disabled={!isFormComplete}
+          disabled={!canSave}
           className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
-            isFormComplete
+            canSave
               ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}

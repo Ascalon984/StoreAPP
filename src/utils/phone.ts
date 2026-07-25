@@ -3,16 +3,14 @@ export function formatPhoneNumber(value: string) {
   if (!digits) return "";
 
   // ======================
-  // Input diawali 08
+  // Input diawali 08 (fallback tampilan, jarang kepakai
+  // karena parsePhoneInput sudah normalisasi begitu lengkap)
   // ======================
   if (digits.startsWith("08")) {
-    // Belum lengkap → tampilkan apa adanya
     if (digits.length < 12) {
       return digits;
     }
-
     const local = digits.slice(1);
-
     return `(+62) ${local.slice(0, 3)}-${local.slice(3, 7)}-${local.slice(7)}`;
   }
 
@@ -20,13 +18,10 @@ export function formatPhoneNumber(value: string) {
   // Input diawali 62
   // ======================
   if (digits.startsWith("62")) {
-    // Belum lengkap → tampilkan apa adanya
     if (digits.length < 13) {
       return digits;
     }
-
     const local = digits.slice(2);
-
     return `(+62) ${local.slice(0, 3)}-${local.slice(3, 7)}-${local.slice(7)}`;
   }
 
@@ -35,33 +30,36 @@ export function formatPhoneNumber(value: string) {
 
 export function parsePhoneInput(raw: string, currentValue: string): string {
   const digits = raw.replace(/\D/g, "");
-
   if (!digits) return "";
 
   // ========= Awalan 0 / 08 =========
   if (digits.startsWith("0")) {
-    // ketik "0"
     if (digits.length === 1) {
-      return digits;
+      return digits; // "0"
     }
 
-    // harus 08
     if (digits[1] !== "8") {
       return currentValue;
     }
 
-    // maksimal 12 digit
-    return digits.slice(0, 12);
+    const capped = digits.slice(0, 12); // "0" + 11 digit lokal
+
+    // Belum lengkap → simpan mentah sesuai ketikan user (UX asli, no jump)
+    if (capped.length < 12) {
+      return capped;
+    }
+
+    // Sudah lengkap (12 digit) → normalisasi ke kanonik "62xxxxxxxxxxx"
+    const local = capped.slice(1); // 11 digit lokal, tanpa "0"
+    return "62" + local;
   }
 
   // ========= Awalan 6 / 62 =========
   if (digits.startsWith("6")) {
-    // ketik "6"
     if (digits.length === 1) {
       return digits;
     }
 
-    // harus 62
     if (digits[1] !== "2") {
       return currentValue;
     }
