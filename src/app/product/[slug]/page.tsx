@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useReviewStore } from "@/store/useReviewStore";
+import { useLastSeenStore } from "@/store/useLastSeenStore";
 import { Product, Review } from "@/lib/types";
 import LoadingScreen from "@/components/LoadingScreen";
 import ProductDetailContent from "./components/ProductDetailContent";
@@ -43,10 +44,12 @@ export default function ProductDetailPage({
         if (elapsed < MIN_DISPLAY_TIME) {
           setTimeout(() => {
             setProduct(data);
+            useLastSeenStore.getState().addLastSeen(data);
             setLoading(false);
           }, MIN_DISPLAY_TIME - elapsed);
         } else {
           setProduct(data);
+          useLastSeenStore.getState().addLastSeen(data);
           setLoading(false);
         }
       })
