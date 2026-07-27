@@ -383,7 +383,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
     return (
       <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
         {/* Header */}
-        <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
+        <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-0.5 sticky top-0 z-30">
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -translate-x-[5px]"
@@ -499,7 +499,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
   return (
     <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col animate-in slide-in-from-right-full duration-300">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-0.5 shadow-sm z-30 sticky top-0">
+      <div className="bg-white px-4 py-3 flex items-center gap-1 shadow-sm z-30 sticky top-0">
         <button
           onClick={() => {
             if (addresses.length > 0) {
@@ -515,7 +515,7 @@ export default function AddressPage({ onClose }: AddressPageProps) {
           <ArrowLeft size={22} className="text-gray-700" />
         </button>
 
-        <h1 className="text-[15px] font-bold text-gray-700 -translate-x-[2px]">
+        <h1 className="text-[16px] font-bold text-gray-800 -translate-x-[2px]">
           {editingId ? "Alamat Tersimpan" : "Tambah Alamat"}
         </h1>
       </div>
