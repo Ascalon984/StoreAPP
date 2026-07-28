@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { useCartStore } from "@/store/useCartStore";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
+import { useFollowStore } from "@/store/useFollowStore"; // ⬅️ tambahan
 import { useToastStore } from "@/store/useToastStore";
 import { useNavigationStore } from "@/store/useNavigationStore";
 import { useSearchStore } from "@/store/useSearchStore";
@@ -28,7 +29,6 @@ interface ProductDetailContentProps {
   allReviews: Review[];
   liveRating: number;
   productImages: string[];
-  /** ID seller dari MOCK_SELLERS; bila tidak ditemukan maka tampil seller pertama */
   sellerId?: string;
 }
 
@@ -44,6 +44,7 @@ export default function ProductDetailContent({
 
   const { addItem, setBuyNowItem } = useCartStore();
   const { isFavorite, toggleFavorite } = useFavoriteStore();
+  const { isFollowing, toggleFollow } = useFollowStore(); // ⬅️ tambahan
   const { showToast } = useToastStore();
   const { openSearch } = useSearchStore();
 
@@ -103,6 +104,12 @@ export default function ProductDetailContent({
     } catch (error) {
       console.log("Error sharing", error);
     }
+  };
+
+  const handleToggleFollow = (id: string) => {
+    if (isFollowing(id)) return;
+
+    toggleFollow(id);
   };
 
   const handleAddToCart = () => {
@@ -241,7 +248,12 @@ export default function ProductDetailContent({
       <ProductDescription description={product.description ?? ""} />
 
       {/* Seller Card */}
-      <SellerCard seller={seller} productSlug={product.slug} />
+      <SellerCard
+        seller={seller}
+        productSlug={product.slug}
+        isFollowing={isFollowing(seller.id)}
+        toggleFollow={handleToggleFollow}
+      />
 
       {/* Review Section */}
       <ProductReviews allReviews={allReviews} liveRating={liveRating} />

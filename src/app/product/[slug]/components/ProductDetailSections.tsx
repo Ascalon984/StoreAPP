@@ -12,6 +12,8 @@ import {
   Share2,
   Heart,
   Flame,
+  Plus,
+  ShoppingCart,
 } from "lucide-react";
 import { Product } from "@/lib/types";
 
@@ -184,7 +186,7 @@ export function ProductVariants({
             <span className="text-[11px] font-semibold text-emerald-600 bg-white px-2 py-0.5 rounded-md">
               {
                 (product as any).variants.find(
-                  (v: any) => v.id === selectedVariant
+                  (v: any) => v.id === selectedVariant,
                 )?.name
               }
             </span>
@@ -297,9 +299,13 @@ export function ProductDescription({ description }: { description: string }) {
 export function SellerCard({
   seller,
   productSlug,
+  isFollowing,
+  toggleFollow,
 }: {
   seller: any;
   productSlug: string;
+  isFollowing: boolean;
+  toggleFollow: (id: string) => void;
 }) {
   const router = useRouter();
 
@@ -332,17 +338,49 @@ export function SellerCard({
             </p>
           </div>
         </div>
-        <button
-          onClick={() =>
-            router.push(
-              `/chat?source=product&productSlug=${productSlug}&sellerId=${seller.id}`
-            )
-          }
-          className="h-7 flex items-center gap-1 px-2 rounded-lg border border-gray-200 bg-gray-50 text-emerald-700 text-[11px] font-semibold hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0 self-center"
-        >
-          <MessageCircle size={11.5} strokeWidth={2.3} />
-          Chat
-        </button>
+
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            onClick={() => !isFollowing && toggleFollow(seller.id)}
+            disabled={isFollowing}
+            className={`
+              h-7 px-2.5 rounded-md
+              flex items-center gap-1
+              text-[11px] font-semibold
+              transition-colors duration-200
+              ${
+                isFollowing
+                  ? "cursor-default text-gray-500"
+                  : "cursor-pointer active:scale-95 text-emerald-700 hover:text-emerald-800"
+              }
+            `}
+          >
+            {isFollowing ? (
+              <span className="text-gray-500">Diikuti</span>
+            ) : (
+              <>
+                <Plus
+                  size={12}
+                  strokeWidth={2.6}
+                  className="text-emerald-600"
+                />
+                <span className="text-emerald-600">Ikuti</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={() =>
+              router.push(
+                `/chat?source=product&productSlug=${productSlug}&sellerId=${seller.id}`,
+              )
+            }
+            className="h-7 flex items-center gap-1 px-2 rounded-md border border-gray-200 bg-gray-50 text-emerald-600 text-[11px] font-semibold hover:bg-gray-100 active:scale-95 transition-all"
+          >
+            <MessageCircle size={11.5} strokeWidth={2.3} />
+            Chat
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -360,15 +398,15 @@ export function ProductBottomCTA({
       <div className="max-w-[500px] mx-auto flex gap-2">
         <button
           onClick={handleAddToCart}
-          className="flex-1 py-3 px-4 rounded-lg border border-emerald-600/40 text-emerald-700 font-semibold tracking-[0.020em] hover:bg-emerald-50 transition-all active:scale-[0.96] text-[13px] whitespace-nowrap"
+          className="flex-1 py-3 px-4 rounded-lg border border-emerald-600/40 text-emerald-700 font-semibold tracking-[0.020em] transition-all active:scale-[0.96] text-[13px] whitespace-nowrap flex items-center justify-center gap-1.5"
         >
-          + Keranjang
+          <ShoppingCart size={15} strokeWidth={2.3} />
+          Keranjang
         </button>
         <button
           onClick={handleBuyNow}
-          className="flex-[2] py-3 px-4 rounded-lg bg-[#048750] text-white font-semibold tracking-[0.020em] hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center gap-1.5 text-[13px]"
+          className="flex-[2] py-3 px-4 rounded-lg bg-[#048750] text-white font-semibold tracking-[0.020em] hover:bg-emerald-800 transition-all active:scale-[0.96] flex items-center justify-center text-[13px]"
         >
-          <Send size={16} strokeWidth={2.5} className="rotate-[-5deg]" />
           Pesan Sekarang
         </button>
       </div>
