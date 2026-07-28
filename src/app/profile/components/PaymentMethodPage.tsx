@@ -148,7 +148,7 @@ export default function PaymentMethodPage({ onClose }: PaymentMethodPageProps) {
           <ArrowLeft size={20} className="text-gray-700" />
         </button>
         <h1 className="text-[16px] font-bold text-gray-800 -translate-x-[2px]">
-          Dompet
+          Dompet Saya
         </h1>
       </div>
 

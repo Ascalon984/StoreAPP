@@ -52,10 +52,10 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
               className="text-gray-900"
             />
           </button>
-          <div className="absolute top-3 right-3 z-20 flex items-center bg-white/40 backdrop-blur-lg border border-white/40 rounded-full px-1 h-[32px]">
+          <div className="absolute top-3 right-3 z-20 flex items-center bg-white/40 backdrop-blur-lg border border-white/30 rounded-full px-1 h-[32px]">
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-full hover:bg-gray-50 transition-all active:scale-90"
+              className="p-1.5 transition-colors active:scale-90"
               aria-label="Bagikan"
             >
               <Share2 size={17} strokeWidth={2.2} className="text-gray-700" />
@@ -63,7 +63,7 @@ const ProductGallery = forwardRef<HTMLDivElement, ProductGalleryProps>(
             <div className="w-px h-3.5 bg-black/30 mx-1" />
             <button
               onClick={() => toggleFavorite(product.id)}
-              className="p-1.5 rounded-full hover:bg-white-20 transition-all active:scale-90"
+              className="p-1.5 transition-colors active:scale-90"
               aria-label="Favorit"
             >
               <Heart

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Star, StarHalf, ChevronDown } from "lucide-react";
 import { Review } from "@/lib/types";
 import { useReviewStore } from "@/store/useReviewStore";
@@ -57,6 +57,22 @@ export default function ProductReviews({
     Record<string, "like" | "dislike" | null>
   >({});
   const [thankYouIds, setThankYouIds] = useState<string[]>([]);
+
+  // Ref ke konten panel gauge (yang di-absolute-kan) untuk mengukur tinggi aslinya
+  const panelContentRef = useRef<HTMLDivElement>(null);
+  const [panelHeight, setPanelHeight] = useState(0);
+
+  useEffect(() => {
+    const el = panelContentRef.current;
+    if (!el) return;
+
+    const measure = () => setPanelHeight(el.offsetHeight);
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [allReviews.length]);
 
   const distribution = getRatingDistribution(allReviews);
 
@@ -138,11 +154,11 @@ export default function ProductReviews({
 
   return (
     <div className="bg-white px-4 py-2.5 mt-1">
-      {/* Header */}
+      {/* Header — posisinya selalu tetap, tidak pernah ikut terdorong */}
       <button
         type="button"
         onClick={() => setIsRatingOpen((prev) => !prev)}
-        className="w-full flex items-center gap-3 h-7"
+        className="w-full flex items-center gap-3 h-7 relative z-10 bg-white"
       >
         {/* Judul - selalu tetap */}
         <h2 className="text-sm font-medium text-gray-700 shrink-0">
@@ -180,7 +196,7 @@ export default function ProductReviews({
             <div className="flex items-center justify-end w-full min-w-0">
               <div className="relative flex-1 overflow-hidden">
                 <div className="overflow-x-auto scrollbar-hide">
-                  <div className="flex w-max items-center gap-1 pr-1">
+                  <div className="flex w-max items-center gap-[3px] pr-1">
                     <button
                       onClick={(e) => handleFilterChange("all", e)}
                       className={`h-[22px] px-2.5 rounded-[7px] border text-[9px] font-semibold whitespace-nowrap transition-colors ${
@@ -232,7 +248,7 @@ export default function ProductReviews({
 
                 {/* Fade di sisi kiri */}
                 <div
-                  className="absolute left-0 top-0 h-full w-1 pointer-events-none"
+                  className="absolute left-0 top-0 h-full w-1 pointer-events-none -translate-x-[0.5px]"
                   style={{
                     background: "linear-gradient(to left, transparent, white)",
                   }}
@@ -250,172 +266,176 @@ export default function ProductReviews({
         </div>
       </button>
 
-      {/* Gauge + Bar Distribution — collapsible */}
+      {/*
+        Wrapper ini yang "membuka ruang" secara animasi (bukan si panel).
+        Tingginya mengikuti panelHeight hasil pengukuran ResizeObserver,
+        sehingga ReviewList di bawahnya ikut turun/naik secara halus,
+        sementara header di atas tidak pernah bergeser sama sekali.
+      */}
       <div
-        className="mt-1.5 overflow-hidden transition-all duration-300 ease-in-out"
-        style={{
-          maxHeight: isRatingOpen ? "220px" : "0px",
-          opacity: isRatingOpen ? 1 : 0,
-        }}
+        className="relative overflow-hidden transition-[height] duration-300 ease-in-out"
+        style={{ height: isRatingOpen ? panelHeight : 0 }}
       >
-        <div className="relative rounded-xl px-2 py-1.5 mb-2.5 bg-white shadow-layer-xs overflow-hidden">
-          <div className="absolute inset-x-4 top-0 h-px bg-white/60" />
-          <div className="flex items-center gap-0">
-            {/* Gauge — 40% */}
-            <div
-              className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-3 pb-0.5"
-              style={{ width: "40%" }}
-            >
-              <svg
-                width="100"
-                height="50"
-                viewBox="0 0 110 60"
-                role="img"
-                aria-label={`Rating ${liveRating} dari 5`}
+        {/* Panel sesungguhnya — absolute, tidak memengaruhi flow/tinggi header */}
+        <div
+          ref={panelContentRef}
+          className="absolute top-0 left-0 w-full mt-1.5 transition-opacity duration-300 ease-in-out"
+          style={{ opacity: isRatingOpen ? 1 : 0 }}
+        >
+          <div className="relative rounded-xl px-2 py-1.5 mb-2.5 bg-white shadow-layer-xs overflow-hidden">
+            <div className="absolute inset-x-4 top-0 h-px bg-white/60" />
+            <div className="flex items-center gap-0">
+              {/* Gauge — 40% */}
+              <div
+                className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-3 pb-0.5"
+                style={{ width: "40%" }}
               >
-                <path
-                  d="M5,54 A50,50 0 0,1 105,54"
-                  fill="none"
-                  stroke="#d1d5db"
-                  strokeWidth="8.5"
-                  strokeLinecap="round"
-                />
-                {[
-                  {
-                    color: "#f87171",
-                    dash: "36.9 147.6",
-                    offset: 0,
-                  },
-                  {
-                    color: "#fb923c",
-                    dash: "36.9 147.6",
-                    offset: 36.9,
-                  },
-                  {
-                    color: "#facc15",
-                    dash: "36.9 147.6",
-                    offset: 73.8,
-                  },
-                  {
-                    color: "#4ade80",
-                    dash: "36.9 147.6",
-                    offset: 110.7,
-                  },
-                ].map(({ color, dash, offset }, i) => (
-                  <path
-                    key={i}
-                    d="M8,54 A47,47 0 0,1 102,54"
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="8.5"
-                    strokeLinecap="butt"
-                    strokeDasharray={dash}
-                    strokeDashoffset={-offset}
-                    className="transition-all duration-500"
-                  />
-                ))}
-
-                <circle cx="8" cy="54" r="4.25" fill="#f87171" />
-                <circle cx="102" cy="54" r="4.25" fill="#4ade80" />
-
-                <g
-                  opacity={safeRating === 0 ? 0.45 : 1}
-                  className="transition-opacity duration-500"
-                  transform={
-                    safeRating > 0
-                      ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
-                      : `rotate(0, 55, 54)`
-                  }
+                <svg
+                  width="100"
+                  height="50"
+                  viewBox="0 0 110 60"
+                  role="img"
+                  aria-label={`Rating ${liveRating} dari 5`}
                 >
                   <path
-                    d="M55 2 L52.8 54 Q55 50 57.2 54 Z"
-                    fill="#374151"
-                    opacity="0.90"
+                    d="M5,54 A50,50 0 0,1 105,54"
+                    fill="none"
+                    stroke="#d1d5db"
+                    strokeWidth="8.5"
+                    strokeLinecap="round"
                   />
-                </g>
-
-                <circle
-                  cx="55"
-                  cy="54"
-                  r="3.5"
-                  fill="#374151"
-                  opacity={safeRating === 0 ? 0.45 : 1}
-                  className="transition-opacity duration-500"
-                />
-              </svg>
-
-              <span
-                className={`text-[16.5px] leading-none -mt-0.7 ${
-                  safeRating === 0
-                    ? "font-semibold text-gray-500"
-                    : "font-semibold text-gray-600"
-                }`}
-              >
-                {displayRatingValue}
-              </span>
-              <div className="flex gap-0.5 mt-[1px] mb-[1px]">
-                {hasReview &&
-                  [1, 2, 3, 4, 5].map((i) => renderStar(i, safeRating))}
-              </div>
-              <span
-                className={`text-[10px] font-medium tracking-[0.010em] ${getRatingColor(safeRating)}`}
-              >
-                {hasReview ? getRatingLabel(safeRating) : "Belum ada ulasan"}
-              </span>
-            </div>
-
-            {/* Bar Distribution — 60% */}
-            <div className="flex flex-col gap-1 pl-3" style={{ width: "60%" }}>
-              {[5, 4, 3, 2, 1].map((star) => {
-                const pct =
-                  distribution.percent[
-                    star as keyof typeof distribution.percent
-                  ];
-                const count =
-                  distribution.raw[star as keyof typeof distribution.raw];
-                return (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => {
-                      if (count === 0) return;
-                      setActiveFilter(star);
-                      setDisplayCount(5);
-                    }}
-                    className={`flex items-center gap-0.5 rounded-md px-1 py-px transition-colors ${
-                      count > 0 ? "hover:bg-gray-50" : ""
-                    }`}
-                  >
-                    <span className="text-[10px] font-semibold text-gray-600 w-2 text-center tabular-nums">
-                      {star}
-                    </span>
-                    <Star
-                      size={7}
-                      className={`flex-shrink-0 ${
-                        count === 0
-                          ? "text-gray-300 fill-gray-300"
-                          : "text-gray-400 fill-gray-400"
-                      }`}
-                      strokeWidth={1.5}
+                  {[
+                    {
+                      color: "#f87171",
+                      dash: "36.9 147.6",
+                      offset: 0,
+                    },
+                    {
+                      color: "#fb923c",
+                      dash: "36.9 147.6",
+                      offset: 36.9,
+                    },
+                    {
+                      color: "#facc15",
+                      dash: "36.9 147.6",
+                      offset: 73.8,
+                    },
+                    {
+                      color: "#4ade80",
+                      dash: "36.9 147.6",
+                      offset: 110.7,
+                    },
+                  ].map(({ color, dash, offset }, i) => (
+                    <path
+                      key={i}
+                      d="M8,54 A47,47 0 0,1 102,54"
+                      fill="none"
+                      stroke={color}
+                      strokeWidth="8.5"
+                      strokeLinecap="butt"
+                      strokeDasharray={dash}
+                      strokeDashoffset={-offset}
+                      className="transition-all duration-500"
                     />
-                    <div className="flex-1 h-[7px] bg-gray-200/50 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gray-500 transition-all duration-700 ease-out"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <span
-                      className={`flex justify-center min-w-[26px] text-[8.5px] tabular-nums ${
-                        count > 0
-                          ? "justify-end text-gray-400"
-                          : "justify-center text-gray-300"
-                      }`}
+                  ))}
+
+                  <circle cx="8" cy="54" r="4.25" fill="#f87171" />
+                  <circle cx="102" cy="54" r="4.25" fill="#4ade80" />
+
+                  <g
+                    opacity={safeRating === 0 ? 0.45 : 1}
+                    className="transition-opacity duration-500"
+                    transform={
+                      safeRating > 0
+                        ? `rotate(${-90 + ((safeRating - 1) / 4) * 180}, 55, 54)`
+                        : `rotate(0, 55, 54)`
+                    }
+                  >
+                    <path
+                      d="M55 2 L52.8 54 Q55 50 57.2 54 Z"
+                      fill="#374151"
+                      opacity="0.90"
+                    />
+                  </g>
+
+                  <circle
+                    cx="55"
+                    cy="54"
+                    r="3.5"
+                    fill="#374151"
+                    opacity={safeRating === 0 ? 0.45 : 1}
+                    className="transition-opacity duration-500"
+                  />
+                </svg>
+
+                <span
+                  className={`text-[16.5px] leading-none -mt-0.7 ${
+                    safeRating === 0
+                      ? "font-semibold text-gray-500"
+                      : "font-semibold text-gray-600"
+                  }`}
+                >
+                  {displayRatingValue}
+                </span>
+                <div className="flex gap-0.5 mt-[1px] mb-[1px]">
+                  {hasReview &&
+                    [1, 2, 3, 4, 5].map((i) => renderStar(i, safeRating))}
+                </div>
+                <span
+                  className={`text-[10px] font-medium tracking-[0.010em] ${getRatingColor(safeRating)}`}
+                >
+                  {hasReview ? getRatingLabel(safeRating) : "Belum ada ulasan"}
+                </span>
+              </div>
+
+              {/* Bar Distribution — 60% */}
+              <div
+                className="flex flex-col gap-0.5 pl-3"
+                style={{ width: "60%" }}
+              >
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const pct =
+                    distribution.percent[
+                      star as keyof typeof distribution.percent
+                    ];
+                  const count =
+                    distribution.raw[star as keyof typeof distribution.raw];
+                  return (
+                    <div
+                      key={star}
+                      className="flex items-center gap-0.5 rounded-md px-1 py-px"
                     >
-                      {count > 0 ? `${pct}%` : "—"}
-                    </span>
-                  </button>
-                );
-              })}
+                      <span className="text-[10px] font-semibold text-gray-600 w-2 text-center tabular-nums">
+                        {star}
+                      </span>
+                      <Star
+                        size={7}
+                        className={`flex-shrink-0 ${
+                          count === 0
+                            ? "text-gray-300 fill-gray-300"
+                            : "text-gray-400 fill-gray-400"
+                        }`}
+                        strokeWidth={1.5}
+                      />
+                      <div className="flex-1 h-[6.5px] bg-gray-200/50 rounded-[5px] overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gray-500 transition-all duration-700 ease-out"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span
+                        className={`flex justify-center min-w-[26px] text-[8.5px] tabular-nums ${
+                          count > 0
+                            ? "justify-end text-gray-400"
+                            : "justify-center text-gray-300"
+                        }`}
+                      >
+                        {count > 0 ? `${pct}%` : "—"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

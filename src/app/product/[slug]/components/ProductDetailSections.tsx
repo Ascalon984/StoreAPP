@@ -78,14 +78,14 @@ export function ProductHeader({
         </button>
         <button
           onClick={handleShare}
-          className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
+          className="p-2 transition-colors active:scale-90 flex-shrink-0"
           aria-label="Bagikan"
         >
           <Share2 size={18} strokeWidth={2.2} className="text-gray-700" />
         </button>
         <button
           onClick={() => toggleFavorite(productId)}
-          className="p-2 rounded-full hover:bg-gray-100 transition-all active:scale-90 flex-shrink-0"
+          className="p-2 transition-colors active:scale-90 flex-shrink-0"
           aria-label="Favorit"
         >
           <Heart

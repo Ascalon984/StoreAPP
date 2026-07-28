@@ -13,7 +13,11 @@ interface ProfileHeaderProps {
   onAvatarChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function ProfileHeader({ user, avatarPreview, onAvatarChange }: ProfileHeaderProps) {
+export default function ProfileHeader({
+  user,
+  avatarPreview,
+  onAvatarChange,
+}: ProfileHeaderProps) {
   return (
     <div className="relative">
       {/* HEADER BACKGROUND (SAMA DENGAN HOME NAVBAR) */}
@@ -31,19 +35,11 @@ export default function ProfileHeader({ user, avatarPreview, onAvatarChange }: P
         <div className="flex items-start gap-3.5">
           <div className="relative flex-shrink-0">
             <AvatarCircle name={user.name} src={avatarPreview} size={48} />
-            <label className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-white border border-white flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer">
+            <label className="absolute bottom-0 right-0 w-[14px] h-[14px] rounded-full bg-white border border-white flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer -translate-x-[0.5px]">
               {avatarPreview ? (
-                <Pencil
-                  size={10.5}
-                  strokeWidth={2.5}
-                  className="text-gray-700"
-                />
+                <Pencil size={9} strokeWidth={2.5} className="text-gray-700" />
               ) : (
-                <Camera
-                  size={10.5}
-                  strokeWidth={2.5}
-                  className="text-gray-700"
-                />
+                <Camera size={9} strokeWidth={2.5} className="text-gray-700" />
               )}
 
               <input
@@ -70,10 +66,10 @@ export default function ProfileHeader({ user, avatarPreview, onAvatarChange }: P
             shrink-0
             h-7
             px-2.5
-            rounded-[12px]
-            bg-gradient-to-r
-            from-amber-300
-            to-orange-400
+            rounded-[10px]
+            bg-gradient-to-t
+            from-amber-400
+            to-orange-500
             active:scale-95
             transition-all
             flex items-center gap-1
@@ -87,7 +83,7 @@ export default function ProfileHeader({ user, avatarPreview, onAvatarChange }: P
               textShadow: "0 1px 1px rgba(0,0,0,.25)",
             }}
           >
-            Buka Toko
+            Jual Barang
           </span>
         </button>
       </div>

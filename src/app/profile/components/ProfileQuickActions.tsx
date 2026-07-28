@@ -2,7 +2,7 @@ import React from "react";
 
 const quickActions = [
   { id: "alamat", label: "Alamat Saya", icon: "/icons/adress.png" },
-  { id: "pembayaran", label: "Metode Pembayaran", icon: "/icons/payment.png" },
+  { id: "pembayaran", label: "Kelola Dompet", icon: "/icons/payment.png" },
   { id: "terakhir", label: "Terakhir Dilihat", icon: "/icons/last_seen.png" },
 ];
 
@@ -10,7 +10,9 @@ interface ProfileQuickActionsProps {
   onActionClick?: (id: string) => void;
 }
 
-export default function ProfileQuickActions({ onActionClick }: ProfileQuickActionsProps) {
+export default function ProfileQuickActions({
+  onActionClick,
+}: ProfileQuickActionsProps) {
   return (
     <div className="mx-2 mt-3 bg-white rounded-lg shadow-sm flex translate-y-[10px]">
       {quickActions.map(({ id, label, icon }) => (
@@ -22,7 +24,7 @@ export default function ProfileQuickActions({ onActionClick }: ProfileQuickActio
           <img
             src={icon}
             alt={label}
-            className="w-[28px] h-[28px] object-contain"
+            className="w-[28px] h-auto object-contain"
           />
           <span
             className="text-[9.5px] font-semibold text-white tracking-[0.02em]"
