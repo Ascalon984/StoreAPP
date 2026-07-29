@@ -1,50 +1,76 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
+
 import ReactCrop, {
   type Crop,
   centerCrop,
   makeAspectCrop,
 } from "react-image-crop";
+
 import { X } from "lucide-react";
 
 import ProfileHeader from "./components/ProfileHeader";
+
 import ProfileContent, { type UserProfile } from "./components/ProfileContent";
+
 import AddressPage from "./components/AddressPage";
+
 import PaymentMethodPage from "./components/PaymentMethodPage";
+
 import LastSeenPage from "./components/LastSeenPage";
 
 // ── Mock data ──
+
 const mockUser: UserProfile = {
   name: "Pengguna",
+
   username: "pengguna1",
+
   email: "user_1@email.com",
+
   phone: "081-234-5678",
+
   avatar: null,
 };
 
 const mockPoints = {
   total: 12450,
+
   transactionPoints: 11250,
+
   checkinPoints: 1200,
+
   dailyStreak: 4,
+
   checkedInToday: false,
+
   rewardStreakPoints: 100,
 };
 
 // ── Main Page ──
+
 export default function ProfilePage() {
   const router = useRouter();
+
   const [user, setUser] = useState(mockUser);
+
   const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
+
   const [activeSubPage, setActiveSubPage] = useState<string | null>(null);
+
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar,
   );
+
   const [cropSrc, setCropSrc] = useState<string | null>(null);
+
   const [crop, setCrop] = useState<Crop>();
+
   const [completedCrop, setCompletedCrop] = useState<Crop>();
+
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -53,6 +79,7 @@ export default function ProfilePage() {
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -60,16 +87,21 @@ export default function ProfilePage() {
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
+
     setCropSrc(URL.createObjectURL(file));
   };
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
+
     setCrop(
       centerCrop(
         makeAspectCrop({ unit: "%", width: 80 }, 1, width, height),
+
         width,
+
         height,
       ),
     );
@@ -77,30 +109,50 @@ export default function ProfilePage() {
 
   const handleCropConfirm = async () => {
     if (!imgRef.current || !completedCrop) return;
+
     const canvas = document.createElement("canvas");
+
     const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+
     const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
+
     canvas.width = 200;
+
     canvas.height = 200;
+
     const ctx = canvas.getContext("2d")!;
+
     ctx.drawImage(
       imgRef.current,
+
       completedCrop.x * scaleX,
+
       completedCrop.y * scaleY,
+
       completedCrop.width * scaleX,
+
       completedCrop.height * scaleY,
+
       0,
+
       0,
+
       200,
+
       200,
     );
+
     canvas.toBlob(
       (blob) => {
         if (!blob) return;
+
         setAvatarPreview(URL.createObjectURL(blob));
+
         setCropSrc(null);
       },
+
       "image/jpeg",
+
       0.9,
     );
   };
@@ -122,32 +174,30 @@ export default function ProfilePage() {
       />
 
       {/* Modal Crop */}
+
       {cropSrc && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-3">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setCropSrc(null)}
           />
-          <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-[360px] max-h-[84vh] flex flex-col overflow-hidden">
+
+          <div className="relative z-10 w-full max-w-[360px] h-[520px] max-h-[90vh] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden">
             <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <p className="text-[13px] font-bold text-gray-800">
+              <p className="text-[13.5px] font-bold text-gray-800">
                 Sesuaikan Foto
               </p>
+
               <button
                 onClick={() => setCropSrc(null)}
-                className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
               >
-                <X size={14} strokeWidth={2.5} />
+                <X size={18} strokeWidth={2.5} />
               </button>
             </div>
-            <div
-              className="crop-scroll flex-1 min-h-0 overflow-y-auto bg-white p-2"
-              style={{
-                WebkitOverflowScrolling: "touch",
-                overscrollBehavior: "contain",
-              }}
-            >
-              <div className="min-w-full flex justify-center">
+
+            <div className="flex-1 min-h-0 bg-white overflow-y-scroll crop-scroll">
+              <div className="min-h-full flex items-center justify-center pr-3 pl-2">
                 <ReactCrop
                   crop={crop}
                   onChange={(c) => setCrop(c)}
@@ -161,15 +211,16 @@ export default function ProfilePage() {
                     src={cropSrc}
                     alt="Crop preview"
                     onLoad={onImageLoad}
-                    className="w-full h-auto block"
+                    className="block max-w-full h-auto"
                   />
                 </ReactCrop>
               </div>
             </div>
-            <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
+
+            <div className="flex-shrink-0 px-3.5 py-3 border-t border-gray-100 -translate-x-[4px]">
               <button
                 onClick={handleCropConfirm}
-                className="w-full py-2.5 rounded-xl bg-emerald-600 text-[13px] font-bold text-white hover:bg-emerald-700 active:scale-95 transition-all"
+                className="w-full py-2.5 rounded-lg bg-emerald-600 text-[13.5px] font-bold text-white hover:bg-emerald-700 active:scale-95 transition-all"
               >
                 Gunakan Foto Ini
               </button>
@@ -179,17 +230,21 @@ export default function ProfilePage() {
       )}
 
       {/* ── POINTS INFO MODAL ── */}
+
       {pointsInfoOpen && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-5">
           {/* BACKDROP */}
+
           <div
             className="absolute inset-0 bg-black/35 backdrop-blur-[2px]"
             onClick={() => setPointsInfoOpen(false)}
           />
 
           {/* MODAL */}
+
           <div className="relative w-full max-w-[320px] rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
             {/* CLOSE */}
+
             <button
               onClick={() => setPointsInfoOpen(false)}
               className="absolute top-3 right-3 w-8 h-8 rounded-full hover:bg-gray-100 active:scale-90 transition-all flex items-center justify-center"
@@ -198,6 +253,7 @@ export default function ProfilePage() {
             </button>
 
             {/* CONTENT */}
+
             <div className="px-5 pt-5 pb-5">
               <div className="flex items-center gap-2">
                 <img src="/icons/poin.svg" alt="Poin" className="w-5 h-5" />
@@ -214,10 +270,13 @@ export default function ProfilePage() {
               </p>
 
               {/* LIST */}
+
               <div className="mt-5 space-y-3">
                 {[
                   "Dapatkan poin setiap kali melakukan transaksi.",
+
                   "Bonus poin bertambah saat kamu check-in berturut-turut.",
+
                   "Streak check-in meningkatkan total reward mingguan kamu.",
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2.5">
@@ -228,6 +287,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 ))}
+
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <div className="flex items-start gap-2">
                     <img
@@ -248,12 +308,15 @@ export default function ProfilePage() {
       )}
 
       {/* ── SUB PAGES ── */}
+
       {activeSubPage === "alamat" && (
         <AddressPage onClose={() => setActiveSubPage(null)} />
       )}
+
       {activeSubPage === "pembayaran" && (
         <PaymentMethodPage onClose={() => setActiveSubPage(null)} />
       )}
+
       {activeSubPage === "terakhir" && (
         <LastSeenPage onClose={() => setActiveSubPage(null)} />
       )}

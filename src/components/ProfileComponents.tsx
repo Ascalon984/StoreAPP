@@ -17,7 +17,7 @@ export function AvatarCircle({
     return (
       <div
         style={{ width: size, height: size }}
-        className="rounded-full border-2 border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
+        className="rounded-full border border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
       >
         <Image
           src={src}
@@ -33,7 +33,7 @@ export function AvatarCircle({
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full border-2 border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
+      className="rounded-full border border-white shadow-lg overflow-hidden flex-shrink-0 bg-gray-100"
     >
       <img
         src="/icons/avatar.png"
