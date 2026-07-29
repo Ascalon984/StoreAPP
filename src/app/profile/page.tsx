@@ -178,7 +178,7 @@ export default function ProfilePage() {
       {cropSrc && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-3">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60"
             onClick={() => setCropSrc(null)}
           />
 
@@ -196,8 +196,8 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <div className="flex-1 min-h-0 bg-white overflow-y-scroll crop-scroll">
-              <div className="min-h-full flex items-center justify-center pr-3 pl-2">
+            <div className="flex-1 min-h-0 bg-white overflow-y-auto overflow-x-hidden crop-scroll">
+              <div className="min-h-full flex items-center justify-center pr-2 pl-2">
                 <ReactCrop
                   crop={crop}
                   onChange={(c) => setCrop(c)}

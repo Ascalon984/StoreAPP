@@ -351,7 +351,7 @@ select:-webkit-autofill {
 }
 
 .crop-scroll::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .crop-scroll::-webkit-scrollbar-thumb {
