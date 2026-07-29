@@ -385,6 +385,28 @@ select:-webkit-autofill {
   }
 }
 
+@keyframes walletPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.22);
+  }
+
+  65% {
+    transform: scale(0.96);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-walletPulse {
+  animation: walletPulse 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* Hide scrollbar */
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE & Edge */

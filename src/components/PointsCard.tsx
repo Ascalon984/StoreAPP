@@ -36,6 +36,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const [animationFinished, setAnimationFinished] = useState(false);
   const [showFloating100, setShowFloating100] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
+  const [walletPulse, setWalletPulse] = useState(false);
   const [activeTab, setActiveTab] = useState<"diskon" | "ongkir">("diskon");
 
   useEffect(() => {
@@ -58,10 +59,20 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
     setFloating: (v: boolean) => void,
   ) => {
     setFloating(true);
+
     setTimeout(() => {
       setFloating(false);
+
+      // pulse icon wallet
+      setWalletPulse(true);
+
+      setTimeout(() => {
+        setWalletPulse(false);
+      }, 500);
+
+      // mulai counting
       setTargetTotal((prev) => prev + reward);
-    }, 1800);
+    }, 900);
   };
 
   const handleCheckin = () => {
@@ -252,6 +263,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         +20
                       </span>
                     )}
+
                     {showFloating100 && (
                       <span
                         className="absolute -left-10 -top-1 text-[14px] font-black text-emerald-500 pointer-events-none z-20"
@@ -260,12 +272,16 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         +100
                       </span>
                     )}
+
                     <img
                       src="/icons/stack_poin.svg"
                       alt="Poin"
-                      className="w-8 h-6"
+                      className={`w-8 h-auto ${
+                        walletPulse ? "animate-walletPulse" : ""
+                      }`}
                     />
-                    <span className="text-[14.5px] font-bold text-gray-800 tabular-nums">
+
+                    <span className="text-[18.5px] font-extrabold text-gray-700 tabular-nums">
                       {displayTotal.toLocaleString("id-ID")}
                     </span>
                   </div>
@@ -378,14 +394,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               className="w-[180px] h-auto pointer-events-none"
               onEnded={() => setAnimationFinished(true)}
             />
-            <p className="mt-4 text-center text-white/70 text-[13px]">
+            <p className="mt-4 text-center text-white/80 text-[13px]">
               Selamat, Kamu mendapatkan
             </p>
             <p className="mt-1 text-center text-3xl font-bold text-emerald-400 tracking-tight">
               +100 Poin
             </p>
             {animationFinished && (
-              <p className="mt-8 text-[11px] text-white/50 animate-pulse">
+              <p className="mt-8 text-[11px] text-white/80 animate-pulse">
                 Tap di mana saja untuk melanjutkan
               </p>
             )}
