@@ -64,7 +64,7 @@ export default function ProfileHeader({
           className="
             shrink-0
             h-7
-            px-2.5
+            px-2
             rounded-[10px]
             bg-gradient-to-t
             from-amber-400
@@ -72,6 +72,7 @@ export default function ProfileHeader({
             active:scale-95
             transition-all
             flex items-center gap-1
+            -translate-x-[2px]
           "
         >
           <span
