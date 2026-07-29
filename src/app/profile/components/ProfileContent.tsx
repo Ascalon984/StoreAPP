@@ -5,14 +5,11 @@ import {
   Bell,
   Info,
   LogOut,
-  Phone,
-  Mail,
-  User,
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
-import { Toggle, FieldRow } from "@/components/ProfileComponents";
+import { Toggle } from "@/components/ProfileComponents";
 import ProfileQuickActions from "./ProfileQuickActions";
 
 export interface UserProfile {
@@ -42,26 +39,8 @@ export default function ProfileContent({
     orderUpdates: true,
     promoOffers: false,
   });
-  const [dataPribadiOpen, setDataPribadiOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState("");
   const pengaturanRef = useRef<HTMLDivElement>(null);
-
-  const handleEditStart = (key: string, val: string) => {
-    setEditingField(key);
-    setEditValue(val);
-  };
-
-  const handleEditCancel = () => {
-    setEditingField(null);
-    setEditValue("");
-  };
-
-  const handleEditSave = (key: string) => {
-    setUser((prev) => ({ ...prev, [key]: editValue }));
-    handleEditCancel();
-  };
 
   return (
     <div className="relative z-10 -mt-[45px]">
@@ -84,85 +63,7 @@ export default function ProfileContent({
       </div>
 
       <div className="mx-2 bg-white rounded-lg overflow-hidden">
-        {/* ── Data Pribadi ── */}
-        <button
-          onClick={() => {
-            setDataPribadiOpen((p) => !p);
-            setEditingField(null);
-          }}
-          className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-              <User size={15} className="text-gray-500" strokeWidth={2.5} />
-            </div>
-            <div className="text-left">
-              <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                Data Pribadi
-              </p>
-              <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                Nama, email, no telepon
-              </p>
-            </div>
-          </div>
-          {dataPribadiOpen ? (
-            <ChevronDown size={20} className="text-gray-400" />
-          ) : (
-            <ChevronRight size={20} className="text-gray-400" />
-          )}
-        </button>
 
-        <div
-          className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{
-            maxHeight: dataPribadiOpen ? "500px" : "0px",
-            opacity: dataPribadiOpen ? 1 : 0,
-          }}
-        >
-          <div className="border-t border-gray-100 divide-y divide-gray-100/60">
-            <FieldRow
-              label="Nama Lengkap"
-              fieldKey="name"
-              value={user.name}
-              icon={<User size={14} />}
-              inputType="text"
-              editingField={editingField}
-              editValue={editValue}
-              setEditValue={setEditValue}
-              onEditStart={handleEditStart}
-              onEditCancel={handleEditCancel}
-              onEditSave={handleEditSave}
-            />
-            <FieldRow
-              label="Email"
-              fieldKey="email"
-              value={user.email}
-              icon={<Mail size={15} />}
-              inputType="email"
-              editingField={editingField}
-              editValue={editValue}
-              setEditValue={setEditValue}
-              onEditStart={handleEditStart}
-              onEditCancel={handleEditCancel}
-              onEditSave={handleEditSave}
-            />
-            <FieldRow
-              label="Nomor Telepon"
-              fieldKey="phone"
-              value={user.phone}
-              icon={<Phone size={15} />}
-              inputType="tel"
-              editingField={editingField}
-              editValue={editValue}
-              setEditValue={setEditValue}
-              onEditStart={handleEditStart}
-              onEditCancel={handleEditCancel}
-              onEditSave={handleEditSave}
-            />
-          </div>
-        </div>
-
-        <div className="ml-[60px] border-t border-gray-100/80" />
 
         {/* ── Notifikasi ── */}
         <button

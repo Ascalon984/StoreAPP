@@ -28,17 +28,35 @@ interface PointsCardProps {
 
 // ── Points Card ──
 export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
+  const CHECKIN_REWARD = 20;
+  const STREAK_REWARD = 100;
+
+  const FLOAT_DURATION = 900;
+  const PULSE_DURATION = 500;
+  const COUNT_INTERVAL = 60;
   const [currentStreak, setCurrentStreak] = useState(points.dailyStreak);
   const [displayTotal, setDisplayTotal] = useState(points.total);
   const [targetTotal, setTargetTotal] = useState(points.total);
-  const [showFloating, setShowFloating] = useState(false);
+
+  // Digabung: sebelumnya showFloating + showFloating100 (duplikat & nilai salah)
+  const [floatingReward, setFloatingReward] = useState<number | null>(null);
+
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
-  const [showFloating100, setShowFloating100] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [walletPulse, setWalletPulse] = useState(false);
   const [activeTab, setActiveTab] = useState<"diskon" | "ongkir">("diskon");
 
+  // ── Sync state ketika props berubah dari parent ──
+  useEffect(() => {
+    setCurrentStreak(points.dailyStreak);
+  }, [points.dailyStreak]);
+
+  useEffect(() => {
+    setTargetTotal(points.total);
+  }, [points.total]);
+
+  // ── Animasi counting angka ──
   useEffect(() => {
     if (displayTotal >= targetTotal) return;
 
@@ -49,40 +67,39 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
         const next = prev + step;
         return next >= targetTotal ? targetTotal : next;
       });
-    }, 60);
+    }, COUNT_INTERVAL);
 
     return () => clearInterval(interval);
   }, [displayTotal, targetTotal]);
 
-  const playPointReward = (
-    reward: number,
-    setFloating: (v: boolean) => void,
-  ) => {
-    setFloating(true);
+  // ── Fungsi reward: sebelumnya menerima setter terpisah (duplikat), sekarang cukup angka ──
+  const playPointReward = (reward: number) => {
+    setFloatingReward(reward);
 
     setTimeout(() => {
-      setFloating(false);
+      setFloatingReward(null);
 
       // pulse icon wallet
       setWalletPulse(true);
-
-      setTimeout(() => {
-        setWalletPulse(false);
-      }, 500);
+      setTimeout(() => setWalletPulse(false), PULSE_DURATION);
 
       // mulai counting
       setTargetTotal((prev) => prev + reward);
-    }, 900);
+    }, FLOAT_DURATION);
   };
 
+  // ── Handler check-in dengan validasi ──
   const handleCheckin = () => {
+    if (points.checkedInToday) return;
+    if (floatingReward !== null) return;
+
     const isDay7 = currentStreak === 6;
 
     if (isDay7) {
       setAnimationFinished(false);
       setShowRewardModal(true);
     } else {
-      playPointReward(20, setShowFloating);
+      playPointReward(CHECKIN_REWARD);
       setCurrentStreak((prev) => prev + 1);
     }
   };
@@ -110,20 +127,13 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             <span className="text-[20px] font-bold text-gray-700 tabular-nums leading-none">
               {displayTotal.toLocaleString("id-ID")}
             </span>
-            {showFloating && (
+            {/* Sebelumnya: +10 (salah) dan +50 (salah), sekarang tampil nilai asli */}
+            {floatingReward !== null && (
               <span
                 className="absolute -top-3 right-0 text-[11px] font-black text-emerald-500 pointer-events-none"
                 style={{ animation: "floatUp 1.8s ease-out forwards" }}
               >
-                +10
-              </span>
-            )}
-            {showFloating100 && (
-              <span
-                className="absolute -top-3 right-0 text-[11px] font-black text-emerald-500 pointer-events-none"
-                style={{ animation: "floatUp 1.8s ease-out forwards" }}
-              >
-                +50
+                +{floatingReward}
               </span>
             )}
           </div>
@@ -178,7 +188,6 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           onClick={() => setShowBonusModal(true)}
           className="relative bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-stretch active:bg-gray-50/50 transition-colors"
           style={{
-            // Posisi notch: left-[68%] (sesuaikan dgn lebar section kiri), radius 6px
             WebkitMaskImage: `radial-gradient(circle 5px at 78% 0%, transparent 99%, black 100%),
                          radial-gradient(circle 5px at 78% 100%, transparent 99%, black 100%)`,
             maskImage: `radial-gradient(circle 5px at 78% 0%, transparent 99%, black 100%),
@@ -255,21 +264,12 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                   </div>
 
                   <div className="relative flex items-center gap-1.5">
-                    {showFloating && (
-                      <span
-                        className="absolute -left-8 -top-1 text-[14px] font-black text-emerald-500 pointer-events-none z-20"
-                        style={{ animation: "floatUp 1.8s ease-out forwards" }}
-                      >
-                        +20
-                      </span>
-                    )}
-
-                    {showFloating100 && (
+                    {floatingReward !== null && (
                       <span
                         className="absolute -left-10 -top-1 text-[14px] font-black text-emerald-500 pointer-events-none z-20"
                         style={{ animation: "floatUp 1.8s ease-out forwards" }}
                       >
-                        +100
+                        +{floatingReward}
                       </span>
                     )}
 
@@ -333,9 +333,27 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
                 <button
                   onClick={handleCheckin}
-                  className="mt-5 w-full h-10 rounded-lg bg-emerald-600 text-white text-[12px] font-bold active:scale-[0.98] transition"
+                  disabled={points.checkedInToday || floatingReward !== null}
+                  className="
+                    mt-5
+                    w-full
+                    h-10
+                    rounded-lg
+                    bg-emerald-600
+                    text-white
+                    text-[12px]
+                    font-bold
+                    transition
+                    active:scale-[0.98]
+                    disabled:bg-gray-100
+                    disabled:text-gray-400
+                    disabled:active:scale-100
+                    disabled:cursor-not-allowed
+                    "
                 >
-                  Check-in Hari Ini
+                  {points.checkedInToday
+                    ? "Sudah Check-in Hari Ini"
+                    : "Check-in Hari Ini"}
                 </button>
               </div>
 
@@ -381,7 +399,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             onClick={() => {
               if (!animationFinished) return;
               setShowRewardModal(false);
-              playPointReward(100, setShowFloating100);
+              playPointReward(STREAK_REWARD);
               setCurrentStreak(0);
             }}
             className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center px-6"

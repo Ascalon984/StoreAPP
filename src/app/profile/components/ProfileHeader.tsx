@@ -1,6 +1,6 @@
 import React from "react";
 import { AvatarCircle } from "@/components/ProfileComponents";
-import { Camera, Pencil } from "lucide-react";
+import { SquarePen } from "lucide-react";
 
 interface UserProfile {
   name: string;
@@ -10,13 +10,13 @@ interface UserProfile {
 interface ProfileHeaderProps {
   user: UserProfile;
   avatarPreview: string | null;
-  onAvatarChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onEditProfile: () => void;
 }
 
 export default function ProfileHeader({
   user,
   avatarPreview,
-  onAvatarChange,
+  onEditProfile,
 }: ProfileHeaderProps) {
   return (
     <div className="relative">
@@ -28,35 +28,34 @@ export default function ProfileHeader({
 
       {/* CONTENT */}
       <div
-        className="relative z-10 px-4 pb-0 flex items-start justify-between"
+        className="relative z-10 px-4 pb-0 flex items-start justify-between gap-3 translate-x-[2px]"
         style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
       >
-        {/* LEFT: AVATAR + NAME */}
-        <div className="flex items-start gap-3.5">
+        <div className="flex flex-1 min-w-0 items-start gap-3">
           <div className="relative flex-shrink-0">
-            <AvatarCircle name={user.name} src={avatarPreview} size={48} />
-            <label className="absolute bottom-0 right-0 w-[14px] h-[14px] rounded-full bg-white border border-white flex items-center justify-center shadow-sm active:scale-90 transition-all cursor-pointer -translate-x-[0.5px]">
-              {avatarPreview ? (
-                <Pencil size={9} strokeWidth={2.5} className="text-gray-700" />
-              ) : (
-                <Camera size={9} strokeWidth={2.5} className="text-gray-700" />
-              )}
-
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={onAvatarChange}
-              />
-            </label>
+            <AvatarCircle name={user.name} src={avatarPreview} size={54} />
           </div>
 
-          <div className="flex flex-col leading-tight">
-            <h1 className="text-[16px] font-bold text-white tracking-tight">
-              {user.name || "Pengguna"}
-            </h1>
-            <p className="text-[11px] text-white/85 font-medium tracking-wide mt-1.5">
-              @{user.username}
+          <div className="flex flex-col leading-tight min-w-0">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <h1 className="flex-1 truncate text-[15.5px] font-semibold text-white tracking-tight">
+                {user.name || "Pengguna"}
+              </h1>
+
+              <button
+                onClick={onEditProfile}
+                className="shrink-0 p-0.5 active:scale-90 transition-transform"
+                aria-label="Edit profil"
+              >
+                <SquarePen
+                  size={13}
+                  strokeWidth={2.7}
+                  className="text-white/80 hover:text-white"
+                />
+              </button>
+            </div>
+            <p className="mt-1 truncate text-[11.5px] font-medium tracking-wide text-white/80">
+              {user.username}
             </p>
           </div>
         </div>
@@ -89,7 +88,7 @@ export default function ProfileHeader({
       </div>
 
       {/* spacing bawah agar overlap card tetap enak */}
-      <div className="h-[55px]" />
+      <div className="h-[50px]" />
     </div>
   );
 }

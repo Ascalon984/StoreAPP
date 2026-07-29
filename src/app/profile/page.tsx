@@ -10,7 +10,9 @@ import ReactCrop, {
   makeAspectCrop,
 } from "react-image-crop";
 
-import { X } from "lucide-react";
+import { X, Camera } from "lucide-react";
+
+import { AvatarCircle } from "@/components/ProfileComponents";
 
 import ProfileHeader from "./components/ProfileHeader";
 
@@ -25,9 +27,9 @@ import LastSeenPage from "./components/LastSeenPage";
 // ── Mock data ──
 
 const mockUser: UserProfile = {
-  name: "Pengguna",
+  name: "Aditya Tri Prasetyo",
 
-  username: "pengguna1",
+  username: "aditya_1",
 
   email: "user_1@email.com",
 
@@ -43,9 +45,9 @@ const mockPoints = {
 
   checkinPoints: 1200,
 
-  dailyStreak: 4,
+  dailyStreak: 2,
 
-  checkedInToday: false,
+  checkedInToday: true,
 
   rewardStreakPoints: 100,
 };
@@ -70,6 +72,19 @@ export default function ProfilePage() {
   const [crop, setCrop] = useState<Crop>();
 
   const [completedCrop, setCompletedCrop] = useState<Crop>();
+
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [editName, setEditName] = useState(user.name);
+  const [editAvatar, setEditAvatar] = useState<string | null>(avatarPreview);
+
+  const openEditProfile = () => {
+    setEditName(user.name);
+    setEditAvatar(avatarPreview);
+    setEditProfileOpen(true);
+  };
+
+  const hasChanges =
+    editName.trim() !== user.name.trim() || editAvatar !== avatarPreview;
 
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -146,8 +161,8 @@ export default function ProfilePage() {
       (blob) => {
         if (!blob) return;
 
-        setAvatarPreview(URL.createObjectURL(blob));
-
+        const newAvatar = URL.createObjectURL(blob);
+        setEditAvatar(newAvatar);
         setCropSrc(null);
       },
 
@@ -162,7 +177,7 @@ export default function ProfilePage() {
       <ProfileHeader
         user={user}
         avatarPreview={avatarPreview}
-        onAvatarChange={handleAvatarChange}
+        onEditProfile={openEditProfile}
       />
 
       <ProfileContent
@@ -172,6 +187,131 @@ export default function ProfilePage() {
         onOpenPointsInfo={() => setPointsInfoOpen(true)}
         onOpenSubPage={setActiveSubPage}
       />
+
+      {/* ── EDIT PROFILE MODAL ── */}
+
+      {editProfileOpen && (
+        <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-5">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
+            onClick={() => setEditProfileOpen(false)}
+          />
+
+          <div className="relative w-full sm:max-w-[360px] bg-white rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200">
+            <div className="flex-shrink-0 px-4 py-3.5 border-b border-gray-100 flex items-center justify-between">
+              <p className="text-[14px] font-bold text-gray-800">Edit Profil</p>
+              <button
+                onClick={() => setEditProfileOpen(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 active:scale-90 transition-all"
+              >
+                <X size={18} strokeWidth={2.5} />
+              </button>
+            </div>
+
+            <div className="px-4 pt-5 pb-3 flex flex-col items-center">
+              <div className="relative flex justify-center mb-7">
+                <AvatarCircle name={editName} src={editAvatar} size={120} />
+                <label
+                  className="
+                    absolute
+                    left-1/2
+                    -bottom-3
+                    -translate-x-1/2
+                    w-8
+                    h-8
+                    rounded-full
+                    bg-white
+                    border
+                    border-emerald-500
+                    flex
+                    items-center
+                    justify-center
+                    cursor-pointer
+                    transition-colors
+                    active:scale-95
+                    -translate-y-[3px]
+                  "
+                >
+                  <Camera
+                    size={17}
+                    strokeWidth={2.3}
+                    className="text-emerald-600"
+                  />
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
+                </label>
+              </div>
+
+              <div className="w-full text-left">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  maxLength={40}
+                  placeholder="Nama lengkap"
+                  className="
+                    w-full
+                    h-10
+                    rounded-lg
+                    border
+                    border-gray-200
+                    bg-white
+                    px-4
+                    text-[14px]
+                    font-medium
+                    text-gray-800
+                    placeholder:text-gray-400
+                    outline-none
+                    transition-colors
+                    focus:border-emerald-500
+                    focus:ring-[0.5px]
+                    focus:ring-emerald-500/40
+                  "
+                />
+
+                <div className="mt-2 flex items-center justify-between px-1">
+                  <p className="text-[11px] text-gray-500">
+                    Nama ini akan ditampilkan di profil Anda.
+                  </p>
+
+                  <span className="text-[11px] text-gray-400">
+                    {editName.length}/40
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-shrink-0 px-4 py-4 border-t border-gray-100 bg-gray-50/50">
+              <button
+                disabled={!hasChanges}
+                onClick={() => {
+                  setUser((prev) => ({
+                    ...prev,
+                    name: editName.trim(),
+                    avatar: editAvatar,
+                  }));
+
+                  setAvatarPreview(editAvatar);
+
+                  setEditProfileOpen(false);
+                }}
+                className={`w-full h-11 rounded-lg text-[13.5px] font-bold transition-all ${
+                  hasChanges
+                    ? "bg-emerald-600 text-white active:scale-[0.98]"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal Crop */}
 
