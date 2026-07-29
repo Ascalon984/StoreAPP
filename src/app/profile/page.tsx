@@ -47,7 +47,7 @@ const mockPoints = {
 
   dailyStreak: 2,
 
-  checkedInToday: true,
+  checkedInToday: false,
 
   rewardStreakPoints: 100,
 };
@@ -173,7 +173,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/80 pb-24">
+    <div className="min-h-screen bg-gray-50/80 pb-24 overflow-x-hidden w-full">
       <ProfileHeader
         user={user}
         avatarPreview={avatarPreview}

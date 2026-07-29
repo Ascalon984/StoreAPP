@@ -28,12 +28,12 @@ export default function ProfileHeader({
 
       {/* CONTENT */}
       <div
-        className="relative z-10 px-4 pb-0 flex items-start justify-between gap-3 translate-x-[2px]"
+        className="relative z-10 px-4 pb-0 flex items-start justify-between gap-3 translate-x-[2px] translate-y-[1px]"
         style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
       >
         <div className="flex flex-1 min-w-0 items-start gap-3">
           <div className="relative flex-shrink-0">
-            <AvatarCircle name={user.name} src={avatarPreview} size={54} />
+            <AvatarCircle name={user.name} src={avatarPreview} size={52} />
           </div>
 
           <div className="flex flex-col leading-tight min-w-0">
@@ -50,11 +50,11 @@ export default function ProfileHeader({
                 <SquarePen
                   size={13}
                   strokeWidth={2.7}
-                  className="text-white/80 hover:text-white"
+                  className="text-white/85 hover:text-white"
                 />
               </button>
             </div>
-            <p className="mt-1 truncate text-[11.5px] font-medium tracking-wide text-white/80">
+            <p className="mt-1 truncate text-[11.5px] font-medium tracking-wide text-white/75">
               {user.username}
             </p>
           </div>
@@ -88,7 +88,7 @@ export default function ProfileHeader({
       </div>
 
       {/* spacing bawah agar overlap card tetap enak */}
-      <div className="h-[50px]" />
+      <div className="h-[51px]" />
     </div>
   );
 }
