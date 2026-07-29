@@ -10,6 +10,7 @@ import {
   Ticket,
   CircleQuestionMark,
 } from "lucide-react";
+import VoucherPage from "./VoucherPage";
 
 // ── Types ──
 export interface PointsData {
@@ -45,7 +46,6 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const [animationFinished, setAnimationFinished] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [walletPulse, setWalletPulse] = useState(false);
-  const [activeTab, setActiveTab] = useState<"tukar" | "gratis">("tukar");
 
   // ── Sync state ketika props berubah dari parent ──
   useEffect(() => {
@@ -358,38 +358,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               </div>
 
               {/* Voucher Tabs */}
-              <div className="bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03)] min-h-[400px]">
-                <div className="flex border-b border-gray-100 sticky top-0 bg-white z-10">
-                  {(["tukar", "gratis"] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      className={`flex-1 py-3 text-[11px] font-bold border-b-2 transition-colors ${
-                        activeTab === tab
-                          ? "border-emerald-500 text-emerald-600"
-                          : "border-transparent text-gray-500"
-                      }`}
-                      onClick={() => setActiveTab(tab)}
-                    >
-                      {tab === "tukar" ? "Tukar Voucher" : "Voucher Gratis"}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="p-4 flex flex-col items-center justify-center py-16">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl opacity-50 grayscale">🎫</span>
-                  </div>
-                  <p className="text-[12px] font-bold text-gray-700">
-                    Belum ada{" "}
-                    {activeTab === "tukar"
-                      ? "voucher untuk ditukar"
-                      : "voucher gratis"}
-                  </p>
-                  <p className="text-[10px] text-gray-500 mt-1">
-                    Cek lagi nanti ya!
-                  </p>
-                </div>
-              </div>
+              <VoucherPage />
             </div>
           </div>,
           document.body,

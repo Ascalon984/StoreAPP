@@ -10,7 +10,7 @@ import ReactCrop, {
   makeAspectCrop,
 } from "react-image-crop";
 
-import { X, Camera } from "lucide-react";
+import { X } from "lucide-react";
 
 import { AvatarCircle } from "@/components/ProfileComponents";
 
@@ -76,10 +76,16 @@ export default function ProfilePage() {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState(user.name);
   const [editAvatar, setEditAvatar] = useState<string | null>(avatarPreview);
+  const [avatarSource, setAvatarSource] = useState<string | null>(null);
 
   const openEditProfile = () => {
     setEditName(user.name);
     setEditAvatar(avatarPreview);
+
+    if (avatarPreview && !avatarSource) {
+      setAvatarSource(avatarPreview);
+    }
+
     setEditProfileOpen(true);
   };
 
@@ -89,23 +95,31 @@ export default function ProfilePage() {
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (cropSrc) {
+    const isModalOpen = !!cropSrc || editProfileOpen || pointsInfoOpen;
+
+    if (isModalOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none"; // mobile
     } else {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     }
 
     return () => {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     };
-  }, [cropSrc]);
+  }, [cropSrc, editProfileOpen, pointsInfoOpen]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) return;
 
-    setCropSrc(URL.createObjectURL(file));
+    const url = URL.createObjectURL(file);
+
+    setAvatarSource(url);
+    setCropSrc(url);
   };
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -208,43 +222,67 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <div className="px-4 pt-5 pb-3 flex flex-col items-center">
-              <div className="relative flex justify-center mb-7">
-                <AvatarCircle name={editName} src={editAvatar} size={120} />
-                <label
-                  className="
-                    absolute
-                    left-1/2
-                    -bottom-3
-                    -translate-x-1/2
-                    w-8
-                    h-8
-                    rounded-full
-                    bg-white
-                    border
-                    border-emerald-500
-                    flex
-                    items-center
-                    justify-center
-                    cursor-pointer
-                    transition-colors
-                    active:scale-95
-                    -translate-y-[3px]
-                  "
-                >
-                  <Camera
-                    size={17}
-                    strokeWidth={2.3}
-                    className="text-emerald-600"
-                  />
+            <div className="px-4 pt-3 pb-1 flex flex-col items-center">
+              <div className="flex flex-col items-center mb-5">
+                <AvatarCircle name={editName} src={editAvatar} size={140} />
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
-                </label>
+                <div className="mt-4 flex items-center gap-5">
+                  {editAvatar && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (avatarSource) {
+                          setCropSrc(avatarSource);
+                        }
+                      }}
+                      className="
+                        h-7
+                        px-3
+                        rounded-[7px]
+                        border
+                        border-emerald-600
+                        bg-white
+                        text-[13px]
+                        font-semibold
+                        text-emerald-600
+                        hover:bg-emerald-50
+                        active:scale-95
+                        transition-all
+                      "
+                    >
+                      Edit Foto
+                    </button>
+                  )}
+
+                  <label
+                    className="
+                      h-7
+                      px-3
+                      rounded-[7px]
+                      bg-emerald-600
+                      text-white
+                      text-[13px]
+                      font-semibold
+                      flex
+                      items-center
+                      justify-center
+                      cursor-pointer
+                      hover:bg-emerald-700
+                      active:scale-95
+                      transition-all
+                      shadow-sm
+                    "
+                  >
+                    {editAvatar ? "Ganti Foto" : "Unggah Foto"}
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div className="w-full text-left">
@@ -316,7 +354,7 @@ export default function ProfilePage() {
       {/* Modal Crop */}
 
       {cropSrc && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-3">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-2">
           <div
             className="absolute inset-0 bg-black/60"
             onClick={() => setCropSrc(null)}
@@ -357,7 +395,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="flex-shrink-0 px-3.5 py-3 border-t border-gray-100 -translate-x-[4px]">
+            <div className="flex-shrink-0 px-3 py-3 border-t border-gray-100 -translate-x-[4px]">
               <button
                 onClick={handleCropConfirm}
                 className="w-full py-2.5 rounded-lg bg-emerald-600 text-[13.5px] font-bold text-white hover:bg-emerald-700 active:scale-95 transition-all"
