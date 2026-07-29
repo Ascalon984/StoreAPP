@@ -7,6 +7,8 @@ import {
   LogOut,
   ArrowRight,
   ShieldCheck,
+  Headset,
+  Lightbulb,
 } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
 import { Toggle } from "@/components/ProfileComponents";
@@ -63,8 +65,6 @@ export default function ProfileContent({
       </div>
 
       <div className="mx-2 bg-white rounded-lg overflow-hidden">
-
-
         {/* ── Notifikasi ── */}
         <button
           onClick={() => setNotifOpen((p) => !p)}
@@ -153,7 +153,7 @@ export default function ProfileContent({
           <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
             Kebijakan & Privasi
           </span>
-          <ArrowRight size={16} className="text-gray-300" />
+          <ChevronRight size={20} className="text-gray-400" />
         </button>
 
         {/* ── Tentang Aplikasi ── */}
@@ -164,7 +164,56 @@ export default function ProfileContent({
           <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
             Tentang Aplikasi
           </span>
-          <ArrowRight size={16} className="text-gray-300" />
+          <ChevronRight size={20} className="text-gray-400" />
+        </button>
+      </div>
+
+      <div className="mx-2 mt-3 bg-white rounded-lg overflow-hidden">
+        <div className="px-4 pt-3.5 pb-1">
+          <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">
+            Bantuan & Dukungan
+          </p>
+        </div>
+      </div>
+
+      {/* ── BANTUAN: CS CHAT & KOTAK SARAN (grid 2 kolom) ── */}
+      <div className="mx-2 bg-white rounded-lg overflow-hidden">
+        <button
+          onClick={() => onOpenSubPage("cs-chat")}
+          className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
+        >
+          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
+            <Headset size={16} strokeWidth={2.5} className="text-gray-500" />
+          </div>
+
+          <div className="flex-1 text-left">
+            <p className="text-[13px] font-semibold text-gray-800">
+              Hubungi CS
+            </p>
+            <p className="text-[10px] text-gray-400 mt-0.5">
+              Chat langsung dengan tim kami
+            </p>
+          </div>
+        </button>
+
+        <div className="ml-[60px] border-t border-gray-100/80" />
+
+        <button
+          onClick={() => onOpenSubPage("kotak-saran")}
+          className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
+        >
+          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
+            <Lightbulb size={16} strokeWidth={2.5} className="text-gray-500" />
+          </div>
+
+          <div className="flex-1 text-left">
+            <p className="text-[13px] font-semibold text-gray-800">
+              Kotak Saran
+            </p>
+            <p className="text-[10px] text-gray-400 mt-0.5">
+              Kirim masukan untuk kami
+            </p>
+          </div>
         </button>
       </div>
 
