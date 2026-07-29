@@ -197,7 +197,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex-1 min-h-0 bg-white overflow-y-auto overflow-x-hidden crop-scroll">
-              <div className="min-h-full flex items-center justify-center pr-2 pl-2">
+              <div className="min-h-full flex items-center justify-center pr-1 pl-2">
                 <ReactCrop
                   crop={crop}
                   onChange={(c) => setCrop(c)}
