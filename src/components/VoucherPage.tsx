@@ -60,7 +60,10 @@ const vouchers: Voucher[] = [
 ];
 
 interface VoucherPageProps {
-  onVoucherClaimed?: (points: number) => void;
+  onVoucherClaimed: (
+    pointsCost: number,
+    voucher: { title: string; type: "tukar" | "gratis" },
+  ) => void;
 }
 
 export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
@@ -114,7 +117,9 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
       setVoucherList((prev) =>
         prev.map((v) => (v.id === voucher.id ? { ...v, claimed: true } : v)),
       );
-      if (onVoucherClaimed) onVoucherClaimed(0);
+      if (onVoucherClaimed) {
+        onVoucherClaimed(0, { title: voucher.title, type: voucher.type }); // ← tambahkan data voucher
+      }
       setProcessingId(null);
 
       const scrollContainer = document.getElementById("bonus-modal-scroll");
@@ -129,12 +134,15 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
     setIsRedeeming(true);
 
     setTimeout(() => {
-      // TODO: Backend redeem voucher list
-      // Refresh saldo poin jika sukses
-
       const pointCost =
         parseInt(selectedTukar.value.replace(/\D/g, ""), 10) || 0;
-      if (onVoucherClaimed) onVoucherClaimed(pointCost);
+
+      if (onVoucherClaimed) {
+        onVoucherClaimed(pointCost, {
+          title: selectedTukar.title,
+          type: selectedTukar.type,
+        }); // ← tambahkan data voucher
+      }
 
       setIsRedeeming(false);
       setSelectedTukar(null);

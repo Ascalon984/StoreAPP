@@ -41,8 +41,8 @@ export const useHistoryPoin = create<HistoryPoinState>()(
         const { lastFetch, data } = get();
         const now = Date.now();
         
-        // Cek jika cache masih valid
-        if (!force && lastFetch && now - lastFetch < CACHE_EXPIRY_MS && data.length > 0) {
+        // Cek jika cache masih valid (saat testing cache tidak pernah expired agar data lokal tidak terhapus)
+        if (!force && lastFetch && (ENABLE_TESTING || now - lastFetch < CACHE_EXPIRY_MS) && data.length > 0) {
           return;
         }
 

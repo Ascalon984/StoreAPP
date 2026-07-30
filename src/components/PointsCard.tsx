@@ -42,7 +42,9 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const { addPoints, deductPoints, checkIn } = usePointsStore();
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [currentStreak, setCurrentStreak] = useState(points.dailyStreak);
   const [displayTotal, setDisplayTotal] = useState(points.total);
@@ -185,7 +187,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setShowRewardModal(true);
     } else {
       playPointReward(CHECKIN_REWARD, "Check-in Harian");
-      checkIn();
+      checkIn(CHECKIN_REWARD);
     }
   };
 
@@ -474,12 +476,26 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                 </button>
               </div>
 
+              {/*Dev Tools Reset Button Check-in*/}
+              {/* {process.env.NODE_ENV === "development" && (
+                <button
+                  onClick={() =>
+                    usePointsStore.getState().setPoints({
+                      checkedInToday: false,
+                    })
+                  }
+                  className="mt-0 w-full text-center text-[10px] text-gray-400 underline"
+                >
+                  [DEV] Reset Check-in Hari Ini
+                </button>
+              )} */}
+
               {/* Voucher Tabs */}
               <VoucherPage
-                onVoucherClaimed={(pointsCost) => {
+                onVoucherClaimed={(pointsCost, voucher) => {
                   setActiveVouchers((prev) => prev + 1);
                   if (pointsCost > 0) {
-                    playPointDeduction(pointsCost, "Tukar Voucher Spesial");
+                    playPointDeduction(pointsCost, `Tukar ${voucher.title}`);
                   }
                 }}
               />
@@ -496,7 +512,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               if (!animationFinished) return;
               setShowRewardModal(false);
               playPointReward(STREAK_REWARD, "Bonus Check-in 7 Hari");
-              checkIn();
+              checkIn(STREAK_REWARD);
             }}
             className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center px-6"
           >

@@ -39,6 +39,10 @@ const initialPoints: PointsData = {
 // localStorage.removeItem("points_store");
 // localStorage.removeItem("history_poin_cache");
 // location.reload();
+
+// localStorage.clear();
+// location.reload();
+
 //
 // Gunakan saat ingin simulasi user baru.
 // ─────────────────────────────────────────
@@ -83,15 +87,21 @@ export const usePointsStore = create<PointsState>()(
         })),
 
       checkIn: (reward = 20) =>
-        set((state) => ({
-          points: {
-            ...state.points,
-            total: state.points.total + reward,
-            checkinPoints: state.points.checkinPoints + reward,
-            dailyStreak: state.points.dailyStreak + 1,
-            checkedInToday: true,
-          },
-        })),
+        set((state) => {
+          const nextStreak =
+            state.points.dailyStreak >= 6
+              ? 0 // sudah capai hari ke-7 → reset siklus
+              : state.points.dailyStreak + 1;
+
+          return {
+            points: {
+              ...state.points,
+              checkinPoints: state.points.checkinPoints + reward,
+              dailyStreak: nextStreak,
+              checkedInToday: true,
+            },
+          };
+        }),
 
       resetTestingData: () =>
         set({
