@@ -27,14 +27,25 @@ const initialPoints: PointsData = {
   total: 12450,
   transactionPoints: 11250,
   checkinPoints: 1200,
-  dailyStreak: 2,
+  dailyStreak: 1,
   checkedInToday: false,
   rewardStreakPoints: 100,
 };
 
+// ─────────────────────────────────────────
+// TESTING HELPER (Dev Only)
+//
+// Reset semua data lokal:
+// localStorage.removeItem("points_store");
+// localStorage.removeItem("history_poin_cache");
+// location.reload();
+//
+// Gunakan saat ingin simulasi user baru.
+// ─────────────────────────────────────────
+
 // true = simpan saat refresh untuk testing
 // false = selalu mulai dari initialPoints
-export const ENABLE_TESTING = false;
+export const ENABLE_TESTING = true;
 
 const noopStorage = {
   getItem: () => null,
