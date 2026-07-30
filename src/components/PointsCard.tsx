@@ -41,6 +41,10 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
   // Digabung: sebelumnya showFloating + showFloating100 (duplikat & nilai salah)
   const [floatingReward, setFloatingReward] = useState<number | null>(null);
+  const [floatingDeduction, setFloatingDeduction] = useState<number | null>(
+    null,
+  );
+  const [activeVouchers, setActiveVouchers] = useState(0);
 
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
@@ -58,19 +62,50 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
   // ── Animasi counting angka ──
   useEffect(() => {
-    if (displayTotal >= targetTotal) return;
+    if (displayTotal === targetTotal) return;
 
-    const interval = setInterval(() => {
-      setDisplayTotal((prev) => {
-        const diff = targetTotal - prev;
-        const step = diff >= 100 ? 2 : 1;
-        const next = prev + step;
-        return next >= targetTotal ? targetTotal : next;
-      });
-    }, COUNT_INTERVAL);
+    const startValue = displayTotal;
+    const endValue = targetTotal;
+    const diff = endValue - startValue;
+    const absDiff = Math.abs(diff);
 
-    return () => clearInterval(interval);
-  }, [displayTotal, targetTotal]);
+    // Durasi berdasarkan jumlah perubahan
+    let duration: number;
+
+    if (absDiff <= 500) {
+      duration = 1000; // ≤500 poin = 1 detik
+    } else if (absDiff >= 1000) {
+      duration = 2000; // ≥1000 poin = 2 detik
+    } else {
+      // interpolasi linear 500 → 1000 poin
+      duration = 1000 + ((absDiff - 500) / 500) * 1000;
+    }
+
+    const startTime = performance.now();
+
+    let rafId: number;
+
+    const animate = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+
+      // Ease Out Cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      const value = Math.round(startValue + diff * eased);
+
+      setDisplayTotal((prev) => (prev === value ? prev : value));
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      } else {
+        setDisplayTotal(endValue);
+      }
+    };
+
+    rafId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(rafId);
+  }, [targetTotal]);
 
   // ── Fungsi reward: sebelumnya menerima setter terpisah (duplikat), sekarang cukup angka ──
   const playPointReward = (reward: number) => {
@@ -85,6 +120,21 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
       // mulai counting
       setTargetTotal((prev) => prev + reward);
+    }, FLOAT_DURATION);
+  };
+
+  const playPointDeduction = (deduction: number) => {
+    setFloatingDeduction(deduction);
+
+    setTimeout(() => {
+      setFloatingDeduction(null);
+
+      // pulse icon wallet
+      setWalletPulse(true);
+      setTimeout(() => setWalletPulse(false), PULSE_DURATION);
+
+      // mulai counting down
+      setTargetTotal((prev) => Math.max(0, prev - deduction));
     }, FLOAT_DURATION);
   };
 
@@ -134,6 +184,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                 style={{ animation: "floatUp 1.8s ease-out forwards" }}
               >
                 +{floatingReward}
+              </span>
+            )}
+            {floatingDeduction !== null && (
+              <span
+                className="absolute -top-3 right-0 text-[11px] font-black text-rose-500 pointer-events-none"
+                style={{ animation: "floatUp 1.8s ease-out forwards" }}
+              >
+                -{floatingDeduction}
               </span>
             )}
           </div>
@@ -222,7 +280,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           {/* Right: Badge + Chevron */}
           <div className="relative z-10 flex items-center justify-center gap-[1px] w-[22%]">
             <span className="text-[10px] font-bold text-emerald-600">
-              8 Aktif
+              {activeVouchers} Aktif
             </span>
             <ChevronRight
               size={15}
@@ -250,7 +308,10 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               </h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto pb-20">
+            <div
+              className="flex-1 overflow-y-auto pb-20"
+              id="bonus-modal-scroll"
+            >
               {/* Check-in Harian */}
               <div className="bg-white p-4 mb-2 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
                 <div className="flex items-center justify-between mb-4">
@@ -270,6 +331,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                         style={{ animation: "floatUp 1.8s ease-out forwards" }}
                       >
                         +{floatingReward}
+                      </span>
+                    )}
+                    {floatingDeduction !== null && (
+                      <span
+                        className="absolute -left-10 -top-1 text-[14px] font-black text-rose-500 pointer-events-none z-20"
+                        style={{ animation: "floatUp 1.8s ease-out forwards" }}
+                      >
+                        -{floatingDeduction}
                       </span>
                     )}
 
@@ -358,7 +427,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               </div>
 
               {/* Voucher Tabs */}
-              <VoucherPage />
+              <VoucherPage
+                onVoucherClaimed={(pointsCost) => {
+                  setActiveVouchers((prev) => prev + 1);
+                  if (pointsCost > 0) {
+                    playPointDeduction(pointsCost);
+                  }
+                }}
+              />
             </div>
           </div>,
           document.body,

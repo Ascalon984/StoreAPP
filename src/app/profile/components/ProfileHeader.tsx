@@ -33,7 +33,7 @@ export default function ProfileHeader({
       >
         <div className="flex flex-1 min-w-0 items-start gap-3">
           <div className="relative flex-shrink-0">
-            <AvatarCircle name={user.name} src={avatarPreview} size={52} />
+            <AvatarCircle name={user.name} src={avatarPreview} size={51} />
           </div>
 
           <div className="flex flex-col leading-tight min-w-0">
@@ -65,14 +65,14 @@ export default function ProfileHeader({
             shrink-0
             h-7
             px-2
-            rounded-[10px]
+            rounded-[9px]
             bg-gradient-to-t
             from-amber-400
             to-orange-500
             active:scale-95
             transition-all
             flex items-center gap-1
-            -translate-x-[2px]
+            -translate-x-[4px]
           "
         >
           <span
@@ -89,7 +89,7 @@ export default function ProfileHeader({
       </div>
 
       {/* spacing bawah agar overlap card tetap enak */}
-      <div className="h-[51px]" />
+      <div className="h-[52px]" />
     </div>
   );
 }

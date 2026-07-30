@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { Ticket, Gift } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Ticket, Gift, ChevronRight } from "lucide-react";
 
 interface Voucher {
   id: string;
@@ -58,11 +59,18 @@ const vouchers: Voucher[] = [
   })),
 ];
 
-export default function VoucherPage() {
+interface VoucherPageProps {
+  onVoucherClaimed?: (points: number) => void;
+}
+
+export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
   const [activeTab, setActiveTab] = useState<"tukar" | "gratis">("tukar");
   const [hasSeenGratis, setHasSeenGratis] = useState(false);
   const [voucherList, setVoucherList] = useState(vouchers);
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  const [selectedTukar, setSelectedTukar] = useState<Voucher | null>(null);
+  const [isRedeeming, setIsRedeeming] = useState(false);
 
   const tabs = ["tukar", "gratis"] as const;
   const activeIndex = tabs.indexOf(activeTab);
@@ -96,19 +104,46 @@ export default function VoucherPage() {
   const containerHeight = panelHeights[activeTab];
 
   const handleAction = (voucher: Voucher) => {
+    if (voucher.type === "tukar") {
+      setSelectedTukar(voucher);
+      return;
+    }
+
     setProcessingId(voucher.id);
+    setTimeout(() => {
+      setVoucherList((prev) =>
+        prev.map((v) => (v.id === voucher.id ? { ...v, claimed: true } : v)),
+      );
+      if (onVoucherClaimed) onVoucherClaimed(0);
+      setProcessingId(null);
+
+      const scrollContainer = document.getElementById("bonus-modal-scroll");
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 1000);
+  };
+
+  const handleConfirmRedeem = () => {
+    if (!selectedTukar) return;
+    setIsRedeeming(true);
 
     setTimeout(() => {
-      if (voucher.type === "gratis") {
-        setVoucherList((prev) =>
-          prev.map((v) => (v.id === voucher.id ? { ...v, claimed: true } : v)),
-        );
+      // TODO: Backend redeem voucher list
+      // Refresh saldo poin jika sukses
+
+      const pointCost =
+        parseInt(selectedTukar.value.replace(/\D/g, ""), 10) || 0;
+      if (onVoucherClaimed) onVoucherClaimed(pointCost);
+
+      setIsRedeeming(false);
+      setSelectedTukar(null);
+
+      const scrollContainer = document.getElementById("bonus-modal-scroll");
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
       }
-
-      // TODO: Voucher tukar nanti diproses sesuai respons backend
-
-      setProcessingId(null);
-    }, 1000);
+    }, 1500);
   };
 
   const renderGrid = (tab: "tukar" | "gratis") => {
@@ -281,6 +316,85 @@ export default function VoucherPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal Tukar Voucher */}
+      {selectedTukar &&
+        createPortal(
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => !isRedeeming && setSelectedTukar(null)}
+            />
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-[320px] w-full p-6 text-center border border-gray-50 animate-in zoom-in-95 duration-200">
+              <div className="flex flex-col items-center">
+                <p className="text-[11px] font-bold tracking-wide uppercase text-gray-600 mb-3 -translate-y-[10px]">
+                  Konfirmasi Penukaran
+                </p>
+                <div className="w-16 h-16 flex items-center justify-center mb-4 bg-emerald-50 rounded-full">
+                  <Ticket size={32} className="text-emerald-600" />
+                </div>
+
+                <h3 className="text-[18px] font-extrabold text-emerald-600 leading-tight mb-2">
+                  {selectedTukar.title}
+                </h3>
+                <p className="text-[12px] text-gray-500 mb-5 px-2">
+                  {selectedTukar.description}
+                </p>
+
+                <div className="bg-gray-50 shadow-inner w-full rounded-lg p-3.5 mb-5">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-[11px] text-gray-500">
+                      Biaya Poin
+                    </span>
+                    <span className="text-[12px] font-bold text-amber-600">
+                      {selectedTukar.value}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-[11px] text-gray-500">
+                      Masa Berlaku
+                    </span>
+                    <span className="text-[12px] font-semibold text-gray-700">
+                      7 hari setelah ditukar
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="mt-2 pt-2 w-full flex items-center justify-between border-t border-gray-200 text-[11px] font-medium text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    <span>Syarat & Ketentuan</span>
+                    <ChevronRight size={14} strokeWidth={2} />
+                  </button>
+                </div>
+
+                <p className="mb-4 text-[10px] leading-4 text-center text-gray-500">
+                  Poin akan langsung dipotong setelah penukaran berhasil dan
+                  voucher siap digunakan.
+                </p>
+                <div className="flex gap-2 w-full translate-y-[10px]">
+                  <button
+                    onClick={() => setSelectedTukar(null)}
+                    disabled={isRedeeming}
+                    className="flex-1 h-11 rounded-lg border border-gray-300 text-[12px] font-semibold text-gray-600 hover:bg-gray-50 active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    Batal
+                  </button>
+
+                  <button
+                    onClick={handleConfirmRedeem}
+                    disabled={isRedeeming}
+                    className="flex-[1.4] h-11 rounded-lg bg-emerald-600 text-[12px] font-semibold text-white shadow-sm shadow-emerald-800/25 hover:bg-emerald-700 active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    {isRedeeming ? "Memproses..." : "Tukar Sekarang"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
