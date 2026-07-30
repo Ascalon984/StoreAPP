@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
   Check,
@@ -11,7 +11,10 @@ import {
   CircleQuestionMark,
 } from "lucide-react";
 import VoucherPage from "./VoucherPage";
-
+import HistoryPoinPage from "./HistoryPoinPage";
+import VoucherList from "./VoucherList";
+import { usePointsStore } from "@/store/usePointsStore";
+import { useHistoryPoin } from "@/store/useHistoryPoin";
 // ── Types ──
 export interface PointsData {
   total: number;
@@ -35,9 +38,16 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const FLOAT_DURATION = 900;
   const PULSE_DURATION = 500;
   const COUNT_INTERVAL = 60;
+
+  const { addPoints, deductPoints, checkIn } = usePointsStore();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const [currentStreak, setCurrentStreak] = useState(points.dailyStreak);
   const [displayTotal, setDisplayTotal] = useState(points.total);
   const [targetTotal, setTargetTotal] = useState(points.total);
+  const animateNextUpdate = useRef(false);
 
   // Digabung: sebelumnya showFloating + showFloating100 (duplikat & nilai salah)
   const [floatingReward, setFloatingReward] = useState<number | null>(null);
@@ -49,6 +59,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showVoucherListModal, setShowVoucherListModal] = useState(false);
   const [walletPulse, setWalletPulse] = useState(false);
 
   // ── Sync state ketika props berubah dari parent ──
@@ -57,7 +69,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   }, [points.dailyStreak]);
 
   useEffect(() => {
-    setTargetTotal(points.total);
+    if (animateNextUpdate.current) {
+      setTargetTotal(points.total);
+      animateNextUpdate.current = false;
+    } else {
+      // Refresh / Hydration (Jangan ada animasi)
+      setDisplayTotal(points.total);
+      setTargetTotal(points.total);
+    }
   }, [points.total]);
 
   // ── Animasi counting angka ──
@@ -108,7 +127,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   }, [targetTotal]);
 
   // ── Fungsi reward: sebelumnya menerima setter terpisah (duplikat), sekarang cukup angka ──
-  const playPointReward = (reward: number) => {
+  const playPointReward = (reward: number, title: string) => {
     setFloatingReward(reward);
 
     setTimeout(() => {
@@ -118,12 +137,20 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setWalletPulse(true);
       setTimeout(() => setWalletPulse(false), PULSE_DURATION);
 
-      // mulai counting
-      setTargetTotal((prev) => prev + reward);
+      // trigger state & history update
+      animateNextUpdate.current = true;
+      addPoints(reward);
+      useHistoryPoin.getState().addHistoryTransaction({
+        type: "plus",
+        amount: reward,
+        title,
+        description: "Dari event & hadiah",
+        balance: points.total + reward,
+      });
     }, FLOAT_DURATION);
   };
 
-  const playPointDeduction = (deduction: number) => {
+  const playPointDeduction = (deduction: number, title: string) => {
     setFloatingDeduction(deduction);
 
     setTimeout(() => {
@@ -133,8 +160,16 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setWalletPulse(true);
       setTimeout(() => setWalletPulse(false), PULSE_DURATION);
 
-      // mulai counting down
-      setTargetTotal((prev) => Math.max(0, prev - deduction));
+      // trigger state & history update
+      animateNextUpdate.current = true;
+      deductPoints(deduction);
+      useHistoryPoin.getState().addHistoryTransaction({
+        type: "minus",
+        amount: deduction,
+        title,
+        description: "Penukaran Poin",
+        balance: Math.max(0, points.total - deduction),
+      });
     }, FLOAT_DURATION);
   };
 
@@ -149,8 +184,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setAnimationFinished(false);
       setShowRewardModal(true);
     } else {
-      playPointReward(CHECKIN_REWARD);
-      setCurrentStreak((prev) => prev + 1);
+      playPointReward(CHECKIN_REWARD, "Check-in Harian");
+      checkIn();
     }
   };
 
@@ -174,9 +209,13 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           <p className="text-[10px] font-bold text-gray-500 mb-2">POIN SAYA</p>
 
           <div className="flex items-center gap-1.5 mb-2 relative">
-            <span className="text-[20px] font-bold text-gray-700 tabular-nums leading-none">
-              {displayTotal.toLocaleString("id-ID")}
-            </span>
+            {mounted ? (
+              <span className="text-[20px] font-bold text-gray-700 tabular-nums leading-none">
+                {displayTotal.toLocaleString("id-ID")}
+              </span>
+            ) : (
+              <span className="block h-[22px] w-16 rounded bg-gray-200 animate-pulse" />
+            )}
             {/* Sebelumnya: +10 (salah) dan +50 (salah), sekarang tampil nilai asli */}
             {floatingReward !== null && (
               <span
@@ -197,7 +236,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           </div>
 
           <button
-            onClick={onOpenInfo}
+            onClick={() => setShowHistoryModal(true)}
             className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit active:opacity-70"
           >
             Riwayat <ChevronRight size={12} strokeWidth={2.5} />
@@ -205,10 +244,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
         </div>
 
         {/* ─── Region Kanan: Bonus Lainnya ─── */}
-        <div
-          onClick={() => setShowBonusModal(true)}
-          className="flex-1 bg-white rounded-lg px-3.5 pt-3.5 pb-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden active:bg-gray-50/50 transition-colors"
-        >
+        <div className="flex-1 bg-white rounded-lg px-3.5 pt-3.5 pb-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden">
           {/* Watermark */}
           <img
             src="/icons/reward_soft.png"
@@ -233,9 +269,13 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                 Check-in & Voucher
               </span>
             </div>
-            <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit">
-              Klaim Reward <ChevronRight size={12} strokeWidth={2.5} />
-            </span>
+            <button
+              onClick={() => setShowBonusModal(true)}
+              className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 w-fit active:opacity-70"
+            >
+              Klaim Reward
+              <ChevronRight size={12} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
       </div>
@@ -243,8 +283,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       {/* Row 2: Voucher Saya — dengan ticket notch (transparan asli) */}
       <div className="mx-4 mt-2">
         <div
-          onClick={() => setShowBonusModal(true)}
-          className="relative bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-stretch active:bg-gray-50/50 transition-colors"
+          className="relative bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-stretch"
           style={{
             WebkitMaskImage: `radial-gradient(circle 5px at 78% 0%, transparent 99%, black 100%),
                          radial-gradient(circle 5px at 78% 100%, transparent 99%, black 100%)`,
@@ -278,16 +317,20 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           />
 
           {/* Right: Badge + Chevron */}
-          <div className="relative z-10 flex items-center justify-center gap-[1px] w-[22%]">
+          <button
+            onClick={() => setShowVoucherListModal(true)}
+            className="relative z-10 flex items-center justify-center gap-[1px] w-[22%] active:opacity-70"
+          >
             <span className="text-[10px] font-bold text-emerald-600">
               {activeVouchers} Aktif
             </span>
+
             <ChevronRight
               size={15}
               strokeWidth={2.5}
               className="text-emerald-600"
             />
-          </div>
+          </button>
         </div>
       </div>
 
@@ -350,9 +393,13 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                       }`}
                     />
 
-                    <span className="text-[18.5px] font-extrabold text-gray-700 tabular-nums">
-                      {displayTotal.toLocaleString("id-ID")}
-                    </span>
+                    {mounted ? (
+                      <span className="text-[18.5px] font-extrabold text-gray-700 tabular-nums">
+                        {displayTotal.toLocaleString("id-ID")}
+                      </span>
+                    ) : (
+                      <span className="block h-[20px] w-16 rounded bg-gray-200 animate-pulse" />
+                    )}
                   </div>
                 </div>
 
@@ -416,6 +463,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                     active:scale-[0.98]
                     disabled:bg-gray-100
                     disabled:text-gray-400
+                    disabled:shadow-inner
                     disabled:active:scale-100
                     disabled:cursor-not-allowed
                     "
@@ -431,7 +479,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
                 onVoucherClaimed={(pointsCost) => {
                   setActiveVouchers((prev) => prev + 1);
                   if (pointsCost > 0) {
-                    playPointDeduction(pointsCost);
+                    playPointDeduction(pointsCost, "Tukar Voucher Spesial");
                   }
                 }}
               />
@@ -447,8 +495,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             onClick={() => {
               if (!animationFinished) return;
               setShowRewardModal(false);
-              playPointReward(STREAK_REWARD);
-              setCurrentStreak(0);
+              playPointReward(STREAK_REWARD, "Bonus Check-in 7 Hari");
+              checkIn();
             }}
             className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center px-6"
           >
@@ -474,6 +522,14 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
           </div>,
           document.body,
         )}
+
+      {showHistoryModal && (
+        <HistoryPoinPage onClose={() => setShowHistoryModal(false)} />
+      )}
+
+      {showVoucherListModal && (
+        <VoucherList onClose={() => setShowVoucherListModal(false)} />
+      )}
     </>
   );
 }

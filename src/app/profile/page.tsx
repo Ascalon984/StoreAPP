@@ -38,26 +38,17 @@ const mockUser: UserProfile = {
   avatar: null,
 };
 
-const mockPoints = {
-  total: 12450,
-
-  transactionPoints: 11250,
-
-  checkinPoints: 1200,
-
-  dailyStreak: 2,
-
-  checkedInToday: false,
-
-  rewardStreakPoints: 100,
-};
+// (mockPoints removed in favor of usePointsStore)
 
 // ── Main Page ──
+
+import { usePointsStore } from "@/store/usePointsStore";
 
 export default function ProfilePage() {
   const router = useRouter();
 
   const [user, setUser] = useState(mockUser);
+  const { points } = usePointsStore();
 
   const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
 
@@ -197,7 +188,7 @@ export default function ProfilePage() {
       <ProfileContent
         user={user}
         setUser={setUser}
-        points={mockPoints}
+        points={points}
         onOpenPointsInfo={() => setPointsInfoOpen(true)}
         onOpenSubPage={setActiveSubPage}
       />

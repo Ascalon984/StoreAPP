@@ -1,0 +1,110 @@
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+
+export interface PointsData {
+  total: number;
+  transactionPoints: number;
+  checkinPoints: number;
+  dailyStreak: number;
+  checkedInToday: boolean;
+  rewardStreakPoints: number;
+}
+
+interface PointsState {
+  points: PointsData;
+
+  setPoints: (points: Partial<PointsData>) => void;
+  addPoints: (amount: number) => void;
+  deductPoints: (amount: number) => void;
+  checkIn: (reward?: number) => void;
+
+  resetTestingData: () => void;
+  clearStorage: () => void;
+}
+
+// Data awal testing
+const initialPoints: PointsData = {
+  total: 12450,
+  transactionPoints: 11250,
+  checkinPoints: 1200,
+  dailyStreak: 2,
+  checkedInToday: false,
+  rewardStreakPoints: 100,
+};
+
+// true = simpan saat refresh untuk testing
+// false = selalu mulai dari initialPoints
+export const ENABLE_TESTING = false;
+
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+};
+
+export const usePointsStore = create<PointsState>()(
+  persist(
+    (set) => ({
+      points: initialPoints,
+
+      setPoints: (newPoints) =>
+        set((state) => ({
+          points: {
+            ...state.points,
+            ...newPoints,
+          },
+        })),
+
+      addPoints: (amount) =>
+        set((state) => ({
+          points: {
+            ...state.points,
+            total: state.points.total + amount,
+          },
+        })),
+
+      deductPoints: (amount) =>
+        set((state) => ({
+          points: {
+            ...state.points,
+            total: Math.max(0, state.points.total - amount),
+          },
+        })),
+
+      checkIn: (reward = 20) =>
+        set((state) => ({
+          points: {
+            ...state.points,
+            total: state.points.total + reward,
+            checkinPoints: state.points.checkinPoints + reward,
+            dailyStreak: state.points.dailyStreak + 1,
+            checkedInToday: true,
+          },
+        })),
+
+      resetTestingData: () =>
+        set({
+          points: initialPoints,
+        }),
+
+      clearStorage: () => {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("points_store");
+        }
+
+        set({
+          points: initialPoints,
+        });
+      },
+    }),
+
+    {
+      name: "points_store",
+
+      // persist hanya ketika testing
+      storage: ENABLE_TESTING
+        ? createJSONStorage(() => localStorage)
+        : createJSONStorage(() => noopStorage),
+    },
+  ),
+);
