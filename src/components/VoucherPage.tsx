@@ -9,6 +9,7 @@ interface Voucher {
   description: string;
   value: string;
   type: "tukar" | "gratis";
+  claimed?: boolean;
 }
 
 const vouchers: Voucher[] = [
@@ -60,11 +61,13 @@ const vouchers: Voucher[] = [
 export default function VoucherPage() {
   const [activeTab, setActiveTab] = useState<"tukar" | "gratis">("tukar");
   const [hasSeenGratis, setHasSeenGratis] = useState(false);
+  const [voucherList, setVoucherList] = useState(vouchers);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const tabs = ["tukar", "gratis"] as const;
   const activeIndex = tabs.indexOf(activeTab);
 
-  const gratisCount = vouchers.filter((v) => v.type === "gratis").length;
+  const gratisCount = voucherList.filter((v) => v.type === "gratis").length;
 
   // Refs to measure each panel's natural height
   const panelRefs = useRef<Record<"tukar" | "gratis", HTMLDivElement | null>>({
@@ -92,8 +95,24 @@ export default function VoucherPage() {
 
   const containerHeight = panelHeights[activeTab];
 
+  const handleAction = (voucher: Voucher) => {
+    setProcessingId(voucher.id);
+
+    setTimeout(() => {
+      if (voucher.type === "gratis") {
+        setVoucherList((prev) =>
+          prev.map((v) => (v.id === voucher.id ? { ...v, claimed: true } : v)),
+        );
+      }
+
+      // TODO: Voucher tukar nanti diproses sesuai respons backend
+
+      setProcessingId(null);
+    }, 1000);
+  };
+
   const renderGrid = (tab: "tukar" | "gratis") => {
-    const list = vouchers.filter((v) => v.type === tab);
+    const list = voucherList.filter((v) => v.type === tab);
 
     if (list.length === 0) {
       return (
@@ -134,7 +153,7 @@ export default function VoucherPage() {
               {/* Content */}
               <div className="flex flex-col items-center text-center -translate-y-[5px]">
                 {/* Icon */}
-                <div className="w-12 h-12 flex items-center justify-center mb-2">
+                <div className="w-12 h-12 flex items-center justify-center mb-2 translate-y-[3px]">
                   {tab === "tukar" ? (
                     <Ticket
                       size={34}
@@ -151,12 +170,12 @@ export default function VoucherPage() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[13px] font-bold text-gray-800 leading-tight">
+                <h3 className="min-h-[32px] text-[13px] font-bold text-gray-800 leading-4 line-clamp-2 flex items-center justify-center">
                   {voucher.title}
                 </h3>
 
                 {/* Description */}
-                <p className="mt-1 text-[10px] text-gray-500 leading-tight">
+                <p className="mt-1 text-[10px] leading-3 text-gray-500 line-clamp-1 -translate-y-[3px]">
                   {voucher.description}
                 </p>
               </div>
@@ -165,12 +184,12 @@ export default function VoucherPage() {
               <div className="mt-auto pt-3 w-full flex items-center justify-between">
                 <button
                   type="button"
-                  className="text-[9px] font-medium text-gray-500 underline underline-offset-2 decoration-gray-400 hover:text-gray-700 active:text-gray-800 transition-colors translate-y-[2px]"
+                  className="text-[9px] font-medium text-gray-500 underline underline-offset-2 decoration-gray-400 hover:text-gray-700 active:text-gray-800 transition-colors translate-y-[4px]"
                 >
                   S&K Berlaku
                 </button>
 
-                <span className="text-[11.5px] font-bold text-amber-600 translate-y-[2px]">
+                <span className="text-[11.5px] font-bold text-amber-600 translate-y-[5px]">
                   {voucher.value}
                 </span>
               </div>
@@ -183,8 +202,24 @@ export default function VoucherPage() {
             />
 
             {/* Action */}
-            <button className="w-full h-9 border-t border-gray-100 bg-emerald-600 text-white text-[11px] font-semibold active:bg-emerald-800 transition-colors">
-              {tab === "tukar" ? "Tukar" : "Klaim"}
+            <button
+              disabled={processingId === voucher.id || voucher.claimed}
+              onClick={() => handleAction(voucher)}
+              className={`w-full h-[38px] border-t text-[12px] font-semibold transition-colors ${
+                processingId === voucher.id
+                  ? "bg-emerald-700 border-gray-100 text-white cursor-wait"
+                  : voucher.type === "gratis" && voucher.claimed
+                    ? "bg-gray-300 border-gray-300 text-gray-600 cursor-default"
+                    : "bg-emerald-600 border-gray-100 text-white active:bg-emerald-800"
+              }`}
+            >
+              {processingId === voucher.id
+                ? "Memproses..."
+                : voucher.type === "gratis"
+                  ? voucher.claimed
+                    ? "Sudah Diklaim"
+                    : "Klaim"
+                  : "Tukar"}
             </button>
           </div>
         ))}
