@@ -24,10 +24,10 @@ interface PointsState {
 
 // Data awal testing
 const initialPoints: PointsData = {
-  total: 12450,
+  total: 15250,
   transactionPoints: 11250,
   checkinPoints: 1200,
-  dailyStreak: 1,
+  dailyStreak: 0,
   checkedInToday: false,
   rewardStreakPoints: 100,
 };

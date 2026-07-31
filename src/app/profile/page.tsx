@@ -1,9 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
-import { useRouter } from "next/navigation";
-
 import ReactCrop, {
   type Crop,
   centerCrop,
@@ -45,27 +42,22 @@ const mockUser: UserProfile = {
 import { usePointsStore } from "@/store/usePointsStore";
 
 export default function ProfilePage() {
-  const router = useRouter();
-
   const [user, setUser] = useState(mockUser);
   const { points } = usePointsStore();
 
   const [pointsInfoOpen, setPointsInfoOpen] = useState(false);
-
   const [activeSubPage, setActiveSubPage] = useState<string | null>(null);
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar,
   );
-
   const [cropSrc, setCropSrc] = useState<string | null>(null);
-
   const [crop, setCrop] = useState<Crop>();
-
   const [completedCrop, setCompletedCrop] = useState<Crop>();
 
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState(user.name);
+
   const [editAvatar, setEditAvatar] = useState<string | null>(avatarPreview);
   const [avatarSource, setAvatarSource] = useState<string | null>(null);
 
@@ -84,6 +76,30 @@ export default function ProfilePage() {
     editName.trim() !== user.name.trim() || editAvatar !== avatarPreview;
 
   const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem("profile-avatar");
+    const savedName = localStorage.getItem("profile-name");
+
+    if (savedAvatar) {
+      setAvatarPreview(savedAvatar);
+      setAvatarSource(savedAvatar);
+
+      setUser((prev) => ({
+        ...prev,
+        avatar: savedAvatar,
+      }));
+    }
+
+    if (savedName) {
+      setUser((prev) => ({
+        ...prev,
+        name: savedName,
+      }));
+
+      setEditName(savedName);
+    }
+  }, []);
 
   useEffect(() => {
     const isModalOpen = !!cropSrc || editProfileOpen || pointsInfoOpen;
@@ -131,50 +147,26 @@ export default function ProfilePage() {
     if (!imgRef.current || !completedCrop) return;
 
     const canvas = document.createElement("canvas");
-
     const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-
     const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-
     canvas.width = 200;
-
     canvas.height = 200;
-
     const ctx = canvas.getContext("2d")!;
-
     ctx.drawImage(
       imgRef.current,
-
       completedCrop.x * scaleX,
-
       completedCrop.y * scaleY,
-
       completedCrop.width * scaleX,
-
       completedCrop.height * scaleY,
-
       0,
-
       0,
-
       200,
-
       200,
     );
 
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) return;
-
-        const newAvatar = URL.createObjectURL(blob);
-        setEditAvatar(newAvatar);
-        setCropSrc(null);
-      },
-
-      "image/jpeg",
-
-      0.9,
-    );
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    setEditAvatar(dataUrl);
+    setCropSrc(null);
   };
 
   return (
@@ -281,7 +273,7 @@ export default function ProfilePage() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  maxLength={40}
+                  maxLength={25}
                   placeholder="Nama lengkap"
                   className="
                     w-full
@@ -309,7 +301,7 @@ export default function ProfilePage() {
                   </p>
 
                   <span className="text-[11px] text-gray-400">
-                    {editName.length}/40
+                    {editName.length}/25
                   </span>
                 </div>
               </div>
@@ -319,13 +311,30 @@ export default function ProfilePage() {
               <button
                 disabled={!hasChanges}
                 onClick={() => {
+                  const trimmedName = editName.trim();
+
                   setUser((prev) => ({
                     ...prev,
-                    name: editName.trim(),
+                    name: trimmedName,
                     avatar: editAvatar,
                   }));
 
                   setAvatarPreview(editAvatar);
+
+                  try {
+                    if (editAvatar) {
+                      localStorage.setItem("profile-avatar", editAvatar);
+                    } else {
+                      localStorage.removeItem("profile-avatar");
+                    }
+
+                    localStorage.setItem("profile-name", trimmedName);
+                  } catch (e) {
+                    console.warn(
+                      "Gagal simpan ke localStorage, mungkin kuota penuh",
+                      e,
+                    );
+                  }
 
                   setEditProfileOpen(false);
                 }}

@@ -56,15 +56,19 @@ export default function HistoryPoinPage({ onClose }: HistoryPoinPageProps) {
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto pb-20 pt-4">
-        <div className="bg-white relative">
+      <div className="flex-1 overflow-y-auto pt-4">
+        <div className="min-h-full bg-white flex flex-col pb-20">
           {isLoading && historyData.length === 0 && (
-            <div className="p-6 text-center text-sm text-gray-500">Memuat riwayat...</div>
+            <div className="p-6 text-center text-sm text-gray-500">
+              Memuat riwayat...
+            </div>
           )}
           {!isLoading && historyData.length === 0 && (
-            <div className="p-6 text-center text-sm text-gray-500">Belum ada riwayat poin</div>
+            <div className="p-6 text-center text-sm text-gray-500">
+              Belum ada riwayat poin
+            </div>
           )}
-          
+
           {historyData.map((item, index) => {
             const isLast = index === historyData.length - 1;
 
@@ -118,6 +122,9 @@ export default function HistoryPoinPage({ onClose }: HistoryPoinPageProps) {
               </div>
             );
           })}
+          {historyData.length > 0 && (
+            <div className="border-t border-gray-100" />
+          )}
         </div>
       </div>
     </div>,
