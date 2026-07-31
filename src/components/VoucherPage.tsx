@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { Ticket, Gift, ChevronRight } from "lucide-react";
 
-interface Voucher {
+export interface Voucher {
   id: string;
   title: string;
   description: string;
@@ -60,10 +60,7 @@ const vouchers: Voucher[] = [
 ];
 
 interface VoucherPageProps {
-  onVoucherClaimed: (
-    pointsCost: number,
-    voucher: { title: string; type: "tukar" | "gratis" },
-  ) => void;
+  onVoucherClaimed: (pointsCost: number, voucher: Voucher) => void;
 }
 
 export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
@@ -72,7 +69,7 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
   const [voucherList, setVoucherList] = useState(vouchers);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  const [selectedTukar, setSelectedTukar] = useState<Voucher | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isRedeeming, setIsRedeeming] = useState(false);
 
   const tabs = ["tukar", "gratis"] as const;
@@ -107,45 +104,34 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
   const containerHeight = panelHeights[activeTab];
 
   const handleAction = (voucher: Voucher) => {
-    if (voucher.type === "tukar") {
-      setSelectedTukar(voucher);
-      return;
-    }
-
-    setProcessingId(voucher.id);
-    setTimeout(() => {
-      setVoucherList((prev) =>
-        prev.map((v) => (v.id === voucher.id ? { ...v, claimed: true } : v)),
-      );
-      if (onVoucherClaimed) {
-        onVoucherClaimed(0, { title: voucher.title, type: voucher.type }); // ← tambahkan data voucher
-      }
-      setProcessingId(null);
-
-      const scrollContainer = document.getElementById("bonus-modal-scroll");
-      if (scrollContainer) {
-        scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }, 1000);
+    if (voucher.claimed) return;
+    setSelectedVoucher(voucher);
   };
 
   const handleConfirmRedeem = () => {
-    if (!selectedTukar) return;
+    if (!selectedVoucher) return;
     setIsRedeeming(true);
 
     setTimeout(() => {
-      const pointCost =
-        parseInt(selectedTukar.value.replace(/\D/g, ""), 10) || 0;
+      const isGratis = selectedVoucher.type === "gratis";
+      const pointCost = isGratis
+        ? 0
+        : parseInt(selectedVoucher.value.replace(/\D/g, ""), 10) || 0;
+
+      if (isGratis) {
+        setVoucherList((prev) =>
+          prev.map((v) =>
+            v.id === selectedVoucher.id ? { ...v, claimed: true } : v,
+          ),
+        );
+      }
 
       if (onVoucherClaimed) {
-        onVoucherClaimed(pointCost, {
-          title: selectedTukar.title,
-          type: selectedTukar.type,
-        }); // ← tambahkan data voucher
+        onVoucherClaimed(pointCost, selectedVoucher);
       }
 
       setIsRedeeming(false);
-      setSelectedTukar(null);
+      setSelectedVoucher(null);
 
       const scrollContainer = document.getElementById("bonus-modal-scroll");
       if (scrollContainer) {
@@ -246,23 +232,19 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
 
             {/* Action */}
             <button
-              disabled={processingId === voucher.id || voucher.claimed}
+              disabled={voucher.claimed}
               onClick={() => handleAction(voucher)}
               className={`w-full h-[38px] border-t text-[12px] font-semibold transition-colors ${
-                processingId === voucher.id
-                  ? "bg-emerald-700 border-gray-100 text-white cursor-wait"
-                  : voucher.type === "gratis" && voucher.claimed
-                    ? "bg-gray-300 border-gray-300 text-gray-600 cursor-default"
-                    : "bg-emerald-600 border-gray-100 text-white active:bg-emerald-800"
+                voucher.type === "gratis" && voucher.claimed
+                  ? "bg-gray-300 border-gray-300 text-gray-600 cursor-default"
+                  : "bg-emerald-600 border-gray-100 text-white active:bg-emerald-800"
               }`}
             >
-              {processingId === voucher.id
-                ? "Memproses..."
-                : voucher.type === "gratis"
-                  ? voucher.claimed
-                    ? "Sudah Diklaim"
-                    : "Klaim"
-                  : "Tukar"}
+              {voucher.type === "gratis"
+                ? voucher.claimed
+                  ? "Sudah Diklaim"
+                  : "Klaim"
+                : "Tukar"}
             </button>
           </div>
         ))}
@@ -326,83 +308,95 @@ export default function VoucherPage({ onVoucherClaimed }: VoucherPageProps) {
       </div>
 
       {/* Modal Tukar Voucher */}
-      {selectedTukar &&
-        createPortal(
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
-            <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-              onClick={() => !isRedeeming && setSelectedTukar(null)}
-            />
-            <div className="relative bg-white rounded-2xl shadow-2xl max-w-[320px] w-full p-6 text-center border border-gray-50 animate-in zoom-in-95 duration-200">
-              <div className="flex flex-col items-center">
-                <p className="text-[11px] font-bold tracking-wide uppercase text-gray-600 mb-3 -translate-y-[10px]">
-                  Konfirmasi Penukaran
-                </p>
-                <div className="w-16 h-16 flex items-center justify-center mb-4 bg-emerald-50 rounded-full">
-                  <Ticket size={32} className="text-emerald-600" />
-                </div>
-
-                <h3 className="text-[18px] font-extrabold text-emerald-600 leading-tight mb-2">
-                  {selectedTukar.title}
-                </h3>
-                <p className="text-[12px] text-gray-500 mb-5 px-2">
-                  {selectedTukar.description}
-                </p>
-
-                <div className="bg-gray-50 shadow-inner w-full rounded-lg p-3.5 mb-5">
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-[11px] text-gray-500">
-                      Biaya Poin
-                    </span>
-                    <span className="text-[12px] font-bold text-amber-600">
-                      {selectedTukar.value}
-                    </span>
+      {selectedVoucher &&
+        (() => {
+          const isGratis = selectedVoucher.type === "gratis";
+          return createPortal(
+            <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
+              <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                onClick={() => !isRedeeming && setSelectedVoucher(null)}
+              />
+              <div className="relative bg-white rounded-2xl shadow-2xl max-w-[320px] w-full p-6 text-center border border-gray-50 animate-in zoom-in-95 duration-200">
+                <div className="flex flex-col items-center">
+                  <p className="text-[11px] font-bold tracking-wide uppercase text-gray-600 mb-3 -translate-y-[10px]">
+                    {isGratis ? "Konfirmasi Klaim" : "Konfirmasi Penukaran"}
+                  </p>
+                  <div className="w-16 h-16 flex items-center justify-center mb-4 bg-emerald-50 rounded-full">
+                    {isGratis ? (
+                      <Gift size={32} className="text-emerald-600" />
+                    ) : (
+                      <Ticket size={32} className="text-emerald-600" />
+                    )}
                   </div>
 
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-[11px] text-gray-500">
-                      Masa Berlaku
-                    </span>
-                    <span className="text-[12px] font-semibold text-gray-700">
-                      7 hari setelah ditukar
-                    </span>
+                  <h3 className="text-[18px] font-extrabold text-emerald-600 leading-tight mb-2">
+                    {selectedVoucher.title}
+                  </h3>
+                  <p className="text-[12px] text-gray-500 mb-5 px-2">
+                    {selectedVoucher.description}
+                  </p>
+
+                  <div className="bg-gray-50 shadow-inner w-full rounded-lg p-3.5 mb-5">
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-[11px] text-gray-500">
+                        {isGratis ? "Biaya" : "Biaya Poin"}
+                      </span>
+                      <span className="text-[12px] font-bold text-amber-600">
+                        {isGratis ? "Gratis" : selectedVoucher.value}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-[11px] text-gray-500">
+                        Masa Berlaku
+                      </span>
+                      <span className="text-[12px] font-semibold text-gray-700">
+                        7 hari setelah {isGratis ? "diklaim" : "ditukar"}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="mt-2 pt-2 w-full flex items-center justify-between border-t border-gray-200 text-[11px] font-medium text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      <span>Syarat & Ketentuan</span>
+                      <ChevronRight size={14} strokeWidth={2} />
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    className="mt-2 pt-2 w-full flex items-center justify-between border-t border-gray-200 text-[11px] font-medium text-gray-600 hover:text-gray-800 transition-colors"
-                  >
-                    <span>Syarat & Ketentuan</span>
-                    <ChevronRight size={14} strokeWidth={2} />
-                  </button>
-                </div>
+                  <p className="mb-4 text-[10px] leading-4 text-center text-gray-500">
+                    {isGratis
+                      ? "Voucher akan langsung diklaim dan siap digunakan."
+                      : "Poin akan langsung dipotong setelah penukaran berhasil dan voucher siap digunakan."}
+                  </p>
+                  <div className="flex gap-2 w-full translate-y-[10px]">
+                    <button
+                      onClick={() => setSelectedVoucher(null)}
+                      disabled={isRedeeming}
+                      className="flex-1 h-11 rounded-lg border border-gray-300 text-[12px] font-semibold text-gray-600 hover:bg-gray-50 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                      Batal
+                    </button>
 
-                <p className="mb-4 text-[10px] leading-4 text-center text-gray-500">
-                  Poin akan langsung dipotong setelah penukaran berhasil dan
-                  voucher siap digunakan.
-                </p>
-                <div className="flex gap-2 w-full translate-y-[10px]">
-                  <button
-                    onClick={() => setSelectedTukar(null)}
-                    disabled={isRedeeming}
-                    className="flex-1 h-11 rounded-lg border border-gray-300 text-[12px] font-semibold text-gray-600 hover:bg-gray-50 active:scale-95 transition-all disabled:opacity-50"
-                  >
-                    Batal
-                  </button>
-
-                  <button
-                    onClick={handleConfirmRedeem}
-                    disabled={isRedeeming}
-                    className="flex-[1.4] h-11 rounded-lg bg-emerald-600 text-[12px] font-semibold text-white shadow-sm shadow-emerald-800/25 hover:bg-emerald-700 active:scale-95 transition-all disabled:opacity-50"
-                  >
-                    {isRedeeming ? "Memproses..." : "Tukar Sekarang"}
-                  </button>
+                    <button
+                      onClick={handleConfirmRedeem}
+                      disabled={isRedeeming}
+                      className="flex-[1.4] h-11 rounded-lg bg-emerald-600 text-[12px] font-semibold text-white shadow-sm shadow-emerald-800/25 hover:bg-emerald-700 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                      {isRedeeming
+                        ? "Memproses..."
+                        : isGratis
+                          ? "Klaim Sekarang"
+                          : "Tukar Sekarang"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>,
-          document.body,
-        )}
+            </div>,
+            document.body,
+          );
+        })()}
     </div>
   );
 }

@@ -12,9 +12,10 @@ import {
 } from "lucide-react";
 import VoucherPage from "./VoucherPage";
 import HistoryPoinPage from "./HistoryPoinPage";
-import VoucherList from "./VoucherList";
+import VoucherList, { ActiveVoucher } from "./VoucherList";
 import { usePointsStore } from "@/store/usePointsStore";
 import { useHistoryPoin } from "@/store/useHistoryPoin";
+import { useVoucherStore } from "@/store/useVoucherStore";
 // ── Types ──
 export interface PointsData {
   total: number;
@@ -56,7 +57,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
   const [floatingDeduction, setFloatingDeduction] = useState<number | null>(
     null,
   );
-  const [activeVouchers, setActiveVouchers] = useState(0);
+  const { activeVouchers, addVoucher } = useVoucherStore();
+  const [voucherHydrated, setVoucherHydrated] = useState(false);
 
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
@@ -127,6 +129,21 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
     return () => cancelAnimationFrame(rafId);
   }, [targetTotal]);
+
+  useEffect(() => {
+    const store = useVoucherStore.persist;
+
+    if (store.hasHydrated()) {
+      setVoucherHydrated(true);
+      return;
+    }
+
+    const unsub = store.onFinishHydration(() => {
+      setVoucherHydrated(true);
+    });
+
+    return unsub;
+  }, []);
 
   // ── Fungsi reward: sebelumnya menerima setter terpisah (duplikat), sekarang cukup angka ──
   const playPointReward = (reward: number, title: string) => {
@@ -323,9 +340,13 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             onClick={() => setShowVoucherListModal(true)}
             className="relative z-10 flex items-center justify-center gap-[1px] w-[22%] active:opacity-70"
           >
-            <span className="text-[10px] font-bold text-emerald-600">
-              {activeVouchers} Aktif
-            </span>
+            {voucherHydrated ? (
+              <span className="text-[10px] font-bold text-emerald-600">
+                {activeVouchers.length} Aktif
+              </span>
+            ) : (
+              <div className="h-3 w-11 rounded bg-gray-200 animate-pulse" />
+            )}
 
             <ChevronRight
               size={15}
@@ -493,7 +514,16 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
               {/* Voucher Tabs */}
               <VoucherPage
                 onVoucherClaimed={(pointsCost, voucher) => {
-                  setActiveVouchers((prev) => prev + 1);
+                  const now = new Date();
+                  const expires = new Date();
+                  expires.setDate(now.getDate() + 7); // Berlaku 7 hari
+
+                  addVoucher({
+                    ...voucher,
+                    claimedAt: now.toISOString(),
+                    expiresAt: expires.toISOString(),
+                  });
+
                   if (pointsCost > 0) {
                     playPointDeduction(pointsCost, `Tukar ${voucher.title}`);
                   }
@@ -544,7 +574,10 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       )}
 
       {showVoucherListModal && (
-        <VoucherList onClose={() => setShowVoucherListModal(false)} />
+        <VoucherList
+          activeVouchers={activeVouchers}
+          onClose={() => setShowVoucherListModal(false)}
+        />
       )}
     </>
   );

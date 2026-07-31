@@ -5,10 +5,11 @@ import { ArrowLeft, Ticket, Gift } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface VoucherListProps {
+  activeVouchers: ActiveVoucher[];
   onClose: () => void;
 }
 
-interface ActiveVoucher {
+export interface ActiveVoucher {
   id: string;
   title: string;
   description: string;
@@ -17,37 +18,6 @@ interface ActiveVoucher {
   claimedAt: string;
   expiresAt: string;
 }
-
-// TODO: Ganti dengan data store/backend
-const mockActiveVouchers: ActiveVoucher[] = [
-  {
-    id: "1",
-    title: "Diskon Rp10.000",
-    description: "Min. belanja Rp50.000",
-    value: "300 poin",
-    type: "tukar",
-    claimedAt: "2026-07-28T10:00:00",
-    expiresAt: "2026-08-04T10:00:00",
-  },
-  {
-    id: "2",
-    title: "Gratis Ongkir",
-    description: "Maks. Rp20.000",
-    value: "400 poin",
-    type: "tukar",
-    claimedAt: "2026-07-30T10:00:00",
-    expiresAt: "2026-08-02T10:00:00",
-  },
-  {
-    id: "3",
-    title: "Voucher Member Baru",
-    description: "Tanpa minimum belanja",
-    value: "Gratis",
-    type: "gratis",
-    claimedAt: "2026-07-29T09:00:00",
-    expiresAt: "2026-08-01T09:00:00",
-  },
-];
 
 function getDaysLeft(expiresAt: string) {
   const diff = new Date(expiresAt).getTime() - new Date().getTime();
@@ -62,35 +32,10 @@ function formatDate(date: string) {
   });
 }
 
-function getBadge(days: number) {
-  if (days === 3)
-    return {
-      text: "H-3",
-      className: "bg-amber-50 text-amber-700",
-    };
-
-  if (days === 2)
-    return {
-      text: "H-2",
-      className: "bg-orange-50 text-orange-700",
-    };
-
-  if (days === 1)
-    return {
-      text: "H-1",
-      className: "bg-rose-50 text-rose-600",
-    };
-
-  if (days <= 0)
-    return {
-      text: "Hari Terakhir",
-      className: "bg-rose-100 text-rose-700",
-    };
-
-  return null;
-}
-
-export default function VoucherList({ onClose }: VoucherListProps) {
+export default function VoucherList({
+  activeVouchers,
+  onClose,
+}: VoucherListProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -98,6 +43,10 @@ export default function VoucherList({ onClose }: VoucherListProps) {
   }, []);
 
   if (!mounted) return null;
+
+  const validVouchers = activeVouchers.filter(
+    (v) => getDaysLeft(v.expiresAt) > 0,
+  );
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex flex-col bg-gray-50 animate-in slide-in-from-bottom-full duration-300">
@@ -114,7 +63,7 @@ export default function VoucherList({ onClose }: VoucherListProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 pb-20">
-        {mockActiveVouchers.length === 0 ? (
+        {validVouchers.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
               <Ticket size={28} strokeWidth={1.5} className="text-gray-300" />
@@ -130,14 +79,11 @@ export default function VoucherList({ onClose }: VoucherListProps) {
           </div>
         ) : (
           <div className="space-y-3">
-            {mockActiveVouchers.map((voucher) => {
-              const days = getDaysLeft(voucher.expiresAt);
-              const badge = getBadge(days);
-
+            {validVouchers.map((voucher) => {
               const panelClass =
                 voucher.type === "tukar"
-                  ? "from-emerald-500 via-emerald-600 to-emerald-800"
-                  : "from-amber-400 via-amber-500 to-orange-600";
+                  ? "from-emerald-500 via-emerald-700 to-emerald-800"
+                  : "from-amber-400 via-orange-500 to-orange-600";
 
               return (
                 <div
@@ -145,16 +91,16 @@ export default function VoucherList({ onClose }: VoucherListProps) {
                   className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md"
                   style={{
                     WebkitMask: `
-                        radial-gradient(circle 10px at 0% top, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 0% bottom, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 25% top, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 25% bottom, transparent 98%, #000 100%)
+                        radial-gradient(circle 10.5px at 0% top, transparent 98%, #000 100%),
+                        radial-gradient(circle 10.5px at 0% bottom, transparent 98%, #000 100%),
+                        radial-gradient(circle 9.5px at 25% top, transparent 98%, #000 100%),
+                        radial-gradient(circle 9.5px at 25% bottom, transparent 98%, #000 100%)
                       `,
                     mask: `
-                        radial-gradient(circle 10px at 0% top, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 0% bottom, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 25% top, transparent 98%, #000 100%),
-                        radial-gradient(circle 10px at 25% bottom, transparent 98%, #000 100%)
+                        radial-gradient(circle 10.5px at 0% top, transparent 98%, #000 100%),
+                        radial-gradient(circle 10.5px at 0% bottom, transparent 98%, #000 100%),
+                        radial-gradient(circle 9.5px at 25% top, transparent 98%, #000 100%),
+                        radial-gradient(circle 9.5px at 25% bottom, transparent 98%, #000 100%)
                       `,
                     maskComposite: "intersect",
                     WebkitMaskComposite: "destination-in",
@@ -176,7 +122,7 @@ export default function VoucherList({ onClose }: VoucherListProps) {
                   </div>
 
                   {/* Content */}
-                  <div className="relative flex min-h-[102px]">
+                  <div className="relative flex h-[108px]">
                     {/* Left */}
                     <div className="flex w-[25%] items-center justify-center">
                       <div className="flex h-14 w-14 items-center justify-center">
@@ -197,38 +143,39 @@ export default function VoucherList({ onClose }: VoucherListProps) {
                     </div>
 
                     {/* Right */}
-                    <div className="flex flex-1 flex-col justify-between px-5 py-4">
-                      <div>
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="flex-1 text-[14px] font-bold leading-tight text-gray-800">
-                            {voucher.title}
-                          </p>
+                    <div className="flex h-full flex-1 min-w-0 flex-col justify-between px-5 py-4">
+                      <div className="min-w-0">
+                        <p
+                          className="truncate text-[14px] font-bold leading-tight text-gray-700"
+                          title={voucher.title}
+                        >
+                          {voucher.title}
+                        </p>
 
-                          {badge && (
-                            <span
-                              className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-bold ${badge.className}`}
-                            >
-                              {badge.text}
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="mt-1.5 text-[11px] leading-relaxed text-gray-500">
+                        <p
+                          className="mt-1 line-clamp-2 text-[11px] leading-[1.3] text-gray-500"
+                          title={voucher.description}
+                        >
                           {voucher.description}
                         </p>
                       </div>
 
-                      <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-end justify-between gap-2">
                         <button
                           type="button"
-                          className="text-[10.5px] font-medium text-emerald-700 transition-colors hover:text-emerald-800 active:scale-[0.98]"
+                          className="shrink-0 text-[9.5px] font-medium text-emerald-700 underline underline-offset-2"
                         >
                           Syarat & Ketentuan
                         </button>
 
-                        <span className="text-[10px] text-gray-400">
-                          s/d {formatDate(voucher.expiresAt)}
-                        </span>
+                        <div className="shrink-0 text-right leading-tight">
+                          <span className="block text-[9px] text-gray-400">
+                            Berlaku s.d
+                          </span>
+                          <span className="block text-[10px] text-gray-600">
+                            {formatDate(voucher.expiresAt)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
