@@ -68,7 +68,7 @@ export function Toggle({
   return (
     <button
       onClick={onToggle}
-      className={`relative w-11 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${on ? "bg-emerald-500" : "bg-gray-200"}`}
+      className={`relative w-11 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${on ? "bg-emerald-500" : "bg-gray-200 shadow-inner"}`}
       aria-checked={on}
       role="switch"
       aria-label={ariaLabel}

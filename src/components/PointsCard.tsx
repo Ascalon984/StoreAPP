@@ -15,7 +15,6 @@ import HistoryPoinPage from "./HistoryPoinPage";
 import VoucherList, { ActiveVoucher } from "./VoucherList";
 import PoinRewardModal from "./PoinRewardModal";
 import { usePointsStore } from "@/store/usePointsStore";
-import { useHistoryPoin } from "@/store/useHistoryPoin";
 import { useVoucherStore } from "@/store/useVoucherStore";
 // ── Types ──
 export interface PointsData {
@@ -146,8 +145,8 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
     return unsub;
   }, []);
 
-  // ── Fungsi reward: sebelumnya menerima setter terpisah (duplikat), sekarang cukup angka ──
-  const playPointReward = (reward: number, title: string) => {
+  // ── Fungsi reward: menggunakan callback action agar state update bisa digabungkan ──
+  const playPointReward = (reward: number, action: () => void) => {
     setFloatingReward(reward);
 
     setTimeout(() => {
@@ -159,18 +158,11 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
       // trigger state & history update
       animateNextUpdate.current = true;
-      addPoints(reward);
-      useHistoryPoin.getState().addHistoryTransaction({
-        type: "plus",
-        amount: reward,
-        title,
-        description: "Dari event & hadiah",
-        balance: points.total + reward,
-      });
+      action();
     }, FLOAT_DURATION);
   };
 
-  const playPointDeduction = (deduction: number, title: string) => {
+  const playPointDeduction = (deduction: number, action: () => void) => {
     setFloatingDeduction(deduction);
 
     setTimeout(() => {
@@ -182,14 +174,7 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
 
       // trigger state & history update
       animateNextUpdate.current = true;
-      deductPoints(deduction);
-      useHistoryPoin.getState().addHistoryTransaction({
-        type: "minus",
-        amount: deduction,
-        title,
-        description: "Penukaran Poin",
-        balance: Math.max(0, points.total - deduction),
-      });
+      action();
     }, FLOAT_DURATION);
   };
 
@@ -204,8 +189,9 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
       setAnimationFinished(false);
       setShowRewardModal(true);
     } else {
-      playPointReward(CHECKIN_REWARD, "Check-in Harian");
-      checkIn(CHECKIN_REWARD);
+      playPointReward(CHECKIN_REWARD, () => {
+        checkIn(CHECKIN_REWARD, "Check-in Harian");
+      });
     }
   };
 
@@ -382,7 +368,9 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             });
 
             if (pointsCost > 0) {
-              playPointDeduction(pointsCost, `Tukar ${voucher.title}`);
+              playPointDeduction(pointsCost, () => {
+                deductPoints(pointsCost, `Tukar ${voucher.title}`);
+              });
             }
           }}
         />
@@ -395,8 +383,9 @@ export default function PointsCard({ points, onOpenInfo }: PointsCardProps) {
             onClick={() => {
               if (!animationFinished) return;
               setShowRewardModal(false);
-              playPointReward(STREAK_REWARD, "Bonus Streak Check-in");
-              checkIn(STREAK_REWARD);
+              playPointReward(STREAK_REWARD, () => {
+                checkIn(STREAK_REWARD, "Bonus Streak Check-in");
+              });
             }}
             className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center px-6"
           >

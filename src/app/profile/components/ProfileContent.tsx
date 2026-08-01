@@ -1,17 +1,15 @@
-import React, { useState, useRef } from "react";
-import {
-  ChevronRight,
-  ChevronDown,
-  Bell,
-  Info,
-  LogOut,
-  ShieldCheck,
-  Headset,
-  Mail,
-} from "lucide-react";
+import React from "react";
+import { LogOut } from "lucide-react";
 import PointsCard from "@/components/PointsCard";
-import { Toggle } from "@/components/ProfileComponents";
 import ProfileQuickActions from "./ProfileQuickActions";
+
+import ProfileNotification from "./ProfileNotification";
+import ProfileSecurity from "./ProfileSecurity";
+import ProfilePrivacy from "./ProfilePrivacy";
+import ProfileCSChat from "./ProfileCSChat";
+import ProfileSuggestionBox from "./ProfileSuggestionBox";
+import ProfilePolicy from "./ProfilePolicy";
+import ProfileAbout from "./ProfileAbout";
 
 export interface UserProfile {
   name: string;
@@ -30,19 +28,14 @@ interface ProfileContentProps {
 }
 
 export default function ProfileContent({
-  user,
-  setUser,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  user: _user,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setUser: _setUser,
   points,
   onOpenPointsInfo,
   onOpenSubPage,
 }: ProfileContentProps) {
-  const [notifPrefs, setNotifPrefs] = useState({
-    orderUpdates: true,
-    promoOffers: false,
-  });
-  const [notifOpen, setNotifOpen] = useState(false);
-  const pengaturanRef = useRef<HTMLDivElement>(null);
-
   return (
     <div className="relative z-10 -mt-[45px]">
       <PointsCard points={points} onOpenInfo={onOpenPointsInfo} />
@@ -50,172 +43,34 @@ export default function ProfileContent({
       {/* ── QUICK ACCESS ROW ── */}
       <ProfileQuickActions onActionClick={onOpenSubPage} />
 
-      {/* ── SINGLE SETTINGS CARD ── */}
-      <div
-        ref={pengaturanRef}
-        className="mx-2 mt-5 bg-white rounded-lg overflow-hidden scroll-mt-4"
-      >
-        {/* ── Label Pengaturan (di dalam wrapper) ── */}
+      {/* ── PENGATURAN ── */}
+      <div className="mx-2 mt-5 bg-white rounded-lg overflow-hidden">
         <div className="px-4 pt-3.5 pb-1">
           <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">
             Pengaturan
           </p>
         </div>
+        <ProfileNotification />
+        <div className="ml-[60px] border-t border-gray-100/80" />
+        <ProfileSecurity />
+        <div className="ml-[60px] border-t border-gray-100/80" />
+        <ProfilePrivacy />
       </div>
 
-      <div className="mx-2 bg-white rounded-lg overflow-hidden">
-        {/* ── Notifikasi ── */}
-        <button
-          onClick={() => setNotifOpen((p) => !p)}
-          className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-              <Bell size={15} className="text-gray-500" strokeWidth={2.5} />
-            </div>
-            <div className="text-left">
-              <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                Preferensi Notifikasi
-              </p>
-              <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                Atur notifikasi yang kamu terima
-              </p>
-            </div>
-          </div>
-          {notifOpen ? (
-            <ChevronDown size={20} className="text-gray-400" />
-          ) : (
-            <ChevronRight size={20} className="text-gray-400" />
-          )}
-        </button>
-
-        <div
-          className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{
-            maxHeight: notifOpen ? "300px" : "0px",
-            opacity: notifOpen ? 1 : 0,
-          }}
-        >
-          <div className="border-t border-gray-100 divide-y divide-gray-100/60">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                  Update Pesanan
-                </p>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                  Info status pemesanan real-time
-                </p>
-              </div>
-              <Toggle
-                on={notifPrefs.orderUpdates}
-                onToggle={() =>
-                  setNotifPrefs((p) => ({
-                    ...p,
-                    orderUpdates: !p.orderUpdates,
-                  }))
-                }
-              />
-            </div>
-            <div className="px-4 py-3 flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-gray-800 leading-none">
-                  Promo & Penawaran
-                </p>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                  Diskon dan voucher eksklusif
-                </p>
-              </div>
-              <Toggle
-                on={notifPrefs.promoOffers}
-                onToggle={() =>
-                  setNotifPrefs((p) => ({
-                    ...p,
-                    promoOffers: !p.promoOffers,
-                  }))
-                }
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="ml-[60px] border-t border-gray-100/80" />
-
-        {/* ── Kebijakan & Privasi ── */}
-        <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-            <ShieldCheck
-              size={15}
-              className="text-gray-500"
-              strokeWidth={2.5}
-            />
-          </div>
-          <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
-            Kebijakan & Privasi
-          </span>
-          <ChevronRight size={20} className="text-gray-400" />
-        </button>
-
-        <div className="ml-[60px] border-t border-gray-100/80" />
-
-        {/* ── Tentang Aplikasi ── */}
-        <button className="w-full flex items-center gap-3 px-4 pt-3 pb-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors">
-          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-            <Info size={17} className="text-gray-500" strokeWidth={2.5} />
-          </div>
-          <span className="flex-1 text-left text-[13px] font-semibold text-gray-800">
-            Tentang Aplikasi
-          </span>
-          <ChevronRight size={20} className="text-gray-400" />
-        </button>
-      </div>
-
+      {/* ── BANTUAN & DUKUNGAN ── */}
       <div className="mx-2 mt-3 bg-white rounded-lg overflow-hidden">
         <div className="px-4 pt-3.5 pb-1">
           <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">
-            Bantuan & Dukungan
+            Bantuan &amp; Dukungan
           </p>
         </div>
-      </div>
-
-      {/* ── BANTUAN: CS CHAT & KOTAK SARAN (grid 2 kolom) ── */}
-      <div className="mx-2 bg-white rounded-lg overflow-hidden">
-        <button
-          onClick={() => onOpenSubPage("cs-chat")}
-          className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-            <Headset size={16} strokeWidth={2.5} className="text-gray-500" />
-          </div>
-
-          <div className="flex-1 text-left">
-            <p className="text-[13px] font-semibold text-gray-800">
-              Hubungi CS
-            </p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
-              Chat langsung dengan tim kami
-            </p>
-          </div>
-        </button>
-
-        <div className="border-t border-gray-100/80" />
-
-        <button
-          onClick={() => onOpenSubPage("kotak-saran")}
-          className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center">
-            <Mail size={16} strokeWidth={2.5} className="text-gray-500" />
-          </div>
-
-          <div className="flex-1 text-left">
-            <p className="text-[13px] font-semibold text-gray-800">
-              Kotak Saran
-            </p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
-              Kirim masukan untuk kami
-            </p>
-          </div>
-        </button>
+        <ProfileCSChat />
+        <div className="ml-[60px] border-t border-gray-100/80" />
+        <ProfileSuggestionBox />
+        <div className="ml-[60px] border-t border-gray-100/80" />
+        <ProfilePolicy />
+        <div className="ml-[60px] border-t border-gray-100/80" />
+        <ProfileAbout />
       </div>
 
       {/* ── CTA Logout ── */}

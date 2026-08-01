@@ -7,6 +7,9 @@ interface NavigationState {
   setIsReturningFromDetail: (value: boolean) => void;
   checkoutSource: CheckoutSource;
   setCheckoutSource: (source: CheckoutSource) => void;
+  /** True saat salah satu sub-page profil (overlay fullscreen) sedang terbuka */
+  profileSubPageOpen: boolean;
+  setProfileSubPageOpen: (open: boolean) => void;
 }
 
 export const useNavigationStore = create<NavigationState>((set) => ({
@@ -14,4 +17,6 @@ export const useNavigationStore = create<NavigationState>((set) => ({
   setIsReturningFromDetail: (value: boolean) => set({ isReturningFromDetail: value }),
   checkoutSource: null,
   setCheckoutSource: (source: CheckoutSource) => set({ checkoutSource: source }),
+  profileSubPageOpen: false,
+  setProfileSubPageOpen: (open: boolean) => set({ profileSubPageOpen: open }),
 }));

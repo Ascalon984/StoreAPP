@@ -112,6 +112,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const navStore = useNavigationStore();
+  const profileSubPageOpen = useNavigationStore((s) => s.profileSubPageOpen);
 
   // Sembunyikan navbar di halaman detail produk dan checkout
   const isProductDetail = pathname?.startsWith("/product/");
@@ -123,7 +124,7 @@ export default function BottomNav() {
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
-  if (isProductDetail || isCheckout || isNotifications || isProducts)
+  if (isProductDetail || isCheckout || isNotifications || isProducts || profileSubPageOpen)
     return null;
 
   return (

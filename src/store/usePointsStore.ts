@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { useHistoryPoin } from "./useHistoryPoin";
 
 export interface PointsData {
   total: number;
@@ -14,9 +15,9 @@ interface PointsState {
   points: PointsData;
 
   setPoints: (points: Partial<PointsData>) => void;
-  addPoints: (amount: number) => void;
-  deductPoints: (amount: number) => void;
-  checkIn: (reward?: number) => void;
+  addPoints: (amount: number, title?: string, description?: string) => void;
+  deductPoints: (amount: number, title?: string, description?: string) => void;
+  checkIn: (reward?: number, title?: string) => void;
 
   resetTestingData: () => void;
   clearStorage: () => void;
@@ -59,7 +60,7 @@ const noopStorage = {
 
 export const usePointsStore = create<PointsState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       points: initialPoints,
 
       setPoints: (newPoints) =>
@@ -70,23 +71,39 @@ export const usePointsStore = create<PointsState>()(
           },
         })),
 
-      addPoints: (amount) =>
+      addPoints: (amount, title = "Bonus Poin", description = "Dari event & hadiah") => {
         set((state) => ({
           points: {
             ...state.points,
             total: state.points.total + amount,
           },
-        })),
+        }));
+        useHistoryPoin.getState().addHistoryTransaction({
+          type: "plus",
+          amount,
+          title,
+          description,
+          balance: get().points.total,
+        });
+      },
 
-      deductPoints: (amount) =>
+      deductPoints: (amount, title = "Penukaran Poin", description = "Penukaran Poin") => {
         set((state) => ({
           points: {
             ...state.points,
             total: Math.max(0, state.points.total - amount),
           },
-        })),
+        }));
+        useHistoryPoin.getState().addHistoryTransaction({
+          type: "minus",
+          amount,
+          title,
+          description,
+          balance: get().points.total,
+        });
+      },
 
-      checkIn: (reward = 20) =>
+      checkIn: (reward = 20, title = "Check-in Harian") => {
         set((state) => {
           const nextStreak =
             state.points.dailyStreak >= 6
@@ -96,12 +113,22 @@ export const usePointsStore = create<PointsState>()(
           return {
             points: {
               ...state.points,
+              total: state.points.total + reward,
               checkinPoints: state.points.checkinPoints + reward,
               dailyStreak: nextStreak,
               checkedInToday: true,
             },
           };
-        }),
+        });
+
+        useHistoryPoin.getState().addHistoryTransaction({
+          type: "plus",
+          amount: reward,
+          title,
+          description: "Dari event & hadiah",
+          balance: get().points.total,
+        });
+      },
 
       resetTestingData: () =>
         set({
