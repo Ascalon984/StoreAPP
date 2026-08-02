@@ -1,21 +1,37 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Eye, EyeOff, CheckCircle2, CircleCheckBig } from "lucide-react";
-import { formatPhoneNumber, parsePhoneInput } from "@/utils/phone";
+import { Eye, EyeOff } from "lucide-react";
 
 /* ────────────────────────────────────────────
    Reusable: OTP Box Input (6 digit)
    Style diambil dari AuthForgotPassword.tsx
 ──────────────────────────────────────────── */
-function OtpBoxInput({
+export function OtpBoxInput({
   value,
   onChange,
+  autoFocus = false,
 }: {
   value: string[];
   onChange: (next: string[]) => void;
+  autoFocus?: boolean;
 }) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  // Ref untuk menandai bahwa focus() dipanggil secara programatik (bukan tap user),
+  // sehingga handleFocus tidak salah mengalihkan fokus berdasarkan value stale.
+  const pendingFocusIndex = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      // sedikit delay supaya reliable saat elemen baru mount (mis. modal/section baru muncul)
+      const t = setTimeout(() => {
+        pendingFocusIndex.current = 0;
+        refs.current[0]?.focus();
+      }, 50);
+      return () => clearTimeout(t);
+    }
+  }, [autoFocus]);
 
   const handleInput = (index: number, raw: string) => {
     const digit = raw.replace(/\D/g, "").slice(-1);
@@ -24,6 +40,8 @@ function OtpBoxInput({
     onChange(next);
 
     if (digit && index < value.length - 1) {
+      // tandai dulu sebelum focus() agar handleFocus tidak membaca value stale
+      pendingFocusIndex.current = index + 1;
       refs.current[index + 1]?.focus();
     }
   };
@@ -34,6 +52,7 @@ function OtpBoxInput({
         const next = [...value];
         next[index - 1] = "";
         onChange(next);
+        pendingFocusIndex.current = index - 1;
         refs.current[index - 1]?.focus();
       } else {
         const next = [...value];
@@ -43,17 +62,41 @@ function OtpBoxInput({
     }
   };
 
+  const handleFocus = (index: number) => {
+    // Jika fokus ini dipicu secara programatik (auto-advance / backspace),
+    // langsung terima — jangan redirect ulang berdasarkan value stale.
+    if (pendingFocusIndex.current === index) {
+      pendingFocusIndex.current = null;
+      setFocusedIndex(index);
+      return;
+    }
+    pendingFocusIndex.current = null;
+
+    // Tap manual: arahkan ke box kosong pertama yang seharusnya diisi
+    const firstEmpty = value.findIndex((d) => d === "");
+    const allowedIndex = firstEmpty === -1 ? value.length - 1 : firstEmpty;
+
+    if (value[index] === "" && index !== allowedIndex) {
+      pendingFocusIndex.current = allowedIndex;
+      refs.current[allowedIndex]?.focus();
+      return;
+    }
+    setFocusedIndex(index);
+  };
+
   return (
     <div className="flex justify-center gap-2.5">
       {value.map((digit, i) => {
-        const isActive = i === value.findIndex((d) => d === "");
+        const isFocused = i === focusedIndex;
         return (
           <div
             key={i}
-            className={`relative w-11 h-12 rounded-xl border flex items-center justify-center text-[17px] font-bold transition-all duration-150 ${
-              digit
-                ? "border-blue-600 bg-white text-gray-800 scale-105"
-                : "border-gray-200 bg-gray-50"
+            className={`relative flex h-12 w-11 items-center justify-center rounded-lg border text-[17px] font-bold transition-colors duration-150 ${
+              isFocused
+                ? "border-emerald-600 bg-white text-gray-800"
+                : digit
+                  ? "border-emerald-600 bg-white text-emerald-700"
+                  : "border-gray-200 bg-gray-50 text-gray-800"
             }`}
           >
             <input
@@ -66,10 +109,14 @@ function OtpBoxInput({
               value={digit}
               onChange={(e) => handleInput(i, e.target.value)}
               onKeyDown={(e) => handleKeydown(i, e)}
-              className="absolute inset-0 w-full h-full text-center bg-transparent outline-none text-[17px] font-bold text-gray-800 caret-blue-600"
+              onFocus={() => handleFocus(i)}
+              onBlur={() =>
+                setFocusedIndex((prev) => (prev === i ? null : prev))
+              }
+              className="absolute inset-0 h-full w-full bg-transparent text-center text-[17px] font-bold text-inherit outline-none caret-transparent"
             />
-            {!digit && isActive && (
-              <span className="w-[2px] h-5 bg-blue-600 animate-pulse pointer-events-none" />
+            {!digit && isFocused && (
+              <span className="pointer-events-none h-5 w-[2px] rounded-full bg-emerald-600 animate-blink" />
             )}
           </div>
         );
@@ -81,33 +128,55 @@ function OtpBoxInput({
 /* ────────────────────────────────────────────
    Reusable: Cooldown hook untuk kirim/kirim ulang OTP
 ──────────────────────────────────────────── */
-function useOtpCooldown() {
-  const [cooldown, setCooldown] = useState(0);
+export function useOtpCooldown(storageKey: string) {
+  // Inisialisasi sinkron dari sessionStorage agar cooldown tidak pernah
+  // dimulai dari 0 saat component mount ulang (menghindari effect reset otpSent
+  // yang salah memicu ilustrasi OTP di komponen consumer).
+  const [cooldown, setCooldown] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    const until = Number(sessionStorage.getItem(storageKey) || 0);
+    return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+  });
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const start = () => {
+  const tick = (until: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setCooldown(60);
     timerRef.current = setInterval(() => {
-      setCooldown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+      setCooldown(remaining);
+      if (remaining <= 0) {
+        clearInterval(timerRef.current!);
+        sessionStorage.removeItem(storageKey);
+      }
     }, 1000);
   };
 
+  const start = () => {
+    const until = Date.now() + 60_000;
+    sessionStorage.setItem(storageKey, String(until));
+    setCooldown(60);
+    tick(until);
+  };
+
+  // Jalankan interval tick saat mount jika cooldown masih aktif
   useEffect(() => {
+    const until = Number(sessionStorage.getItem(storageKey) || 0);
+    const remaining = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+    if (remaining > 0) {
+      tick(until);
+    }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
 
   return { cooldown, start };
 }
 
+/* ────────────────────────────────────────────
+   Form: Ubah Password
+──────────────────────────────────────────── */
 export function UbahPasswordForm({
   onClose,
   showToast,
@@ -277,7 +346,7 @@ export function UbahPasswordForm({
           }}
           className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
             canSubmit
-              ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
+              ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
@@ -288,6 +357,9 @@ export function UbahPasswordForm({
   );
 }
 
+/* ────────────────────────────────────────────
+   Form: Ubah PIN
+──────────────────────────────────────────── */
 export function UbahPINForm({
   onClose,
   showToast,
@@ -450,7 +522,7 @@ export function UbahPINForm({
           }}
           className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
             canSubmit
-              ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
+              ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
@@ -458,358 +530,5 @@ export function UbahPINForm({
         </button>
       </div>
     </>
-  );
-}
-
-export function UbahNoHPForm({
-  onClose,
-  showToast,
-  currentPhone,
-}: {
-  onClose: () => void;
-  showToast: (msg: string) => void;
-  currentPhone: string;
-}) {
-  const [newPhone, setNewPhone] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const { cooldown, start } = useOtpCooldown();
-
-  const isPhoneValid = /^62\d{11}$/.test(newPhone);
-  const otpComplete = otp.every((d) => d !== "");
-  const canSubmit = isPhoneValid && otpSent && otpComplete;
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const parsed = parsePhoneInput(raw, newPhone);
-    setNewPhone(parsed);
-  };
-
-  const handleSendOtp = () => {
-    if (!isPhoneValid || cooldown > 0) return;
-    setOtpSent(true);
-    setOtp(["", "", "", "", "", ""]);
-    start();
-    showToast("Kode OTP telah dikirim via SMS");
-  };
-
-  return (
-    <>
-      <div className="py-4">
-        <div className="bg-white px-4 py-4">
-          <div className="space-y-4">
-            {/* Nomor HP Saat Ini */}
-            <div className="rounded-lg bg-gray-50 shadow-inner px-4 py-3">
-              <p className="mb-2 text-[11px] font-semibold text-gray-500">
-                Nomor HP Saat Ini
-              </p>
-
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-[14px] font-semibold text-gray-700">
-                    {formatPhoneNumber(currentPhone)}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1 shrink-0 translate-y-[2px]">
-                  <CircleCheckBig size={14} className="text-emerald-600" />
-                  <span className="text-[10px] font-medium text-emerald-700 translate-y-[0.1px]">
-                    Terverifikasi
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Nomor HP Baru */}
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-semibold text-gray-700">
-                Nomor HP Baru
-              </label>
-
-              <div className="flex items-center gap-3 border-b border-gray-100 pb-1.5">
-                <input
-                  type="tel"
-                  placeholder="08xx xxxx xxxx"
-                  value={newPhone ? formatPhoneNumber(newPhone) : ""}
-                  onChange={handlePhoneChange}
-                  className="flex-1 bg-transparent text-[13px] text-gray-800 outline-none placeholder:text-gray-400"
-                />
-
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={!isPhoneValid || cooldown > 0}
-                  className={`shrink-0 text-[11px] font-semibold transition-opacity ${
-                    !isPhoneValid || cooldown > 0
-                      ? "cursor-not-allowed text-gray-300"
-                      : "text-blue-600 active:opacity-70"
-                  }`}
-                >
-                  {cooldown > 0
-                    ? `${cooldown} dtk`
-                    : otpSent
-                      ? "Kirim Ulang"
-                      : "Kirim OTP"}
-                </button>
-              </div>
-            </div>
-
-            {/* Kode Verifikasi (Box Style) */}
-            {otpSent && (
-              <div className="flex flex-col gap-2 pt-1">
-                <label className="text-[11px] font-semibold text-gray-700 text-center">
-                  Masukkan Kode Verifikasi
-                </label>
-                <OtpBoxInput value={otp} onChange={setOtp} />
-                <p className="text-[10px] text-gray-400 text-center">
-                  Kode verifikasi dikirim via SMS ke nomor baru
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
-        <button
-          disabled={!canSubmit}
-          onClick={() => {
-            showToast("Nomor HP berhasil diubah");
-            onClose();
-          }}
-          className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
-            canSubmit
-              ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Simpan Nomor HP
-        </button>
-      </div>
-    </>
-  );
-}
-
-export function UbahEmailForm({
-  onClose,
-  showToast,
-  currentEmail,
-}: {
-  onClose: () => void;
-  showToast: (msg: string) => void;
-  currentEmail: string;
-}) {
-  const [newEmail, setNewEmail] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const { cooldown, start } = useOtpCooldown();
-
-  const isEmailValid = /\S+@\S+\.\S+/.test(newEmail);
-  const otpComplete = otp.every((d) => d !== "");
-  const canSubmit = isEmailValid && otpSent && otpComplete;
-
-  const handleSendOtp = () => {
-    if (!isEmailValid || cooldown > 0) return;
-    setOtpSent(true);
-    setOtp(["", "", "", "", "", ""]);
-    start();
-    showToast("Kode OTP telah dikirim ke email baru");
-  };
-
-  return (
-    <>
-      <div className="py-4">
-        <div className="bg-white px-4 py-4">
-          <div className="space-y-4">
-            {/* Email Saat Ini */}
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-semibold text-gray-700">
-                Email Saat Ini
-              </label>
-              <div className="flex items-center border-b border-gray-100 pb-1.5 gap-2">
-                <input
-                  type="email"
-                  value={currentEmail}
-                  disabled
-                  className="flex-1 bg-transparent text-[13px] text-gray-400 outline-none cursor-not-allowed"
-                />
-
-                <CheckCircle2
-                  size={17}
-                  strokeWidth={2.2}
-                  className="shrink-0 text-emerald-500"
-                />
-              </div>
-            </div>
-
-            {/* Email Baru */}
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <label className="text-[11px] font-semibold text-gray-700">
-                  Email Baru
-                </label>
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={!isEmailValid || cooldown > 0}
-                  className={`text-[11px] font-semibold shrink-0 active:opacity-70 transition-opacity ${
-                    !isEmailValid || cooldown > 0
-                      ? "text-gray-300 cursor-not-allowed"
-                      : "text-blue-600"
-                  }`}
-                >
-                  {cooldown > 0
-                    ? `Kirim ulang (${cooldown}d)`
-                    : otpSent
-                      ? "Kirim Ulang OTP"
-                      : "Kirim OTP"}
-                </button>
-              </div>
-              <div className="flex items-center border-b border-gray-100 pb-1.5">
-                <input
-                  type="email"
-                  placeholder="contoh@email.com"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  className="flex-1 bg-transparent text-[13px] text-gray-800 outline-none placeholder:text-gray-400"
-                />
-              </div>
-            </div>
-
-            {/* Kode Verifikasi (Box Style) */}
-            {otpSent && (
-              <div className="flex flex-col gap-2 pt-1">
-                <label className="text-[11px] font-semibold text-gray-700 text-center">
-                  Masukkan Kode Verifikasi
-                </label>
-                <OtpBoxInput value={otp} onChange={setOtp} />
-                <p className="text-[10px] text-gray-400 text-center">
-                  Kode verifikasi dikirim ke email baru
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
-        <button
-          disabled={!canSubmit}
-          onClick={() => {
-            showToast("Email berhasil diubah");
-            onClose();
-          }}
-          className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
-            canSubmit
-              ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Simpan Email
-        </button>
-      </div>
-    </>
-  );
-}
-
-export function RiwayatLoginForm({
-  loginHistory,
-  showToast,
-}: {
-  loginHistory: {
-    device: string;
-    location: string;
-    time: string;
-    status: "aktif" | "berhasil" | "gagal";
-  }[];
-  showToast: (msg: string) => void;
-}) {
-  const activeSessions = loginHistory.filter((l) => l.status === "aktif");
-  const otherSessions = loginHistory.filter((l) => l.status !== "aktif");
-
-  return (
-    <div className="py-4 space-y-3">
-      {/* Sesi Aktif */}
-      {activeSessions.length > 0 && (
-        <div className="bg-white">
-          <div className="px-4 pt-3 pb-0.5">
-            <p className="text-[10px] font-bold text-gray-400 tracking-wide uppercase">
-              Sesi Aktif
-            </p>
-          </div>
-          {activeSessions.map((item, i) => (
-            <React.Fragment key={`active-${i}`}>
-              <div className="relative px-4 py-3.5">
-                <span className="absolute top-3.5 right-4 h-7 px-2.5 rounded-md border border-blue-600 bg-white text-[10px] font-semibold text-blue-700 flex items-center">
-                  Aktif
-                </span>
-
-                <div className="flex items-start gap-2.5 mb-1">
-                  <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-0.5"></div>
-                  <h3 className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-800 pr-16">
-                    {item.device}
-                  </h3>
-                </div>
-
-                <p className="text-[11px] text-gray-500 pl-[34px]">
-                  {item.location} · {item.time}
-                </p>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-
-      {/* Perangkat Lain */}
-      {otherSessions.length > 0 && (
-        <div className="bg-white">
-          <div className="px-4 pt-3 pb-0.5">
-            <p className="text-[10px] font-bold text-gray-400 tracking-wide uppercase">
-              Perangkat Lain
-            </p>
-          </div>
-          {otherSessions.map((item, i) => {
-            const isFailed = item.status === "gagal";
-            return (
-              <React.Fragment key={`other-${i}`}>
-                <div className="relative px-4 py-3.5">
-                  <span
-                    className={`absolute top-3.5 right-4 h-6 px-2 rounded-md text-[10px] font-semibold flex items-center ${
-                      isFailed
-                        ? "border border-red-200 text-red-500 bg-red-50"
-                        : "border border-gray-200 text-gray-400 bg-white"
-                    }`}
-                  >
-                    {isFailed ? "Gagal" : "Berhasil"}
-                  </span>
-
-                  <div className="flex items-start gap-2.5 mb-1">
-                    <h3 className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-800 pr-16">
-                      {item.device}
-                    </h3>
-                  </div>
-
-                  <p className="text-[11px] text-gray-500 pl-[34px]">
-                    {item.location} · {item.time}
-                  </p>
-                </div>
-
-                {i !== otherSessions.length - 1 && (
-                  <div className="mx-4 h-px bg-gray-100" />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Tombol Keluar Semua Perangkat */}
-      <button
-        onClick={() => showToast("Semua perangkat lain telah dikeluarkan")}
-        className="w-full py-3 rounded-lg text-[13px] font-semibold text-red-500 bg-red-50 active:scale-[0.98] transition-all"
-      >
-        Keluar dari Semua Perangkat Lain
-      </button>
-    </div>
   );
 }

@@ -12,13 +12,12 @@ import {
   Check,
   ChevronRight,
 } from "lucide-react";
+import { UbahPasswordForm, UbahPINForm } from "./SecurityPasswordForms";
 import {
-  UbahPasswordForm,
-  UbahPINForm,
   UbahNoHPForm,
   UbahEmailForm,
   RiwayatLoginForm,
-} from "./SecurityAuthForm";
+} from "./SecurityContactForms";
 import { NavRowButton } from "./ProfileNavRow";
 import { useNavigationStore } from "@/store/useNavigationStore";
 
