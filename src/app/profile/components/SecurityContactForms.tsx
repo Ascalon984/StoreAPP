@@ -2,9 +2,13 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import { CheckCircle2, CircleCheckBig } from "lucide-react";
 import { formatPhoneNumber, parsePhoneInput } from "@/utils/phone";
+import {
+  normalizeEmailLight,
+  normalizeEmailOnBlur,
+} from "@/utils/normalizeEmail";
 import { OtpBoxInput, useOtpCooldown } from "./SecurityPasswordForms";
+import Image from "next/image";
 
 /* ────────────────────────────────────────────
    Form: Ubah Nomor HP
@@ -56,9 +60,6 @@ export function UbahNoHPForm({
     sessionStorage.setItem(`${STORAGE_KEY}_otp`, JSON.stringify(otp));
   }, [otp]);
 
-  // OTP dianggap kedaluwarsa begitu window cooldown habis. Tanpa ini,
-  // status "otpSent" tersimpan permanen di sessionStorage dan box OTP
-  // akan terus muncul (bukan ilustrasi) meski OTP lama sudah tidak valid.
   useEffect(() => {
     if (cooldown === 0 && otpSent) {
       setOtpSent(false);
@@ -122,23 +123,16 @@ export function UbahNoHPForm({
                 <span className="text-[14px] font-semibold text-gray-700">
                   {formatPhoneNumber(currentPhone)}
                 </span>
-
-                <div className="flex shrink-0 items-center gap-1 translate-y-[2px]">
-                  <CircleCheckBig size={14} className="text-emerald-600" />
-                  <span className="translate-y-[0.1px] text-[10px] font-medium text-emerald-700">
-                    Terverifikasi
-                  </span>
-                </div>
               </div>
             </div>
 
             {/* Nomor HP Baru */}
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-semibold text-gray-700">
+            <div className="px-2 flex flex-col gap-1">
+              <label className="mt-2.5 text-[12px] font-semibold text-gray-700">
                 Nomor HP Baru
               </label>
 
-              <div className="flex items-center gap-3 border-b border-gray-100 pb-1.5">
+              <div className="mt-1.5 flex items-center gap-3 border-b border-gray-100 pb-1.5">
                 <input
                   type="tel"
                   placeholder="08xx xxxx xxxx"
@@ -151,9 +145,9 @@ export function UbahNoHPForm({
                   type="button"
                   onClick={handleSendOtp}
                   disabled={!isPhoneValid || cooldown > 0}
-                  className={`shrink-0 text-[11px] font-semibold transition-opacity ${
+                  className={`shrink-0 text-[11px] font-semibold underline underline-offset-2 transition-opacity ${
                     !isPhoneValid || cooldown > 0
-                      ? "cursor-not-allowed text-gray-400"
+                      ? "cursor-not-allowed text-gray-400 no-underline"
                       : "text-emerald-600 active:opacity-70"
                   }`}
                 >
@@ -187,10 +181,13 @@ export function UbahNoHPForm({
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <img
+                <Image
                   src="/icons/otp.png"
                   alt=""
-                  className="pointer-events-none h-24 w-24 select-none"
+                  width={96}
+                  height={96}
+                  draggable={false}
+                  className="pointer-events-none select-none"
                 />
 
                 <p className="mt-3 text-center text-[10px] text-gray-400">
@@ -224,7 +221,7 @@ export function UbahNoHPForm({
 }
 
 /* ────────────────────────────────────────────
-   Form: Ubah Email
+   Form: Ubah Email (Magic Link)
 ──────────────────────────────────────────── */
 export function UbahEmailForm({
   onClose,
@@ -241,163 +238,169 @@ export function UbahEmailForm({
     if (typeof window === "undefined") return "";
     return sessionStorage.getItem(`${STORAGE_KEY}_email`) || "";
   });
-  const [otpSent, setOtpSent] = useState(() => {
+  const [linkSent, setLinkSent] = useState(() => {
     if (typeof window === "undefined") return false;
     return sessionStorage.getItem(`${STORAGE_KEY}_sent`) === "1";
   });
-  const [otpSentForEmail, setOtpSentForEmail] = useState(() => {
+  const [linkSentForEmail, setLinkSentForEmail] = useState(() => {
     if (typeof window === "undefined") return "";
     return sessionStorage.getItem(`${STORAGE_KEY}_sent_for`) || "";
   });
-  const [otp, setOtp] = useState<string[]>(() => {
-    if (typeof window === "undefined") return ["", "", "", "", "", ""];
-    const saved = sessionStorage.getItem(`${STORAGE_KEY}_otp`);
-    return saved ? JSON.parse(saved) : ["", "", "", "", "", ""];
-  });
-  const [justSent, setJustSent] = useState(false);
-  const { cooldown, start } = useOtpCooldown("otp_cooldown_email");
+  // Simulasi status verifikasi — di real app ini dicek via polling/websocket
+  // ke server setelah user klik link di email, bukan diisi manual oleh user.
+  const [verified, setVerified] = useState(false);
+  const { cooldown, start } = useOtpCooldown("magiclink_cooldown_email");
 
   useEffect(() => {
     sessionStorage.setItem(`${STORAGE_KEY}_email`, newEmail);
   }, [newEmail]);
 
   useEffect(() => {
-    sessionStorage.setItem(`${STORAGE_KEY}_sent`, otpSent ? "1" : "0");
-  }, [otpSent]);
+    sessionStorage.setItem(`${STORAGE_KEY}_sent`, linkSent ? "1" : "0");
+  }, [linkSent]);
 
   useEffect(() => {
-    sessionStorage.setItem(`${STORAGE_KEY}_sent_for`, otpSentForEmail);
-  }, [otpSentForEmail]);
+    sessionStorage.setItem(`${STORAGE_KEY}_sent_for`, linkSentForEmail);
+  }, [linkSentForEmail]);
 
   useEffect(() => {
-    sessionStorage.setItem(`${STORAGE_KEY}_otp`, JSON.stringify(otp));
-  }, [otp]);
-
-  // OTP dianggap kedaluwarsa begitu window cooldown habis — lihat catatan
-  // yang sama di UbahNoHPForm.
-  useEffect(() => {
-    if (cooldown === 0 && otpSent) {
-      setOtpSent(false);
-      setJustSent(false);
-      setOtp(["", "", "", "", "", ""]);
-      setOtpSentForEmail("");
+    if (cooldown === 0 && linkSent && !verified) {
+      setLinkSent(false);
+      setLinkSentForEmail("");
+      setVerified(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cooldown]);
 
-  const isEmailValid = /\S+@\S+\.\S+/.test(newEmail);
-  const otpComplete = otp.every((d) => d !== "");
-  const otpMatchesCurrentEmail = otpSentForEmail === newEmail;
+  const normalizedEmail = normalizeEmailOnBlur(newEmail);
+
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normalizedEmail);
+  const linkMatchesCurrentEmail = linkSentForEmail === newEmail;
   const canSubmit =
-    isEmailValid && otpSent && otpMatchesCurrentEmail && otpComplete;
+    isEmailValid && linkSent && linkMatchesCurrentEmail && verified;
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+    const val = normalizeEmailLight(e.target.value);
     setNewEmail(val);
 
-    // Email berubah/dihapus dari yang terakhir dikirimi OTP → OTP lama sudah
-    // tidak relevan lagi, reset supaya tombol kembali jadi "Kirim OTP"
-    if (otpSent && val !== otpSentForEmail) {
-      setOtpSent(false);
-      setJustSent(false);
-      setOtp(["", "", "", "", "", ""]);
+    if (linkSent && val !== linkSentForEmail) {
+      setLinkSent(false);
+      setVerified(false);
     }
   };
 
-  const handleSendOtp = () => {
-    if (!isEmailValid || cooldown > 0) return;
-    setOtpSent(true);
-    setOtpSentForEmail(newEmail);
-    setJustSent(true);
-    setOtp(["", "", "", "", "", ""]);
+  const handleEmailBlur = () => {
+    const corrected = normalizeEmailOnBlur(newEmail);
+    if (corrected !== newEmail) {
+      setNewEmail(corrected);
+    }
+  };
+
+  const handleSendLink = () => {
+    const email = normalizeEmailOnBlur(newEmail);
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || cooldown > 0) {
+      return;
+    }
+
+    setNewEmail(email);
+    setLinkSent(true);
+    setLinkSentForEmail(email);
+    setVerified(false);
     start();
+
+    // TODO: panggil API kirim magic link ke `email`
   };
 
   const clearStorage = () => {
     sessionStorage.removeItem(`${STORAGE_KEY}_email`);
     sessionStorage.removeItem(`${STORAGE_KEY}_sent`);
     sessionStorage.removeItem(`${STORAGE_KEY}_sent_for`);
-    sessionStorage.removeItem(`${STORAGE_KEY}_otp`);
-    sessionStorage.removeItem("otp_cooldown_email");
+    sessionStorage.removeItem("magiclink_cooldown_email");
+
+    setVerified(false);
+    setLinkSent(false);
+    setLinkSentForEmail("");
+    setNewEmail("");
   };
 
   return (
     <>
-      <div className="py-4">
+      <div className="pt-4 pb-20">
         <div className="bg-white px-4 py-4">
           <div className="space-y-4">
-            {/* Email Saat Ini */}
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-semibold text-gray-700">
+            {/* Email Saat Ini — reuse style Nomor HP Saat Ini */}
+            <div className="rounded-lg bg-gray-50 px-4 py-3 shadow-inner">
+              <p className="mb-2 text-[11px] font-semibold text-gray-500">
                 Email Saat Ini
-              </label>
-              <div className="flex items-center border-b border-gray-100 pb-1.5 gap-2">
-                <input
-                  type="email"
-                  value={currentEmail}
-                  disabled
-                  className="flex-1 bg-transparent text-[13px] text-gray-400 outline-none cursor-not-allowed"
-                />
+              </p>
 
-                <CheckCircle2
-                  size={17}
-                  strokeWidth={2.2}
-                  className="shrink-0 text-emerald-500"
-                />
+              <div className="flex items-center justify-between gap-3">
+                <span className="truncate text-[14px] font-semibold text-gray-700">
+                  {currentEmail}
+                </span>
               </div>
             </div>
 
-            {/* Email Baru */}
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <label className="text-[11px] font-semibold text-gray-700">
-                  Email Baru
-                </label>
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={!isEmailValid || cooldown > 0}
-                  className={`text-[11px] font-semibold shrink-0 active:opacity-70 transition-opacity ${
-                    !isEmailValid || cooldown > 0
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-blue-600"
-                  }`}
-                >
-                  {cooldown > 0
-                    ? `Kirim ulang (${cooldown}d)`
-                    : otpSent && otpMatchesCurrentEmail
-                      ? "Kirim Ulang OTP"
-                      : "Kirim OTP"}
-                </button>
-              </div>
-              <div className="flex items-center border-b border-gray-100 pb-1.5">
+            {/* Email Baru — inline, tombol jadi "Verifikasi" */}
+            <div className="flex flex-col gap-1 px-2">
+              <label className="mt-2.5 text-[12px] font-semibold text-gray-700">
+                Email Baru
+              </label>
+
+              <div className="mt-1.5 flex items-center gap-3 border-b border-gray-100 pb-1.5">
                 <input
                   type="email"
                   placeholder="contoh@email.com"
                   value={newEmail}
                   onChange={handleEmailChange}
+                  onBlur={handleEmailBlur}
+                  autoComplete="email"
                   className="flex-1 bg-transparent text-[13px] text-gray-800 outline-none placeholder:text-gray-400"
                 />
+
+                <button
+                  type="button"
+                  onClick={handleSendLink}
+                  disabled={!isEmailValid || cooldown > 0}
+                  className={`shrink-0 text-[11px] font-semibold underline underline-offset-2 transition-opacity ${
+                    !isEmailValid || cooldown > 0
+                      ? "cursor-not-allowed text-gray-400 no-underline"
+                      : "text-emerald-600 active:opacity-70"
+                  }`}
+                >
+                  {cooldown > 0
+                    ? `${cooldown} dtk`
+                    : linkSent && linkMatchesCurrentEmail
+                      ? "Kirim Ulang"
+                      : "Verifikasi"}
+                </button>
               </div>
             </div>
-
-            {/* Kode Verifikasi (Box Style) */}
-            {otpSent && (
-              <div className="flex flex-col gap-2 pt-1">
-                <label className="text-[11px] font-semibold text-gray-700 text-center">
-                  Masukkan Kode Verifikasi
-                </label>
-                <OtpBoxInput
-                  value={otp}
-                  onChange={setOtp}
-                  autoFocus={justSent}
-                />
-                <p className="text-[10px] text-gray-400 text-center">
-                  Kode verifikasi dikirim ke email baru
-                </p>
-              </div>
-            )}
           </div>
+
+          {linkSent && linkMatchesCurrentEmail && (
+            <div className="mt-5 flex flex-col items-center px-4 text-center">
+              <Image
+                src="/icons/email_link.png"
+                alt=""
+                width={96}
+                height={96}
+                draggable={false}
+                className="pointer-events-none select-none"
+              />
+
+              <p className="mt-3 text-[12px] font-semibold text-gray-700">
+                Cek Email Kamu
+              </p>
+
+              <p className="mt-1 text-[10px] leading-relaxed text-gray-400">
+                Kami telah mengirim link verifikasi ke{" "}
+                <span className="font-medium text-gray-500">{newEmail}</span>.
+                Silakan cek inbox atau folder spam.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -411,11 +414,11 @@ export function UbahEmailForm({
           }}
           className={`w-full py-3.5 rounded-lg text-[13.5px] font-bold transition-all ${
             canSubmit
-              ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
+              ? "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
-          Simpan Email
+          {verified ? "Simpan Email" : "Menunggu Verifikasi"}
         </button>
       </div>
     </>
